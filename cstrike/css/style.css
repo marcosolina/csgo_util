@@ -64,3 +64,31 @@ body {
     color: #FFFFFF !important;
     font-weight: bolder !important;
 }
+
+/*####################################################
+* START RCON
+####################################################*/
+.rcon-container{
+    border: 2px solid red;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.rcon-map {
+    border: 2px solid green;
+    width: 200px;
+}
+
+.rcon-map .card-body{
+    background-color: #343a40;
+}
+
+.rcon-map img{
+    max-width: 100%;
+    max-width: 100%;
+}
+
+.alert-danger, .alert-success, .alert-info, .alert-warning {
+	color: #FFFFFF;
+	border: 0;
+}

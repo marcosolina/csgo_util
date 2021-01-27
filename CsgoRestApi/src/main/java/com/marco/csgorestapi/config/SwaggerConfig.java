@@ -12,25 +12,36 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
-
+/**
+ * Standard SpringBoot configuration file used to configure the Swagger API
+ * documentation
+ * 
+ * @author Marco
+ *
+ */
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
-    @Bean
-    public Docket swaggerConfiguration() {
-        return new Docket(DocumentationType.SWAGGER_2).select()
-            .apis(RequestHandlerSelectors.basePackage("com.marco.csgorestapi.controllers"))
-            .paths(PathSelectors.any())
-            .build().apiInfo(apiEndPointsInfo());
-    }
-    
-    
-    private ApiInfo apiEndPointsInfo() {
-        return new ApiInfoBuilder().title("Simple project to send Rcon commands")
-            .description("I use this project ot send commands to my dedicade CSGO server in a easily way")
-            .contact(new Contact("Marco Solina", "", ""))
-            .version("0.0.1")
-            .build();
-    }
+	@Bean
+	public Docket swaggerConfiguration() {
+		// @formatter:off
+		return new Docket(DocumentationType.SWAGGER_2).select()
+				.apis(RequestHandlerSelectors.basePackage("com.marco.csgorestapi.controllers"))
+				.paths(PathSelectors.any())
+				.build()
+				.apiInfo(apiEndPointsInfo());
+		// @formatter:on
+	}
+
+	private ApiInfo apiEndPointsInfo() {
+		// @formatter:off
+		return new ApiInfoBuilder()
+				.title("Simple project to send Rcon commands")
+				.description("I use this project ot send commands to my dedicade CSGO server in a easily way")
+				.contact(new Contact("Marco Solina", "marco.selfip.net", "marcosolina@gmail.com"))
+				.version("0.0.1")
+				.build();
+		// @formatter:on
+	}
 
 }

@@ -6,6 +6,11 @@ import org.springframework.context.annotation.Configuration;
 import com.marco.csgorestapi.services.implementations.MarcoRconService;
 import com.marco.csgorestapi.services.interfaces.RconService;
 
+/**
+ * Standard Spring Boot configuration file
+ * @author Marco
+ *
+ */
 @Configuration
 public class SpringBootConfig {
 

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 
-APP_FOLDER=/opt/covid/
+APP_FOLDER=/opt/csgoutil/
 APP_JAR=CsgoRestApi.jar
 APP_NOHUP=${APP_FOLDER}CsgoRestApi.log
 APP_PID_FILE=${APP_FOLDER}CsgoRestApi.pid

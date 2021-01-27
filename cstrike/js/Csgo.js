@@ -14,7 +14,12 @@ var Csgo = ((function(Csgo){
         request.rconHost = $("#rconHost").val();
         request.rconPort = $("#rconPort").val();
         request.rconPass = $("#rconPassw").val();
-        MarcoUtils.executeAjax({dataToPost: request, url: "https://marco.selfip.net/rcon/cmd"});
+        MarcoUtils.executeAjax(
+            {
+                dataToPost: request,
+                url: "https://marco.selfip.net/rcon/cmd",
+                showLoading: true
+            });
     }
 	return Csgo;
 })(Csgo));

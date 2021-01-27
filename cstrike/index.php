@@ -281,7 +281,7 @@ function formatSizeUnits($bytes)
 								<div class="input-group-prepend">
 									<span class="input-group-text" id="rconPortText">Rcon Port</span>
 								</div>
-								<input type="text" class="form-control" id="rconPort">
+								<input type="text" class="form-control" id="rconPort" placeholder="27015">
 							</div>
 						</div>
 						<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
@@ -294,16 +294,34 @@ function formatSizeUnits($bytes)
 						</div>
 					</div>
 					<div class="rcon-container">
+						<div class="card rcon-map" data-rcon-cmd="bot_add_t">
+							<img class="card-img-top" src="./terrorist.jpg" alt="Card image cap">
+							<div class="card-body">
+								<p class="card-text">Add a Terrorist Bot</p>
+							</div>
+						</div>
+						<div class="card rcon-map" data-rcon-cmd="bot_add_ct">
+							<img class="card-img-top" src="./counterterrorist.jpg" alt="Card image cap">
+							<div class="card-body">
+								<p class="card-text">Add a Counter Terrorist Bot</p>
+							</div>
+						</div>
+						<div class="card rcon-map" data-rcon-cmd="bot_kick">
+							<img class="card-img-top" src="./kickbots.jpg" alt="Card image cap">
+							<div class="card-body">
+								<p class="card-text">Kick All the bots</p>
+							</div>
+						</div>
 						<?php
 							$filesRootFolder = "./rcon/maps";
-							$files = scandir($filesRootFolder, 1);
+							$files = scandir($filesRootFolder, 0);
 							foreach ($files as $file) {
 								if ($file == "." || $file == "..") {
 									continue;
 								}
 								if (!is_dir($filesRootFolder . "/" . $file)) {
 						?>
-						<div class="card rcon-map" data-rcon-cmd="<?php echo "map ".str_replace(".jpg", "", $file);?>">
+						<div class="card rcon-map" data-rcon-cmd="<?php echo "map ".str_replace("-", "/", str_replace(".jpg", "", $file));?>">
 							<img class="card-img-top" src="<?php echo $filesRootFolder . "/" . $file;?>" alt="Card image cap">
 							<div class="card-body">
 								<p class="card-text"><?php echo str_replace(".jpg", "", $file);?></p>

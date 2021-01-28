@@ -296,39 +296,73 @@ function formatSizeUnits($bytes)
 					<div class="rcon-container">
 						<div class="card rcon-map" data-rcon-cmd="bot_add_t">
 							<img class="card-img-top" src="./terrorist.jpg" alt="Card image cap">
-							<div class="card-body">
-								<p class="card-text">Add a Terrorist Bot</p>
+							<div class="rcon-card-body">
+								Add a Terrorist Bot
 							</div>
 						</div>
 						<div class="card rcon-map" data-rcon-cmd="bot_add_ct">
 							<img class="card-img-top" src="./counterterrorist.jpg" alt="Card image cap">
-							<div class="card-body">
-								<p class="card-text">Add a Counter Terrorist Bot</p>
+							<div class="rcon-card-body">
+								Add a C.T. Bot
 							</div>
 						</div>
 						<div class="card rcon-map" data-rcon-cmd="bot_kick">
 							<img class="card-img-top" src="./kickbots.jpg" alt="Card image cap">
-							<div class="card-body">
-								<p class="card-text">Kick All the bots</p>
+							<div class="rcon-card-body">
+								Kick All the bots
+							</div>
+						</div>
+						<div class="card rcon-map" data-rcon-cmd="mp_restartgame 5">
+							<div class="rcon-icon-div">
+								<i class="fa fa-refresh" aria-hidden="true"></i>
+							</div>
+							<div class="rcon-card-body">
+								Restart Game
+							</div>
+						</div>
+						<div class="card rcon-map" data-rcon-cmd="pause">
+							<div class="rcon-icon-div">
+								<i class="fa fa-pause-circle-o" aria-hidden="true"></i>
+							</div>
+							<div class="rcon-card-body">
+								Pause Game
+							</div>
+						</div>
+						<div class="card rcon-map" data-rcon-cmd="unpause">
+							<div class="rcon-icon-div">
+								<i class="fa fa-play-circle-o" aria-hidden="true"></i>
+							</div>
+							<div class="rcon-card-body">
+								Resume Game
 							</div>
 						</div>
 						<?php
 							$filesRootFolder = "./rcon/maps";
 							$files = scandir($filesRootFolder, 0);
+							$maps = array();
 							foreach ($files as $file) {
 								if ($file == "." || $file == "..") {
 									continue;
 								}
 								if (!is_dir($filesRootFolder . "/" . $file)) {
+									$arr = explode("-", str_replace(".jpg", "", $file));
+									$mapName = $arr[count($arr) - 1];
+									$maps[$mapName] = $file;
+								}
+							}
+
+							ksort($maps);
+							foreach ($maps as $map => $file) {
 						?>
 						<div class="card rcon-map" data-rcon-cmd="<?php echo "map ".str_replace("-", "/", str_replace(".jpg", "", $file));?>">
 							<img class="card-img-top" src="<?php echo $filesRootFolder . "/" . $file;?>" alt="Card image cap">
-							<div class="card-body">
-								<p class="card-text"><?php echo str_replace(".jpg", "", $file);?></p>
+							<div class="rcon-card-body">
+								<?php
+									echo $map;
+								?>
 							</div>
 						</div>
 						<?php 
-								}
 							}
 						?>
 					</div>

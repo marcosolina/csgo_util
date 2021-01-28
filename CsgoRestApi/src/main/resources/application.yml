@@ -2,6 +2,9 @@ server:
   servlet:
     context-path: /rcon
     
+csgorestapi:
+  version: ^project.version^
+    
 logging:
   file:
     name: ./logs/csgo-rcon-status.log

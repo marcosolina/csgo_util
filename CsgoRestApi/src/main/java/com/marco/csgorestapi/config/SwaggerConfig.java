@@ -1,5 +1,6 @@
 package com.marco.csgorestapi.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -22,6 +23,10 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @Configuration
 @EnableSwagger2
 public class SwaggerConfig {
+	
+	@Value("${csgorestapi.version}")
+    private String appVersion;
+	
 	@Bean
 	public Docket swaggerConfiguration() {
 		// @formatter:off
@@ -37,9 +42,9 @@ public class SwaggerConfig {
 		// @formatter:off
 		return new ApiInfoBuilder()
 				.title("Simple project to send Rcon commands")
-				.description("I use this project ot send commands to my dedicade CSGO server in a easily way")
+				.description("I use this project to send commands to my dedicated CSGO server in a easier way")
 				.contact(new Contact("Marco Solina", "marco.selfip.net", "marcosolina@gmail.com"))
-				.version("0.0.1")
+				.version(appVersion)
 				.build();
 		// @formatter:on
 	}

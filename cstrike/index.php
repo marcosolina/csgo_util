@@ -36,9 +36,9 @@ function formatSizeUnits($bytes)
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">
-	<meta name="description" content="IXI-GO : Every Monday evening we play Counter Strike Global Offencive (CSGO) on our dedicated server. Here is we share the game results and some info" />
+	<meta name="description" content="IXI-GO : Every Monday evening we play Counter Strike Global Offencive (CSGO) on our dedicated server. Here we share the game results and some info" />
 	<meta property="og:title" content="IXI-GO: Monday Nights" />
-	<meta property="og:description" content="IXI-GO : Every Monday evening we play Counter Strike Global Offencive (CSGO) on our dedicated server. Here is we share the game results and some info" />
+	<meta property="og:description" content="IXI-GO : Every Monday evening we play Counter Strike Global Offencive (CSGO) on our dedicated server. Here we share the game results and some info" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="http://marco.selfip.net/cstrike" />
 	<meta property="og:image" content="csgo.jpg" />
@@ -295,19 +295,19 @@ function formatSizeUnits($bytes)
 					</div>
 					<div class="rcon-container">
 						<div class="card rcon-map" data-rcon-cmd="bot_add_t">
-							<img class="card-img-top" src="./terrorist.jpg" alt="Card image cap">
+							<img class="card-img-top" src="./pictures/terrorist.jpg" alt="Card image cap">
 							<div class="rcon-card-body">
 								Add a Terrorist Bot
 							</div>
 						</div>
 						<div class="card rcon-map" data-rcon-cmd="bot_add_ct">
-							<img class="card-img-top" src="./counterterrorist.jpg" alt="Card image cap">
+							<img class="card-img-top" src="./pictures/counterterrorist.jpg" alt="Card image cap">
 							<div class="rcon-card-body">
 								Add a C.T. Bot
 							</div>
 						</div>
 						<div class="card rcon-map" data-rcon-cmd="bot_kick">
-							<img class="card-img-top" src="./kickbots.jpg" alt="Card image cap">
+							<img class="card-img-top" src="./pictures/kickbots.jpg" alt="Card image cap">
 							<div class="rcon-card-body">
 								Kick All the bots
 							</div>

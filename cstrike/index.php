@@ -41,7 +41,7 @@ function formatSizeUnits($bytes)
 	<meta property="og:description" content="IXI-GO : Every Monday evening we play Counter Strike Global Offencive (CSGO) on our dedicated server. Here we share the game results and some info" />
 	<meta property="og:type" content="website" />
 	<meta property="og:url" content="http://marco.selfip.net/cstrike" />
-	<meta property="og:image" content="csgo.jpg" />
+	<meta property="og:image" content="http://marco.selfip.net/cstrike/pictures/ixigo-logo.jpg" />
 	<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests"> 
 
 	<!-- CSS -->
@@ -85,10 +85,10 @@ function formatSizeUnits($bytes)
 					<a class="nav-link active" id="dem-tab" data-toggle="tab" href="#demDiv" role="tab" aria-controls="dem" aria-selected="true">Dem Files</a>
 				</li>
 				<li class="nav-item" role="presentation">
-					<a class="nav-link" id="todo-tab" data-toggle="tab" href="#todoDiv" role="tab" aria-controls="todo" aria-selected="false">Rounds</a>
+					<a class="nav-link" id="rounds-tab" data-toggle="tab" href="#roundsDiv" role="tab" aria-controls="rounds" aria-selected="false">Rounds</a>
 				</li>
 				<li class="nav-item" role="presentation">
-					<a class="nav-link" id="rcon-tab" data-toggle="tab" href="#rconDiv" role="tab" aria-controls="todo" aria-selected="false">Rcon</a>
+					<a class="nav-link" id="rcon-tab" data-toggle="tab" href="#rconDiv" role="tab" aria-controls="rcon" aria-selected="false">Rcon</a>
 				</li>
 			</ul>
 			<div class="tab-content" id="myTabContent">
@@ -178,9 +178,9 @@ function formatSizeUnits($bytes)
 					</div>
 					<!-- END Dem files Accordion -->
 				</div>
-				<div class="tab-pane fade" id="todoDiv" role="tabpanel" aria-labelledby="todo-tab">
+				<div class="tab-pane fade" id="roundsDiv" role="tabpanel" aria-labelledby="rounds-tab">
 					<!-- START round files Accordion -->
-					<div class="accordion" id="accordionExample">
+					<div class="accordion" id="accordionRound">
 						<?php
 						$roundFilesRootFolder = "./rounds";
 						$demFolders = scandir($roundFilesRootFolder, 1);
@@ -191,15 +191,15 @@ function formatSizeUnits($bytes)
 							if (is_dir($roundFilesRootFolder . "/" . $demFolder)) {
 						?>
 								<div class="card">
-									<div class="card-header" id="card_<?php echo $demFolder; ?>">
+									<div class="card-header" id="card_rounds_<?php echo $demFolder; ?>">
 										<h2 class="mb-0">
 											<button 
 												class="btn btn-link btn-card"
 												type="button"
 												data-toggle="collapse" 
-												data-target="#collapse_<?php echo $demFolder; ?>"
+												data-target="#collapse_rounds_<?php echo $demFolder; ?>"
 												aria-expanded="false"
-												aria-controls="collapse_<?php echo $demFolder; ?>">
+												aria-controls="collapse_rounds_<?php echo $demFolder; ?>">
 													<?php
 													$date =  date_create_from_format('Y-m-d', $demFolder);
 													echo date_format($date, 'd M Y');
@@ -209,10 +209,10 @@ function formatSizeUnits($bytes)
 									</div>
 
 									<div 
-										id="collapse_<?php echo $demFolder; ?>" 
+										id="collapse_rounds_<?php echo $demFolder; ?>" 
 										class="collapse"
-										aria-labelledby="card_<?php echo $demFolder; ?>"
-										data-parent="#accordionExample">
+										aria-labelledby="card_rounds_<?php echo $demFolder; ?>"
+										data-parent="#accordionRound">
 										<div class="card-body">
 											<ul class="list-group">
 												<?php
@@ -293,6 +293,9 @@ function formatSizeUnits($bytes)
 							</div>
 						</div>
 					</div>
+					<div class="rcon-container-title">
+						<h1>Bots</h1>
+					</div>
 					<div class="rcon-container">
 						<div class="card rcon-map" data-rcon-cmd="bot_add_t">
 							<img class="card-img-top" src="./pictures/terrorist.jpg" alt="Card image cap">
@@ -312,6 +315,11 @@ function formatSizeUnits($bytes)
 								Kick All the bots
 							</div>
 						</div>
+					</div>
+					<div class="rcon-container-title">
+						<h1>Game</h1>
+					</div>
+					<div class="rcon-container">
 						<div class="card rcon-map" data-rcon-cmd="mp_restartgame 5">
 							<div class="rcon-icon-div">
 								<i class="fa fa-refresh" aria-hidden="true"></i>
@@ -336,6 +344,32 @@ function formatSizeUnits($bytes)
 								Resume Game
 							</div>
 						</div>
+					</div>
+					<!-- ###################################
+						     START Custom Rcon Commands 
+
+					<div class="rcon-container-title">
+						<h1>[Section Title]</h1>
+					</div>
+					<div class="rcon-container">
+						<div class="card rcon-map" data-rcon-cmd="[RCON COMMAND]">
+							<div class="rcon-icon-div">
+								// Picture or Font Awesome 4 Icon
+								<i class="fa [FONT AWESOME 4 ICON CSS CLASS]" aria-hidden="true"></i>
+								<img class="card-img-top" src="[PATH TO THE PICTURE]" alt="Card image cap">
+							</div>
+							<div class="rcon-card-body">
+								[CARD LABEL]
+							</div>
+						</div>
+					</div>
+
+						     END Custom Rcon Commands 
+						###################################  -->
+					<div class="rcon-container-title">
+						<h1>Maps</h1>
+					</div>
+					<div class="rcon-container">
 						<?php
 							$filesRootFolder = "./rcon/maps";
 							$files = scandir($filesRootFolder, 0);

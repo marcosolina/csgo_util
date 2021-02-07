@@ -1,4 +1,6 @@
 <?php
+include 'Classes.php';
+
 function formatSizeUnits($bytes)
 {
 	if ($bytes >= 1073741824) {
@@ -17,6 +19,16 @@ function formatSizeUnits($bytes)
 
 	return $bytes;
 }
+
+function rcommandTitleSection($title){
+	$str = <<<EOD
+	<div class="rcon-container-title">
+		<h1>$title</h1>
+	</div>
+EOD;
+	return $str;
+}
+
 ?>
 
 
@@ -293,112 +305,58 @@ function formatSizeUnits($bytes)
 							</div>
 						</div>
 					</div>
-					<div class="rcon-container-title">
-						<h1>Bots</h1>
-					</div>
-					<div class="rcon-container">
-						<div class="card rcon-map" data-rcon-cmd="bot_add_t">
-							<img class="card-img-top" src="./pictures/terrorist.jpg" alt="Card image cap">
-							<div class="rcon-card-body">
-								Add a Terrorist Bot
-							</div>
-						</div>
-						<div class="card rcon-map" data-rcon-cmd="bot_add_ct">
-							<img class="card-img-top" src="./pictures/counterterrorist.jpg" alt="Card image cap">
-							<div class="rcon-card-body">
-								Add a C.T. Bot
-							</div>
-						</div>
-						<div class="card rcon-map" data-rcon-cmd="bot_kick">
-							<img class="card-img-top" src="./pictures/kickbots.jpg" alt="Card image cap">
-							<div class="rcon-card-body">
-								Kick All the bots
-							</div>
-						</div>
-					</div>
-					<div class="rcon-container-title">
-						<h1>Game</h1>
-					</div>
-					<div class="rcon-container">
-						<div class="card rcon-map" data-rcon-cmd="mp_restartgame 5">
-							<div class="rcon-icon-div">
-								<i class="fa fa-refresh" aria-hidden="true"></i>
-							</div>
-							<div class="rcon-card-body">
-								Restart Game
-							</div>
-						</div>
-						<div class="card rcon-map" data-rcon-cmd="pause">
-							<div class="rcon-icon-div">
-								<i class="fa fa-pause-circle-o" aria-hidden="true"></i>
-							</div>
-							<div class="rcon-card-body">
-								Pause Game
-							</div>
-						</div>
-						<div class="card rcon-map" data-rcon-cmd="unpause">
-							<div class="rcon-icon-div">
-								<i class="fa fa-play-circle-o" aria-hidden="true"></i>
-							</div>
-							<div class="rcon-card-body">
-								Resume Game
-							</div>
-						</div>
-					</div>
-					<!-- ###################################
-						     START Custom Rcon Commands 
+					<?php 
+					/*
+					*	Creating the section to issue "Bots" rcon Commands
+					*/
+					$rconSection = new RconSection("Bots");
+					$rconSection->addCard(new PictureRconCard("bot_add_t", "Add a Terrorist Bot", "./pictures/terrorist.jpg"));
+					$rconSection->addCard(new PictureRconCard("bot_add_ct", "Add a C.T. Bot", "./pictures/counterterrorist.jpg"));
+					$rconSection->addCard(new PictureRconCard("bot_kick", "Kick All the bots", "./pictures/kickbots.jpg"));
+					$rconSection->printHtml();
 
-					<div class="rcon-container-title">
-						<h1>[Section Title]</h1>
-					</div>
-					<div class="rcon-container">
-						<div class="card rcon-map" data-rcon-cmd="[RCON COMMAND]">
-							<div class="rcon-icon-div">
-								// Picture or Font Awesome 4 Icon
-								<i class="fa [FONT AWESOME 4 ICON CSS CLASS]" aria-hidden="true"></i>
-								<img class="card-img-top" src="[PATH TO THE PICTURE]" alt="Card image cap">
-							</div>
-							<div class="rcon-card-body">
-								[CARD LABEL]
-							</div>
-						</div>
-					</div>
+					/*
+					*	Creating the section to issue "Game" rcon Commands
+					*/
+					$rconSection = new RconSection("Game");
+					$rconSection->addCard(new IconRconCard("mp_restartgame 5", "Restart Game", "fa fa-refresh"));
+					$rconSection->addCard(new IconRconCard("pause", "Pause Game", "fa fa-pause-circle-o"));
+					$rconSection->addCard(new IconRconCard("unpause", "Resume Game", "fa fa-play-circle-o"));
+					$rconSection->printHtml();
+					
+					/*
+					*	Creating the section to change the map
+					*/
+					$rconSection = new RconSection("Maps");
 
-						     END Custom Rcon Commands 
-						###################################  -->
-					<div class="rcon-container-title">
-						<h1>Maps</h1>
-					</div>
-					<div class="rcon-container">
-						<?php
-							$filesRootFolder = "./rcon/maps";
-							$files = scandir($filesRootFolder, 0);
-							$maps = array();
-							foreach ($files as $file) {
-								if ($file == "." || $file == "..") {
-									continue;
-								}
-								if (!is_dir($filesRootFolder . "/" . $file)) {
-									$arr = explode("-", str_replace(".jpg", "", $file));
-									$mapName = $arr[count($arr) - 1];
-									$maps[$mapName] = $file;
-								}
-							}
+					// Scanning the folder
+					$filesRootFolder = "./rcon/maps";
+					$files = scandir($filesRootFolder, 0);
+					$maps = array();
 
-							ksort($maps);
-							foreach ($maps as $map => $file) {
-						?>
-						<div class="card rcon-map" data-rcon-cmd="<?php echo "map ".str_replace("-", "/", str_replace(".jpg", "", $file));?>">
-							<img class="card-img-top" src="<?php echo $filesRootFolder . "/" . $file;?>" alt="Card image cap">
-							<div class="rcon-card-body">
-								<?php
-									echo $map;
-								?>
-							</div>
-						</div>
-						<?php 
-							}
-						?>
+					// Creating a key->value map, the key is the simple map name
+					foreach ($files as $file) {
+						if ($file == "." || $file == "..") {
+							continue;
+						}
+						if (!is_dir($filesRootFolder . "/" . $file)) {
+							$arr = explode("-", str_replace(".jpg", "", $file));
+							$mapName = $arr[count($arr) - 1];
+							$maps[$mapName] = $file;
+						}
+					}
+
+					ksort($maps);
+
+					// Creating the cards
+					foreach ($maps as $map => $file) {
+						$rconCmd = "map ".str_replace("-", "/", str_replace(".jpg", "", $file));
+						$imgPath = $filesRootFolder . "/" . $file;
+						$label = $map;
+						$rconSection->addCard(new PictureRconCard($rconCmd, $label, $imgPath));
+					}
+					$rconSection->printHtml();
+					?>
 					</div>
 					<!-- END RCON -->
 				</div>

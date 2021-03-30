@@ -108,7 +108,7 @@ public class RconPacket {
 		// Header is 3 4-bytes ints
 		byte[] header = new byte[4 * 3];
 		
-		// Read the 3 ints
+		// Read the 3 ints		
 		in.read(header);
 		
 		try {

@@ -1,1 +1,19 @@
+logging:
+  file:
+    name: ./logs/csgo-round-parser.log
+  pattern:
+    console: "%d %-5level : %msg%n"
+    file: "%d %-5level : %msg%n"
+  level:
+    root: INFO
+    com:
+      marco:
+        csgoutil:
+          roundparser: DEBUG
 
+com:
+  marco:
+    csgoutil:
+      roundparser:
+        demfolder: "C:\\tmp\\demfiles"
+        dotnetexecutable: "E:\\Workspaces\\Git\\csgo_util\\DemParser\\bin\\Debug\\netcoreapp3.1\\DemParser.dll"

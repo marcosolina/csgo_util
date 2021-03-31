@@ -11,6 +11,8 @@ This is a personal project that I made to simplify couple of things when playing
   - cstrike: This folder contains all the files used to generate teh UI (PHP, Javascript, CSS)
   ![Rcon UI](./misc/pictures/rconui.png)
   - Misc: Extra files used for documentation or the UI (CSGO Font, logo, Screenshots...)
+  - [Dem Parser](https://github.com/marcosolina/csgo_util/tree/main/DemParser): C# project that I have created to extract information from the DEM files
+  - [Round Parser](https://github.com/marcosolina/csgo_util/tree/main/RoundParser): SpringBoot Project that I created to retrieve the information that we extract from the dem files
 
 ## Requirements
 

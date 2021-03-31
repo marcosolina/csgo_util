@@ -1,0 +1,29 @@
+logging:
+  file:
+    name: ./logs/csgo-round-parser.log
+  pattern:
+    console: "%d %-5level : %msg%n"
+    file: "%d %-5level : %msg%n"
+  level:
+    root: INFO
+    com:
+      marco:
+        csgoutil:
+          roundparser: DEBUG
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demfiles
+    username: ${POSTGRES_USER:REPLACE_ME} # Replace the value
+    password: ${POSTGRES_PASSW:REPLACE_ME} # Replace the value
+server:
+  servlet:
+    context-path: /demparser
+com:
+  marco:
+    csgoutil:
+      roundparser:
+        version: ^project.version^
+        isLinux: false
+        demfolder: "C:\\tmp\\demfiles"
+        dotnetexecutable: "E:\\Workspaces\\Git\\csgo_util\\DemParser\\bin\\Debug\\netcoreapp3.1\\DemParser.dll"
+        deleteBadDemFiles: false

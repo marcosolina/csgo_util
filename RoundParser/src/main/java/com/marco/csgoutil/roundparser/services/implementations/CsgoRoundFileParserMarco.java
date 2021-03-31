@@ -5,14 +5,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 
+import com.marco.csgoutil.roundparser.model.service.UserMapStats;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
 import com.marco.utils.MarcoException;
 
@@ -24,9 +23,8 @@ public class CsgoRoundFileParserMarco implements CsgoRoundFileParser {
 	private String executable;
 
 	@Override
-	public Map<String, Integer> extractPlayersScore(File roundFile) throws MarcoException {
+	public List<UserMapStats> extractPlayersScore(File roundFile) throws MarcoException {
 		_LOGGER.trace("Inside CsgoRoundFileParserMarco.extractPlayersScore");
-		
 		
 		List<String> cmd = new ArrayList<>();
 
@@ -34,7 +32,7 @@ public class CsgoRoundFileParserMarco implements CsgoRoundFileParser {
 		cmd.add(executable);
 		cmd.add(roundFile.getAbsolutePath());
 
-		Map<String, Integer> map = new HashMap<>();
+		List<UserMapStats> usersStats = new ArrayList<>();
 
 		try {
 			_LOGGER.debug(String.format("Executing command: %s", cmd.toString()));
@@ -47,10 +45,16 @@ public class CsgoRoundFileParserMarco implements CsgoRoundFileParser {
 			
 			String line = null;
 			String err = null;
+			boolean healtyDem = false;
 			
 			while ((line = stdInput.readLine()) != null) {
 				String [] tmp = line.split(",");
-				map.put(tmp[1], Integer.parseInt(tmp[0]));
+				UserMapStats ums = new UserMapStats();
+				ums.setScore(Integer.parseInt(tmp[0]));
+				ums.setUserName(tmp[1]);
+				ums.setSteamID(tmp[2]);
+				usersStats.add(ums);
+				healtyDem = true;
 			}
 			
 			StringBuilder sb = new StringBuilder();
@@ -58,7 +62,7 @@ public class CsgoRoundFileParserMarco implements CsgoRoundFileParser {
 				sb.append(err);
 			}
 			
-			if(sb.length() > 0) {
+			if(sb.length() > 0 || !healtyDem) {
 				throw new MarcoException(sb.toString());
 			}
 			
@@ -68,7 +72,7 @@ public class CsgoRoundFileParserMarco implements CsgoRoundFileParser {
 			}
 			throw new MarcoException(e.getMessage());
 		}
-		return map;
+		return usersStats;
 	}
 
 }

@@ -10,7 +10,14 @@ logging:
       marco:
         csgoutil:
           roundparser: DEBUG
-
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demfiles
+    username: ${POSTGRES_USER:REPLACE_ME} # Replace the value
+    password: ${POSTGRES_PASSW:REPLACE_ME} # Replace the value
+server:
+  servlet:
+    context-path: /demparser
 com:
   marco:
     csgoutil:

@@ -12,4 +12,8 @@ public interface RepoUserScore {
 	public List<DaoGames> listAvailableGames();
 	
 	public List<EntityUserScore> getUserScores(String steamID);
+	
+	public List<EntityUserScore> getLastXUserScores(Integer counter, String steamID);
+	
+	public List<Long> getLastXUserScoresValue(Integer counter, String steamID);
 }

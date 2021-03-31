@@ -21,6 +21,9 @@ public class CsgoRoundFileParserMarco implements CsgoRoundFileParser {
 	
 	@Value("${com.marco.csgoutil.roundparser.dotnetexecutable}")
 	private String executable;
+	
+	@Value("${com.marco.csgoutil.roundparser.isLinux}")
+	private boolean isLinux;
 
 	@Override
 	public List<UserMapStats> extractPlayersScore(File roundFile) throws MarcoException {
@@ -28,7 +31,9 @@ public class CsgoRoundFileParserMarco implements CsgoRoundFileParser {
 		
 		List<String> cmd = new ArrayList<>();
 
-		cmd.add("dotnet");
+		if(!isLinux) {
+			cmd.add("dotnet");
+		}
 		cmd.add(executable);
 		cmd.add(roundFile.getAbsolutePath());
 

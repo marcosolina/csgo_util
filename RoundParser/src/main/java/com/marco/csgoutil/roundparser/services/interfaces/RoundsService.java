@@ -2,9 +2,12 @@ package com.marco.csgoutil.roundparser.services.interfaces;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 
 import com.marco.csgoutil.roundparser.model.rest.User;
+import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.MapStats;
+import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.utils.MarcoException;
 
 public interface RoundsService {
@@ -20,6 +23,12 @@ public interface RoundsService {
 	public MapStats generateMapStatFromFile(File f) throws MarcoException;
 
 	public List<User> getListOfUsers() throws MarcoException;
-	
+
 	public List<MapStats> getUserStats(String steamId) throws MarcoException;
+
+	public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs) throws MarcoException;
+	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs) throws MarcoException;
+	
+	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs) throws MarcoException;
+	
 }

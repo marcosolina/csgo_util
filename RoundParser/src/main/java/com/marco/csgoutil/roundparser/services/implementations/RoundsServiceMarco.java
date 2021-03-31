@@ -1,14 +1,25 @@
 package com.marco.csgoutil.roundparser.services.implementations;
 
 import java.io.File;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
@@ -17,7 +28,9 @@ import com.marco.csgoutil.roundparser.model.entities.EntityUser;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScore;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScorePk;
 import com.marco.csgoutil.roundparser.model.rest.User;
+import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.MapStats;
+import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.csgoutil.roundparser.model.service.UserMapStats;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
@@ -41,6 +54,8 @@ public class RoundsServiceMarco implements RoundsService {
 	private RepoUserScore repoUserScore;
 	@Autowired
 	private MessageSource msgSource;
+	@Value("${com.marco.csgoutil.roundparser.deleteBadDemFiles}")
+	private boolean deleteBadDemFiles;
 
 	@Override
 	public List<MapStats> processAllDemFiles() throws MarcoException {
@@ -57,7 +72,9 @@ public class RoundsServiceMarco implements RoundsService {
 					mapStats.add(this.generateMapStatFromFile(f));
 				} catch (MarcoException e) {
 					_LOGGER.error(String.format("Could not process DEM file: %s", f.getAbsoluteFile()));
-					_LOGGER.info(String.format("File deleted: %b", f.delete()));
+					if(deleteBadDemFiles) {
+						_LOGGER.info(String.format("File deleted: %b", f.delete()));
+					}
 				}
 			});
 		// @formatter:on
@@ -85,40 +102,6 @@ public class RoundsServiceMarco implements RoundsService {
 			})
 		);
 		// @formatter:on
-
-		/*
-		Map<String, Double> avarageMap = new HashMap<>();
-
-		List<Map<String, Integer>> listMap = new ArrayList<>();
-		
-		Map<String, Integer> userGamesPlayer = new HashMap<>();
-		
-		fileList.parallelStream().forEach(f -> {
-			try {
-				listMap.add(roundParserService.extractPlayersScore(f));
-			} catch (MarcoException e) {
-				_LOGGER.error(String.format("Could not process DEM file: %s", f.getAbsoluteFile()));
-			}
-		});
-		
-		int size = listMap.size();
-		if(size > 0) {
-			// @formatter:off
-			listMap.stream().forEach(m -> 
-				m.keySet().stream().forEach(k -> {
-					userGamesPlayer.compute(k , (key, v) -> v == null ? 1 : v + 1);
-					avarageMap.compute(k, (key, v) -> {
-						if(v == null) {
-							v = Double.valueOf(0);
-						}
-						v = v + Double.valueOf(m.get(key));
-						return v;
-					});
-				})
-			);
-			// @formatter:on
-			avarageMap.keySet().stream().forEach(k -> avarageMap.compute(k, (key, v) -> v / userGamesPlayer.get(key)));
-		}*/
 
 		return mapStats.stream().filter(e -> !e.getUsersStats().isEmpty()).collect(Collectors.toList());
 	}
@@ -155,29 +138,120 @@ public class RoundsServiceMarco implements RoundsService {
 	@Override
 	public List<MapStats> getUserStats(String steamId) throws MarcoException {
 		EntityUser user = repoUser.findById(steamId);
-		if(user == null) {
+		if (user == null) {
 			throw new MarcoException(msgSource.getMessage("DEMP00001", null, LocaleContextHolder.getLocale()));
 		}
-		
+
 		List<EntityUserScore> scores = repoUserScore.getUserScores(steamId);
-		
+
 		return scores.stream().map(s -> fromDbDataToMapStats(user, s)).collect(Collectors.toList());
 	}
-	
+
 	private MapStats fromDbDataToMapStats(EntityUser user, EntityUserScore score) {
 		MapStats ms = new MapStats();
 		ms.setMapName(score.getId().getMap());
 		ms.setPlayedOn(score.getId().getGameDate());
-		
+
 		UserMapStats ums = new UserMapStats();
 		ums.setScore(score.getScore().intValue());
 		ums.setSteamID(user.getSteamId());
 		ums.setUserName(user.getUserName());
 		ms.addUserMapStats(ums);
-		
+
 		return ms;
 	}
+
+	@Override
+	public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
+			throws MarcoException {
+		Map<String, List<MapStats>> map = new HashMap<>();
+
+		for (String steamId : usersIDs) {
+			EntityUser user = repoUser.findById(steamId);
+			if (user == null) {
+				map.put(steamId, new ArrayList<>());
+				continue;
+			}
+
+			List<EntityUserScore> scores = repoUserScore.getLastXUserScores(gamesCounter, steamId);
+			map.put(steamId, scores.stream().map(s -> fromDbDataToMapStats(user, s)).collect(Collectors.toList()));
+		}
+
+		return map;
+	}
+
+	@Override
+	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
+			throws MarcoException {
+		
+		Map<String, UserAvgScore> map = new HashMap<>();
+
+		for (String steamId : usersIDs) {
+			EntityUser user = repoUser.findById(steamId);
+			if (user == null) {
+				map.put(steamId, null);
+				continue;
+			}
+			
+			UserAvgScore uas = new UserAvgScore();
+			uas.setSteamID(steamId);
+			uas.setUserName(user.getUserName());
+
+			List<Long> scores = repoUserScore.getLastXUserScoresValue(gamesCounter, steamId);
+			Double avg = scores.stream().mapToDouble(a -> a).average().orElse(0);
+			uas.setAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
+			
+			map.put(steamId, uas);
+		}
+		
+		return map;
+	}
+
+	@Override
+	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs)
+			throws MarcoException {
+		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs);
+		List<UserAvgScore> usersList = new ArrayList<>();
+		
+		usersAvg.forEach((k, v) -> usersList.add(v));
+		
+		
+		return partionUsers(usersList, teamsCounter).stream().collect(Collectors.toList());
+	}
 	
+	private Collection<Team> partionUsers(List<UserAvgScore> usersList, Integer teamsCounter){
+		
+		// Reverse order
+		Collections.sort(usersList, (o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
+		Queue<UserAvgScore> userQueue = new ArrayDeque<>(usersList);
+		
+		PartitionComparator pComparator = new PartitionComparator();
+		
+		PriorityQueue<Team> partitionPriorityQueue = new PriorityQueue<>(teamsCounter, pComparator);
+		for (int i = 0; i < teamsCounter; i++) {
+            partitionPriorityQueue.add(new Team());
+        }
+		
+		while (!userQueue.isEmpty()) {
+			UserAvgScore user = userQueue.poll();
+			
+			
+			Team lowestSumPartition = partitionPriorityQueue.poll();
+			lowestSumPartition.addMember(user);
+            lowestSumPartition.increaseSum(user.getAvgScore());
+            partitionPriorityQueue.add(lowestSumPartition);
+        }
+		
+		return partitionPriorityQueue;
+	}
 	
+	private class PartitionComparator implements Comparator<Team>{
+
+		@Override
+		public int compare(Team o1, Team o2) {
+			return o1.getTeamScore().compareTo(o2.getTeamScore());
+		}
+		
+	}
 
 }

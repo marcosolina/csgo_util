@@ -65,4 +65,38 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		return em.createQuery(cq).getResultList();
 	}
 
+	@Override
+	public List<EntityUserScore> getLastXUserScores(Integer counter, String steamID) {
+		_LOGGER.trace("Inside RepoUserScorePostgres.getLastXUserScores");
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<EntityUserScore> cq = cb.createQuery(EntityUserScore.class);
+		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
+		
+		// @formatter:off
+		cq.select(root)
+			.where(cb.equal(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.STEAM_ID), steamID))
+			.orderBy(cb.desc(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.GAME_DATE)));
+		// @formatter:on
+		
+		return em.createQuery(cq).setMaxResults(counter).getResultList();
+	}
+
+	@Override
+	public List<Long> getLastXUserScoresValue(Integer counter, String steamID) {
+		_LOGGER.trace("Inside RepoUserScorePostgres.getAvgLastXUserScores");
+		
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
+		
+		// @formatter:off
+		cq.select(root.get(EntityUserScore_.SCORE))
+			.where(cb.equal(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.STEAM_ID), steamID))
+			.orderBy(cb.desc(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.GAME_DATE)));
+		// @formatter:on
+		
+		return em.createQuery(cq).setMaxResults(counter).getResultList();
+	}
+
 }

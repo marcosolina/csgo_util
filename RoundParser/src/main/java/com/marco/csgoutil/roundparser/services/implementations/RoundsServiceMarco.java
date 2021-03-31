@@ -41,6 +41,12 @@ import com.marco.utils.DateUtils;
 import com.marco.utils.MarcoException;
 import com.marco.utils.enums.DateFormats;
 
+/**
+ * My implementation of this interface
+ * 
+ * @author Marco
+ *
+ */
 public class RoundsServiceMarco implements RoundsService {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(RoundsServiceMarco.class);
 
@@ -58,13 +64,16 @@ public class RoundsServiceMarco implements RoundsService {
 	private boolean deleteBadDemFiles;
 
 	@Override
-	public List<MapStats> processAllDemFiles() throws MarcoException {
+	public List<MapStats> processNewDemFiles() throws MarcoException {
+		// Get the list of all the available dem files
 		List<File> fileList = roundFildeService.retrieveAllDemFiles();
 
+		// Get the list of the dem files that I have already processed
 		List<DaoGames> availableRecordings = repoUserScore.listAvailableGames();
 
 		List<MapStats> mapStats = new ArrayList<>();
 		// @formatter:off
+		// Parse only the new dem files
 		fileList.parallelStream()
 			.filter(f -> !availableRecordings.contains(new DaoGames(setMapNameAndTime(f).getPlayedOn())))
 			.forEach(f -> {
@@ -82,6 +91,7 @@ public class RoundsServiceMarco implements RoundsService {
 		mapStats.sort((o1, o2) -> o1.getPlayedOn().compareTo(o2.getPlayedOn()));
 
 		// @formatter:off
+		// Store into the DB the new dem files info
 		mapStats.stream().forEach(m -> 
 			m.getUsersStats().stream().forEach(u -> {
 				EntityUser user = new EntityUser();
@@ -113,6 +123,12 @@ public class RoundsServiceMarco implements RoundsService {
 		return ms;
 	}
 
+	/**
+	 * It will extract the high level dem file info from the file name
+	 * 
+	 * @param f
+	 * @return
+	 */
 	private MapStats setMapNameAndTime(File f) {
 		String[] tmp = f.getName().split("-");
 
@@ -128,6 +144,12 @@ public class RoundsServiceMarco implements RoundsService {
 		return repoUser.getUsers().stream().map(this::fromEntityUserToRestUser).collect(Collectors.toList());
 	}
 
+	/**
+	 * It converts the @{EntityUser} into @{User}
+	 * 
+	 * @param entity
+	 * @return
+	 */
 	private User fromEntityUserToRestUser(EntityUser entity) {
 		User u = new User();
 		u.setSteamId(entity.getSteamId());
@@ -147,6 +169,13 @@ public class RoundsServiceMarco implements RoundsService {
 		return scores.stream().map(s -> fromDbDataToMapStats(user, s)).collect(Collectors.toList());
 	}
 
+	/**
+	 * It uses the @{EntityUser} and @{EntityUserScore} to generate a @{MapStats}
+	 * 
+	 * @param user
+	 * @param score
+	 * @return
+	 */
 	private MapStats fromDbDataToMapStats(EntityUser user, EntityUserScore score) {
 		MapStats ms = new MapStats();
 		ms.setMapName(score.getId().getMap());
@@ -183,7 +212,7 @@ public class RoundsServiceMarco implements RoundsService {
 	@Override
 	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
 			throws MarcoException {
-		
+
 		Map<String, UserAvgScore> map = new HashMap<>();
 
 		for (String steamId : usersIDs) {
@@ -192,7 +221,7 @@ public class RoundsServiceMarco implements RoundsService {
 				map.put(steamId, null);
 				continue;
 			}
-			
+
 			UserAvgScore uas = new UserAvgScore();
 			uas.setSteamID(steamId);
 			uas.setUserName(user.getUserName());
@@ -200,10 +229,10 @@ public class RoundsServiceMarco implements RoundsService {
 			List<Long> scores = repoUserScore.getLastXUserScoresValue(gamesCounter, steamId);
 			Double avg = scores.stream().mapToDouble(a -> a).average().orElse(0);
 			uas.setAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
-			
+
 			map.put(steamId, uas);
 		}
-		
+
 		return map;
 	}
 
@@ -212,46 +241,68 @@ public class RoundsServiceMarco implements RoundsService {
 			throws MarcoException {
 		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs);
 		List<UserAvgScore> usersList = new ArrayList<>();
-		
+
 		usersAvg.forEach((k, v) -> usersList.add(v));
-		
-		
+
 		return partionUsers(usersList, teamsCounter).stream().collect(Collectors.toList());
 	}
-	
-	private Collection<Team> partionUsers(List<UserAvgScore> usersList, Integer teamsCounter){
-		
+
+	/**
+	 * Private method used to solve the
+	 * <a href="https://en.wikipedia.org/wiki/Partition_problem">Partition
+	 * Problem</a>
+	 * 
+	 * @param usersList    -> The whole list of users
+	 * @param teamsCounter -> How many teams to create
+	 * @return
+	 */
+	private Collection<Team> partionUsers(List<UserAvgScore> usersList, Integer teamsCounter) {
+
 		// Reverse order
 		Collections.sort(usersList, (o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
+
+		// Creating utils objects
 		Queue<UserAvgScore> userQueue = new ArrayDeque<>(usersList);
-		
 		PartitionComparator pComparator = new PartitionComparator();
-		
 		PriorityQueue<Team> partitionPriorityQueue = new PriorityQueue<>(teamsCounter, pComparator);
+
+		// Creating the empty teams
 		for (int i = 0; i < teamsCounter; i++) {
-            partitionPriorityQueue.add(new Team());
-        }
-		
+			partitionPriorityQueue.add(new Team());
+		}
+
+		// Filling the teams
 		while (!userQueue.isEmpty()) {
+			// Get the next user with the lowest avg score
 			UserAvgScore user = userQueue.poll();
-			
-			
+
+			// Get the team with the lowest score
 			Team lowestSumPartition = partitionPriorityQueue.poll();
+
+			// Add the user and update the team score
 			lowestSumPartition.addMember(user);
-            lowestSumPartition.increaseSum(user.getAvgScore());
-            partitionPriorityQueue.add(lowestSumPartition);
-        }
-		
+			lowestSumPartition.increaseSum(user.getAvgScore());
+
+			// Put the team back into the queue as the "poll" removes it
+			partitionPriorityQueue.add(lowestSumPartition);
+		}
+
 		return partitionPriorityQueue;
 	}
-	
-	private class PartitionComparator implements Comparator<Team>{
+
+	/**
+	 * Comparing the @{Team} by the team score
+	 * 
+	 * @author Marco
+	 *
+	 */
+	private class PartitionComparator implements Comparator<Team> {
 
 		@Override
 		public int compare(Team o1, Team o2) {
 			return o1.getTeamScore().compareTo(o2.getTeamScore());
 		}
-		
+
 	}
 
 }

@@ -4,6 +4,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DTO used to exchange information regards the Users scores related to a
+ * specific map/game
+ * 
+ * @author Marco
+ *
+ */
 public class MapStats {
 	private String mapName;
 	private LocalDateTime playedOn;
@@ -32,9 +39,9 @@ public class MapStats {
 	public void setUsersStats(List<UserMapStats> usersStats) {
 		this.usersStats = usersStats;
 	}
-	
+
 	public boolean addUserMapStats(UserMapStats ums) {
-		if(usersStats == null) {
+		if (usersStats == null) {
 			usersStats = new ArrayList<>();
 		}
 		return usersStats.add(ums);

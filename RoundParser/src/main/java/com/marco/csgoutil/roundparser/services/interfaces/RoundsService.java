@@ -10,25 +10,85 @@ import com.marco.csgoutil.roundparser.model.service.MapStats;
 import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.utils.MarcoException;
 
+/**
+ * It provides the functionalities used to extract / calculate the games
+ * information
+ * 
+ * @author Marco
+ *
+ */
 public interface RoundsService {
 
 	/**
-	 * It will analyse all the dem files and return the avarage score per player
+	 * If new dem files are available, it will process them and return the relevant
+	 * information
 	 * 
 	 * @return
 	 * @throws MarcoException
 	 */
-	public List<MapStats> processAllDemFiles() throws MarcoException;
+	public List<MapStats> processNewDemFiles() throws MarcoException;
 
+	/**
+	 * It will parse the dem file and extract the informations
+	 * 
+	 * @param f
+	 * @return
+	 * @throws MarcoException
+	 */
 	public MapStats generateMapStatFromFile(File f) throws MarcoException;
 
+	/**
+	 * It will return a list of all the known users
+	 * 
+	 * @return
+	 * @throws MarcoException
+	 */
 	public List<User> getListOfUsers() throws MarcoException;
 
+	/**
+	 * It will returns all the stats available for the selected user
+	 * 
+	 * @param steamId
+	 * @return
+	 * @throws MarcoException
+	 */
 	public List<MapStats> getUserStats(String steamId) throws MarcoException;
 
-	public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs) throws MarcoException;
-	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs) throws MarcoException;
-	
-	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs) throws MarcoException;
-	
+	/**
+	 * It will return all the Users scores for the most recent "gamesCounter" games
+	 * 
+	 * @param gamesCounter
+	 * @param usersIDs
+	 * @return
+	 * @throws MarcoException
+	 */
+	public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
+			throws MarcoException;
+
+	/**
+	 * It will return the Users Average scored calculated using the most recent
+	 * "gamesCounter" games
+	 * 
+	 * @param gamesCounter
+	 * @param usersIDs
+	 * @return
+	 * @throws MarcoException
+	 */
+	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
+			throws MarcoException;
+
+	/**
+	 * It will generate "teamsCounter" number of teams. It will calculate the
+	 * average score of the provided list of users calculated on the last
+	 * "gamesCounter" games
+	 * 
+	 * @param teamsCounter
+	 * @param gamesCounter
+	 * @param usersIDs
+	 * @return
+	 * @throws MarcoException
+	 */
+	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs)
+			throws MarcoException;
+
 }

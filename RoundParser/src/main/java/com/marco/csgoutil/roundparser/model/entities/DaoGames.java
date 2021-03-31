@@ -2,6 +2,13 @@ package com.marco.csgoutil.roundparser.model.entities;
 
 import java.time.LocalDateTime;
 
+/**
+ * Simple Dao used to wrap the LocaDateTime object. The class LocalDateTime does
+ * not have a constructor that I could use when performing the JPA query
+ * 
+ * @author Marco
+ *
+ */
 public class DaoGames {
 	private LocalDateTime gameOf;
 

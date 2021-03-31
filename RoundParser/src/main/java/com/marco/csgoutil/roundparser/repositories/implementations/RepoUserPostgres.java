@@ -41,11 +41,17 @@ public class RepoUserPostgres implements RepoUser {
 	@Override
 	public void insertUpdateUser(EntityUser user) {
 		_LOGGER.trace("Inside RepoUserPostgres.insertUser");
+		/*
+		 * INSERT INTO USERS ... 
+		 */
 		em.merge(user);
 	}
 
 	@Override
 	public EntityUser findById(String steamID) {
+		/*
+		 * SELECT * FROM USERS WHERE STEAM_ID = 'xxx'
+		 */
 		return em.find(EntityUser.class, steamID);
 	}
 }

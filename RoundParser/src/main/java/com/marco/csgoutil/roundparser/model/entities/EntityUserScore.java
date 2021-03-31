@@ -5,6 +5,12 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+/**
+ * Entity which represents the Steam Users scores per every game (map played)
+ * 
+ * @author Marco
+ *
+ */
 @Entity
 @Table(name = "USERS_SCORES")
 public class EntityUserScore {

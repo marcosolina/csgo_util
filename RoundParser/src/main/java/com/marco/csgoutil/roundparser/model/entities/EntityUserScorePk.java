@@ -6,10 +6,16 @@ import java.time.LocalDateTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+/**
+ * Standard JPA Key
+ * 
+ * @author Marco
+ *
+ */
 @Embeddable
 public class EntityUserScorePk implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	@Column(name = "GAME_DATE")
 	private LocalDateTime gameDate;
 	@Column(name = "MAP")

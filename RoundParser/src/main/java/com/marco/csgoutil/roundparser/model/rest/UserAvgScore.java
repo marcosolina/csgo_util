@@ -2,9 +2,21 @@ package com.marco.csgoutil.roundparser.model.rest;
 
 import java.math.BigDecimal;
 
+import io.swagger.annotations.ApiModelProperty;
+
+/**
+ * REST Response model used to return the Average score calculated for the
+ * specific user
+ * 
+ * @author Marco
+ *
+ */
 public class UserAvgScore {
-	private String userName;
+	@ApiModelProperty(notes = "Steam ID of the user")
 	private String steamID;
+	@ApiModelProperty(notes = "User Name")
+	private String userName;
+	@ApiModelProperty(notes = "Average score")
 	private BigDecimal avgScore;
 
 	public String getUserName() {

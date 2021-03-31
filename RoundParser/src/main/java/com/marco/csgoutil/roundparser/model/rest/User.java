@@ -1,7 +1,17 @@
 package com.marco.csgoutil.roundparser.model.rest;
 
+import io.swagger.annotations.ApiModelProperty;
+
+/**
+ * REST Response model used to return the User Definition
+ * 
+ * @author Marco
+ *
+ */
 public class User {
+	@ApiModelProperty(notes = "Steam ID of the user")
 	private String steamId;
+	@ApiModelProperty(notes = "User Name")
 	private String userName;
 
 	public String getSteamId() {

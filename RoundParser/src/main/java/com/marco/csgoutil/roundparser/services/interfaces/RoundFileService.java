@@ -5,6 +5,12 @@ import java.util.List;
 
 import com.marco.utils.MarcoException;
 
+/**
+ * It provides the functionalities used to find/retrieve the dem files
+ * 
+ * @author Marco
+ *
+ */
 public interface RoundFileService {
 
 	/**

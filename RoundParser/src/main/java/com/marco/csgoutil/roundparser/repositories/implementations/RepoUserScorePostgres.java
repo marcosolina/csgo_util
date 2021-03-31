@@ -28,6 +28,9 @@ public class RepoUserScorePostgres implements RepoUserScore {
 	@Override
 	public void insertUpdateUserScore(EntityUserScore us) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.insertUpdateUserScore");
+		/*
+		 * INSERT INTO USERS_SCORES ...
+		 */
 		em.merge(us);
 	}
 
@@ -39,6 +42,9 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		CriteriaQuery<DaoGames> cq = cb.createQuery(DaoGames.class);
 		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
 		
+		/*
+		 * SELECT GAME_DATE FROM USERS_SCORES GROUP BY GAME_DATE ORDER BY GAME_DATE 
+		 */
 		// @formatter:off
 		cq.multiselect(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.GAME_DATE))
 			.groupBy(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.GAME_DATE))
@@ -56,6 +62,9 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		CriteriaQuery<EntityUserScore> cq = cb.createQuery(EntityUserScore.class);
 		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
 		
+		/*
+		 * SELECT * FROM USERS_SCORES WHERE STEAM_ID = 'xxx' ORDER BY GAME_DATE
+		 */
 		// @formatter:off
 		cq.select(root)
 			.where(cb.equal(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.STEAM_ID), steamID))
@@ -73,6 +82,9 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		CriteriaQuery<EntityUserScore> cq = cb.createQuery(EntityUserScore.class);
 		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
 		
+		/*
+		 * SELECT * FROM USERS_SCORES WHERE STEAM_ID = 'xxx' ORDER BY GAME_DATE DESC LIMIT y
+		 */
 		// @formatter:off
 		cq.select(root)
 			.where(cb.equal(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.STEAM_ID), steamID))
@@ -90,6 +102,9 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
 		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
 		
+		/*
+		 * SELECT SCORE FROM USERS_SCORES WHERE STEAM_ID = 'xxx' ORDER BY GAME_DATE DESC LIMIT y
+		 */
 		// @formatter:off
 		cq.select(root.get(EntityUserScore_.SCORE))
 			.where(cb.equal(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.STEAM_ID), steamID))

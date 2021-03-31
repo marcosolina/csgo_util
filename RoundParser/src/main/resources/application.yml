@@ -22,6 +22,7 @@ com:
   marco:
     csgoutil:
       roundparser:
+        version: ^project.version^
         isLinux: false
         demfolder: "C:\\tmp\\demfiles"
         dotnetexecutable: "E:\\Workspaces\\Git\\csgo_util\\DemParser\\bin\\Debug\\netcoreapp3.1\\DemParser.dll"

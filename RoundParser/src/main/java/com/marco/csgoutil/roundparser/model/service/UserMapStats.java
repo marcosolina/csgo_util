@@ -1,5 +1,11 @@
 package com.marco.csgoutil.roundparser.model.service;
 
+/**
+ * This DTO is used to exchange info of the Single user score
+ * 
+ * @author Marco
+ *
+ */
 public class UserMapStats {
 	private String userName;
 	private String steamID;

@@ -7,6 +7,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * Entity that represents the table which contains the Steam Users definition
+ * 
+ * @author Marco
+ *
+ */
 @Entity
 @Table(name = "USERS")
 public class EntityUser implements Serializable {

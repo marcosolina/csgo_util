@@ -11,11 +11,14 @@
 	</parent>
 	<groupId>com.marco.csgoutil</groupId>
 	<artifactId>RoundParser</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.1</version>
 	<name>RoundParser</name>
 	<description>CSGO Round File Parser</description>
 	<properties>
 		<java.version>8</java.version>
+		<resource.delimiter>^</resource.delimiter>
+		<postgresql.version>42.2.19</postgresql.version>
+		<swagger.version>2.9.2</swagger.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -46,6 +49,20 @@
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
 		</dependency>
+		<!--Start Swagger Dependencies https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swagger.version}</version>
+		</dependency>
+		<!-- End swagger dependencies -->
+		<!-- My custom libraries. You can find the source code on my GitHub https://github.com/marcosolina/javautils -->
 		<dependency>
 			<groupId>com.marco</groupId>
 			<artifactId>Utils</artifactId>

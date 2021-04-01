@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.partition;
+package com.marco.csgoutil.roundparser.partitionlibrary;
 
 /**
  * Effective Partition Problem solution
@@ -7,18 +7,23 @@ package com.marco.csgoutil.roundparser.partition;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Represents partition data
  * 
  * @author Fedor Naumenko
  */
 public final class Subset implements Comparable<Subset> {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Subset.class);
+	
 	/** subset's ID */
-	int id;
+	private int id;
 	/** sum of subset numbers */
-	Double sumVal;
+	private Double sumVal;
 	/** number IDs container */
-	ArrayList<Integer> numbIDs;
+	private List<Integer> numbIDs;
 
 	/**
 	 * Creates an empty Subset with reserved capacity
@@ -28,7 +33,7 @@ public final class Subset implements Comparable<Subset> {
 	Subset(int nCnt) {
 		id = 0;
 		sumVal = Double.valueOf(0);
-		numbIDs = new ArrayList<Integer>(nCnt);
+		numbIDs = new ArrayList<>(nCnt);
 	}
 
 	/**
@@ -45,8 +50,8 @@ public final class Subset implements Comparable<Subset> {
 	 * @param n number to add
 	 */
 	void addNumb(IdNumber n) {
-		sumVal += n.Val;
-		numbIDs.add(n.Id);
+		sumVal += n.getVal();
+		numbIDs.add(n.getId());
 	}
 
 	/**
@@ -72,38 +77,23 @@ public final class Subset implements Comparable<Subset> {
 	 * @param prNumbCnt maximum count of printed number IDs or 0 if all
 	 */
 	void print(byte sumWidth, int prNumbCnt) {
-		System.out.printf("set %d\tsum %f\tnumbIDs:", id, sumVal);
+		StringBuilder sb = new StringBuilder();
+		sb.append(String.format("set %d\tsum %f\tnumbIDs:", id, sumVal));
+		
 		if (prNumbCnt > 0 && prNumbCnt < numbIDs.size()) {
 			for (int i = 0; i < prNumbCnt; i++) {
-				System.out.printf(" %d", numbIDs.get(i));
+				sb.append(String.format(" %d", numbIDs.get(i)));
 			}
-			System.out.printf("... (%d})", numbIDs.size());
+			sb.append(String.format("... (%d})", numbIDs.size()));
 		} else {
 			for (int id : numbIDs) {
-				System.out.printf(" %2d", id);
+				sb.append(String.format(" %2d", id));
 			}
 		}
-		System.out.println();
+		
+		_LOGGER.debug(sb.toString());
 	}
-
-	/**
-	 * Gets subset's ID
-	 * 
-	 * @return subset's ID
-	 */
-	public int getID() {
-		return id;
-	}
-
-	/**
-	 * Gets sum of subset numbers
-	 * 
-	 * @return sum of subset numbers
-	 */
-	public Double sum() {
-		return sumVal;
-	}
-
+	
 	/**
 	 * Gets number IDs container
 	 * 
@@ -112,4 +102,31 @@ public final class Subset implements Comparable<Subset> {
 	public List<Integer> getNumbIDs() {
 		return numbIDs;
 	}
+
+	/**
+	 * Gets subset's ID
+	 * 
+	 * @return subset's ID
+	 */
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	/**
+	 * Gets sum of subset numbers
+	 * 
+	 * @return sum of subset numbers
+	 */
+	public Double getSumVal() {
+		return sumVal;
+	}
+
+	public void setSumVal(Double sumVal) {
+		this.sumVal = sumVal;
+	}
+
 }

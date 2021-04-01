@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.partition;
+package com.marco.csgoutil.roundparser.partitionlibrary;
 
 /**
  * Effective Partition Problem solution
@@ -12,11 +12,11 @@ package com.marco.csgoutil.roundparser.partition;
  */
 public final class IdNumber implements Comparable<IdNumber> {
 	/** bin's inverse index: count_of_bins-1 for the first and 0 for the last one */
-	int BinIInd;
+	private int binIInd;
 	/** number's ID */
-	int Id;
+	private int id;
 	/** number's value */
-	Double Val;
+	private Double val;
 
 	/**
 	 * Constructor by number ID and value
@@ -25,9 +25,9 @@ public final class IdNumber implements Comparable<IdNumber> {
 	 * @param val number's value
 	 */
 	public IdNumber(int id, Double val) {
-		BinIInd = 0;
-		Id = id;
-		Val = val;
+		this.binIInd = 0;
+		this.id = id;
+		this.val = val;
 	}
 
 	/**
@@ -35,10 +35,10 @@ public final class IdNumber implements Comparable<IdNumber> {
 	 * 
 	 * @param numb number to be copied
 	 */
-	IdNumber(IdNumber numb) {
-		BinIInd = numb.BinIInd;
-		Id = numb.Id;
-		Val = numb.Val;
+	public IdNumber(IdNumber numb) {
+		this.binIInd = numb.binIInd;
+		this.id = numb.id;
+		this.val = numb.val;
 	}
 
 	/**
@@ -46,8 +46,8 @@ public final class IdNumber implements Comparable<IdNumber> {
 	 * 
 	 * @return number's value
 	 */
-	public Double Value() {
-		return Val;
+	public Double getValue() {
+		return this.val;
 	}
 
 	/**
@@ -55,15 +55,15 @@ public final class IdNumber implements Comparable<IdNumber> {
 	 * 
 	 * @return number's ID
 	 */
-	public int ID() {
-		return Id;
+	public int getID() {
+		return this.id;
 	}
 
 	@Override
 	public int compareTo(IdNumber n) {
-		if (Val < n.Val)
+		if (this.val < n.val)
 			return 1;
-		if (Val > n.Val)
+		if (this.val > n.val)
 			return -1;
 		return 0;
 	}
@@ -76,7 +76,32 @@ public final class IdNumber implements Comparable<IdNumber> {
 	 * @return true if number is not allocated and its value is fitted to the upper
 	 *         limit
 	 */
-	boolean IsFitted(Double val) {
-		return BinIInd == 0 && Val <= val;
+	boolean isFitted(Double val) {
+		return this.binIInd == 0 && this.val <= val;
 	}
+
+	public int getBinIInd() {
+		return this.binIInd;
+	}
+
+	public void setBinIInd(int binIInd) {
+		this.binIInd = binIInd;
+	}
+
+	public int getId() {
+		return this.id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
+	}
+
+	public Double getVal() {
+		return this.val;
+	}
+
+	public void setVal(Double val) {
+		this.val = val;
+	}
+
 }

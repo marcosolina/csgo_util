@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.partition;
+package com.marco.csgoutil.roundparser.partitionlibrary;
 
 /**
  * Effective Partition Problem solution
@@ -19,7 +19,7 @@ public final class IdNumbers extends ArrayList<IdNumber> {
 	 * which the free space of the average sum is measured. It is a heuristic value
 	 * provides satisfactory inaccuracy in a single pass in most of cases.
 	 */
-	final int minTol = 20;
+	private static final int MIN_TOL = 20;
 
 	/**
 	 * Creates an empty instance
@@ -35,24 +35,23 @@ public final class IdNumbers extends ArrayList<IdNumber> {
 	 * 
 	 * @param numbers numbers to be copied
 	 */
-	IdNumbers(IdNumbers numbers) {
-		numbers.forEach((n) -> {
-			add(new IdNumber(n));
-		});
+	public IdNumbers(IdNumbers numbers) {
+		numbers.forEach(n -> add(new IdNumber(n)));
 	}
 
 	/** Copies bin's indexes */
-	void CopyIndexes(IdNumbers numbers) {
-		for (int i = 0; i < size(); i++)
-			get(i).BinIInd = numbers.get(i).BinIInd;
+	void copyIndexes(IdNumbers numbers) {
+		for (int i = 0; i < size(); i++) {
+			get(i).setBinIInd(numbers.get(i).getBinIInd());
+		}
 	}
 
 	/**
 	 * Gets minimum accuracy with which the available space of the average sum
 	 * should be measured
 	 */
-	Double GetMinUp() {
-		return Math.max((Double) get(size() - 1).Val / minTol, 1);
+	Double getMinUp() {
+		return Math.max(get(size() - 1).getVal() / MIN_TOL, 1);
 	}
 
 	/**
@@ -61,21 +60,20 @@ public final class IdNumbers extends ArrayList<IdNumber> {
 	 * @param ssCnt count of subsets
 	 * @return average values sum
 	 */
-	float AvrSum(int ssCnt) {
-		float sum = 0;
-		for (IdNumber n : this)
-			sum += n.Val;
+	Double getAvrSum(int ssCnt) {
+		Double sum = Double.valueOf(0);
+		for (IdNumber n : this) {
+			sum += n.getVal();
+		}
 		return sum / ssCnt;
 	}
 
 	/** Marks all numbers as unallocated */
-	void Reset() {
-		this.forEach((n) -> {
-			n.BinIInd = 0;
-		});
+	void reset() {
+		this.forEach(n -> n.setBinIInd(0));
 	}
 
-	public void SortByDescent() {
+	public void sortByDescent() {
 		Collections.sort(this);
 	}
 }

@@ -8,59 +8,64 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.Team;
-import com.marco.csgoutil.roundparser.model.service.UserMapStats;
-import com.marco.csgoutil.roundparser.partition.EffPartition;
-import com.marco.csgoutil.roundparser.partition.Subset;
+import com.marco.csgoutil.roundparser.partitionlibrary.EffPartition;
+import com.marco.csgoutil.roundparser.partitionlibrary.Subset;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 
 /**
- * A modified version of <a href=
- * "https://www.codeproject.com/Articles/1265125/Fast-and-Practically-perfect-Partition-Problem-Sol#DST">this
- * solution</a>
+ * It uses a third party algorithm
  * 
  * @author Marco
  *
  */
 public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 
+	private static final Logger _LOGGER = LoggerFactory.getLogger(PartitionTeamsDynamicSearchTree.class);
+
 	@Override
 	public List<Team> partitionTheUsers(List<UserAvgScore> usersList, Integer partions) {
 
-		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore() )* -1);
-		
-		System.out.print("Scores: ");
-		for (UserAvgScore userAvgScore : usersList) {
-			System.out.print(userAvgScore.getAvgScore() + " ");
-		}
-		System.out.println("");
-		System.out.print("Indexs: ");
-		
-		int i = 1;
+		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
 		Map<Integer, UserAvgScore> userMap = new HashMap<>();
+
+		StringBuilder sbScores = new StringBuilder();
+		StringBuilder sbIndex = new StringBuilder();
+		sbScores.append("Scores:  ");
+		sbIndex.append("Indexes: ");
+		int i = 1;
 		for (UserAvgScore userAvgScore : usersList) {
 			userMap.put(i, userAvgScore);
-			System.out.print("  " + i++ + "   ");
+
+			sbScores.append(userAvgScore.getAvgScore());
+			sbScores.append(" ");
+			sbIndex.append("  " + i + "   ");
+			i++;
 		}
-		System.out.println("");
-		System.out.println("");
-		
+
 		List<Double> scores = usersList.stream().map(u -> u.getAvgScore().doubleValue()).collect(Collectors.toList());
-		
+
 		EffPartition ep = new EffPartition(scores, partions);
-		List<Subset> subsetsList = ep.Subsets();
-		ep.Print(true, 0);
-		
+		if (_LOGGER.isDebugEnabled()) {
+			_LOGGER.debug(sbScores.toString());
+			_LOGGER.debug(sbIndex.toString());
+			ep.print(true, 0);
+		}
+
+		List<Subset> subsetsList = ep.getSubsets();
 		List<Team> listTeams = new ArrayList<>();
-		
-		subsetsList.forEach(s ->{
+
+		subsetsList.forEach(s -> {
 			Team t = new Team();
-			t.setTeamScore(BigDecimal.valueOf(s.sum()).setScale(2, RoundingMode.DOWN));
+			t.setTeamScore(BigDecimal.valueOf(s.getSumVal()).setScale(2, RoundingMode.DOWN));
 			s.getNumbIDs().forEach(numId -> t.addMember(userMap.get(numId)));
 			listTeams.add(t);
 		});
-		
+
 		return listTeams;
 	}
 

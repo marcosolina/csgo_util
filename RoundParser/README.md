@@ -9,3 +9,4 @@ I have created this project to parse the ".dem" files that are created by the CS
 ## Misc
 
 - [API Documentation](https://marco.selfip.net/demparser/swagger-ui.html)
+- [Fast and Practically ‘perfect’ Partition Problem Solution](https://www.codeproject.com/Articles/1265125/Fast-and-Practically-perfect-Partition-Problem-Sol#DST)

@@ -27,3 +27,6 @@ com:
         demfolder: "C:\\tmp\\demfiles"
         dotnetexecutable: "E:\\Workspaces\\Git\\csgo_util\\DemParser\\bin\\Debug\\netcoreapp3.1\\DemParser.dll"
         deleteBadDemFiles: false
+        services:
+          partition:
+            implementation: 2

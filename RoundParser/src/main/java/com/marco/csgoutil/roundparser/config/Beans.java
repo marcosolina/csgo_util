@@ -16,9 +16,12 @@ import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserScore
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParserMarcoRasp;
+import com.marco.csgoutil.roundparser.services.implementations.PartitionTeamsDynamicSearchTree;
+import com.marco.csgoutil.roundparser.services.implementations.PartitionTeamsMarco;
 import com.marco.csgoutil.roundparser.services.implementations.RoundFileServiceMarco;
 import com.marco.csgoutil.roundparser.services.implementations.RoundsServiceMarco;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
+import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
 
@@ -43,6 +46,9 @@ public class Beans {
 	@Value("${com.marco.csgoutil.roundparser.version}")
 	private String appVersion;
 	
+	@Value("${com.marco.csgoutil.roundparser.services.partition.implementation}")
+	private int partitionServiceVersion;
+	
 	/*
 	 * ############################################################### 
 	 * Services 
@@ -61,6 +67,16 @@ public class Beans {
 	@Bean
 	public CsgoRoundFileParser getCsgoRoundFileParser() {
 		return new CsgoRoundFileParserMarcoRasp();
+	}
+	
+	@Bean
+	public PartitionTeams getPartitionTeams() {
+		switch(partitionServiceVersion) {
+			case 2:
+				return new PartitionTeamsDynamicSearchTree();
+			default:
+				return new PartitionTeamsMarco();
+		}
 	}
 
 	/*

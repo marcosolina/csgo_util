@@ -4,16 +4,10 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Queue;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -35,6 +29,7 @@ import com.marco.csgoutil.roundparser.model.service.UserMapStats;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
+import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
 import com.marco.utils.DateUtils;
@@ -58,6 +53,8 @@ public class RoundsServiceMarco implements RoundsService {
 	private RepoUser repoUser;
 	@Autowired
 	private RepoUserScore repoUserScore;
+	@Autowired
+	private PartitionTeams partitionService;
 	@Autowired
 	private MessageSource msgSource;
 	@Value("${com.marco.csgoutil.roundparser.deleteBadDemFiles}")
@@ -244,65 +241,7 @@ public class RoundsServiceMarco implements RoundsService {
 
 		usersAvg.forEach((k, v) -> usersList.add(v));
 
-		return partionUsers(usersList, teamsCounter).stream().collect(Collectors.toList());
-	}
-
-	/**
-	 * Private method used to solve the
-	 * <a href="https://en.wikipedia.org/wiki/Partition_problem">Partition
-	 * Problem</a>
-	 * 
-	 * @param usersList    -> The whole list of users
-	 * @param teamsCounter -> How many teams to create
-	 * @return
-	 */
-	private Collection<Team> partionUsers(List<UserAvgScore> usersList, Integer teamsCounter) {
-
-		// Reverse order
-		Collections.sort(usersList, (o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
-
-		// Creating utils objects
-		Queue<UserAvgScore> userQueue = new ArrayDeque<>(usersList);
-		PartitionComparator pComparator = new PartitionComparator();
-		PriorityQueue<Team> partitionPriorityQueue = new PriorityQueue<>(teamsCounter, pComparator);
-
-		// Creating the empty teams
-		for (int i = 0; i < teamsCounter; i++) {
-			partitionPriorityQueue.add(new Team());
-		}
-
-		// Filling the teams
-		while (!userQueue.isEmpty()) {
-			// Get the next user with the lowest avg score
-			UserAvgScore user = userQueue.poll();
-
-			// Get the team with the lowest score
-			Team lowestSumPartition = partitionPriorityQueue.poll();
-
-			// Add the user and update the team score
-			lowestSumPartition.addMember(user);
-			lowestSumPartition.increaseSum(user.getAvgScore());
-
-			// Put the team back into the queue as the "poll" removes it
-			partitionPriorityQueue.add(lowestSumPartition);
-		}
-
-		return partitionPriorityQueue;
-	}
-
-	/**
-	 * Comparing the @{Team} by the team score
-	 * 
-	 * @author Marco
-	 *
-	 */
-	private class PartitionComparator implements Comparator<Team> {
-
-		@Override
-		public int compare(Team o1, Team o2) {
-			return o1.getTeamScore().compareTo(o2.getTeamScore());
-		}
-
+		return partitionService.partitionTheUsers(usersList, teamsCounter);
 	}
 
 }

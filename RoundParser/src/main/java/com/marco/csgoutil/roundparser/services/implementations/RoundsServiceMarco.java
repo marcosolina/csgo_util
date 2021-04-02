@@ -244,4 +244,9 @@ public class RoundsServiceMarco implements RoundsService {
 		return partitionService.partitionTheUsers(usersList, teamsCounter);
 	}
 
+	@Override
+	public List<LocalDateTime> getAvailableGamesList() {
+		return repoUserScore.listAvailableGames().stream().map(DaoGames::getGameOf).collect(Collectors.toList());
+	}
+
 }

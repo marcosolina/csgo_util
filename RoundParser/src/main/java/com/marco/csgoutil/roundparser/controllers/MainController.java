@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.marco.csgoutil.roundparser.model.rest.AvailableGames;
 import com.marco.csgoutil.roundparser.model.rest.MapsScores;
 import com.marco.csgoutil.roundparser.model.rest.Teams;
 import com.marco.csgoutil.roundparser.model.rest.UserScores;
@@ -185,6 +186,17 @@ public class MainController {
 			resp.addError(e);
 			return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
 		}
+	}
+	
+	@GetMapping(RoundParserUtils.MAPPING_GET_GAMES_LIST)
+	@ApiOperation(value = "It returns the full list of available games")
+	public ResponseEntity<AvailableGames> getListAvailableGAmesTeams() {
+		_LOGGER.trace("Inside MainController.getListAvailableGAmesTeams");
+
+		AvailableGames resp = new AvailableGames();
+		resp.setAvailableGames(service.getAvailableGamesList());
+		resp.setStatus(true);
+		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
 
 }

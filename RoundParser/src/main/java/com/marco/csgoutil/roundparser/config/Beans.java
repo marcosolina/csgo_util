@@ -1,6 +1,7 @@
 package com.marco.csgoutil.roundparser.config;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -113,7 +114,11 @@ public class Beans {
 		 return new Docket(DocumentationType.SWAGGER_2)
 			 .alternateTypeRules( AlternateTypeRules.newRule(
 					 resolver.resolve(List.class, LocalDate.class),
-					 resolver.resolve(List.class, String.class), Ordered.HIGHEST_PRECEDENCE))
+					 resolver.resolve(List.class, String.class), Ordered.HIGHEST_PRECEDENCE),
+					 AlternateTypeRules.newRule(
+							 resolver.resolve(List.class, LocalDateTime.class),
+							 resolver.resolve(List.class, String.class), Ordered.HIGHEST_PRECEDENCE)
+					 )
         	.select()
             .apis(RequestHandlerSelectors.basePackage("com.marco.csgoutil.roundparser.controllers"))
             .paths(PathSelectors.regex("/.*"))

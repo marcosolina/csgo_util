@@ -1,6 +1,7 @@
 package com.marco.csgoutil.roundparser.services.interfaces;
 
 import java.io.File;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -90,5 +91,12 @@ public interface RoundsService {
 	 */
 	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs)
 			throws MarcoException;
+
+	/**
+	 * It returns the list off available games stored into the system
+	 * 
+	 * @return
+	 */
+	public List<LocalDateTime> getAvailableGamesList();
 
 }

@@ -17,4 +17,5 @@ public class RoundParserUtils {
 	public static final String MAPPING_GET_USER_LAST_SCORES = "/users/last/{counter}/games/scores";
 	public static final String MAPPING_GET_USER_AVG_SCORES = "/users/avg/last/{counter}/games/scores";
 	public static final String MAPPING_GET_TEAMS = "/{teamsCounter}/using/last/{counter}/games/scores";
+	public static final String MAPPING_GET_GAMES_LIST = "/games/list";
 }

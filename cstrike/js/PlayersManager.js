@@ -87,6 +87,11 @@ var PlayersManager = ((function(PlayersManager){
         });
         
         if(steamIds.length < 3){
+            $("#terroristPlayers ul").empty();
+            $("#ctPlayers ul").empty();
+
+            $("#terroristPlayers .badge").html("");
+            $("#ctPlayers .badge").html("");
             return;
         }
         

@@ -66,12 +66,23 @@ body {
 }
 
 /*####################################################
+* START PLAYERS
+####################################################*/
+
+/*####################################################
 * START RCON
 ####################################################*/
 .rcon-container{
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+}
+
+.rcon-container-title{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 50px;
 }
 
 .rcon-map {

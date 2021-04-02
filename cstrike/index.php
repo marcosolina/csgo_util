@@ -69,10 +69,14 @@ EOD;
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
 	<script src="./js/pnotify.custom.min.js"></script>
 	<script src="./js/MarcoUtils.js"></script>
+	<script src="./js/PlayersManager.js"></script>
 	<script src="./js/Csgo.js"></script>
 
 	<script>
-		$(document).ready(Csgo.init);
+		$(document).ready(function () {
+			Csgo.init();
+			PlayersManager.init();
+		});
 	</script>
 
 </head>
@@ -97,7 +101,7 @@ EOD;
 					<a class="nav-link active" id="dem-tab" data-toggle="tab" href="#demDiv" role="tab" aria-controls="dem" aria-selected="true">Dem Files</a>
 				</li>
 				<li class="nav-item" role="presentation">
-					<a class="nav-link" id="rounds-tab" data-toggle="tab" href="#roundsDiv" role="tab" aria-controls="rounds" aria-selected="false">Rounds</a>
+					<a class="nav-link" id="players-tab" data-toggle="tab" href="#playersDiv" role="tab" aria-controls="players" aria-selected="false">Players</a>
 				</li>
 				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="rcon-tab" data-toggle="tab" href="#rconDiv" role="tab" aria-controls="rcon" aria-selected="false">Rcon</a>
@@ -190,91 +194,57 @@ EOD;
 					</div>
 					<!-- END Dem files Accordion -->
 				</div>
-				<div class="tab-pane fade" id="roundsDiv" role="tabpanel" aria-labelledby="rounds-tab">
-					<!-- START round files Accordion -->
-					<div class="accordion" id="accordionRound">
-						<?php
-						$roundFilesRootFolder = "./rounds";
-						$demFolders = scandir($roundFilesRootFolder, 1);
-						foreach ($demFolders as $demFolder) {
-							if ($demFolder == "." || $demFolder == "..") {
-								continue;
-							}
-							if (is_dir($roundFilesRootFolder . "/" . $demFolder)) {
-						?>
-								<div class="card">
-									<div class="card-header" id="card_rounds_<?php echo $demFolder; ?>">
-										<h2 class="mb-0">
-											<button 
-												class="btn btn-link btn-card"
-												type="button"
-												data-toggle="collapse" 
-												data-target="#collapse_rounds_<?php echo $demFolder; ?>"
-												aria-expanded="false"
-												aria-controls="collapse_rounds_<?php echo $demFolder; ?>">
-													<?php
-													$date =  date_create_from_format('Y-m-d', $demFolder);
-													echo date_format($date, 'd M Y');
-													?>
-											</button>
-										</h2>
+				<div class="tab-pane fade" id="playersDiv" role="tabpanel" aria-labelledby="players-tab">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-12">
+								&nbsp;
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<label class="input-group-text" for="selectRoundToConsider">Rounds to consider</label>
 									</div>
-
-									<div 
-										id="collapse_rounds_<?php echo $demFolder; ?>" 
-										class="collapse"
-										aria-labelledby="card_rounds_<?php echo $demFolder; ?>"
-										data-parent="#accordionRound">
-										<div class="card-body">
-											<ul class="list-group">
-												<?php
-												$demFiles = scandir($roundFilesRootFolder . "/" . $demFolder);
-												foreach ($demFiles as $demFile) {
-													if (!is_dir($demFile)) {
-														$fullFileName = $roundFilesRootFolder . "/" . $demFolder . "/" . $demFile;
-														$fileSize = filesize($fullFileName);
-														if ($fileSize < 1) {
-															continue;
-														}
-												?>
-														<li class="list-group-item">
-															<div class="row">
-																<div class="col-12 col-sm-8">
-																	<?php
-																	echo explode("_", $demFile)[1];
-																	?>
-																</div>
-																<div class="col-4 col-sm-3 col-md-3">
-																	<?php
-																	echo formatSizeUnits($fileSize);
-																	?>
-																</div>
-																<div class="col-1">
-																	<a
-																		href="<?php echo $fullFileName; ?>"
-																		target="_blank">
-																		<i 
-																			class="fa fa-cloud-download"
-																			aria-hidden="true">
-																		</i>
-																	</a>
-																</div>
-															</div>
-														</li>
-												<?php
-													}
-												}
-												?>
-											</ul>
+									<select class="custom-select" id="selectRoundToConsider">
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12 col-sm-12 col-md-4">
+								<div id="usersListWrapper" class="row"></div>
+								<br>
+							</div>
+							<div class="col-12 col-sm-12 col-md-8">
+								<div class="row">
+									<div class="col-12 col-md-12 col-lg-6" id="terroristPlayers">
+										<div class="card">
+											<img src="./pictures/terrorist.jpg" class="card-img-top" alt="Terrorists">
+											<div class="card-body">
+												<p class="card-text">Team score <span class="badge badge-pill badge-primary"></span></p>
+												<ul class="list-group">
+												</ul>
+											</div>
 										</div>
+										<br>
+									</div>
+									<div class="col-12 col-md-12 col-lg-6" id="ctPlayers">
+										<div class="card">
+											<img src="./pictures/counterterrorist.jpg" class="card-img-top" alt="Terrorists">
+											<div class="card-body">
+												<p class="card-text">Team score <span class="badge badge-pill badge-primary"></span></p>
+												<ul class="list-group">
+												</ul>
+											</div>
+										</div>
+										<br>
 									</div>
 								</div>
-						<?php
-							}
-						}
-						?>
+							</div>
+						</div>
 					</div>
-					<!-- END round files Accordion -->
 				</div>
 				<div class="tab-pane fade" id="rconDiv" role="tabpanel" aria-labelledby="dem-tab">
 					<!-- START RCON -->
@@ -322,6 +292,7 @@ EOD;
 					$rconSection->addCard(new IconRconCard("mp_restartgame 5", "Restart Game", "fa fa-refresh"));
 					$rconSection->addCard(new IconRconCard("pause", "Pause Game", "fa fa-pause-circle-o"));
 					$rconSection->addCard(new IconRconCard("unpause", "Resume Game", "fa fa-play-circle-o"));
+					$rconSection->addCard(new IconRconCard("exit", "Stop the Server", "fa fa-stop-circle-o"));
 					$rconSection->printHtml();
 					
 					/*

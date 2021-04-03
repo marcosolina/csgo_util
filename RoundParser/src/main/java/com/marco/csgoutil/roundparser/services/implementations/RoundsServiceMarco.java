@@ -226,6 +226,7 @@ public class RoundsServiceMarco implements RoundsService {
 			List<Long> scores = repoUserScore.getLastXUserScoresValue(gamesCounter, steamId);
 			Double avg = scores.stream().mapToDouble(a -> a).average().orElse(0);
 			uas.setAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
+			uas.setOriginalAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
 
 			map.put(steamId, uas);
 		}
@@ -241,12 +242,23 @@ public class RoundsServiceMarco implements RoundsService {
 
 		usersAvg.forEach((k, v) -> usersList.add(v));
 
-		return partitionService.partitionTheUsers(usersList, teamsCounter);
+		return partitionService.partitionTheUsersComparingTheScores(usersList, teamsCounter);
 	}
 
+	@Override
+	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
+			List<String> usersIDs) throws MarcoException {
+		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs);
+		List<UserAvgScore> usersList = new ArrayList<>();
+
+		usersAvg.forEach((k, v) -> usersList.add(v));
+		return partitionService.partitionTheUsersComparingTheScoresAndTeamMembers(usersList, teamsCounter);
+	}
+	
 	@Override
 	public List<LocalDateTime> getAvailableGamesList() {
 		return repoUserScore.listAvailableGames().stream().map(DaoGames::getGameOf).collect(Collectors.toList());
 	}
+
 
 }

@@ -22,7 +22,7 @@ import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 public class PartitionTeamsMarco implements PartitionTeams {
 
 	@Override
-	public List<Team> partitionTheUsers(List<UserAvgScore> usersList, Integer partions) {
+	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions) {
 		return partionUsers(usersList, partions).stream().collect(Collectors.toList());
 	}
 
@@ -82,6 +82,13 @@ public class PartitionTeamsMarco implements PartitionTeams {
 			return o1.getTeamScore().compareTo(o2.getTeamScore());
 		}
 
+	}
+
+	@Override
+	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList,
+			Integer partions) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

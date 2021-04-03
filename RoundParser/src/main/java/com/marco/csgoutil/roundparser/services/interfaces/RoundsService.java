@@ -93,6 +93,20 @@ public interface RoundsService {
 			throws MarcoException;
 
 	/**
+	 * It works similar to "generateTeams", but if one team have more players (delta
+	 * > 1 ) it will increase by one the avg score of the "weakest" player and try
+	 * to create again the teams
+	 * 
+	 * @param teamsCounter
+	 * @param gamesCounter
+	 * @param usersIDs
+	 * @return
+	 * @throws MarcoException
+	 */
+	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
+			List<String> usersIDs) throws MarcoException;
+
+	/**
 	 * It returns the list off available games stored into the system
 	 * 
 	 * @return

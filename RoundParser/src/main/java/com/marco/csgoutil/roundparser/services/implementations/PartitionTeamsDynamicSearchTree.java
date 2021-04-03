@@ -28,7 +28,7 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(PartitionTeamsDynamicSearchTree.class);
 
 	@Override
-	public List<Team> partitionTheUsers(List<UserAvgScore> usersList, Integer partions) {
+	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions) {
 
 		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
 		Map<Integer, UserAvgScore> userMap = new HashMap<>();
@@ -67,6 +67,34 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 		});
 
 		return listTeams;
+	}
+
+	@Override
+	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList,
+			Integer partions) {
+		List<Team> teams = null;
+		boolean ok = false;
+
+		do {
+			ok = true;
+			teams = partitionTheUsersComparingTheScores(usersList, partions);
+			teams.sort((o1, o2) -> o1.getMembers().size() < o2.getMembers().size() ? -1 : 1);
+
+			outerloop:
+			for (int i = 0; i < teams.size(); i++) {
+				for (int j = i + 1; j < teams.size(); j++) {
+					int delta = teams.get(i).getMembers().size() - teams.get(j).getMembers().size();
+					if (Math.abs(delta) > 1) {
+						usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()));
+						usersList.get(0).setAvgScore(usersList.get(0).getAvgScore().add(BigDecimal.ONE).setScale(2, RoundingMode.DOWN));
+						ok = false;
+						break outerloop;
+					}
+				}
+			}
+		} while (!ok);
+
+		return teams;
 	}
 
 }

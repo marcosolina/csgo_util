@@ -18,6 +18,8 @@ public class UserAvgScore {
 	private String userName;
 	@ApiModelProperty(notes = "Average score")
 	private BigDecimal avgScore;
+	@ApiModelProperty(notes = "Original Average score")
+	private BigDecimal originalAvgScore;
 
 	public String getUserName() {
 		return userName;
@@ -41,6 +43,14 @@ public class UserAvgScore {
 
 	public void setAvgScore(BigDecimal avgScore) {
 		this.avgScore = avgScore;
+	}
+
+	public BigDecimal getOriginalAvgScore() {
+		return originalAvgScore;
+	}
+
+	public void setOriginalAvgScore(BigDecimal originalAvgScore) {
+		this.originalAvgScore = originalAvgScore;
 	}
 
 }

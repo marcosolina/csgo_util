@@ -174,12 +174,18 @@ public class MainController {
 			+ "The average will be calculated on the last \"counter\" games and then it will will \"equally\" "
 			+ "split the users in different in different teams (teamsCounter) ")
 	public ResponseEntity<Teams> getTeams(@PathVariable("teamsCounter") Integer teamsCounter,
-			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs) {
+			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
+			@RequestParam(name = "forceEqualTeamSize", defaultValue = "false", required = false) boolean forceEqualTeamSize
+			) {
 		_LOGGER.trace("Inside MainController.getTeams");
 
 		Teams resp = new Teams();
 		try {
-			resp.setTeams(service.generateTeams(teamsCounter, counter, usersIDs));
+			if(forceEqualTeamSize) {
+				resp.setTeams(service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs));
+			}else {
+				resp.setTeams(service.generateTeams(teamsCounter, counter, usersIDs));
+			}
 			resp.setStatus(true);
 			return new ResponseEntity<>(resp, HttpStatus.OK);
 		} catch (MarcoException e) {

@@ -11,7 +11,8 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.init = function(){
         PlayersManager.getUsersList();
         $("#selectRoundToConsider").change(PlayersManager.createTeams);
-        $("#partitionTypeIxigo").change(PlayersManager.createTeams);
+        $('input[name=partitionType]').change(PlayersManager.createTeams);
+        $('#penaltyWeigth').change(PlayersManager.createTeams);
         $("#partitionTypeIxigo").prop("checked", true);
         PlayersManager.getAvailableGames();
     }

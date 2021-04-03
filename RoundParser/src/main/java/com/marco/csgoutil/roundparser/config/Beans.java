@@ -12,15 +12,19 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.Ordered;
 
 import com.fasterxml.classmate.TypeResolver;
+import com.marco.csgoutil.roundparser.enums.Environment;
+import com.marco.csgoutil.roundparser.enums.PartitionType;
 import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserPostgres;
 import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserScorePostgres;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
-import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParserMarcoRasp;
-import com.marco.csgoutil.roundparser.services.implementations.PartitionTeamsDynamicSearchTree;
-import com.marco.csgoutil.roundparser.services.implementations.PartitionTeamsMarco;
 import com.marco.csgoutil.roundparser.services.implementations.RoundFileServiceMarco;
-import com.marco.csgoutil.roundparser.services.implementations.RoundsServiceMarco;
+import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserRasp;
+import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserWindows;
+import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsDynamicSearchTree;
+import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsMarco;
+import com.marco.csgoutil.roundparser.services.implementations.roundsservice.RoundsServiceRasp;
+import com.marco.csgoutil.roundparser.services.implementations.roundsservice.RoundsServiceWindows;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
@@ -47,8 +51,11 @@ public class Beans {
 	@Value("${com.marco.csgoutil.roundparser.version}")
 	private String appVersion;
 	
-	@Value("${com.marco.csgoutil.roundparser.services.partition.implementation}")
-	private int partitionServiceVersion;
+	@Value("${com.marco.csgoutil.roundparser.environment}")
+	private Environment environment;
+	
+	@Value("${com.marco.csgoutil.roundparser.partition.type}")
+	private PartitionType partitionType;
 	
 	/*
 	 * ############################################################### 
@@ -57,7 +64,14 @@ public class Beans {
 	 */
 	@Bean
 	public RoundsService getRoundsService() {
-		return new RoundsServiceMarco();
+		switch (environment) {
+		case WINDOWS:
+			return new RoundsServiceWindows();
+		case RASP:
+			return new RoundsServiceRasp();
+		default:
+			return new RoundsServiceWindows();
+		}
 	}
 
 	@Bean
@@ -67,14 +81,24 @@ public class Beans {
 
 	@Bean
 	public CsgoRoundFileParser getCsgoRoundFileParser() {
-		return new CsgoRoundFileParserMarcoRasp();
+		switch (environment) {
+		case WINDOWS:
+			return new CsgoRoundFileParserWindows();
+		case RASP:
+			return new CsgoRoundFileParserRasp();
+		default:
+			return new CsgoRoundFileParserWindows();
+		}
+		
 	}
 	
 	@Bean
 	public PartitionTeams getPartitionTeams() {
-		switch(partitionServiceVersion) {
-			case 2:
+		switch(partitionType) {
+			case SEARCH_TREE:
 				return new PartitionTeamsDynamicSearchTree();
+			case MARCO:
+				return new PartitionTeamsMarco();
 			default:
 				return new PartitionTeamsMarco();
 		}

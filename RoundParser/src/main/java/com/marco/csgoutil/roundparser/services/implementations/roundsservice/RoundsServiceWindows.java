@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.services.implementations;
+package com.marco.csgoutil.roundparser.services.implementations.roundsservice;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -37,13 +37,13 @@ import com.marco.utils.MarcoException;
 import com.marco.utils.enums.DateFormats;
 
 /**
- * My implementation of this interface
+ * My implementation of this interface for windows environments
  * 
  * @author Marco
  *
  */
-public class RoundsServiceMarco implements RoundsService {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(RoundsServiceMarco.class);
+public class RoundsServiceWindows implements RoundsService {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(RoundsServiceWindows.class);
 
 	@Autowired
 	private RoundFileService roundFildeService;

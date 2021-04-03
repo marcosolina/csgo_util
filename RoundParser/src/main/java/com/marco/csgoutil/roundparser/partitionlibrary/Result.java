@@ -113,7 +113,7 @@ public class Result {
 			penalty=Math.abs(size_0-size_1)*2;
 		}
 		Double newSumDiff = range.getMaxSum() - range.getMinSum() + penalty;
-		System.out.println(newSumDiff);
+		System.out.println(range.getMaxSum() - range.getMinSum() + " " + penalty + " " + size_0 + " " + size_1);
 		if (newSumDiff < sumDiff) {
 			sumDiff = newSumDiff;
 			range.setUpdated(true);

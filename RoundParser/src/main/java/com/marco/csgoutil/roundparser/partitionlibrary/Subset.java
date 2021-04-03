@@ -51,6 +51,7 @@ public final class Subset implements Comparable<Subset> {
 	 */
 	void clear() {
 		sumVal = Double.valueOf(0);
+		size = 0;
 		numbIDs.clear();
 	}
 

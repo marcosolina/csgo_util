@@ -202,7 +202,7 @@ EOD;
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-12">
+							<div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
 										<label class="input-group-text" for="selectRoundToConsider">Rounds to consider</label>
@@ -210,6 +210,17 @@ EOD;
 									<select class="custom-select" id="selectRoundToConsider">
 									</select>
 								</div>
+							</div>
+							<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
+                            	<div class="custom-control custom-switch">
+                                	<input type="checkbox" class="custom-control-input" id="forceEqualTeamSize">
+                                	<label id="label-forceEqualTeamSize" class="custom-control-label switch-label" for="forceEqualTeamSize">Force equal teams size</label>
+                            	</div>
+                        	</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<hr>
 							</div>
 						</div>
 						<div class="row">

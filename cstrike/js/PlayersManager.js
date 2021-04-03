@@ -11,6 +11,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.init = function(){
         PlayersManager.getUsersList();
         $("#selectRoundToConsider").change(PlayersManager.createTeams);
+        $("#forceEqualTeamSize").change(PlayersManager.createTeams);
         PlayersManager.getAvailableGames();
     }
 
@@ -99,6 +100,7 @@ var PlayersManager = ((function(PlayersManager){
         steamIds.forEach(v => {queryParam += "," + v;});
         let gamesToConsider = $("#selectRoundToConsider").val()
         let url = "https://marco.selfip.net/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
+        url += "&forceEqualTeamSize=" + $("#forceEqualTeamSize").prop("checked");
 
         MarcoUtils.executeAjax({
             type: "GET",
@@ -112,7 +114,7 @@ var PlayersManager = ((function(PlayersManager){
         if(resp && resp.status){
             var strTmpl =   '<li class="list-group-item d-flex justify-content-between align-items-center">' +
                                 '%userName%' +
-                                '<span class="badge badge-primary badge-pill">%avgScore%</span>' +
+                                '<span class="badge badge-pill %badgType%">%avgScore%</span>' +
                             '</li>';
 
             let teamTerrorists = resp.teams[0];
@@ -130,9 +132,11 @@ var PlayersManager = ((function(PlayersManager){
             jCtList.empty();
 
             arrTerrorist.forEach(t => {
+                t.badgType = t.avgScore == t.originalAvgScore ? "badge-primary" : "badge-danger";
                 jTerroristList.append(MarcoUtils.template(strTmpl, t));
             });
             arrCt.forEach(ct => {
+                ct.badgType = ct.avgScore == ct.originalAvgScore ? "badge-primary" : "badge-danger";
                 jCtList.append(MarcoUtils.template(strTmpl, ct));
             });
         }

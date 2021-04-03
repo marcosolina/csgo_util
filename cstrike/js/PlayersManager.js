@@ -133,10 +133,14 @@ var PlayersManager = ((function(PlayersManager){
 
             arrTerrorist.forEach(t => {
                 t.badgType = t.avgScore == t.originalAvgScore ? "badge-primary" : "badge-danger";
+                t.avgScore = t.avgScore.toFixed(2);
+                t.avgScore = t.avgScore.length < 5 ? "0" + t.avgScore : t.avgScore;
                 jTerroristList.append(MarcoUtils.template(strTmpl, t));
             });
             arrCt.forEach(ct => {
                 ct.badgType = ct.avgScore == ct.originalAvgScore ? "badge-primary" : "badge-danger";
+                ct.avgScore = ct.avgScore.toFixed(2);
+                ct.avgScore = ct.avgScore.length < 5 ? "0" + ct.avgScore : ct.avgScore;
                 jCtList.append(MarcoUtils.template(strTmpl, ct));
             });
         }

@@ -202,7 +202,7 @@ EOD;
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-12 col-sm-6 col-md-5 col-lg-4 col-xl-3">
+							<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
 								<div class="input-group mb-3">
 									<div class="input-group-prepend">
 										<label class="input-group-text" for="selectRoundToConsider">Rounds to consider</label>
@@ -211,11 +211,27 @@ EOD;
 									</select>
 								</div>
 							</div>
-							<div class="col-12 col-sm-6 col-md-4 col-lg-3 col-xl-3">
-                            	<div class="custom-control custom-switch">
-                                	<input type="checkbox" class="custom-control-input" id="forceEqualTeamSize">
-                                	<label id="label-forceEqualTeamSize" class="custom-control-label switch-label" for="forceEqualTeamSize">Force equal teams size</label>
-                            	</div>
+							<div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-4">
+								<div class="input-group mb-3">
+								<div class="input-group-prepend">
+										<label class="input-group-text" for="penaltyWeigth">Penalty Weight</label>
+									</div>
+									<input id="penaltyWeigth" type="text" class="form-control" placeholder="Penalty Weight" value="2.00">
+								</div>
+                        	</div>
+							<div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4">
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="partitionType" id="partitionTypeIxigo" value="IXIGO">
+									<label class="form-check-label" for="inlineRadio1">IxiGo</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="partitionType" id="partitionTypeStandard" value="SIMPLE">
+									<label class="form-check-label" for="inlineRadio2">Standard</label>
+								</div>
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" type="radio" name="partitionType" id="partitionTypeEq" value="FORCE_PLAYERS">
+									<label class="form-check-label" for="inlineRadio3">Equal Numbers</label>
+								</div>
                         	</div>
 						</div>
 						<div class="row">

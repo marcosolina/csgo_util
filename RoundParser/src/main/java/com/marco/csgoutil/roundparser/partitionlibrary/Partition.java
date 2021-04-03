@@ -70,22 +70,22 @@ final class Partition {
 	 * @param limMult DSTree method call's limit multiplier; if 0 then omit DSTree
 	 *                method invoking
 	 */
-	public Partition(IdNumbers nmbs, Result result, Double avr, int limMult) {
+	public Partition(IdNumbers nmbs, Result result, Double avr, int limMult, double penaltyWeitgh) {
 		this.numbs = nmbs;
 		this.finalResult = result;
 		this.avrSum = avr;
 		this.isAvrFract = (int) avrSum != avrSum;
 		this.callLimit = MIN_CALL_LIMIT * limMult;
 		this.numbs.sortByDescent();
-		this.sumDiff = EffPartition.LARGEST_SUM;
+		this.sumDiff = PartitionTwoTeams.LARGEST_SUM;
 		int ssCnt = finalResult.getSubsetCount();
 		int i = 0;
 		this.methods[i++] = Integer -> doUGreedy(ssCnt);
-		this.methods[i++] = Integer -> wrapGreedy(ssCnt);
+		this.methods[i++] = Integer -> wrapGreedy(ssCnt, penaltyWeitgh);
 		this.methods[i++] = Integer -> doSGreedy(ssCnt);
 		this.methods[i++] = Integer -> doISTree(ssCnt);
 
-		if (EffPartition.TEST) {
+		if (PartitionTwoTeams.TEST) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("avr: ");
 			sb.append(String.format(avrSum % 1.0 != 0 ? "%f" : "%s", avrSum));
@@ -94,7 +94,7 @@ final class Partition {
 		}
 
 		int cnt = limMult > 0 ? 4 : 3;
-		if (!EffPartition.TEST) {
+		if (!PartitionTwoTeams.TEST) {
 			// for the degenerate case numbs.size()<=ssCnt method UGreedy() is comepletely
 			// enough
 			if (numbs.size() <= ssCnt) {
@@ -204,9 +204,9 @@ final class Partition {
 	 * 
 	 * @param ssCnt count of subsets
 	 */
-	void wrapGreedy(int ssCnt) {
+	void wrapGreedy(int ssCnt, double penaltyWeitgh) {
 		numbs.reset();
-		currResult = new Result(numbs.size(), ssCnt);
+		currResult = new Result(numbs.size(), ssCnt, penaltyWeitgh);
 		doGreedy(ssCnt);
 	}
 
@@ -248,7 +248,7 @@ final class Partition {
 		// distribute remaining unallocated numbs by Greed protocol
 		// Checking for freeCnt==0 can be omitted, since as it happens very rarely
 		doGreedy(ssCnt);
-		if (EffPartition.TEST) {
+		if (PartitionTwoTeams.TEST) {
 			callCnt = k - 1;
 		}
 	}
@@ -288,7 +288,7 @@ final class Partition {
 				}
 			}
 		} else { // last bin
-			if (EffPartition.TEST) {
+			if (PartitionTwoTeams.TEST) {
 				bottomCnt++;
 			}
 			// accumulate sum for the last bin
@@ -324,10 +324,10 @@ final class Partition {
 		if (up > avrSum) {
 			up = avrSum - 1;
 		}
-		standbySumDiff = EffPartition.LARGEST_SUM; // undefined standby inaccuracy
+		standbySumDiff = PartitionTwoTeams.LARGEST_SUM; // undefined standby inaccuracy
 		lastSumDiff = finalResult.getSumDiff();
 		standbyNumbs = new IdNumbers(numbs);
-		if (EffPartition.TEST) {
+		if (PartitionTwoTeams.TEST) {
 			bottomCnt = upCnt = 0;
 		}
 		do {
@@ -337,7 +337,7 @@ final class Partition {
 			callCnt = complete = 0;
 			numbs.reset();
 			currResult.clear();
-			if (EffPartition.TEST) {
+			if (PartitionTwoTeams.TEST) {
 				upCnt++;
 			}
 			doDSTree(0, ssCnt - 1);
@@ -348,7 +348,7 @@ final class Partition {
 			}
 		} while (lastSumDiff != currResult.getSumDiff()); // until previous and current inaccuracy are different
 		// use last fitted result
-		if (EffPartition.TEST || currResult.getSumDiff() < finalResult.getSumDiff()) {
+		if (PartitionTwoTeams.TEST || currResult.getSumDiff() < finalResult.getSumDiff()) {
 			setRange(finalResult);
 			finalResult.fill(standbyNumbs, 1, standbySumDiff);
 		}
@@ -363,13 +363,13 @@ final class Partition {
 	 */
 	boolean doPartition(int i, int ssCnt) {
 		long startTime;
-		if (EffPartition.TEST) {
+		if (PartitionTwoTeams.TEST) {
 			_LOGGER.debug(String.format("%s\t", METHOD_TITLES[i]));
-			sumDiff = EffPartition.LARGEST_SUM;
+			sumDiff = PartitionTwoTeams.LARGEST_SUM;
 			startTime = System.nanoTime();
 		}
 		methods[i].doPart(ssCnt);
-		if (EffPartition.TEST) {
+		if (PartitionTwoTeams.TEST) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(String.format("%.3f ms\t", (float) (System.nanoTime() - startTime) / (1000 * 1000)));
 			sb.append(

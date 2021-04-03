@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.marco.csgoutil.roundparser.enums.PartitionType;
 import com.marco.csgoutil.roundparser.model.rest.AvailableGames;
 import com.marco.csgoutil.roundparser.model.rest.MapsScores;
 import com.marco.csgoutil.roundparser.model.rest.Teams;
@@ -20,6 +21,7 @@ import com.marco.csgoutil.roundparser.model.rest.UserScores;
 import com.marco.csgoutil.roundparser.model.rest.UserSvgScores;
 import com.marco.csgoutil.roundparser.model.rest.Users;
 import com.marco.csgoutil.roundparser.model.rest.UsersScores;
+import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
 import com.marco.csgoutil.roundparser.utils.RoundParserUtils;
 import com.marco.utils.MarcoException;
@@ -175,17 +177,27 @@ public class MainController {
 			+ "split the users in different in different teams (teamsCounter) ")
 	public ResponseEntity<Teams> getTeams(@PathVariable("teamsCounter") Integer teamsCounter,
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
-			@RequestParam(name = "forceEqualTeamSize", defaultValue = "false", required = false) boolean forceEqualTeamSize
-			) {
+			@RequestParam(name = "partitionType", defaultValue = "SIMPLE") PartitionType partitionType,
+			@RequestParam(name = "penaltyWeigth", defaultValue = "0") Double penaltyWeigth) {
 		_LOGGER.trace("Inside MainController.getTeams");
 
 		Teams resp = new Teams();
 		try {
-			if(forceEqualTeamSize) {
-				resp.setTeams(service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs));
-			}else {
-				resp.setTeams(service.generateTeams(teamsCounter, counter, usersIDs));
+			List<Team> teams = null;
+			switch (partitionType) {
+			case IXIGO:
+				teams = service.generateTwoTeamsForcingSimilarTeamSizes(counter, usersIDs, penaltyWeigth);
+				break;
+			case FORCE_PLAYERS:
+				teams = service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs, penaltyWeigth);
+				break;
+			case SIMPLE:
+				teams = service.generateTeams(teamsCounter, counter, usersIDs);
+				break;
+			default:
+				break;
 			}
+			resp.setTeams(teams);
 			resp.setStatus(true);
 			return new ResponseEntity<>(resp, HttpStatus.OK);
 		} catch (MarcoException e) {
@@ -193,7 +205,7 @@ public class MainController {
 			return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	@GetMapping(RoundParserUtils.MAPPING_GET_GAMES_LIST)
 	@ApiOperation(value = "It returns the full list of available games")
 	public ResponseEntity<AvailableGames> getListAvailableGAmesTeams() {

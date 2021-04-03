@@ -4,14 +4,19 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Represents subsets and their inaccuracy
  * 
  * @author Fedor Naumenko
  */
 public class Result {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Result.class);
 	/** maximum difference between the subset sums (inaccuracy) */
 	private Double sumDiff;
+	private Double penaltyWeitgh;
 	/** subsets */
 	private List<Subset> bins;
 
@@ -21,8 +26,9 @@ public class Result {
 	 * @param nCnt  count of numbers
 	 * @param ssCnt count of subsets
 	 */
-	Result(int nCnt, int ssCnt) {
-		this.sumDiff = EffPartition.LARGEST_SUM;
+	Result(int nCnt, int ssCnt, double penaltyWeitgh) {
+		this.penaltyWeitgh = penaltyWeitgh;
+		this.sumDiff = PartitionTwoTeams.LARGEST_SUM;
 		this.bins = new ArrayList<>(ssCnt);
 		for (int i = 0; i < ssCnt; i++) {
 			bins.add(new Subset(nCnt / ssCnt + 2));
@@ -50,7 +56,7 @@ public class Result {
 
 	/** Sorts subsets in descending order and sets subsets ID starting with 1 */
 	void setIDs() {
-		if (!EffPartition.TEST) {
+		if (!PartitionTwoTeams.TEST) {
 			sort(false); // sorts subsets in descending order
 		}
 		// set subset's ID
@@ -65,7 +71,7 @@ public class Result {
 	 * number values
 	 */
 	void clear() {
-		this.sumDiff = EffPartition.LARGEST_SUM;
+		this.sumDiff = PartitionTwoTeams.LARGEST_SUM;
 		bins.forEach(Subset::clear);
 	}
 
@@ -100,20 +106,26 @@ public class Result {
 				range.setMinSum(ss.getSumVal());
 			}
 		});
-		//add a penalty for team sizes not matching
-		int size_0 = this.getSubsets().get(0).getSize();
-		int size_1 = this.getSubsets().get(1).getSize();
+		// add a penalty for team sizes not matching
+		int size0 = this.getSubsets().get(0).getSize();
+		int size1 = this.getSubsets().get(1).getSize();
 		double penalty = 0;
-		if (Math.abs(size_1-size_0)==1) {//if only one difference, only add penalty if the larger team has the advantage
-			if(size_0-size_1>0 && this.getSubsets().get(0).getSumVal()>this.getSubsets().get(1).getSumVal()||size_1-size_0>0 && this.getSubsets().get(1).getSumVal()>this.getSubsets().get(0).getSumVal()) {
-				penalty=2;
+		if (Math.abs(size1 - size0) == 1) {// if only one difference, only add penalty if the larger team has the
+												// advantage
+			if (size0 - size1 > 0 && this.getSubsets().get(0).getSumVal() > this.getSubsets().get(1).getSumVal()
+					|| size1 - size0 > 0
+							&& this.getSubsets().get(1).getSumVal() > this.getSubsets().get(0).getSumVal()) {
+				penalty = penaltyWeitgh;
 			}
-		}else if (Math.abs(size_0-size_1)>1) {//if more than one different add a penalty for each player different
-			
-			penalty=Math.abs(size_0-size_1)*2;
+		} else if (Math.abs(size0 - size1) > 1) {// if more than one different add a penalty for each player different
+
+			penalty = Math.abs(size0 - size1) * penaltyWeitgh;
 		}
 		Double newSumDiff = range.getMaxSum() - range.getMinSum() + penalty;
-		System.out.println(range.getMaxSum() - range.getMinSum()+ penalty + " " + penalty + " " + size_0 + " " + size_1);
+
+		if (_LOGGER.isDebugEnabled()) {
+			_LOGGER.debug(String.format("%f %f %d %d", range.getMaxSum() - range.getMinSum(), penalty, size0, size1));
+		}
 		if (newSumDiff < sumDiff) {
 			sumDiff = newSumDiff;
 			range.setUpdated(true);

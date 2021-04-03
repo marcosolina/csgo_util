@@ -13,23 +13,17 @@ import org.slf4j.LoggerFactory;
 
 import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.Team;
+import com.marco.csgoutil.roundparser.partitionlibrary.PartitionTwoTeams;
+import com.marco.csgoutil.roundparser.partitionlibrary.Subset;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
-import com.marco.utils.partitioning.EfficientPartition;
-import com.marco.utils.partitioning.Subset;
 
+public class PartitionTeamsIxigo implements PartitionTeams {
 
-/**
- * It uses a third party algorithm
- * 
- * @author Marco
- *
- */
-public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
-
-	private static final Logger _LOGGER = LoggerFactory.getLogger(PartitionTeamsDynamicSearchTree.class);
+	private static final Logger _LOGGER = LoggerFactory.getLogger(PartitionTeamsIxigo.class);
 
 	@Override
-	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions, double penaltyWeight) {
+	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions,
+			double penaltyWeight) {
 
 		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
 		Map<Integer, UserAvgScore> userMap = new HashMap<>();
@@ -50,7 +44,7 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 
 		List<Double> scores = usersList.stream().map(u -> u.getAvgScore().doubleValue()).collect(Collectors.toList());
 
-		EfficientPartition ep = new EfficientPartition(scores, partions);
+		PartitionTwoTeams ep = new PartitionTwoTeams(scores, penaltyWeight);
 		if (_LOGGER.isDebugEnabled()) {
 			_LOGGER.debug(sbScores.toString());
 			_LOGGER.debug(sbIndex.toString());
@@ -71,31 +65,11 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 	}
 
 	@Override
-	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList,
-			Integer partions, double penaltyWeight) {
-		List<Team> teams = null;
-		boolean ok = false;
+	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList, Integer partions,
+			double penaltyWeight) {
 
-		do {
-			ok = true;
-			teams = partitionTheUsersComparingTheScores(usersList, partions, penaltyWeight);
-			teams.sort((o1, o2) -> o1.getMembers().size() < o2.getMembers().size() ? -1 : 1);
+		return partitionTheUsersComparingTheScores(usersList, partions, penaltyWeight);
 
-			outerloop:
-			for (int i = 0; i < teams.size(); i++) {
-				for (int j = i + 1; j < teams.size(); j++) {
-					int delta = teams.get(i).getMembers().size() - teams.get(j).getMembers().size();
-					if (Math.abs(delta) > 1) {
-						usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()));
-						usersList.get(0).setAvgScore(usersList.get(0).getAvgScore().add(BigDecimal.valueOf(penaltyWeight)).setScale(2, RoundingMode.DOWN));
-						ok = false;
-						break outerloop;
-					}
-				}
-			}
-		} while (!ok);
-
-		return teams;
 	}
 
 }

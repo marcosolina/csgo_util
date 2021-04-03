@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.services.implementations;
+package com.marco.csgoutil.roundparser.services.implementations.partitionteams;
 
 import java.util.ArrayDeque;
 import java.util.Collection;

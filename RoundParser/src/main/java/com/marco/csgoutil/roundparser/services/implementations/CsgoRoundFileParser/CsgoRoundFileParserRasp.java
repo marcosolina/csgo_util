@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.services.implementations;
+package com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,28 +21,19 @@ import com.marco.utils.MarcoException;
  * @author Marco
  *
  */
-public class CsgoRoundFileParserMarcoRasp implements CsgoRoundFileParser {
+public class CsgoRoundFileParserRasp implements CsgoRoundFileParser {
 
-	private static final Logger _LOGGER = LoggerFactory.getLogger(CsgoRoundFileParserMarcoRasp.class);
+	private static final Logger _LOGGER = LoggerFactory.getLogger(CsgoRoundFileParserRasp.class);
 
 	@Value("${com.marco.csgoutil.roundparser.dotnetexecutable}")
 	private String executable;
 
-	@Value("${com.marco.csgoutil.roundparser.isLinux}")
-	private boolean isLinux;
-
 	@Override
 	public List<UserMapStats> extractPlayersScore(File roundFile) throws MarcoException {
-		_LOGGER.trace("Inside CsgoRoundFileParserMarco.extractPlayersScore");
+		_LOGGER.trace("Inside CsgoRoundFileParserRasp.extractPlayersScore");
 
 		List<String> cmd = new ArrayList<>();
 
-		/*
-		 * On my Rasp I have deployed a self-contained app, so I don't need the "dotnet"
-		 */
-		if (!isLinux) {
-			cmd.add("dotnet");
-		}
 		cmd.add(executable);
 		cmd.add(roundFile.getAbsolutePath());
 

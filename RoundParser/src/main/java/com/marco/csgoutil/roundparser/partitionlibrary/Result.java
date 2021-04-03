@@ -103,9 +103,9 @@ public class Result {
 		//add a penalty for team sizes not matching
 		int size_0 = this.getSubsets().get(0).getSize();
 		int size_1 = this.getSubsets().get(1).getSize();
-		int penalty = 0;
+		double penalty = 0;
 		if (Math.abs(size_1-size_0)==1) {//if only one difference, only add penalty if the larger team has the advantage
-			if(size_0-size_1>0 && this.getSubsets().get(0).getSumVal()>this.getSubsets().get(1).getSumVal()) {
+			if(size_0-size_1>0 && this.getSubsets().get(0).getSumVal()>this.getSubsets().get(1).getSumVal()||size_1-size_0>0 && this.getSubsets().get(1).getSumVal()>this.getSubsets().get(0).getSumVal()) {
 				penalty=2;
 			}
 		}else if (Math.abs(size_0-size_1)>1) {//if more than one different add a penalty for each player different
@@ -113,7 +113,7 @@ public class Result {
 			penalty=Math.abs(size_0-size_1)*2;
 		}
 		Double newSumDiff = range.getMaxSum() - range.getMinSum() + penalty;
-		System.out.println(range.getMaxSum() - range.getMinSum() + " " + penalty + " " + size_0 + " " + size_1);
+		System.out.println(range.getMaxSum() - range.getMinSum()+ penalty + " " + penalty + " " + size_0 + " " + size_1);
 		if (newSumDiff < sumDiff) {
 			sumDiff = newSumDiff;
 			range.setUpdated(true);

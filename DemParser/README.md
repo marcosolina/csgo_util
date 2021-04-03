@@ -6,9 +6,3 @@ I have created this project to parse the ".dem" files that are created by the CS
 
 - [Library](https://github.com/StatsHelix/demoinfo): Library used to read the dem files
 - [Rasp Deployment](https://docs.microsoft.com/en-gb/dotnet/iot/deployment#deploying-a-self-contained-app): I followed these instruction to build the project and run it on my Raspberry Pi
-
-## Local execution
-
-### Requirements
-
-- [Visual Studio CE 2019](https://visualstudio.microsoft.com/vs/community/)

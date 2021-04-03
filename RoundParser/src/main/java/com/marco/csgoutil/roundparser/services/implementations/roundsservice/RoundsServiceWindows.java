@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -54,7 +55,11 @@ public class RoundsServiceWindows implements RoundsService {
 	@Autowired
 	private RepoUserScore repoUserScore;
 	@Autowired
-	private PartitionTeams partitionService;
+	@Qualifier("Simple")
+	private PartitionTeams standardPartition;
+	@Autowired
+	@Qualifier("IxiGO")
+	private PartitionTeams ixigoPartition;
 	@Autowired
 	private MessageSource msgSource;
 	@Value("${com.marco.csgoutil.roundparser.deleteBadDemFiles}")
@@ -237,28 +242,38 @@ public class RoundsServiceWindows implements RoundsService {
 	@Override
 	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs)
 			throws MarcoException {
-		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs);
-		List<UserAvgScore> usersList = new ArrayList<>();
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs);
 
-		usersAvg.forEach((k, v) -> usersList.add(v));
-
-		return partitionService.partitionTheUsersComparingTheScores(usersList, teamsCounter);
+		return standardPartition.partitionTheUsersComparingTheScores(usersList, teamsCounter, 0);
 	}
 
 	@Override
 	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
-			List<String> usersIDs) throws MarcoException {
-		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs);
-		List<UserAvgScore> usersList = new ArrayList<>();
-
-		usersAvg.forEach((k, v) -> usersList.add(v));
-		return partitionService.partitionTheUsersComparingTheScoresAndTeamMembers(usersList, teamsCounter);
+			List<String> usersIDs, double penaltyWeigth) throws MarcoException {
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs);
+		return standardPartition.partitionTheUsersComparingTheScoresAndTeamMembers(usersList, teamsCounter,
+				penaltyWeigth);
 	}
-	
+
 	@Override
 	public List<LocalDateTime> getAvailableGamesList() {
 		return repoUserScore.listAvailableGames().stream().map(DaoGames::getGameOf).collect(Collectors.toList());
 	}
 
+	@Override
+	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
+			double penaltyWeigth) throws MarcoException {
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs);
+
+		return ixigoPartition.partitionTheUsersComparingTheScores(usersList, 2, penaltyWeigth);
+	}
+	
+	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs) throws MarcoException{
+		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs);
+		List<UserAvgScore> usersList = new ArrayList<>();
+
+		usersAvg.forEach((k, v) -> usersList.add(v));
+		return usersList;
+	}
 
 }

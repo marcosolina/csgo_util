@@ -11,7 +11,8 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.init = function(){
         PlayersManager.getUsersList();
         $("#selectRoundToConsider").change(PlayersManager.createTeams);
-        $("#forceEqualTeamSize").change(PlayersManager.createTeams);
+        $("#partitionTypeIxigo").change(PlayersManager.createTeams);
+        $("#partitionTypeIxigo").prop("checked", true);
         PlayersManager.getAvailableGames();
     }
 
@@ -30,6 +31,12 @@ var PlayersManager = ((function(PlayersManager){
             jSelect.empty();
             for(let i = 1; i <= resp.availableGames.length; i++){
                 jSelect.append(MarcoUtils.template(strTmpl, {count: i}));
+            }
+
+            if(resp.availableGames.length > 49){
+                jSelect.val(50);
+            }else{
+                jSelect.val(resp.availableGames.length);
             }
         }
         
@@ -100,7 +107,8 @@ var PlayersManager = ((function(PlayersManager){
         steamIds.forEach(v => {queryParam += "," + v;});
         let gamesToConsider = $("#selectRoundToConsider").val()
         let url = "https://marco.selfip.net/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
-        url += "&forceEqualTeamSize=" + $("#forceEqualTeamSize").prop("checked");
+        url += "&partitionType=" + $('input[name=partitionType]:checked').val();
+        url += "&penaltyWeigth=" + $('#penaltyWeigth').val();
 
         MarcoUtils.executeAjax({
             type: "GET",
@@ -133,10 +141,14 @@ var PlayersManager = ((function(PlayersManager){
 
             arrTerrorist.forEach(t => {
                 t.badgType = t.avgScore == t.originalAvgScore ? "badge-primary" : "badge-danger";
+                t.avgScore = t.avgScore.toFixed(2);
+                t.avgScore = t.avgScore.length < 5 ? "0" + t.avgScore : t.avgScore;
                 jTerroristList.append(MarcoUtils.template(strTmpl, t));
             });
             arrCt.forEach(ct => {
                 ct.badgType = ct.avgScore == ct.originalAvgScore ? "badge-primary" : "badge-danger";
+                ct.avgScore = ct.avgScore.toFixed(2);
+                ct.avgScore = ct.avgScore.length < 5 ? "0" + ct.avgScore : ct.avgScore;
                 jCtList.append(MarcoUtils.template(strTmpl, ct));
             });
         }

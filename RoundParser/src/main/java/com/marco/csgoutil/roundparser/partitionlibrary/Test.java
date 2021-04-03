@@ -12,8 +12,9 @@ public class Test {
 		ids.add(6,new IdNumber(7,12.0));
 		ids.add(7,new IdNumber(8,10.64));
 		ids.add(8,new IdNumber(9,5.43));
-		Result res = new Result(9, 2);
-		Partition p = new Partition(ids, res,ids.getAvrSum(2), 1);
+		double penaltyWeitgh = 2;
+		Result res = new Result(9, 2, penaltyWeitgh);
+		new Partition(ids, res,ids.getAvrSum(2), 1, penaltyWeitgh);
 		res.print(0);
 	}
 }

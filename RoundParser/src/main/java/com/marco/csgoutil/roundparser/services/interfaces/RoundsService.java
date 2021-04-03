@@ -104,7 +104,10 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
-			List<String> usersIDs) throws MarcoException;
+			List<String> usersIDs, double penaltyWeigth) throws MarcoException;
+	
+	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter,
+			List<String> usersIDs, double penaltyWeigth) throws MarcoException;
 
 	/**
 	 * It returns the list off available games stored into the system

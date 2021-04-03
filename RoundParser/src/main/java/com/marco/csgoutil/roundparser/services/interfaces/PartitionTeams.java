@@ -21,7 +21,7 @@ public interface PartitionTeams {
 	 * @param partions
 	 * @return
 	 */
-	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions);
+	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions, double penaltyWeight);
 	
-	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList, Integer partions);
+	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList, Integer partions, double penaltyWeight);
 }

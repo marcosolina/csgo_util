@@ -13,7 +13,6 @@ import org.springframework.core.Ordered;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.marco.csgoutil.roundparser.enums.Environment;
-import com.marco.csgoutil.roundparser.enums.PartitionType;
 import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserPostgres;
 import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserScorePostgres;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
@@ -22,7 +21,7 @@ import com.marco.csgoutil.roundparser.services.implementations.RoundFileServiceM
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserRasp;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserWindows;
 import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsDynamicSearchTree;
-import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsMarco;
+import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsIxigo;
 import com.marco.csgoutil.roundparser.services.implementations.roundsservice.RoundsServiceRasp;
 import com.marco.csgoutil.roundparser.services.implementations.roundsservice.RoundsServiceWindows;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
@@ -50,16 +49,12 @@ public class Beans {
 
 	@Value("${com.marco.csgoutil.roundparser.version}")
 	private String appVersion;
-	
+
 	@Value("${com.marco.csgoutil.roundparser.environment}")
 	private Environment environment;
-	
-	@Value("${com.marco.csgoutil.roundparser.partition.type}")
-	private PartitionType partitionType;
-	
+
 	/*
-	 * ############################################################### 
-	 * Services 
+	 * ############################################################### Services
 	 * ###############################################################
 	 */
 	@Bean
@@ -89,25 +84,22 @@ public class Beans {
 		default:
 			return new CsgoRoundFileParserWindows();
 		}
-		
+
 	}
-	
-	@Bean
-	public PartitionTeams getPartitionTeams() {
-		switch(partitionType) {
-			case SEARCH_TREE:
-				return new PartitionTeamsDynamicSearchTree();
-			case MARCO:
-				return new PartitionTeamsMarco();
-			default:
-				return new PartitionTeamsMarco();
-		}
+
+	@Bean(name = "Simple")
+	public PartitionTeams getSimplePartitionTeams() {
+		return new PartitionTeamsDynamicSearchTree();
+	}
+
+	@Bean(name = "IxiGO")
+	public PartitionTeams getIxigoPartitionTeams() {
+		return new PartitionTeamsIxigo();
 	}
 
 	/*
-	 * ############################################################### 
-	 * DB Repositories 
-	 * ###############################################################
+	 * ############################################################### DB
+	 * Repositories ###############################################################
 	 */
 	@Bean
 	public RepoUser getRepoUser() {
@@ -120,8 +112,7 @@ public class Beans {
 	}
 
 	/*
-	 * ############################################################### 
-	 * Misc 
+	 * ############################################################### Misc
 	 * ###############################################################
 	 */
 	@Bean
@@ -131,30 +122,23 @@ public class Beans {
 
 		return messageSource;
 	}
-	
+
 	@Bean
-    public Docket swaggerConfiguration() {
-		 TypeResolver resolver = new TypeResolver();
-		 return new Docket(DocumentationType.SWAGGER_2)
-			 .alternateTypeRules( AlternateTypeRules.newRule(
-					 resolver.resolve(List.class, LocalDate.class),
-					 resolver.resolve(List.class, String.class), Ordered.HIGHEST_PRECEDENCE),
-					 AlternateTypeRules.newRule(
-							 resolver.resolve(List.class, LocalDateTime.class),
-							 resolver.resolve(List.class, String.class), Ordered.HIGHEST_PRECEDENCE)
-					 )
-        	.select()
-            .apis(RequestHandlerSelectors.basePackage("com.marco.csgoutil.roundparser.controllers"))
-            .paths(PathSelectors.regex("/.*"))
-            .build().apiInfo(apiEndPointsInfo());
-    }
-    
-    
-    private ApiInfo apiEndPointsInfo() {
-        return new ApiInfoBuilder().title("Round Parser")
-            .description("I have created this project to parse the \".dem\" files generated from the CS:GO server that I use with my friends")
-            .contact(new Contact("Marco Solina", "", ""))
-            .version(appVersion)
-            .build();
-    }
+	public Docket swaggerConfiguration() {
+		TypeResolver resolver = new TypeResolver();
+		return new Docket(DocumentationType.SWAGGER_2)
+				.alternateTypeRules(
+						AlternateTypeRules.newRule(resolver.resolve(List.class, LocalDate.class),
+								resolver.resolve(List.class, String.class), Ordered.HIGHEST_PRECEDENCE),
+						AlternateTypeRules.newRule(resolver.resolve(List.class, LocalDateTime.class),
+								resolver.resolve(List.class, String.class), Ordered.HIGHEST_PRECEDENCE))
+				.select().apis(RequestHandlerSelectors.basePackage("com.marco.csgoutil.roundparser.controllers"))
+				.paths(PathSelectors.regex("/.*")).build().apiInfo(apiEndPointsInfo());
+	}
+
+	private ApiInfo apiEndPointsInfo() {
+		return new ApiInfoBuilder().title("Round Parser").description(
+				"I have created this project to parse the \".dem\" files generated from the CS:GO server that I use with my friends")
+				.contact(new Contact("Marco Solina", "", "")).version(appVersion).build();
+	}
 }

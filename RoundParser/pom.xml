@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.marco.csgoutil</groupId>
 	<artifactId>RoundParser</artifactId>
-	<version>0.0.5</version>
+	<version>0.0.6</version>
 	<name>RoundParser</name>
 	<description>CSGO Round File Parser</description>
 	<properties>
@@ -24,6 +24,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
+			<exclusions>
+				<exclusion>
+					<artifactId>log4j-over-slf4j</artifactId>
+					<groupId>org.slf4j</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -67,6 +73,12 @@
 			<groupId>com.marco</groupId>
 			<artifactId>Utils</artifactId>
 			<version>0.0.2</version>
+		</dependency>
+		<!-- My custom libraries. You can find the source code on my GitHub https://github.com/marcosolina/javautils -->
+		<dependency>
+			<groupId>com.marco.utils</groupId>
+			<artifactId>Partitioning</artifactId>
+			<version>0.0.1</version>
 		</dependency>
 	</dependencies>
 

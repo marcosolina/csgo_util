@@ -45,6 +45,9 @@ public final class EffPartition {
 			numbs.add(new IdNumber(i++, val));
 		}
 		this.result = new Result(numbs.size(), ssCnt);
+		for(Subset s: result.getSubsets()) {
+			s.setSize(s.getNumbIDs().size());
+		}
 		if (ssCnt == 0) {
 			return;
 		}

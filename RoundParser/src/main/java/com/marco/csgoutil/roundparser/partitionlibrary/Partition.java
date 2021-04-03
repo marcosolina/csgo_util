@@ -106,6 +106,7 @@ final class Partition {
 				return;
 			}
 		}
+		return;
 	}
 
 	/**
@@ -188,6 +189,7 @@ final class Partition {
 			}
 			Subset subset = currResult.getSubsets().get(k);
 			subset.setSumVal(subset.getSumVal() + n.getVal());
+			subset.setSize(subset.getSize()+1);
 			n.setBinIInd(ssCnt - k);
 		}
 
@@ -232,6 +234,7 @@ final class Partition {
 					if (n.isFitted(avrUp - currResult.getSubsets().get(i).getSumVal())) {
 						Subset subset = currResult.getSubsets().get(i);
 						subset.setSumVal(subset.getSumVal() + n.getVal());
+						subset.setSize(subset.getSize()+1);
 						n.setBinIInd(ssCnt - i);
 						freeCnt--;
 					}
@@ -271,6 +274,7 @@ final class Partition {
 				n = numbs.get(i);
 				if (n.getBinIInd() == 0 && n.getVal() + ss.getSumVal() < maxSum) {
 					ss.setSumVal(ss.getSumVal() + n.getVal()); // take number's value into account
+					ss.setSize(ss.getSize() + 1);
 					n.setBinIInd(invInd); // take number's bin index
 					if (i + 1 < numbs.size()) { // checkup just to avoid blank recursive invoke
 						doDSTree(i + 1, invInd); // try to fit next numb to the same bin
@@ -279,6 +283,7 @@ final class Partition {
 						doDSTree(0, invInd - 1); // try to fit unallocated numbs to the next bin
 					}
 					ss.setSumVal(ss.getSumVal() - n.getVal()); // discharge number's value
+					ss.setSize(ss.getSize() - 1);
 					n.setBinIInd(0); // discharge number's bin index
 				}
 			}
@@ -290,6 +295,7 @@ final class Partition {
 			for (IdNumber n : numbs) {
 				if (n.getBinIInd() == 0) { // zero invIndex means that number belongs to the last bin
 					ss.setSumVal(ss.getSumVal() + n.getVal());
+					ss.setSize(ss.getSize() + 1);
 				}
 			}
 			if (setRange(currResult)) { // is inaccuracy better than the previous one?
@@ -303,6 +309,7 @@ final class Partition {
 				standbySumDiff = currResult.getSumDiff();
 			}
 			ss.setSumVal(Double.valueOf(0)); // clear last bin sum
+			ss.setSize(0);
 		}
 	}
 

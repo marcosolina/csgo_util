@@ -10,20 +10,30 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.csgoutil.roundparser.partitionlibrary.PartitionTwoTeams;
 import com.marco.csgoutil.roundparser.partitionlibrary.Subset;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
+import com.marco.utils.MarcoException;
 
 public class PartitionTeamsIxigo implements PartitionTeams {
 
 	private static final Logger _LOGGER = LoggerFactory.getLogger(PartitionTeamsIxigo.class);
+	@Autowired
+	private MessageSource msgSource;
 
 	@Override
 	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions,
-			double penaltyWeight) {
+			double penaltyWeight) throws MarcoException{
+		
+		if(penaltyWeight == 0) {
+			throw new MarcoException(msgSource.getMessage("DEMP00002", null, LocaleContextHolder.getLocale()));
+		}
 
 		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
 		Map<Integer, UserAvgScore> userMap = new HashMap<>();
@@ -66,7 +76,7 @@ public class PartitionTeamsIxigo implements PartitionTeams {
 
 	@Override
 	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList, Integer partions,
-			double penaltyWeight) {
+			double penaltyWeight) throws MarcoException{
 
 		return partitionTheUsersComparingTheScores(usersList, partions, penaltyWeight);
 

@@ -118,8 +118,14 @@ public class Result {
 				penalty = penaltyWeitgh;
 			}
 		} else if (Math.abs(size0 - size1) > 1) {// if more than one different add a penalty for each player different
-
-			penalty = Math.abs(size0 - size1) * penaltyWeitgh;
+			if (size0 - size1 > 0 && this.getSubsets().get(0).getSumVal() > this.getSubsets().get(1).getSumVal()
+					|| size1 - size0 > 0
+							&& this.getSubsets().get(1).getSumVal() > this.getSubsets().get(0).getSumVal()) {
+				penalty = Math.abs(size0 - size1) * penaltyWeitgh+.5;
+			}else {
+				penalty = Math.abs(size0 - size1) * penaltyWeitgh;
+			}
+			
 		}
 		Double newSumDiff = range.getMaxSum() - range.getMinSum() + penalty;
 

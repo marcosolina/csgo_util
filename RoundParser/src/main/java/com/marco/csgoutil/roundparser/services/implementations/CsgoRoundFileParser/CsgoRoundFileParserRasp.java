@@ -40,7 +40,7 @@ public class CsgoRoundFileParserRasp implements CsgoRoundFileParser {
 		List<UserMapStats> usersStats = new ArrayList<>();
 
 		try {
-			_LOGGER.debug(String.format("Executing command: %s", cmd.toString()));
+			_LOGGER.info(String.format("Executing command: %s", cmd.toString()));
 
 			Process p = Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
 			p.waitFor();

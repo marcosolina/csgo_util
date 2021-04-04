@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.Team;
+import com.marco.utils.MarcoException;
 
 /**
  * It provides the logic to partion the teams
@@ -21,7 +22,18 @@ public interface PartitionTeams {
 	 * @param partions
 	 * @return
 	 */
-	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions, double penaltyWeight);
-	
-	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList, Integer partions, double penaltyWeight);
+	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions,
+			double penaltyWeight) throws MarcoException;
+
+	/**
+	 * Il will try to create teams with even number of players adding some penalty
+	 * if required
+	 * 
+	 * @param usersList
+	 * @param partions
+	 * @param penaltyWeight
+	 * @return
+	 */
+	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList, Integer partions,
+			double penaltyWeight) throws MarcoException;
 }

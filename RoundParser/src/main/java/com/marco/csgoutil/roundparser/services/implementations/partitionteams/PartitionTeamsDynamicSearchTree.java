@@ -10,13 +10,16 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
+import com.marco.utils.MarcoException;
 import com.marco.utils.partitioning.EfficientPartition;
 import com.marco.utils.partitioning.Subset;
-
 
 /**
  * It uses a third party algorithm
@@ -27,9 +30,12 @@ import com.marco.utils.partitioning.Subset;
 public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 
 	private static final Logger _LOGGER = LoggerFactory.getLogger(PartitionTeamsDynamicSearchTree.class);
+	@Autowired
+	private MessageSource msgSource;
 
 	@Override
-	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions, double penaltyWeight) {
+	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions,
+			double penaltyWeight) {
 
 		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
 		Map<Integer, UserAvgScore> userMap = new HashMap<>();
@@ -71,8 +77,13 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 	}
 
 	@Override
-	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList,
-			Integer partions, double penaltyWeight) {
+	public List<Team> partitionTheUsersComparingTheScoresAndTeamMembers(List<UserAvgScore> usersList, Integer partions,
+			double penaltyWeight) throws MarcoException {
+
+		if (penaltyWeight == 0) {
+			throw new MarcoException(msgSource.getMessage("DEMP00002", null, LocaleContextHolder.getLocale()));
+		}
+
 		List<Team> teams = null;
 		boolean ok = false;
 
@@ -81,13 +92,13 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 			teams = partitionTheUsersComparingTheScores(usersList, partions, penaltyWeight);
 			teams.sort((o1, o2) -> o1.getMembers().size() < o2.getMembers().size() ? -1 : 1);
 
-			outerloop:
-			for (int i = 0; i < teams.size(); i++) {
+			outerloop: for (int i = 0; i < teams.size(); i++) {
 				for (int j = i + 1; j < teams.size(); j++) {
 					int delta = teams.get(i).getMembers().size() - teams.get(j).getMembers().size();
 					if (Math.abs(delta) > 1) {
 						usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()));
-						usersList.get(0).setAvgScore(usersList.get(0).getAvgScore().add(BigDecimal.valueOf(penaltyWeight)).setScale(2, RoundingMode.DOWN));
+						usersList.get(0).setAvgScore(usersList.get(0).getAvgScore()
+								.add(BigDecimal.valueOf(penaltyWeight)).setScale(2, RoundingMode.DOWN));
 						ok = false;
 						break outerloop;
 					}

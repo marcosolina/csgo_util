@@ -34,6 +34,9 @@ public class PartitionTeamsIxigo implements PartitionTeams {
 		if(penaltyWeight == 0) {
 			throw new MarcoException(msgSource.getMessage("DEMP00002", null, LocaleContextHolder.getLocale()));
 		}
+		if (penaltyWeight < 0) {
+			throw new MarcoException(msgSource.getMessage("DEMP00003", null, LocaleContextHolder.getLocale()));
+		}
 
 		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
 		Map<Integer, UserAvgScore> userMap = new HashMap<>();

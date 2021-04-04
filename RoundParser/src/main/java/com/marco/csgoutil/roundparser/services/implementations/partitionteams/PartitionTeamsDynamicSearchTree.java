@@ -83,6 +83,10 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 		if (penaltyWeight == 0) {
 			throw new MarcoException(msgSource.getMessage("DEMP00002", null, LocaleContextHolder.getLocale()));
 		}
+		if (penaltyWeight < 0) {
+			throw new MarcoException(msgSource.getMessage("DEMP00003", null, LocaleContextHolder.getLocale()));
+		}
+		
 
 		List<Team> teams = null;
 		boolean ok = false;

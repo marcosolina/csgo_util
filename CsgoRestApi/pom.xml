@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.marco</groupId>
 	<artifactId>CsgoRestApi</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1</version>
 	<name>CsgoRestApi</name>
 	<description>CSGO Utils APIs project</description>
 	<properties>
@@ -52,6 +52,11 @@
 			<groupId>com.marco</groupId>
 			<artifactId>Utils</artifactId>
 			<version>0.0.2</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.koraktor</groupId>
+			<artifactId>steam-condenser</artifactId>
+			<version>1.3.9</version>
 		</dependency>
 	</dependencies>
 

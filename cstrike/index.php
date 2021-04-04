@@ -3,30 +3,30 @@ include 'Classes.php';
 
 function formatSizeUnits($bytes)
 {
-	if ($bytes >= 1073741824) {
-		$bytes = number_format($bytes / 1073741824, 2) . ' GB';
-	} elseif ($bytes >= 1048576) {
-		$bytes = number_format($bytes / 1048576, 2) . ' MB';
-	} elseif ($bytes >= 1024) {
-		$bytes = number_format($bytes / 1024, 2) . ' KB';
-	} elseif ($bytes > 1) {
-		$bytes = $bytes . ' bytes';
-	} elseif ($bytes == 1) {
-		$bytes = $bytes . ' byte';
-	} else {
-		$bytes = '0 bytes';
-	}
-
-	return $bytes;
+    if ($bytes >= 1073741824) {
+        $bytes = number_format($bytes / 1073741824, 2) . ' GB';
+    } elseif ($bytes >= 1048576) {
+        $bytes = number_format($bytes / 1048576, 2) . ' MB';
+    } elseif ($bytes >= 1024) {
+        $bytes = number_format($bytes / 1024, 2) . ' KB';
+    } elseif ($bytes > 1) {
+        $bytes = $bytes . ' bytes';
+    } elseif ($bytes == 1) {
+        $bytes = $bytes . ' byte';
+    } else {
+        $bytes = '0 bytes';
+    }
+    
+    return $bytes;
 }
 
 function rcommandTitleSection($title){
-	$str = <<<EOD
+    $str = <<<EOD
 	<div class="rcon-container-title">
 		<h1>$title</h1>
 	</div>
 EOD;
-	return $str;
+    return $str;
 }
 
 ?>
@@ -301,6 +301,14 @@ EOD;
 								<input type="password" class="form-control" id="rconPassw">
 							</div>
 						</div>
+						<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+							<div class="input-group mb-3">
+							<input type="text" class="form-control" id="rconCmd" placeholder="RCON command to send">
+								<div class="input-group-append">
+									<button class="btn btn-secondary" type="button" id="sendRcon">Send</button>
+								</div>
+							</div>
+						</div>
 					</div>
 					<?php 
 					/*
@@ -361,7 +369,24 @@ EOD;
 			</div>
 		</div>
 	</div>
-
+	<!-- Modal -->
+	<div class="modal fade" id="modalWindow" tabindex="-1" aria-labelledby="modalWindowLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalWindowLabel">RCON Response</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="input-group">
+						<textarea class="form-control" id="rconResp"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<body>
 
 </html>

@@ -18,3 +18,4 @@ This is a personal project that I made to simplify couple of things when playing
 
 - Java 11
 - PHP >=5
+- C#

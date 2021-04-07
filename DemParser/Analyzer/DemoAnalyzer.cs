@@ -145,7 +145,7 @@ namespace DemParser.Analyzer
 				case Valve.NAME:
 				case PopFlash.NAME:
 				case Wanmei.NAME:
-					//return new ValveAnalyzer(demo);
+					return new ValveAnalyzer(demo);
 				case Esea.NAME:
 					return new EseaAnalyzer(demo);
 				case Ebot.NAME:

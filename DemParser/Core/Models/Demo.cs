@@ -1315,8 +1315,8 @@ namespace DemParser.Core.Models
 
 		public void ResetStats(bool resetTeams = true)
 		{
-			DispatcherHelper.CheckBeginInvokeOnUI(delegate
-			{
+			//DispatcherHelper.CheckBeginInvokeOnUI(delegate
+			//{
 				AssistCount = 0;
 				AssistPerRound = 0;
 				AverageEseaRws = 0;
@@ -1391,7 +1391,7 @@ namespace DemParser.Core.Models
 					foreach (Player player in Players) player.ResetStats();
 				}
 				RaiseScoresChanged();
-			});
+			//});
 		}
 
 		/// <summary>

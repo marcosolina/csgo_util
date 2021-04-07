@@ -1996,7 +1996,7 @@ namespace DemParser.Analyzer
 			}
 		}
 
-		protected void ProcessAnalyzeEnded()
+		public void ProcessAnalyzeEnded()
 		{
 			// As round_officialy_ended isn't raised we add the last round / OT after the analyze
 			if (Demo.Rounds.Count < Demo.ScoreTeamCt + Demo.ScoreTeamT)

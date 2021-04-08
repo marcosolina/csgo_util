@@ -54,7 +54,7 @@ namespace DemParser
 			foreach (Core.Models.Player player in demo.Players)
 			{
 				string s = player.EseaRws.ToString();
-				Console.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35}",
+				Console.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36}",
 					player.Name, player.SteamId, player.EseaRws,
 					player.KillCount,
 					player.AssistCount,
@@ -78,6 +78,7 @@ namespace DemParser
 					player.TradeDeathCount,
 					player.KillPerRound,
 					player.AssistPerRound,
+					player.DeathPerRound,
 					player.AverageHealthDamage,
 					player.TotalDamageHealthCount,
 					player.TotalDamageArmorCount,

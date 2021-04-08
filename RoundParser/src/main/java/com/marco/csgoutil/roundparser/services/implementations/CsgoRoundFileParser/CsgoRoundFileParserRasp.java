@@ -1,9 +1,6 @@
 package com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,47 +34,8 @@ public class CsgoRoundFileParserRasp implements CsgoRoundFileParser {
 		cmd.add(executable);
 		cmd.add(roundFile.getAbsolutePath());
 
-		List<UserMapStats> usersStats = new ArrayList<>();
-
-		try {
-			_LOGGER.info(String.format("Executing command: %s", cmd.toString()));
-
-			Process p = Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
-			p.waitFor();
-
-			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
-
-			String line = null;
-			String err = null;
-			boolean healtyDem = false;
-
-			while ((line = stdInput.readLine()) != null) {
-				String[] tmp = line.split(",");
-				UserMapStats ums = new UserMapStats();
-				ums.setScore(Integer.parseInt(tmp[0]));
-				ums.setUserName(tmp[1]);
-				ums.setSteamID(tmp[2]);
-				usersStats.add(ums);
-				healtyDem = true;
-			}
-
-			StringBuilder sb = new StringBuilder();
-			while ((err = stdError.readLine()) != null) {
-				sb.append(err);
-			}
-
-			if (sb.length() > 0 || !healtyDem) {
-				throw new MarcoException(sb.toString());
-			}
-
-		} catch (IOException | InterruptedException e) {
-			if (_LOGGER.isTraceEnabled()) {
-				e.printStackTrace();
-			}
-			throw new MarcoException(e.getMessage());
-		}
-		return usersStats;
+		CmdExecuter ce = new CmdExecuter();
+		return ce.extractPlayersScore(cmd);
 	}
 
 }

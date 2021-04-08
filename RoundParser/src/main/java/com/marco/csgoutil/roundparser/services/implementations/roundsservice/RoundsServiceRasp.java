@@ -105,14 +105,7 @@ public class RoundsServiceRasp implements RoundsService {
 						user.setUserName(u.getUserName());
 						repoUser.insertUpdateUser(user);
 						
-						EntityUserScore us = new EntityUserScore();
-						us.setScore(Long.valueOf(u.getScore()));
-						
-						EntityUserScorePk usId = new EntityUserScorePk();
-						usId.setMap(m.getMapName());
-						usId.setGameDate(m.getPlayedOn());
-						usId.setSteamId(u.getSteamID());
-						us.setId(usId);
+						EntityUserScore us = fromUserMapStatsToEntityUserScore(m, u);
 						
 						repoUserScore.insertUpdateUserScore(us);
 					})
@@ -197,12 +190,104 @@ public class RoundsServiceRasp implements RoundsService {
 		ms.setPlayedOn(score.getId().getGameDate());
 
 		UserMapStats ums = new UserMapStats();
-		ums.setScore(score.getScore().intValue());
-		ums.setSteamID(user.getSteamId());
+		
 		ums.setUserName(user.getUserName());
+		ums.setSteamID(user.getSteamId());
+		ums.setRoundWinShare(score.getRoundWinShare());
+		ums.setKills(score.getKills());
+		ums.setAssists(score.getAssists());
+		ums.setDeaths(score.getDeaths());
+		ums.setTotalDamageHealth(score.getTotalDamageHealth());
+		ums.setTotalDamageArmor(score.getTotalDamageArmor());
+		ums.setOneVersusOne(score.getOneVersusOne());
+		ums.setOneVersusTwo(score.getOneVersusTwo());
+		ums.setOneVersusThree(score.getOneVersusThree());
+		ums.setOneVersusFour(score.getOneVersusFour());
+		ums.setOneVersusFive(score.getOneVersusFive());
+		ums.setGrenadesThrownCount(score.getGrenadesThrownCount());
+		ums.setFlashesThrownCount(score.getFlashesThrownCount());
+		ums.setSmokesThrownCount(score.getSmokesThrownCount());
+		ums.setFireThrownCount(score.getFireThrownCount());
+		ums.setHighExplosiveDamage(score.getHighExplosiveDamage());
+		ums.setFireDamage(score.getFireDamage());
+		ums.setFiveKills(score.getFiveKills());
+		ums.setFourKills(score.getFourKills());
+		ums.setThreeKills(score.getThreeKills());
+		ums.setTwoKills(score.getTwoKills());
+		ums.setOneKill(score.getOneKill());
+		ums.setTradeKill(score.getTradeKill());
+		ums.setTradeDeath(score.getTradeDeath());
+		ums.setTeamKillFriendlyFire(score.getTeamKillFriendlyFire());
+		ums.setEntryKill(score.getEntryKill());
+		ums.setBombPLanted(score.getBombPLanted());
+		ums.setBombDefused(score.getBombDefused());
+		ums.setMostValuablePlayer(score.getMostValuablePlayer());
+		ums.setScore(score.getScore());
+		ums.setHeadShots(score.getHeadShots());
+		
+		ums.setKillDeathRation(score.getKillDeathRation());
+		ums.setHeadShotsPercentage(score.getHeadShotsPercentage());
+		ums.setHalfLifeTelevisionRating(score.getHalfLifeTelevisionRating());
+		ums.setKillPerRound(score.getKillPerRound());
+		ums.setAssistsPerRound(score.getAssistsPerRound());
+		ums.setDeathPerRound(score.getDeathPerRound());
+		ums.setAverageDamagePerRound(score.getAverageDamagePerRound());
+		
+		
 		ms.addUserMapStats(ums);
 
 		return ms;
+	}
+	
+	private EntityUserScore fromUserMapStatsToEntityUserScore(MapStats ms, UserMapStats score) {
+		EntityUserScore ums = new EntityUserScore();
+		
+		EntityUserScorePk pk = new EntityUserScorePk();
+		pk.setGameDate(ms.getPlayedOn());
+		pk.setMap(ms.getMapName());
+		pk.setSteamId(score.getSteamID());
+		
+		ums.setId(pk);
+		ums.setRoundWinShare(score.getRoundWinShare());
+		ums.setKills(score.getKills());
+		ums.setAssists(score.getAssists());
+		ums.setDeaths(score.getDeaths());
+		ums.setTotalDamageHealth(score.getTotalDamageHealth());
+		ums.setTotalDamageArmor(score.getTotalDamageArmor());
+		ums.setOneVersusOne(score.getOneVersusOne());
+		ums.setOneVersusTwo(score.getOneVersusTwo());
+		ums.setOneVersusThree(score.getOneVersusThree());
+		ums.setOneVersusFour(score.getOneVersusFour());
+		ums.setOneVersusFive(score.getOneVersusFive());
+		ums.setGrenadesThrownCount(score.getGrenadesThrownCount());
+		ums.setFlashesThrownCount(score.getFlashesThrownCount());
+		ums.setSmokesThrownCount(score.getSmokesThrownCount());
+		ums.setFireThrownCount(score.getFireThrownCount());
+		ums.setHighExplosiveDamage(score.getHighExplosiveDamage());
+		ums.setFireDamage(score.getFireDamage());
+		ums.setFiveKills(score.getFiveKills());
+		ums.setFourKills(score.getFourKills());
+		ums.setThreeKills(score.getThreeKills());
+		ums.setTwoKills(score.getTwoKills());
+		ums.setOneKill(score.getOneKill());
+		ums.setTradeKill(score.getTradeKill());
+		ums.setTradeDeath(score.getTradeDeath());
+		ums.setTeamKillFriendlyFire(score.getTeamKillFriendlyFire());
+		ums.setEntryKill(score.getEntryKill());
+		ums.setBombPLanted(score.getBombPLanted());
+		ums.setBombDefused(score.getBombDefused());
+		ums.setMostValuablePlayer(score.getMostValuablePlayer());
+		ums.setScore(score.getScore());
+		ums.setHeadShots(score.getHeadShots());
+		
+		ums.setKillDeathRation(score.getKillDeathRation());
+		ums.setHeadShotsPercentage(score.getHeadShotsPercentage());
+		ums.setHalfLifeTelevisionRating(score.getHalfLifeTelevisionRating());
+		ums.setKillPerRound(score.getKillPerRound());
+		ums.setAssistsPerRound(score.getAssistsPerRound());
+		ums.setDeathPerRound(score.getDeathPerRound());
+		ums.setAverageDamagePerRound(score.getAverageDamagePerRound());
+		return ums;
 	}
 
 	@Override

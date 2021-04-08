@@ -4,6 +4,7 @@ using DemoInfo;
 using DemParser.Analyzer;
 using DemParser.Core.Models;
 using DemParser.Core.Models.Source;
+using DemParser.Core.Models.Events;
 using System;
 using System.IO;
 
@@ -49,12 +50,25 @@ namespace DemParser
 			va.Parser.ParseToEnd();
             va.ProcessAnalyzeEnded();
 
-			Console.WriteLine("Name,SteamID,RWS,Kills,Assists,Deaths,K/D,HS,HS%,FF,EK,BP,BD,MVP,Score,HLTV,5K,4K,3K,2K,1K,TK,TD,KPR,APR,DPR,ADR,TDH,TDA,1v1,1v2,1v3,1v4,1v5,Grenades,Flashes,Fire");
+			Console.WriteLine("Name,SteamID,RWS,Kills,Assists,Deaths,K/D,HS,HS%,FF,EK,BP,BD,MVP,Score,HLTV,5K,4K,3K,2K,1K,TK,TD,KPR,APR,DPR,ADR,TDH,TDA,1v1,1v2,1v3,1v4,1v5,Grenades,Flashes,Smokes,Fire,HEDamage,FireDamage");
 
 			foreach (Core.Models.Player player in demo.Players)
 			{
 				string s = player.EseaRws.ToString();
-				Console.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36}",
+				//additional damage info
+				int heDamage = 0;
+				int fireDamage = 0;
+				foreach (PlayerHurtedEvent hurt in player.PlayersHurted)
+                {
+					if (hurt.AttackerSteamId == player.SteamId && hurt.Weapon.Name.Equals(Weapon.HE)){
+						heDamage += hurt.HealthDamage;
+					}
+					else if (hurt.AttackerSteamId == player.SteamId && (hurt.Weapon.Name.Equals(Weapon.INCENDIARY) || hurt.Weapon.Name.Equals(Weapon.MOLOTOV)))
+					{
+						fireDamage += hurt.HealthDamage;
+					}
+				}
+				Console.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31},{32},{33},{34},{35},{36},{37},{38},{39}",
 					player.Name, player.SteamId, player.EseaRws,
 					player.KillCount,
 					player.AssistCount,
@@ -89,7 +103,10 @@ namespace DemParser
 					player.Clutch1V5Count,
 					player.HeGrenadeThrownCount,
 					player.FlashbangThrownCount,
-					player.MolotovThrownCount + player.IncendiaryThrownCount
+					player.SmokeThrownCount,
+					player.MolotovThrownCount + player.IncendiaryThrownCount,
+					heDamage,
+					fireDamage
 					));
 			}
 		}

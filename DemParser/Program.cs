@@ -13,7 +13,7 @@ namespace DemParser
     {
 		static void Main(string[] args)
 		{
-			string demFile = "C:\\demos\\auto0-20210405-190514-472545077-de_dust2-IXI-GO__Monday_Nights__Marco_.dem";
+			string demFile = "C:\\demos\\auto0-20210405-202405-1225659043-de_nuke-IXI-GO__Monday_Nights__Marco_.dem";
 
 			//using (FileStream input = File.OpenRead(args[0])) {
 			using (FileStream input = File.OpenRead(demFile))
@@ -49,10 +49,43 @@ namespace DemParser
 			va.Parser.ParseToEnd();
             va.ProcessAnalyzeEnded();
 
+			Console.WriteLine("Name,SteamID,RWS,Kills,Assists,Deaths,K/D,HS,HS%,FF,EK,BP,BD,MVP,Score,ATD,HLTV,5K,4K,3K,2K,1K,TK,TD,KPR,APR,DPR,ADR,TDH,TDA,1v1,1v2,1v3,1v4,1v5");
+
 			foreach (Core.Models.Player player in demo.Players)
 			{
 				string s = player.EseaRws.ToString();
-				Console.WriteLine(string.Format("{0},{1},{2},{3}", player.EseaRws.ToString(), player.RatingHltv.ToString(), player.Name, player.SteamId));
+				Console.WriteLine(string.Format("{0},{1},{2},{3},{4},{5},{6},{7},{8},{9},{10},{11},{12},{13},{14},{15},{16},{17},{18},{19},{20},{21},{22},{23},{24},{25},{26},{27},{28},{29},{30},{31}",
+					player.Name, player.SteamId, player.EseaRws,
+					player.KillCount,
+					player.AssistCount,
+					player.DeathCount,
+					player.KillDeathRatio,
+					player.HeadshotCount,
+					player.HeadshotPercent,
+					player.TeamKillCount,
+					player.EntryKillWonCount,
+					player.BombPlantedCount,
+					player.BombDefusedCount,
+					player.RoundMvpCount,
+					player.Score,
+					player.AverageTimeDeath,
+					player.RatingHltv,
+					player.FiveKillCount,
+					player.FourKillCount,
+					player.ThreeKillCount,
+					player.TwoKillCount,
+					player.OneKillCount,
+					player.KillPerRound,
+					player.AssistPerRound,
+					player.AverageHealthDamage,
+					player.TotalDamageHealthCount,
+					player.TotalDamageArmorCount,
+					player.Clutch1V1WonCount,
+					player.Clutch1V2WonCount,
+					player.Clutch1V3WonCount,
+					player.Clutch1V4WonCount,
+					player.Clutch1V5Count
+					));
 			}
 		}
     }

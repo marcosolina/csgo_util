@@ -1,5 +1,8 @@
 package com.marco.csgoutil.roundparser.utils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * Simple Utils class
  * 
@@ -62,4 +65,12 @@ public class RoundParserUtils {
 	public static final int DEM_COL_FIRE_THROWN_COUNT = 37;
 	public static final int DEM_COL_HIGH_EXPLOSIVE_DAMAGE = 38;
 	public static final int DEM_COL_FIRE_DAMAGE = 39;
+	
+	public static BigDecimal doubleToBigDecimal(Double d, int decimals) {
+		return BigDecimal.valueOf(d).setScale(decimals, RoundingMode.DOWN);
+	}
+	
+	public static Double bigDecimalToDouble(BigDecimal d, int decimals) {
+		return d.setScale(decimals, RoundingMode.DOWN).doubleValue();
+	}
 }

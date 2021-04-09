@@ -23,20 +23,20 @@ CREATE TABLE USERS_SCORES (
 	GAME_DATE				TIMESTAMP						NOT NULL,
 	MAP						VARCHAR(100) 		DEFAULT ''	NOT NULL,
 	STEAM_ID				VARCHAR(100) 		DEFAULT ''	NOT NULL,
-	RWS						REAL				DEFAULT 0	NOT NULL, -- Round Win Share
+	RWS						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Round Win Share
 	KILLS					INTEGER				DEFAULT 0	NOT NULL,
 	ASSISTS					INTEGER				DEFAULT 0	NOT NULL,
 	DEATHS					INTEGER				DEFAULT 0	NOT NULL,
-	KDR						REAL				DEFAULT 0	NOT NULL, -- Kill / Death Ratio
+	KDR						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Kill / Death Ratio
 	HS						INTEGER				DEFAULT 0	NOT NULL, -- Head Shots
-	HSP						REAL				DEFAULT 0	NOT NULL, -- Head Shots Percentage
+	HSP						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Head Shots Percentage
 	FF						INTEGER				DEFAULT 0	NOT NULL, -- Team Kill (Friendly Fire)
 	EK						INTEGER				DEFAULT 0	NOT NULL, -- Entry Kill
 	BP						INTEGER				DEFAULT 0	NOT NULL, -- Bomb Planted
 	BD						INTEGER				DEFAULT 0	NOT NULL, -- Bomb Defused
 	MVP						INTEGER				DEFAULT 0	NOT NULL, -- Most Valuable Player
 	SCORE					INTEGER				DEFAULT 0	NOT NULL,
-	HLTV					REAL				DEFAULT 0	NOT NULL, -- HLTV Half Life Television Rating
+	HLTV					NUMERIC(6, 3)		DEFAULT 0	NOT NULL, -- HLTV Half Life Television Rating
 	_5K						INTEGER				DEFAULT 0	NOT NULL, -- Five Kills
 	_4K						INTEGER				DEFAULT 0	NOT NULL, -- Four Kills
 	_3K						INTEGER				DEFAULT 0	NOT NULL, -- Three Kills
@@ -44,10 +44,10 @@ CREATE TABLE USERS_SCORES (
 	_1K						INTEGER				DEFAULT 0	NOT NULL, -- One Kill
 	TK						INTEGER				DEFAULT 0	NOT NULL, -- Trade Kill
 	TD						INTEGER				DEFAULT 0	NOT NULL, -- Trade Death
-	KPR						REAL				DEFAULT 0	NOT NULL, -- Kill Per Round
-	APR						REAL				DEFAULT 0	NOT NULL, -- Assists Per Round
-	DPR						REAL				DEFAULT 0	NOT NULL, -- Death Per Round
-	ADR						REAL				DEFAULT 0	NOT NULL, -- Average Damage Per Round
+	KPR						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Kill Per Round
+	APR						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Assists Per Round
+	DPR						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Death Per Round
+	ADR						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Average Damage Per Round
 	TDH						INTEGER				DEFAULT 0	NOT NULL, -- Total Damage Health
 	TDA						INTEGER				DEFAULT 0	NOT NULL, -- Total Damage Armor
 	_1V1					INTEGER				DEFAULT 0	NOT NULL, -- 1 Versus 1

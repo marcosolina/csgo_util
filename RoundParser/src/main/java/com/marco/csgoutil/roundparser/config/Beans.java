@@ -22,7 +22,7 @@ import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFilePars
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserWindows;
 import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsDynamicSearchTree;
 import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsIxigo;
-import com.marco.csgoutil.roundparser.services.implementations.roundsservice.RoundsServiceRasp;
+import com.marco.csgoutil.roundparser.services.implementations.roundsservice.RoundsServiceMarco;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
@@ -59,7 +59,7 @@ public class Beans {
 	 */
 	@Bean
 	public RoundsService getRoundsService() {
-		return new RoundsServiceRasp();
+		return new RoundsServiceMarco();
 	}
 
 	@Bean

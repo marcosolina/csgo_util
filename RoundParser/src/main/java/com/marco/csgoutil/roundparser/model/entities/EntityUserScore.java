@@ -1,5 +1,7 @@
 package com.marco.csgoutil.roundparser.model.entities;
 
+import java.math.BigDecimal;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -17,7 +19,7 @@ public class EntityUserScore {
 	@EmbeddedId
 	private EntityUserScorePk id;
 	@Column(name = "RWS")
-	private Double roundWinShare;
+	private BigDecimal roundWinShare;
 	@Column(name = "KILLS")
 	private Long kills;
 	@Column(name = "ASSISTS")
@@ -25,11 +27,11 @@ public class EntityUserScore {
 	@Column(name = "DEATHS")
 	private Long deaths;
 	@Column(name = "KDR")
-	private Double killDeathRation;
+	private BigDecimal killDeathRation;
 	@Column(name = "HS")
 	private Long headShots;
 	@Column(name = "HSP")
-	private Double headShotsPercentage;
+	private BigDecimal headShotsPercentage;
 	@Column(name = "FF")
 	private Long teamKillFriendlyFire;
 	@Column(name = "EK")
@@ -43,7 +45,7 @@ public class EntityUserScore {
 	@Column(name = "SCORE")
 	private Long score;
 	@Column(name = "HLTV")
-	private Double halfLifeTelevisionRating;
+	private BigDecimal halfLifeTelevisionRating;
 	@Column(name = "_5K")
 	private Long fiveKills;
 	@Column(name = "_4K")
@@ -59,13 +61,13 @@ public class EntityUserScore {
 	@Column(name = "TD")
 	private Long tradeDeath;
 	@Column(name = "KPR")
-	private Double killPerRound;
+	private BigDecimal killPerRound;
 	@Column(name = "APR")
-	private Double assistsPerRound;
+	private BigDecimal assistsPerRound;
 	@Column(name = "DPR")
-	private Double deathPerRound;
+	private BigDecimal deathPerRound;
 	@Column(name = "ADR")
-	private Double averageDamagePerRound;
+	private BigDecimal averageDamagePerRound;
 	@Column(name = "TDH")
 	private Long totalDamageHealth;
 	@Column(name = "TDA")
@@ -101,11 +103,11 @@ public class EntityUserScore {
 		this.id = id;
 	}
 
-	public Double getRoundWinShare() {
+	public BigDecimal getRoundWinShare() {
 		return roundWinShare;
 	}
 
-	public void setRoundWinShare(Double roundWinShare) {
+	public void setRoundWinShare(BigDecimal roundWinShare) {
 		this.roundWinShare = roundWinShare;
 	}
 
@@ -133,11 +135,11 @@ public class EntityUserScore {
 		this.deaths = deaths;
 	}
 
-	public Double getKillDeathRation() {
+	public BigDecimal getKillDeathRation() {
 		return killDeathRation;
 	}
 
-	public void setKillDeathRation(Double killDeathRation) {
+	public void setKillDeathRation(BigDecimal killDeathRation) {
 		this.killDeathRation = killDeathRation;
 	}
 
@@ -149,11 +151,11 @@ public class EntityUserScore {
 		this.headShots = headShots;
 	}
 
-	public Double getHeadShotsPercentage() {
+	public BigDecimal getHeadShotsPercentage() {
 		return headShotsPercentage;
 	}
 
-	public void setHeadShotsPercentage(Double headShotsPercentage) {
+	public void setHeadShotsPercentage(BigDecimal headShotsPercentage) {
 		this.headShotsPercentage = headShotsPercentage;
 	}
 
@@ -205,11 +207,11 @@ public class EntityUserScore {
 		this.score = score;
 	}
 
-	public Double getHalfLifeTelevisionRating() {
+	public BigDecimal getHalfLifeTelevisionRating() {
 		return halfLifeTelevisionRating;
 	}
 
-	public void setHalfLifeTelevisionRating(Double halfLifeTelevisionRating) {
+	public void setHalfLifeTelevisionRating(BigDecimal halfLifeTelevisionRating) {
 		this.halfLifeTelevisionRating = halfLifeTelevisionRating;
 	}
 
@@ -269,35 +271,35 @@ public class EntityUserScore {
 		this.tradeDeath = tradeDeath;
 	}
 
-	public Double getKillPerRound() {
+	public BigDecimal getKillPerRound() {
 		return killPerRound;
 	}
 
-	public void setKillPerRound(Double killPerRound) {
+	public void setKillPerRound(BigDecimal killPerRound) {
 		this.killPerRound = killPerRound;
 	}
 
-	public Double getAssistsPerRound() {
+	public BigDecimal getAssistsPerRound() {
 		return assistsPerRound;
 	}
 
-	public void setAssistsPerRound(Double assistsPerRound) {
+	public void setAssistsPerRound(BigDecimal assistsPerRound) {
 		this.assistsPerRound = assistsPerRound;
 	}
 
-	public Double getDeathPerRound() {
+	public BigDecimal getDeathPerRound() {
 		return deathPerRound;
 	}
 
-	public void setDeathPerRound(Double deathPerRound) {
+	public void setDeathPerRound(BigDecimal deathPerRound) {
 		this.deathPerRound = deathPerRound;
 	}
 
-	public Double getAverageDamagePerRound() {
+	public BigDecimal getAverageDamagePerRound() {
 		return averageDamagePerRound;
 	}
 
-	public void setAverageDamagePerRound(Double averageDamagePerRound) {
+	public void setAverageDamagePerRound(BigDecimal averageDamagePerRound) {
 		this.averageDamagePerRound = averageDamagePerRound;
 	}
 

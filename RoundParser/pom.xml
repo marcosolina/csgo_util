@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.marco.csgoutil</groupId>
 	<artifactId>RoundParser</artifactId>
-	<version>0.0.8</version>
+	<version>0.0.9</version>
 	<name>RoundParser</name>
 	<description>CSGO Round File Parser</description>
 	<properties>

@@ -1,5 +1,6 @@
 package com.marco.csgoutil.roundparser.repositories.implementations;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -95,11 +96,11 @@ public class RepoUserScorePostgres implements RepoUserScore {
 	}
 
 	@Override
-	public List<Double> getLastXUserScoresValue(Integer counter, String steamID) {
+	public List<BigDecimal> getLastXUserScoresValue(Integer counter, String steamID) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.getAvgLastXUserScores");
 		
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<Double> cq = cb.createQuery(Double.class);
+		CriteriaQuery<BigDecimal> cq = cb.createQuery(BigDecimal.class);
 		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
 		
 		/*

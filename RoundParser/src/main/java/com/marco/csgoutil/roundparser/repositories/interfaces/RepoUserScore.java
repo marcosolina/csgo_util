@@ -50,5 +50,5 @@ public interface RepoUserScore {
 	 * @param steamID
 	 * @return
 	 */
-	public List<Long> getLastXUserScoresValue(Integer counter, String steamID);
+	public List<Double> getLastXUserScoresValue(Integer counter, String steamID);
 }

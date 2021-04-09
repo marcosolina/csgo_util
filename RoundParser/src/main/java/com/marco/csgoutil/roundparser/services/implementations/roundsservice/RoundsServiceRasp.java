@@ -340,7 +340,7 @@ public class RoundsServiceRasp implements RoundsService {
 			uas.setSteamID(steamId);
 			uas.setUserName(user.getUserName());
 
-			List<Long> scores = repoUserScore.getLastXUserScoresValue(gamesCounter, steamId);
+			List<Double> scores = repoUserScore.getLastXUserScoresValue(gamesCounter, steamId);
 			Double avg = scores.stream().mapToDouble(a -> a).average().orElse(0);
 			uas.setAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
 			uas.setOriginalAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));

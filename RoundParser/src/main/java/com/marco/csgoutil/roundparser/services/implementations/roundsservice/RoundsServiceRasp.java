@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import com.marco.csgoutil.roundparser.enums.ParserExecutionType;
 import com.marco.csgoutil.roundparser.model.entities.DaoGames;
 import com.marco.csgoutil.roundparser.model.entities.EntityUser;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScore;
@@ -65,14 +66,16 @@ public class RoundsServiceRasp implements RoundsService {
 	private MessageSource msgSource;
 	@Value("${com.marco.csgoutil.roundparser.deleteBadDemFiles}")
 	private boolean deleteBadDemFiles;
+	@Value("${com.marco.csgoutil.roundparser.executionType}")
+	private ParserExecutionType executionType;
 
 	@Override
 	public List<MapStats> processNewDemFiles() throws MarcoException {
 		
 		
+		List<MapStats> mapStats = new ArrayList<>();
 		Runnable parser = () -> {
 			try {
-				List<MapStats> mapStats = new ArrayList<>();
 				// Get the list of all the available dem files
 				List<File> fileList = roundFildeService.retrieveAllDemFiles();
 				// Get the list of the dem files that I have already processed
@@ -120,6 +123,17 @@ public class RoundsServiceRasp implements RoundsService {
 		
 		Thread thread = new Thread(parser);
 		thread.start();
+		if(executionType != ParserExecutionType.ASYNC) {
+			try {
+				thread.join();
+				return mapStats;
+			} catch (InterruptedException e) {
+				if(_LOGGER.isTraceEnabled()) {
+					e.printStackTrace();
+				}
+				throw new MarcoException(e);
+			}
+		}
 
 		return new ArrayList<>();
 	}

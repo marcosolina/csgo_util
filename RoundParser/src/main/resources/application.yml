@@ -24,6 +24,7 @@ com:
       roundparser:
         version: ^project.version^
         environment: WINDOWS # Enum: WINDOWS, RASP
+        executionType: SYNC # Enum: ASYNC, SYNC
         demfolder: "C:\\tmp\\demfiles"
         dotnetexecutable: "E:\\Workspaces\\Git\\csgo_util\\DemParser\\bin\\Debug\\netcoreapp3.1\\DemParser.dll"
         deleteBadDemFiles: false

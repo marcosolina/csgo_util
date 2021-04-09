@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import com.marco.csgoutil.roundparser.enums.ParserExecutionType;
 import com.marco.csgoutil.roundparser.model.entities.DaoGames;
 import com.marco.csgoutil.roundparser.model.entities.EntityUser;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScore;
@@ -33,19 +34,19 @@ import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
+import com.marco.csgoutil.roundparser.utils.RoundParserUtils;
 import com.marco.utils.DateUtils;
 import com.marco.utils.MarcoException;
 import com.marco.utils.enums.DateFormats;
 
 /**
- * My rasp is quite slow, so I have provided an implementation which runs some
- * logic in a separate thread, otherwise the rest request will time out
+ * This implementation provides the logic required when parsing the dem files
  * 
  * @author Marco
  *
  */
-public class RoundsServiceRasp implements RoundsService {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(RoundsServiceRasp.class);
+public class RoundsServiceMarco implements RoundsService {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(RoundsServiceMarco.class);
 
 	@Autowired
 	private RoundFileService roundFildeService;
@@ -65,14 +66,15 @@ public class RoundsServiceRasp implements RoundsService {
 	private MessageSource msgSource;
 	@Value("${com.marco.csgoutil.roundparser.deleteBadDemFiles}")
 	private boolean deleteBadDemFiles;
+	@Value("${com.marco.csgoutil.roundparser.executionType}")
+	private ParserExecutionType executionType;
 
 	@Override
 	public List<MapStats> processNewDemFiles() throws MarcoException {
-		
-		
+
+		List<MapStats> mapStats = new ArrayList<>();
 		Runnable parser = () -> {
 			try {
-				List<MapStats> mapStats = new ArrayList<>();
 				// Get the list of all the available dem files
 				List<File> fileList = roundFildeService.retrieveAllDemFiles();
 				// Get the list of the dem files that I have already processed
@@ -105,14 +107,7 @@ public class RoundsServiceRasp implements RoundsService {
 						user.setUserName(u.getUserName());
 						repoUser.insertUpdateUser(user);
 						
-						EntityUserScore us = new EntityUserScore();
-						us.setScore(Long.valueOf(u.getScore()));
-						
-						EntityUserScorePk usId = new EntityUserScorePk();
-						usId.setMap(m.getMapName());
-						usId.setGameDate(m.getPlayedOn());
-						usId.setSteamId(u.getSteamID());
-						us.setId(usId);
+						EntityUserScore us = fromUserMapStatsToEntityUserScore(m, u);
 						
 						repoUserScore.insertUpdateUserScore(us);
 					})
@@ -123,10 +118,20 @@ public class RoundsServiceRasp implements RoundsService {
 				_LOGGER.error(e1.getMessage());
 			}
 		};
-		
-		
+
 		Thread thread = new Thread(parser);
 		thread.start();
+		if (executionType != ParserExecutionType.ASYNC) {
+			try {
+				thread.join();
+				return mapStats;
+			} catch (InterruptedException e) {
+				if (_LOGGER.isTraceEnabled()) {
+					e.printStackTrace();
+				}
+				throw new MarcoException(e);
+			}
+		}
 
 		return new ArrayList<>();
 	}
@@ -197,12 +202,103 @@ public class RoundsServiceRasp implements RoundsService {
 		ms.setPlayedOn(score.getId().getGameDate());
 
 		UserMapStats ums = new UserMapStats();
-		ums.setScore(score.getScore().intValue());
-		ums.setSteamID(user.getSteamId());
+
 		ums.setUserName(user.getUserName());
+		ums.setSteamID(user.getSteamId());
+		ums.setKills(score.getKills());
+		ums.setAssists(score.getAssists());
+		ums.setDeaths(score.getDeaths());
+		ums.setTotalDamageHealth(score.getTotalDamageHealth());
+		ums.setTotalDamageArmor(score.getTotalDamageArmor());
+		ums.setOneVersusOne(score.getOneVersusOne());
+		ums.setOneVersusTwo(score.getOneVersusTwo());
+		ums.setOneVersusThree(score.getOneVersusThree());
+		ums.setOneVersusFour(score.getOneVersusFour());
+		ums.setOneVersusFive(score.getOneVersusFive());
+		ums.setGrenadesThrownCount(score.getGrenadesThrownCount());
+		ums.setFlashesThrownCount(score.getFlashesThrownCount());
+		ums.setSmokesThrownCount(score.getSmokesThrownCount());
+		ums.setFireThrownCount(score.getFireThrownCount());
+		ums.setHighExplosiveDamage(score.getHighExplosiveDamage());
+		ums.setFireDamage(score.getFireDamage());
+		ums.setFiveKills(score.getFiveKills());
+		ums.setFourKills(score.getFourKills());
+		ums.setThreeKills(score.getThreeKills());
+		ums.setTwoKills(score.getTwoKills());
+		ums.setOneKill(score.getOneKill());
+		ums.setTradeKill(score.getTradeKill());
+		ums.setTradeDeath(score.getTradeDeath());
+		ums.setTeamKillFriendlyFire(score.getTeamKillFriendlyFire());
+		ums.setEntryKill(score.getEntryKill());
+		ums.setBombPLanted(score.getBombPLanted());
+		ums.setBombDefused(score.getBombDefused());
+		ums.setMostValuablePlayer(score.getMostValuablePlayer());
+		ums.setScore(score.getScore());
+		ums.setHeadShots(score.getHeadShots());
+
+		ums.setRoundWinShare(RoundParserUtils.bigDecimalToDouble(score.getRoundWinShare(), 2));
+		ums.setKillDeathRation(RoundParserUtils.bigDecimalToDouble(score.getKillDeathRation(), 2));
+		ums.setHeadShotsPercentage(RoundParserUtils.bigDecimalToDouble(score.getHeadShotsPercentage(), 2));
+		ums.setHalfLifeTelevisionRating(RoundParserUtils.bigDecimalToDouble(score.getHalfLifeTelevisionRating(), 3));
+		ums.setKillPerRound(RoundParserUtils.bigDecimalToDouble(score.getKillPerRound(), 2));
+		ums.setAssistsPerRound(RoundParserUtils.bigDecimalToDouble(score.getAssistsPerRound(), 2));
+		ums.setDeathPerRound(RoundParserUtils.bigDecimalToDouble(score.getDeathPerRound(), 2));
+		ums.setAverageDamagePerRound(RoundParserUtils.bigDecimalToDouble(score.getAverageDamagePerRound(), 2));
+
 		ms.addUserMapStats(ums);
 
 		return ms;
+	}
+
+	private EntityUserScore fromUserMapStatsToEntityUserScore(MapStats ms, UserMapStats score) {
+		EntityUserScore ums = new EntityUserScore();
+
+		EntityUserScorePk pk = new EntityUserScorePk();
+		pk.setGameDate(ms.getPlayedOn());
+		pk.setMap(ms.getMapName());
+		pk.setSteamId(score.getSteamID());
+
+		ums.setId(pk);
+		ums.setKills(score.getKills());
+		ums.setAssists(score.getAssists());
+		ums.setDeaths(score.getDeaths());
+		ums.setTotalDamageHealth(score.getTotalDamageHealth());
+		ums.setTotalDamageArmor(score.getTotalDamageArmor());
+		ums.setOneVersusOne(score.getOneVersusOne());
+		ums.setOneVersusTwo(score.getOneVersusTwo());
+		ums.setOneVersusThree(score.getOneVersusThree());
+		ums.setOneVersusFour(score.getOneVersusFour());
+		ums.setOneVersusFive(score.getOneVersusFive());
+		ums.setGrenadesThrownCount(score.getGrenadesThrownCount());
+		ums.setFlashesThrownCount(score.getFlashesThrownCount());
+		ums.setSmokesThrownCount(score.getSmokesThrownCount());
+		ums.setFireThrownCount(score.getFireThrownCount());
+		ums.setHighExplosiveDamage(score.getHighExplosiveDamage());
+		ums.setFireDamage(score.getFireDamage());
+		ums.setFiveKills(score.getFiveKills());
+		ums.setFourKills(score.getFourKills());
+		ums.setThreeKills(score.getThreeKills());
+		ums.setTwoKills(score.getTwoKills());
+		ums.setOneKill(score.getOneKill());
+		ums.setTradeKill(score.getTradeKill());
+		ums.setTradeDeath(score.getTradeDeath());
+		ums.setTeamKillFriendlyFire(score.getTeamKillFriendlyFire());
+		ums.setEntryKill(score.getEntryKill());
+		ums.setBombPLanted(score.getBombPLanted());
+		ums.setBombDefused(score.getBombDefused());
+		ums.setMostValuablePlayer(score.getMostValuablePlayer());
+		ums.setScore(score.getScore());
+		ums.setHeadShots(score.getHeadShots());
+
+		ums.setRoundWinShare(RoundParserUtils.doubleToBigDecimal(score.getRoundWinShare(), 2));
+		ums.setKillDeathRation(RoundParserUtils.doubleToBigDecimal(score.getKillDeathRation(), 2));
+		ums.setHeadShotsPercentage(RoundParserUtils.doubleToBigDecimal(score.getHeadShotsPercentage(), 2));
+		ums.setHalfLifeTelevisionRating(RoundParserUtils.doubleToBigDecimal(score.getHalfLifeTelevisionRating(), 3));
+		ums.setKillPerRound(RoundParserUtils.doubleToBigDecimal(score.getKillPerRound(), 2));
+		ums.setAssistsPerRound(RoundParserUtils.doubleToBigDecimal(score.getAssistsPerRound(), 2));
+		ums.setDeathPerRound(RoundParserUtils.doubleToBigDecimal(score.getDeathPerRound(), 2));
+		ums.setAverageDamagePerRound(RoundParserUtils.doubleToBigDecimal(score.getAverageDamagePerRound(), 2));
+		return ums;
 	}
 
 	@Override
@@ -241,8 +337,8 @@ public class RoundsServiceRasp implements RoundsService {
 			uas.setSteamID(steamId);
 			uas.setUserName(user.getUserName());
 
-			List<Long> scores = repoUserScore.getLastXUserScoresValue(gamesCounter, steamId);
-			Double avg = scores.stream().mapToDouble(a -> a).average().orElse(0);
+			List<BigDecimal> scores = repoUserScore.getLastXUserScoresValue(gamesCounter, steamId);
+			Double avg = scores.stream().mapToDouble(BigDecimal::doubleValue).average().orElse(0);
 			uas.setAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
 			uas.setOriginalAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
 
@@ -264,7 +360,8 @@ public class RoundsServiceRasp implements RoundsService {
 	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
 			List<String> usersIDs, double penaltyWeigth) throws MarcoException {
 		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs);
-		return standardPartition.partitionTheUsersComparingTheScoresAndTeamMembers(usersList, teamsCounter, penaltyWeigth);
+		return standardPartition.partitionTheUsersComparingTheScoresAndTeamMembers(usersList, teamsCounter,
+				penaltyWeigth);
 	}
 
 	@Override
@@ -273,14 +370,14 @@ public class RoundsServiceRasp implements RoundsService {
 	}
 
 	@Override
-	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter,
-			List<String> usersIDs, double penaltyWeigth) throws MarcoException {
+	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
+			double penaltyWeigth) throws MarcoException {
 		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs);
-		
+
 		return ixigoPartition.partitionTheUsersComparingTheScores(usersList, 2, penaltyWeigth);
 	}
-	
-	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs) throws MarcoException{
+
+	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs) throws MarcoException {
 		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs);
 		List<UserAvgScore> usersList = new ArrayList<>();
 

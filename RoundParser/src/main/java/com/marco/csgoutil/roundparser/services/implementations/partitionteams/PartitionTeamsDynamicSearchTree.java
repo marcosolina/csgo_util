@@ -37,7 +37,7 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 	public List<Team> partitionTheUsersComparingTheScores(List<UserAvgScore> usersList, Integer partions,
 			double penaltyWeight) {
 
-		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
+		usersList.sort((o1, o2) -> o1.getTeamSplitScore().compareTo(o2.getTeamSplitScore()) * -1);
 		Map<Integer, UserAvgScore> userMap = new HashMap<>();
 
 		StringBuilder sbScores = new StringBuilder();
@@ -48,13 +48,13 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 		for (UserAvgScore userAvgScore : usersList) {
 			userMap.put(i, userAvgScore);
 
-			sbScores.append(userAvgScore.getAvgScore());
+			sbScores.append(userAvgScore.getTeamSplitScore());
 			sbScores.append(" ");
 			sbIndex.append("  " + i + "   ");
 			i++;
 		}
 
-		List<Double> scores = usersList.stream().map(u -> u.getAvgScore().doubleValue()).collect(Collectors.toList());
+		List<Double> scores = usersList.stream().map(u -> u.getTeamSplitScore().doubleValue()).collect(Collectors.toList());
 
 		EfficientPartition ep = new EfficientPartition(scores, partions);
 		if (_LOGGER.isDebugEnabled()) {
@@ -100,8 +100,8 @@ public class PartitionTeamsDynamicSearchTree implements PartitionTeams {
 				for (int j = i + 1; j < teams.size(); j++) {
 					int delta = teams.get(i).getMembers().size() - teams.get(j).getMembers().size();
 					if (Math.abs(delta) > 1) {
-						usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()));
-						usersList.get(0).setAvgScore(usersList.get(0).getAvgScore()
+						usersList.sort((o1, o2) -> o1.getTeamSplitScore().compareTo(o2.getTeamSplitScore()));
+						usersList.get(0).setTeamSplitScore(usersList.get(0).getTeamSplitScore()
 								.add(BigDecimal.valueOf(penaltyWeight)).setScale(2, RoundingMode.DOWN));
 						ok = false;
 						break outerloop;

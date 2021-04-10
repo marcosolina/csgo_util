@@ -1,6 +1,5 @@
 package com.marco.csgoutil.roundparser.repositories.implementations;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -95,6 +94,8 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		return em.createQuery(cq).setMaxResults(counter).getResultList();
 	}
 
+	
+	/*
 	@Override
 	public List<BigDecimal> getLastXUserScoresValue(Integer counter, String steamID) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.getAvgLastXUserScores");
@@ -103,9 +104,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		CriteriaQuery<BigDecimal> cq = cb.createQuery(BigDecimal.class);
 		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
 		
-		/*
 		 * SELECT RWS FROM USERS_SCORES WHERE STEAM_ID = 'xxx' ORDER BY GAME_DATE DESC LIMIT y
-		 */
 		// @formatter:off
 		cq.select(root.get(EntityUserScore_.ROUND_WIN_SHARE))
 			.where(cb.equal(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.STEAM_ID), steamID))
@@ -115,4 +114,5 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		return em.createQuery(cq).setMaxResults(counter).getResultList();
 	}
 
+	 */
 }

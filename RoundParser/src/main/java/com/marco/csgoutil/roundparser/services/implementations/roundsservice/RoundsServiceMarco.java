@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.ToLongFunction;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -86,7 +88,19 @@ public class RoundsServiceMarco implements RoundsService {
 					.filter(f -> !availableRecordings.contains(new DaoGames(setMapNameAndTime(f).getPlayedOn())))
 					.forEach(f -> {
 						try {
-							mapStats.add(generateMapStatFromFile(f));
+							
+							MapStats m = generateMapStatFromFile(f);
+							m.getUsersStats().stream().forEach(u -> {
+								EntityUser user = new EntityUser();
+								user.setSteamId(u.getSteamID());
+								user.setUserName(u.getUserName());
+								repoUser.insertUpdateUser(user);
+								
+								EntityUserScore us = fromUserMapStatsToEntityUserScore(m, u);
+								
+								repoUserScore.insertUpdateUserScore(us);
+							});
+							mapStats.add(m);
 						} catch (MarcoException e) {
 							_LOGGER.error(String.format("Could not process DEM file: %s", f.getAbsoluteFile()));
 							if(deleteBadDemFiles) {
@@ -96,23 +110,6 @@ public class RoundsServiceMarco implements RoundsService {
 					});
 				// @formatter:on
 
-				mapStats.sort((o1, o2) -> o1.getPlayedOn().compareTo(o2.getPlayedOn()));
-
-				// @formatter:off
-				// Store into the DB the new dem files info
-				mapStats.stream().forEach(m -> 
-					m.getUsersStats().stream().forEach(u -> {
-						EntityUser user = new EntityUser();
-						user.setSteamId(u.getSteamID());
-						user.setUserName(u.getUserName());
-						repoUser.insertUpdateUser(user);
-						
-						EntityUserScore us = fromUserMapStatsToEntityUserScore(m, u);
-						
-						repoUserScore.insertUpdateUserScore(us);
-					})
-				);
-				// @formatter:on
 				_LOGGER.info("Files parsing completed");
 			} catch (MarcoException e1) {
 				_LOGGER.error(e1.getMessage());
@@ -337,15 +334,74 @@ public class RoundsServiceMarco implements RoundsService {
 			uas.setSteamID(steamId);
 			uas.setUserName(user.getUserName());
 
-			List<BigDecimal> scores = repoUserScore.getLastXUserScoresValue(gamesCounter, steamId);
-			Double avg = scores.stream().mapToDouble(BigDecimal::doubleValue).average().orElse(0);
-			uas.setAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
-			uas.setOriginalAvgScore(BigDecimal.valueOf(avg).setScale(2, RoundingMode.DOWN));
+			List<EntityUserScore> userRecords = repoUserScore.getLastXUserScores(gamesCounter, steamId);
+
+			// @formatter:off
+			uas.setRoundWinShare(			fromBigDecimalToBidecimalAvg(EntityUserScore::getRoundWinShare,				userRecords, 2));
+			uas.setKillDeathRatio(			fromBigDecimalToBidecimalAvg(EntityUserScore::getKillDeathRation,			userRecords, 2));
+			uas.setHeadShotsPercentage(		fromBigDecimalToBidecimalAvg(EntityUserScore::getHeadShotsPercentage,		userRecords, 2));
+			uas.setHalfLifeTelevisionRating(fromBigDecimalToBidecimalAvg(EntityUserScore::getHalfLifeTelevisionRating,	userRecords, 3));
+			uas.setKillPerRound(			fromBigDecimalToBidecimalAvg(EntityUserScore::getKillPerRound,				userRecords, 2));
+			uas.setAssistsPerRound(			fromBigDecimalToBidecimalAvg(EntityUserScore::getAssistsPerRound,			userRecords, 2));
+			uas.setDeathPerRound(			fromBigDecimalToBidecimalAvg(EntityUserScore::getDeathPerRound,				userRecords, 2));
+			uas.setAverageDamagePerRound(	fromBigDecimalToBidecimalAvg(EntityUserScore::getAverageDamagePerRound,		userRecords, 2));
+			
+			uas.setKills(				fromLongToBidecimalAvg(EntityUserScore::getKills,					userRecords, 2));
+			uas.setAssists(				fromLongToBidecimalAvg(EntityUserScore::getAssists,					userRecords, 2));
+			uas.setDeaths(				fromLongToBidecimalAvg(EntityUserScore::getDeaths,					userRecords, 2));
+			uas.setHeadShots(			fromLongToBidecimalAvg(EntityUserScore::getHeadShots,				userRecords, 2));
+			uas.setTeamKillFriendlyFire(fromLongToBidecimalAvg(EntityUserScore::getTeamKillFriendlyFire, 	userRecords, 2));
+			uas.setEntryKill(			fromLongToBidecimalAvg(EntityUserScore::getEntryKill,				userRecords, 2));
+			uas.setBombPLanted(			fromLongToBidecimalAvg(EntityUserScore::getBombPLanted,				userRecords, 2));
+			uas.setBombDefused(			fromLongToBidecimalAvg(EntityUserScore::getBombDefused,				userRecords, 2));
+			uas.setMostValuablePlayer(	fromLongToBidecimalAvg(EntityUserScore::getMostValuablePlayer,		userRecords, 2));
+			uas.setScore(				fromLongToBidecimalAvg(EntityUserScore::getScore,					userRecords, 2));
+			uas.setFiveKills(			fromLongToBidecimalAvg(EntityUserScore::getFiveKills,				userRecords, 2));
+			uas.setFourKills(			fromLongToBidecimalAvg(EntityUserScore::getFourKills,				userRecords, 2));
+			uas.setThreeKills(			fromLongToBidecimalAvg(EntityUserScore::getThreeKills,				userRecords, 2));
+			uas.setTwoKills(			fromLongToBidecimalAvg(EntityUserScore::getTwoKills,				userRecords, 2));
+			uas.setOneKill(				fromLongToBidecimalAvg(EntityUserScore::getOneKill,					userRecords, 2));
+			uas.setTradeKill(			fromLongToBidecimalAvg(EntityUserScore::getTradeKill,				userRecords, 2));
+			uas.setTradeDeath(			fromLongToBidecimalAvg(EntityUserScore::getTradeDeath,				userRecords, 2));
+			uas.setTotalDamageHealth(	fromLongToBidecimalAvg(EntityUserScore::getTotalDamageHealth,		userRecords, 2));
+			uas.setTotalDamageArmor(	fromLongToBidecimalAvg(EntityUserScore::getTotalDamageArmor,		userRecords, 2));
+			uas.setOneVersusOne(		fromLongToBidecimalAvg(EntityUserScore::getOneVersusOne,			userRecords, 2));
+			uas.setOneVersusTwo(		fromLongToBidecimalAvg(EntityUserScore::getOneVersusTwo,			userRecords, 2));
+			uas.setOneVersusThree(		fromLongToBidecimalAvg(EntityUserScore::getOneVersusThree,			userRecords, 2));
+			uas.setOneVersusFour(		fromLongToBidecimalAvg(EntityUserScore::getOneVersusFour,			userRecords, 2));
+			uas.setOneVersusFive(		fromLongToBidecimalAvg(EntityUserScore::getOneVersusFive,			userRecords, 2));
+			uas.setGrenadesThrownCount(	fromLongToBidecimalAvg(EntityUserScore::getGrenadesThrownCount,		userRecords, 2));
+			uas.setFlashesThrownCount(	fromLongToBidecimalAvg(EntityUserScore::getFlashesThrownCount,		userRecords, 2));
+			uas.setSmokesThrownCount(	fromLongToBidecimalAvg(EntityUserScore::getSmokesThrownCount,		userRecords, 2));
+			uas.setFireThrownCount(		fromLongToBidecimalAvg(EntityUserScore::getFireThrownCount,			userRecords, 2));
+			uas.setHighExplosiveDamage(	fromLongToBidecimalAvg(EntityUserScore::getHighExplosiveDamage,		userRecords, 2));
+			uas.setFireDamage(			fromLongToBidecimalAvg(EntityUserScore::getFireDamage,				userRecords, 2));
+			
+			/*
+			 * This is the value that will be used to split the teams.
+			 * I add ZERO so I get a new object
+			 */
+			uas.setTeamSplitScore(uas.getRoundWinShare().add(BigDecimal.ZERO));
+			uas.setOriginalTeamSplitScore(uas.getRoundWinShare().add(BigDecimal.ZERO));
+			// @formatter:on
 
 			map.put(steamId, uas);
 		}
 
 		return map;
+	}
+
+	private BigDecimal fromLongToBidecimalAvg(ToLongFunction<EntityUserScore> function,
+			List<EntityUserScore> userRecords, int scale) {
+		return BigDecimal.valueOf(userRecords.stream().mapToDouble(function::applyAsLong).average().orElse(0))
+				.setScale(scale, RoundingMode.DOWN);
+	}
+
+	private BigDecimal fromBigDecimalToBidecimalAvg(Function<EntityUserScore, BigDecimal> function,
+			List<EntityUserScore> userRecords, int scale) {
+		return BigDecimal
+				.valueOf(userRecords.stream().mapToDouble(el -> function.apply(el).doubleValue()).average().orElse(0))
+				.setScale(scale, RoundingMode.DOWN);
 	}
 
 	@Override

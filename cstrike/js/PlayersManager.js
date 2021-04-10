@@ -123,7 +123,7 @@ var PlayersManager = ((function(PlayersManager){
         if(resp && resp.status){
             var strTmpl =   '<li class="list-group-item d-flex justify-content-between align-items-center">' +
                                 '%userName%' +
-                                '<span class="badge badge-pill %badgType%">%avgScore%</span>' +
+                                '<span class="badge badge-pill %badgType%">%teamSplitScore%</span>' +
                             '</li>';
 
             let teamTerrorists = resp.teams[0];
@@ -141,22 +141,22 @@ var PlayersManager = ((function(PlayersManager){
             jCtList.empty();
 
             arrTerrorist.forEach(t => {
-                t.badgType = t.avgScore == t.originalAvgScore ? "badge-primary" : "badge-danger";
-                t.avgScore = t.avgScore.toFixed(2);
-                t.avgScore = t.avgScore.length < 5 ? "0" + t.avgScore : t.avgScore;
+                t.badgType = t.teamSplitScore == t.originalTeamSplitScore ? "badge-primary" : "badge-danger";
+                t.teamSplitScore = t.teamSplitScore.toFixed(2);
+                t.teamSplitScore = t.teamSplitScore.length < 5 ? "0" + t.teamSplitScore : t.teamSplitScore;
                 jTerroristList.append(MarcoUtils.template(strTmpl, t));
             });
             arrCt.forEach(ct => {
-                ct.badgType = ct.avgScore == ct.originalAvgScore ? "badge-primary" : "badge-danger";
-                ct.avgScore = ct.avgScore.toFixed(2);
-                ct.avgScore = ct.avgScore.length < 5 ? "0" + ct.avgScore : ct.avgScore;
+                ct.badgType = ct.teamSplitScore == ct.originalTeamSplitScore ? "badge-primary" : "badge-danger";
+                ct.teamSplitScore = ct.teamSplitScore.toFixed(2);
+                ct.teamSplitScore = ct.teamSplitScore.length < 5 ? "0" + ct.teamSplitScore : ct.teamSplitScore;
                 jCtList.append(MarcoUtils.template(strTmpl, ct));
             });
         }
     }
 
     function sortUserByScore(u1, u2) {
-        return u1.avgScore < u2.avgScore ? 1 : -1;
+        return u1.teamSplitScore < u2.teamSplitScore ? 1 : -1;
     }
 
 	return PlayersManager;

@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -558,6 +559,13 @@ public class RoundsServiceMarco implements RoundsService {
 
 		usersAvg.forEach((k, v) -> usersList.add(v));
 		return usersList;
+	}
+
+	@Override
+	public Map<String, String> mapOfAvailableScores() {
+		Map<String, String> map = new HashMap<>();
+		Arrays.stream(ScoreType.values()).forEach(s -> map.put(s.name(), s.getDesc()));
+		return map;
 	}
 
 }

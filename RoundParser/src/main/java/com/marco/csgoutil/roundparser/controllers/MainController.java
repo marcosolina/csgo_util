@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marco.csgoutil.roundparser.enums.PartitionType;
+import com.marco.csgoutil.roundparser.enums.ScoreType;
 import com.marco.csgoutil.roundparser.model.rest.AvailableGames;
 import com.marco.csgoutil.roundparser.model.rest.MapsScores;
 import com.marco.csgoutil.roundparser.model.rest.Teams;
@@ -145,13 +146,14 @@ public class MainController {
 	@GetMapping(RoundParserUtils.MAPPING_GET_USER_AVG_SCORES)
 	@ApiOperation(value = "It will return the \"average\" score of the users provided in the input list. "
 			+ "The average will be calculated on the last \"counter\" games")
-	public ResponseEntity<UserSvgScores> getUsersAvgScores(@PathVariable("counter") Integer counter,
+	public ResponseEntity<UserSvgScores> getUsersAvgScores(
+			@PathVariable("counter") Integer counter,
 			@RequestParam("usersIDs") List<String> usersIDs) {
 		_LOGGER.trace("Inside MainController.getUsersAvgScores");
 
 		UserSvgScores resp = new UserSvgScores();
 		try {
-			resp.setAvgScores(service.getUsersAvgStatsForLastXGames(counter, usersIDs));
+			resp.setAvgScores(service.getUsersAvgStatsForLastXGames(counter, usersIDs, ScoreType.RWS));
 			resp.setStatus(true);
 			return new ResponseEntity<>(resp, HttpStatus.OK);
 		} catch (MarcoException e) {
@@ -178,7 +180,9 @@ public class MainController {
 	public ResponseEntity<Teams> getTeams(@PathVariable("teamsCounter") Integer teamsCounter,
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
 			@RequestParam(name = "partitionType", defaultValue = "SIMPLE") PartitionType partitionType,
-			@RequestParam(name = "penaltyWeigth", defaultValue = "0") Double penaltyWeigth) {
+			@RequestParam(name = "penaltyWeigth", defaultValue = "0") Double penaltyWeigth,
+			@RequestParam(name = "partionScore", defaultValue = "RWS") ScoreType partionScore
+			) {
 		_LOGGER.trace("Inside MainController.getTeams");
 
 		Teams resp = new Teams();
@@ -186,13 +190,13 @@ public class MainController {
 			List<Team> teams = null;
 			switch (partitionType) {
 			case IXIGO:
-				teams = service.generateTwoTeamsForcingSimilarTeamSizes(counter, usersIDs, penaltyWeigth);
+				teams = service.generateTwoTeamsForcingSimilarTeamSizes(counter, usersIDs, penaltyWeigth, partionScore);
 				break;
 			case FORCE_PLAYERS:
-				teams = service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs, penaltyWeigth);
+				teams = service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs, penaltyWeigth, partionScore);
 				break;
 			case SIMPLE:
-				teams = service.generateTeams(teamsCounter, counter, usersIDs);
+				teams = service.generateTeams(teamsCounter, counter, usersIDs, partionScore);
 				break;
 			default:
 				break;

@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.marco.csgoutil.roundparser.enums.ScoreType;
 import com.marco.csgoutil.roundparser.model.rest.User;
 import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.MapStats;
@@ -28,6 +29,13 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<MapStats> processNewDemFiles() throws MarcoException;
+
+	/**
+	 * It returns a map of available scores
+	 * 
+	 * @return
+	 */
+	public Map<String, String> mapOfAvailableScores();
 
 	/**
 	 * It will parse the dem file and extract the informations
@@ -75,8 +83,8 @@ public interface RoundsService {
 	 * @return
 	 * @throws MarcoException
 	 */
-	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
-			throws MarcoException;
+	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+			ScoreType partionByScore) throws MarcoException;
 
 	/**
 	 * It will generate "teamsCounter" number of teams. It will calculate the
@@ -89,8 +97,8 @@ public interface RoundsService {
 	 * @return
 	 * @throws MarcoException
 	 */
-	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs)
-			throws MarcoException;
+	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs,
+			ScoreType scoreType) throws MarcoException;
 
 	/**
 	 * It works similar to "generateTeams", but if one team have more players (delta
@@ -104,7 +112,7 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
-			List<String> usersIDs, double penaltyWeigth) throws MarcoException;
+			List<String> usersIDs, double penaltyWeigth, ScoreType scoreType) throws MarcoException;
 
 	/**
 	 * It will generate two teams and add some penalty to make even teams
@@ -116,7 +124,7 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
-			double penaltyWeigth) throws MarcoException;
+			double penaltyWeigth, ScoreType scoreType) throws MarcoException;
 
 	/**
 	 * It returns the list off available games stored into the system

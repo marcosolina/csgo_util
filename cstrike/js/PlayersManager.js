@@ -11,10 +11,12 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.init = function(){
         PlayersManager.getUsersList();
         $("#selectRoundToConsider").change(PlayersManager.createTeams);
+        $("#selectScoreType").change(PlayersManager.createTeams);
         $('input[name=partitionType]').change(PlayersManager.createTeams);
         $('#penaltyWeigth').change(PlayersManager.createTeams);
         $("#partitionTypeIxigo").prop("checked", true);
         PlayersManager.getAvailableGames();
+        PlayersManager.getScoreTypes();
     }
 
     PlayersManager.getAvailableGames = function(){
@@ -27,7 +29,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.availableGamesRetrieved = function(resp){
 
         if(resp && resp.status){
-            let strTmpl =   '<option value="%count%">%count%</option>';
+            let strTmpl = '<option value="%count%">%count%</option>';
             let jSelect = $("#selectRoundToConsider");
             jSelect.empty();
             for(let i = 1; i <= resp.availableGames.length; i++){
@@ -39,6 +41,35 @@ var PlayersManager = ((function(PlayersManager){
             }else{
                 jSelect.val(resp.availableGames.length);
             }
+        }
+        
+    }
+
+    PlayersManager.getScoreTypes = function(){
+        MarcoUtils.executeAjax({
+            type: "GET",
+            url: "https://marco.selfip.net/demparser/scorestype",
+        }).then(PlayersManager.scoreTypesRetrieved);
+    }
+
+    PlayersManager.scoreTypesRetrieved = function(resp){
+
+        if(resp && resp.status){
+            let strTmpl = '<option value="%key%">%val%</option>';
+            let jSelect = $("#selectScoreType");
+            jSelect.empty();
+
+            let values = [];
+            for(let prop in resp.types){
+                values.push({key: prop, val: resp.types[prop]});
+            }
+
+            values.sort((o1, o2) => {
+                return o1.val.toLowerCase() < o2.val.toLowerCase() ? -1 : 1;
+            });
+
+            values.forEach(el => jSelect.append(MarcoUtils.template(strTmpl, el)));
+            jSelect.val("RWS");
         }
         
     }
@@ -110,6 +141,7 @@ var PlayersManager = ((function(PlayersManager){
         let url = "https://marco.selfip.net/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
         url += "&partitionType=" + $('input[name=partitionType]:checked').val();
         url += "&penaltyWeigth=" + $('#penaltyWeigth').val();
+        url += "&partitionScore=" + $("#selectScoreType").val();
 
         MarcoUtils.executeAjax({
             type: "GET",
@@ -123,7 +155,7 @@ var PlayersManager = ((function(PlayersManager){
         if(resp && resp.status){
             var strTmpl =   '<li class="list-group-item d-flex justify-content-between align-items-center">' +
                                 '%userName%' +
-                                '<span class="badge badge-pill %badgType%">%avgScore%</span>' +
+                                '<span class="badge badge-pill %badgType%">%teamSplitScore%</span>' +
                             '</li>';
 
             let teamTerrorists = resp.teams[0];
@@ -141,22 +173,22 @@ var PlayersManager = ((function(PlayersManager){
             jCtList.empty();
 
             arrTerrorist.forEach(t => {
-                t.badgType = t.avgScore == t.originalAvgScore ? "badge-primary" : "badge-danger";
-                t.avgScore = t.avgScore.toFixed(2);
-                t.avgScore = t.avgScore.length < 5 ? "0" + t.avgScore : t.avgScore;
+                t.badgType = t.teamSplitScore == t.originalTeamSplitScore ? "badge-primary" : "badge-danger";
+                t.teamSplitScore = t.teamSplitScore.toFixed(2);
+                t.teamSplitScore = t.teamSplitScore.length < 5 ? "0" + t.teamSplitScore : t.teamSplitScore;
                 jTerroristList.append(MarcoUtils.template(strTmpl, t));
             });
             arrCt.forEach(ct => {
-                ct.badgType = ct.avgScore == ct.originalAvgScore ? "badge-primary" : "badge-danger";
-                ct.avgScore = ct.avgScore.toFixed(2);
-                ct.avgScore = ct.avgScore.length < 5 ? "0" + ct.avgScore : ct.avgScore;
+                ct.badgType = ct.teamSplitScore == ct.originalTeamSplitScore ? "badge-primary" : "badge-danger";
+                ct.teamSplitScore = ct.teamSplitScore.toFixed(2);
+                ct.teamSplitScore = ct.teamSplitScore.length < 5 ? "0" + ct.teamSplitScore : ct.teamSplitScore;
                 jCtList.append(MarcoUtils.template(strTmpl, ct));
             });
         }
     }
 
     function sortUserByScore(u1, u2) {
-        return u1.avgScore < u2.avgScore ? 1 : -1;
+        return u1.teamSplitScore < u2.teamSplitScore ? 1 : -1;
     }
 
 	return PlayersManager;

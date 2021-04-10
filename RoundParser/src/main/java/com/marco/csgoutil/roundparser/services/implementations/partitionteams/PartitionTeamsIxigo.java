@@ -38,7 +38,7 @@ public class PartitionTeamsIxigo implements PartitionTeams {
 			throw new MarcoException(msgSource.getMessage("DEMP00003", null, LocaleContextHolder.getLocale()));
 		}
 
-		usersList.sort((o1, o2) -> o1.getAvgScore().compareTo(o2.getAvgScore()) * -1);
+		usersList.sort((o1, o2) -> o1.getTeamSplitScore().compareTo(o2.getTeamSplitScore()) * -1);
 		Map<Integer, UserAvgScore> userMap = new HashMap<>();
 
 		StringBuilder sbScores = new StringBuilder();
@@ -49,13 +49,13 @@ public class PartitionTeamsIxigo implements PartitionTeams {
 		for (UserAvgScore userAvgScore : usersList) {
 			userMap.put(i, userAvgScore);
 
-			sbScores.append(userAvgScore.getAvgScore());
+			sbScores.append(userAvgScore.getTeamSplitScore());
 			sbScores.append(" ");
 			sbIndex.append("  " + i + "   ");
 			i++;
 		}
 
-		List<Double> scores = usersList.stream().map(u -> u.getAvgScore().doubleValue()).collect(Collectors.toList());
+		List<Double> scores = usersList.stream().map(u -> u.getTeamSplitScore().doubleValue()).collect(Collectors.toList());
 
 		PartitionTwoTeams ep = new PartitionTwoTeams(scores, penaltyWeight);
 		if (_LOGGER.isDebugEnabled()) {

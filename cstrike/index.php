@@ -211,6 +211,15 @@ EOD;
 									</select>
 								</div>
 							</div>
+							<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<label class="input-group-text" for="selectScoreType">Score Type</label>
+									</div>
+									<select class="custom-select" id="selectScoreType">
+									</select>
+								</div>
+							</div>
 							<div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-4">
 								<div class="input-group mb-3">
 								<div class="input-group-prepend">
@@ -282,7 +291,7 @@ EOD;
 								<div class="input-group-prepend">
 									<span class="input-group-text" id="rconHostText">Rcon Host</span>
 								</div>
-								<input type="text" class="form-control" id="rconHost">
+								<input type="text" class="form-control" id="rconHost" value="192.168.1.10">
 							</div>
 						</div>
 						<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
@@ -290,7 +299,7 @@ EOD;
 								<div class="input-group-prepend">
 									<span class="input-group-text" id="rconPortText">Rcon Port</span>
 								</div>
-								<input type="text" class="form-control" id="rconPort" placeholder="27015">
+								<input type="text" class="form-control" id="rconPort" placeholder="27015" value="27015">
 							</div>
 						</div>
 						<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
@@ -303,7 +312,7 @@ EOD;
 						</div>
 						<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
 							<div class="input-group mb-3">
-							<input type="text" class="form-control" id="rconCmd" placeholder="RCON command to send">
+								<input type="text" class="form-control" id="rconCmd" placeholder="RCON command to send">
 								<div class="input-group-append">
 									<button class="btn btn-secondary" type="button" id="sendRcon">Send</button>
 								</div>

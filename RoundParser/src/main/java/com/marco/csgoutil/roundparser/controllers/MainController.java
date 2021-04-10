@@ -192,7 +192,7 @@ public class MainController {
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
 			@RequestParam(name = "partitionType", defaultValue = "SIMPLE") PartitionType partitionType,
 			@RequestParam(name = "penaltyWeigth", defaultValue = "0") Double penaltyWeigth,
-			@RequestParam(name = "partionScore", defaultValue = "RWS") ScoreType partionScore) {
+			@RequestParam(name = "partitionScore", defaultValue = "RWS") ScoreType partitionScore) {
 		_LOGGER.trace("Inside MainController.getTeams");
 
 		Teams resp = new Teams();
@@ -200,14 +200,14 @@ public class MainController {
 			List<Team> teams = null;
 			switch (partitionType) {
 			case IXIGO:
-				teams = service.generateTwoTeamsForcingSimilarTeamSizes(counter, usersIDs, penaltyWeigth, partionScore);
+				teams = service.generateTwoTeamsForcingSimilarTeamSizes(counter, usersIDs, penaltyWeigth, partitionScore);
 				break;
 			case FORCE_PLAYERS:
 				teams = service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs, penaltyWeigth,
-						partionScore);
+						partitionScore);
 				break;
 			case SIMPLE:
-				teams = service.generateTeams(teamsCounter, counter, usersIDs, partionScore);
+				teams = service.generateTeams(teamsCounter, counter, usersIDs, partitionScore);
 				break;
 			default:
 				break;

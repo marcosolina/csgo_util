@@ -3,6 +3,7 @@ package com.marco.csgoutil.roundparser.config;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -10,6 +11,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.core.Ordered;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.marco.csgoutil.roundparser.enums.Environment;
@@ -20,10 +23,12 @@ import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
 import com.marco.csgoutil.roundparser.services.implementations.RoundFileServiceMarco;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserRasp;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserWindows;
+import com.marco.csgoutil.roundparser.services.implementations.notifications.EmailNotificationService;
 import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsDynamicSearchTree;
 import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsIxigo;
 import com.marco.csgoutil.roundparser.services.implementations.roundsservice.RoundsServiceMarco;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
+import com.marco.csgoutil.roundparser.services.interfaces.NotificationService;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
@@ -48,9 +53,12 @@ public class Beans {
 
 	@Value("${com.marco.csgoutil.roundparser.version}")
 	private String appVersion;
-
 	@Value("${com.marco.csgoutil.roundparser.environment}")
 	private Environment environment;
+	@Value("${spring.mail.username}")
+	private String emailUser;
+	@Value("${spring.mail.password}")
+	private String emailPassw;
 
 	/*
 	 * ############################################################### 
@@ -88,6 +96,32 @@ public class Beans {
 	@Bean(name = "IxiGO")
 	public PartitionTeams getIxigoPartitionTeams() {
 		return new PartitionTeamsIxigo();
+	}
+	
+	@Bean(name = "email")
+	public NotificationService getEmailNotificationService() {
+		return new EmailNotificationService();
+	}
+	
+	@Bean
+	public JavaMailSender getJavaMailSender() {
+		/*
+		 * Send email using your GMAIL account
+		 */
+		JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
+		mailSender.setHost("smtp.gmail.com");
+		mailSender.setPort(587);
+
+		mailSender.setUsername(emailUser);
+		mailSender.setPassword(emailPassw);
+
+		Properties props = mailSender.getJavaMailProperties();
+		props.put("mail.transport.protocol", "smtp");
+		props.put("mail.smtp.auth", "true");
+		props.put("mail.smtp.starttls.enable", "true");
+		props.put("mail.debug", "true");
+
+		return mailSender;
 	}
 
 	/*

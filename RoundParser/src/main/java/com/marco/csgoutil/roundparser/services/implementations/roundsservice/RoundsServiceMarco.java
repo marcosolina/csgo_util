@@ -3,6 +3,7 @@ package com.marco.csgoutil.roundparser.services.implementations.roundsservice;
 import java.io.File;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -35,6 +36,7 @@ import com.marco.csgoutil.roundparser.model.service.UserMapStats;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
+import com.marco.csgoutil.roundparser.services.interfaces.NotificationService;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
@@ -72,6 +74,10 @@ public class RoundsServiceMarco implements RoundsService {
 	private boolean deleteBadDemFiles;
 	@Value("${com.marco.csgoutil.roundparser.executionType}")
 	private ParserExecutionType executionType;
+	@Autowired
+	private NotificationService notificationService;
+	@Value("${com.marco.csgoutil.notification.emailrecipients}")
+	private List<String> emailRecipients;
 
 	@Override
 	public List<MapStats> processNewDemFiles() throws MarcoException {
@@ -84,6 +90,7 @@ public class RoundsServiceMarco implements RoundsService {
 				// Get the list of the dem files that I have already processed
 				List<DaoGames> availableRecordings = repoUserScore.listAvailableGames();
 
+				LocalDateTime start = LocalDateTime.now();
 				// @formatter:off
 				// Parse only the new dem files
 				fileList.parallelStream()
@@ -111,7 +118,22 @@ public class RoundsServiceMarco implements RoundsService {
 						}
 					});
 				// @formatter:on
-
+				LocalDateTime end = LocalDateTime.now();
+				
+				long seconds = Duration.between(start, end).getSeconds();
+			    long absSeconds = Math.abs(seconds);
+			    String duration = String.format(
+			        "%d:%02d:%02d",
+			        absSeconds / 3600,
+			        (absSeconds % 3600) / 60,
+			        absSeconds % 60);
+				
+				StringBuilder message = new StringBuilder();
+				message.append(String.format("%d new files were processed ", mapStats.size()));
+				message.append("in " + duration);
+				message.append("\nCheck the new stats at https://marco.selfip.net/cstrike/");
+				
+				notificationService.sendParsingCompleteNotification(emailRecipients, "CSGO - Dem Files Processed", message.toString());
 				_LOGGER.info("Files parsing completed");
 			} catch (MarcoException e1) {
 				_LOGGER.error(e1.getMessage());
@@ -322,8 +344,8 @@ public class RoundsServiceMarco implements RoundsService {
 	}
 
 	@Override
-	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, ScoreType partionByScore)
-			throws MarcoException {
+	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+			ScoreType partionByScore) throws MarcoException {
 
 		Map<String, UserAvgScore> map = new HashMap<>();
 
@@ -528,8 +550,8 @@ public class RoundsServiceMarco implements RoundsService {
 	}
 
 	@Override
-	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs, ScoreType scoreType)
-			throws MarcoException {
+	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs,
+			ScoreType scoreType) throws MarcoException {
 		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType);
 
 		return standardPartition.partitionTheUsersComparingTheScores(usersList, teamsCounter, 0);
@@ -556,7 +578,8 @@ public class RoundsServiceMarco implements RoundsService {
 		return ixigoPartition.partitionTheUsersComparingTheScores(usersList, 2, penaltyWeigth);
 	}
 
-	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs, ScoreType scoreType) throws MarcoException {
+	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs, ScoreType scoreType)
+			throws MarcoException {
 		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs, scoreType);
 		List<UserAvgScore> usersList = new ArrayList<>();
 

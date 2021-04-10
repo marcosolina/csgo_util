@@ -15,12 +15,26 @@ spring:
     url: jdbc:postgresql://localhost:5432/demfiles
     username: ${POSTGRES_USER:REPLACE_ME} # Replace the value
     password: ${POSTGRES_PASSW:REPLACE_ME} # Replace the value
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: XXXX
+    password: XXXX
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 server:
   servlet:
     context-path: /demparser
 com:
   marco:
     csgoutil:
+      notification:
+        enabled: false
+        emailrecipients: marcosolina@gmail.com # A list of comma separated emails
       roundparser:
         version: ^project.version^
         environment: WINDOWS # Enum: WINDOWS, RASP

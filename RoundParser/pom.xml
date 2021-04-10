@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.marco.csgoutil</groupId>
 	<artifactId>RoundParser</artifactId>
-	<version>0.0.10</version>
+	<version>0.0.11</version>
 	<name>RoundParser</name>
 	<description>CSGO Round File Parser</description>
 	<properties>
@@ -79,6 +79,11 @@
 			<groupId>com.marco.utils</groupId>
 			<artifactId>Partitioning</artifactId>
 			<version>0.0.2</version>
+		</dependency>
+		<!-- For sending emails -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 	</dependencies>
 

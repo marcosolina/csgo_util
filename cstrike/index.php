@@ -38,13 +38,15 @@ EOD;
 <head>
 
 	<meta charset="UTF-8">
-	<title>IXI-GO: Monday Nights Test</title>
+	<title>IXI-GO: Monday Nights</title>
 	<!-- Meta Information -->
 	<meta name="theme-color" content="#d0d0d0">
 	<meta name="msapplication-navbutton-color" content="#d0d0d0">
 	<meta name="apple-mobile-web-app-status-bar-style" content="#d0d0d0">
 	<meta name="apple-mobile-web-app-capable" content="yes" />
 	<meta name="mobile-web-app-capable" content="yes" />
+	<link rel="icon" sizes="196x196" href="http://marco.selfip.net/cstrike/pictures/ixigo-logo.png">
+	<link rel="apple-touch-icon" href="http://marco.selfip.net/cstrike/pictures/ixigo-logo.png">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="viewport" id="vp" content="initial-scale=1.0,user-scalable=no,maximum-scale=1" />
 	<meta name="apple-mobile-web-app-status-bar-style" content="black">

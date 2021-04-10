@@ -243,7 +243,7 @@ public class RoundsServiceMarco implements RoundsService {
 		ums.setAssistsPerRound(RoundParserUtils.bigDecimalToDouble(score.getAssistsPerRound(), 2));
 		ums.setDeathPerRound(RoundParserUtils.bigDecimalToDouble(score.getDeathPerRound(), 2));
 		ums.setAverageDamagePerRound(RoundParserUtils.bigDecimalToDouble(score.getAverageDamagePerRound(), 2));
-		ums.setMatchPlayed(score.isMatchPlayed());
+		ums.setMatchPlayed(RoundParserUtils.bigDecimalToDouble(score.getMatchPlayed(), 2));
 
 		ms.addUserMapStats(ums);
 
@@ -298,7 +298,7 @@ public class RoundsServiceMarco implements RoundsService {
 		ums.setAssistsPerRound(RoundParserUtils.doubleToBigDecimal(score.getAssistsPerRound(), 2));
 		ums.setDeathPerRound(RoundParserUtils.doubleToBigDecimal(score.getDeathPerRound(), 2));
 		ums.setAverageDamagePerRound(RoundParserUtils.doubleToBigDecimal(score.getAverageDamagePerRound(), 2));
-		ums.setMatchPlayed(score.isMatchPlayed());
+		ums.setMatchPlayed(RoundParserUtils.doubleToBigDecimal(score.getMatchPlayed(), 2));
 		return ums;
 	}
 

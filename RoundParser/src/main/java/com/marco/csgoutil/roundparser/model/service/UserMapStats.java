@@ -369,7 +369,7 @@ public class UserMapStats {
 		this.fireDamage = fireDamage;
 	}
 	
-	public Double isMatchPlayed() {
+	public Double getMatchPlayed() {
 		return matchPlayed;
 	}
 

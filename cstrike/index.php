@@ -38,7 +38,7 @@ EOD;
 <head>
 
 	<meta charset="UTF-8">
-	<title>IXI-GO: Monday Nights</title>
+	<title>IXI-GO: Monday Nights Test</title>
 	<!-- Meta Information -->
 	<meta name="theme-color" content="#d0d0d0">
 	<meta name="msapplication-navbutton-color" content="#d0d0d0">

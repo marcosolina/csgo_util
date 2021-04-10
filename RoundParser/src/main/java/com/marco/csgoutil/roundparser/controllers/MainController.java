@@ -17,6 +17,7 @@ import com.marco.csgoutil.roundparser.enums.PartitionType;
 import com.marco.csgoutil.roundparser.enums.ScoreType;
 import com.marco.csgoutil.roundparser.model.rest.AvailableGames;
 import com.marco.csgoutil.roundparser.model.rest.MapsScores;
+import com.marco.csgoutil.roundparser.model.rest.ScoreTypes;
 import com.marco.csgoutil.roundparser.model.rest.Teams;
 import com.marco.csgoutil.roundparser.model.rest.UserScores;
 import com.marco.csgoutil.roundparser.model.rest.UserSvgScores;
@@ -63,6 +64,17 @@ public class MainController {
 			resp.addError(e);
 			return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
 		}
+	}
+
+	@GetMapping(RoundParserUtils.MAPPING_GET_SCORES_TYPE)
+	@ApiOperation(value = "It will return a map of the score types that you can pass when call the team creation API")
+	public ResponseEntity<ScoreTypes> getScoreType() {
+		_LOGGER.trace("Inside MainController.getScoreType");
+
+		ScoreTypes resp = new ScoreTypes();
+		resp.setTypes(service.mapOfAvailableScores());
+		resp.setStatus(true);
+		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
 
 	/**
@@ -146,8 +158,7 @@ public class MainController {
 	@GetMapping(RoundParserUtils.MAPPING_GET_USER_AVG_SCORES)
 	@ApiOperation(value = "It will return the \"average\" score of the users provided in the input list. "
 			+ "The average will be calculated on the last \"counter\" games")
-	public ResponseEntity<UserSvgScores> getUsersAvgScores(
-			@PathVariable("counter") Integer counter,
+	public ResponseEntity<UserSvgScores> getUsersAvgScores(@PathVariable("counter") Integer counter,
 			@RequestParam("usersIDs") List<String> usersIDs) {
 		_LOGGER.trace("Inside MainController.getUsersAvgScores");
 
@@ -181,8 +192,7 @@ public class MainController {
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
 			@RequestParam(name = "partitionType", defaultValue = "SIMPLE") PartitionType partitionType,
 			@RequestParam(name = "penaltyWeigth", defaultValue = "0") Double penaltyWeigth,
-			@RequestParam(name = "partionScore", defaultValue = "RWS") ScoreType partionScore
-			) {
+			@RequestParam(name = "partionScore", defaultValue = "RWS") ScoreType partionScore) {
 		_LOGGER.trace("Inside MainController.getTeams");
 
 		Teams resp = new Teams();
@@ -193,7 +203,8 @@ public class MainController {
 				teams = service.generateTwoTeamsForcingSimilarTeamSizes(counter, usersIDs, penaltyWeigth, partionScore);
 				break;
 			case FORCE_PLAYERS:
-				teams = service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs, penaltyWeigth, partionScore);
+				teams = service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs, penaltyWeigth,
+						partionScore);
 				break;
 			case SIMPLE:
 				teams = service.generateTeams(teamsCounter, counter, usersIDs, partionScore);

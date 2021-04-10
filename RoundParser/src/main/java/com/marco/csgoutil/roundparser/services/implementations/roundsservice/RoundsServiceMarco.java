@@ -21,6 +21,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
 import com.marco.csgoutil.roundparser.enums.ParserExecutionType;
+import com.marco.csgoutil.roundparser.enums.ScoreType;
 import com.marco.csgoutil.roundparser.model.entities.DaoGames;
 import com.marco.csgoutil.roundparser.model.entities.EntityUser;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScore;
@@ -318,7 +319,7 @@ public class RoundsServiceMarco implements RoundsService {
 	}
 
 	@Override
-	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
+	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, ScoreType partionByScore)
 			throws MarcoException {
 
 		Map<String, UserAvgScore> map = new HashMap<>();
@@ -377,12 +378,130 @@ public class RoundsServiceMarco implements RoundsService {
 			uas.setHighExplosiveDamage(	fromLongToBidecimalAvg(EntityUserScore::getHighExplosiveDamage,		userRecords, 2));
 			uas.setFireDamage(			fromLongToBidecimalAvg(EntityUserScore::getFireDamage,				userRecords, 2));
 			
+			
+			Function<UserAvgScore, BigDecimal> function = null;
+			switch (partionByScore) {
+			case RWS:
+				function = UserAvgScore::getRoundWinShare;
+				break;
+			case KILLS:
+				function = UserAvgScore::getKills;
+				break;
+			case ASSISTS:
+				function = UserAvgScore::getAssists;
+				break;
+			case DEATHS:
+				function = UserAvgScore::getDeaths;
+				break;
+			case KDR:
+				function = UserAvgScore::getKillDeathRatio;
+				break;
+			case HS:
+				function = UserAvgScore::getHeadShots;
+				break;
+			case HSP:
+				function = UserAvgScore::getHeadShotsPercentage;
+				break;
+			case FF:
+				function = UserAvgScore::getTeamKillFriendlyFire;
+				break;
+			case EK:
+				function = UserAvgScore::getEntryKill;
+				break;
+			case BP:
+				function = UserAvgScore::getBombPLanted;
+				break;
+			case BD:
+				function = UserAvgScore::getBombDefused;
+				break;
+			case MVP:
+				function = UserAvgScore::getMostValuablePlayer;
+				break;
+			case SCORE:
+				function = UserAvgScore::getScore;
+				break;
+			case HLTV:
+				function = UserAvgScore::getHalfLifeTelevisionRating;
+				break;
+			case _5K:
+				function = UserAvgScore::getFiveKills;
+				break;
+			case _4K:
+				function = UserAvgScore::getFourKills;
+				break;
+			case _3K:
+				function = UserAvgScore::getThreeKills;
+				break;
+			case _2K:
+				function = UserAvgScore::getTwoKills;
+				break;
+			case _1K:
+				function = UserAvgScore::getOneKill;
+				break;
+			case TK:
+				function = UserAvgScore::getTradeKill;
+				break;
+			case TD:
+				function = UserAvgScore::getTradeDeath;
+				break;
+			case KPR:
+				function = UserAvgScore::getKillPerRound;
+				break;
+			case APR:
+				function = UserAvgScore::getAssistsPerRound;
+				break;
+			case DPR:
+				function = UserAvgScore::getDeathPerRound;
+				break;
+			case ADR:
+				function = UserAvgScore::getAssistsPerRound;
+				break;
+			case TDH:
+				function = UserAvgScore::getTotalDamageHealth;
+				break;
+			case TDA:
+				function = UserAvgScore::getTotalDamageArmor;
+				break;
+			case _1V1:
+				function = UserAvgScore::getOneVersusOne;
+				break;
+			case _1V2:
+				function = UserAvgScore::getOneVersusTwo;
+				break;
+			case _1V3:
+				function = UserAvgScore::getOneVersusThree;
+				break;
+			case _1V4:
+				function = UserAvgScore::getOneVersusFour;
+				break;
+			case _1V5:
+				function = UserAvgScore::getOneVersusFive;
+				break;
+			case GRENADES:
+				function = UserAvgScore::getGrenadesThrownCount;
+				break;
+			case FLASHES:
+				function = UserAvgScore::getFlashesThrownCount;
+				break;
+			case SMOKES:
+				function = UserAvgScore::getSmokesThrownCount;
+				break;
+			case FIRE:
+				function = UserAvgScore::getFireThrownCount;
+				break;
+			case HED:
+				function = UserAvgScore::getHighExplosiveDamage;
+				break;
+			case FD:
+				function = UserAvgScore::getFireDamage;
+				break;
+			}
 			/*
 			 * This is the value that will be used to split the teams.
 			 * I add ZERO so I get a new object
 			 */
-			uas.setTeamSplitScore(uas.getRoundWinShare().add(BigDecimal.ZERO));
-			uas.setOriginalTeamSplitScore(uas.getRoundWinShare().add(BigDecimal.ZERO));
+			uas.setTeamSplitScore(function.apply(uas).add(BigDecimal.ZERO));
+			uas.setOriginalTeamSplitScore(function.apply(uas).add(BigDecimal.ZERO));
 			// @formatter:on
 
 			map.put(steamId, uas);
@@ -405,17 +524,17 @@ public class RoundsServiceMarco implements RoundsService {
 	}
 
 	@Override
-	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs)
+	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs, ScoreType scoreType)
 			throws MarcoException {
-		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs);
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType);
 
 		return standardPartition.partitionTheUsersComparingTheScores(usersList, teamsCounter, 0);
 	}
 
 	@Override
 	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
-			List<String> usersIDs, double penaltyWeigth) throws MarcoException {
-		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs);
+			List<String> usersIDs, double penaltyWeigth, ScoreType scoreType) throws MarcoException {
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType);
 		return standardPartition.partitionTheUsersComparingTheScoresAndTeamMembers(usersList, teamsCounter,
 				penaltyWeigth);
 	}
@@ -427,14 +546,14 @@ public class RoundsServiceMarco implements RoundsService {
 
 	@Override
 	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
-			double penaltyWeigth) throws MarcoException {
-		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs);
+			double penaltyWeigth, ScoreType scoreType) throws MarcoException {
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType);
 
 		return ixigoPartition.partitionTheUsersComparingTheScores(usersList, 2, penaltyWeigth);
 	}
 
-	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs) throws MarcoException {
-		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs);
+	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs, ScoreType scoreType) throws MarcoException {
+		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs, scoreType);
 		List<UserAvgScore> usersList = new ArrayList<>();
 
 		usersAvg.forEach((k, v) -> usersList.add(v));

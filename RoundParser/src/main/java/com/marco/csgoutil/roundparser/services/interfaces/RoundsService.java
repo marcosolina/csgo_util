@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
+import com.marco.csgoutil.roundparser.enums.ScoreType;
 import com.marco.csgoutil.roundparser.model.rest.User;
 import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.MapStats;
@@ -75,7 +76,7 @@ public interface RoundsService {
 	 * @return
 	 * @throws MarcoException
 	 */
-	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
+	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, ScoreType partionByScore)
 			throws MarcoException;
 
 	/**
@@ -89,7 +90,7 @@ public interface RoundsService {
 	 * @return
 	 * @throws MarcoException
 	 */
-	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs)
+	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs, ScoreType scoreType)
 			throws MarcoException;
 
 	/**
@@ -104,7 +105,7 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
-			List<String> usersIDs, double penaltyWeigth) throws MarcoException;
+			List<String> usersIDs, double penaltyWeigth, ScoreType scoreType) throws MarcoException;
 
 	/**
 	 * It will generate two teams and add some penalty to make even teams
@@ -116,7 +117,7 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
-			double penaltyWeigth) throws MarcoException;
+			double penaltyWeigth, ScoreType scoreType) throws MarcoException;
 
 	/**
 	 * It returns the list off available games stored into the system

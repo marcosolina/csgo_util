@@ -94,6 +94,8 @@ public class EntityUserScore {
 	private Long highExplosiveDamage;
 	@Column(name = "FD")
 	private Long fireDamage;
+	@Column(name = "MP")
+	private Boolean matchPlayed;
 
 	public EntityUserScorePk getId() {
 		return id;
@@ -405,6 +407,14 @@ public class EntityUserScore {
 
 	public void setFireDamage(Long fireDamage) {
 		this.fireDamage = fireDamage;
+	}
+	
+	public Boolean isMatchPlayed() {
+		return matchPlayed;
+	}
+
+	public void setMatchPlayed(Boolean matchPlayed) {
+		this.matchPlayed = matchPlayed;
 	}
 
 }

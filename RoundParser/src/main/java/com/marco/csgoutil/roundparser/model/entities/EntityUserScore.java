@@ -94,6 +94,8 @@ public class EntityUserScore {
 	private Long highExplosiveDamage;
 	@Column(name = "FD")
 	private Long fireDamage;
+	@Column(name = "MP")
+	private BigDecimal matchPlayed;
 
 	public EntityUserScorePk getId() {
 		return id;
@@ -405,6 +407,14 @@ public class EntityUserScore {
 
 	public void setFireDamage(Long fireDamage) {
 		this.fireDamage = fireDamage;
+	}
+	
+	public BigDecimal getMatchPlayed() {
+		return matchPlayed;
+	}
+
+	public void setMatchPlayed(BigDecimal matchPlayed) {
+		this.matchPlayed = matchPlayed;
 	}
 
 }

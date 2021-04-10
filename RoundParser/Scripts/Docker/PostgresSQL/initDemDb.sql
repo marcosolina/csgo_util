@@ -61,5 +61,6 @@ CREATE TABLE USERS_SCORES (
 	FIRE					INTEGER				DEFAULT 0	NOT NULL, -- Molotov or Incendiary Thrown count
 	HED						INTEGER				DEFAULT 0	NOT NULL, -- High Explosive Damage
 	FD						INTEGER				DEFAULT 0	NOT NULL, -- Fire Damage
+	MP						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Match Played Percentage
 	PRIMARY KEY(GAME_DATE, MAP, STEAM_ID)
 );

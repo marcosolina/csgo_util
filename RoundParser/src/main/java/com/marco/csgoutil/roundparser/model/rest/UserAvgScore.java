@@ -96,6 +96,8 @@ public class UserAvgScore {
 	private BigDecimal highExplosiveDamage;
 	@ApiModelProperty(notes = "Fire Damage")
 	private BigDecimal fireDamage;
+	@ApiModelProperty(name = "Match Played Percent")
+	private BigDecimal matchPlayed;
 
 	public String getSteamID() {
 		return steamID;
@@ -431,6 +433,14 @@ public class UserAvgScore {
 
 	public void setOriginalTeamSplitScore(BigDecimal originalTeamSplitScore) {
 		this.originalTeamSplitScore = originalTeamSplitScore;
+	}
+	
+	public BigDecimal getMatchPlayed() {
+		return matchPlayed;
+	}
+
+	public void setMatchPlayed(BigDecimal matchPlayed) {
+		this.matchPlayed = matchPlayed;
 	}
 
 }

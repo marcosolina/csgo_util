@@ -47,7 +47,7 @@ public class UserMapStats {
 	private Long fireThrownCount;
 	private Long highExplosiveDamage;
 	private Long fireDamage;
-	private Boolean matchPlayed;
+	private Double matchPlayed;
 
 	public String getUserName() {
 		return userName;
@@ -369,11 +369,11 @@ public class UserMapStats {
 		this.fireDamage = fireDamage;
 	}
 	
-	public Boolean isMatchPlayed() {
+	public Double isMatchPlayed() {
 		return matchPlayed;
 	}
 
-	public void setMatchPlayed(Boolean matchPlayed) {
+	public void setMatchPlayed(Double matchPlayed) {
 		this.matchPlayed = matchPlayed;
 	}
 

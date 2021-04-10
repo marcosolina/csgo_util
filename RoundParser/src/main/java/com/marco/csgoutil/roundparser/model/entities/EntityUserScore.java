@@ -95,7 +95,7 @@ public class EntityUserScore {
 	@Column(name = "FD")
 	private Long fireDamage;
 	@Column(name = "MP")
-	private Boolean matchPlayed;
+	private BigDecimal matchPlayed;
 
 	public EntityUserScorePk getId() {
 		return id;
@@ -409,11 +409,11 @@ public class EntityUserScore {
 		this.fireDamage = fireDamage;
 	}
 	
-	public Boolean isMatchPlayed() {
+	public BigDecimal getMatchPlayed() {
 		return matchPlayed;
 	}
 
-	public void setMatchPlayed(Boolean matchPlayed) {
+	public void setMatchPlayed(BigDecimal matchPlayed) {
 		this.matchPlayed = matchPlayed;
 	}
 

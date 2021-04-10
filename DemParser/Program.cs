@@ -16,8 +16,8 @@ namespace DemParser
 		{
 			string demFile = ""; 
 			demFile = "C:\\demos\\auto0-20210322-212919-820678393-workshop_570181108_de_inferno_winter-IXI-GO__Monday_Nights__Marco_.dem";
-			demFile = "C:\\tmp\\demfiles\\2021-03-29\\auto0-20210329-193658-1526021228-cs_assault-IXI-GO__Monday_Nights__Marco_.dem";
-			demFile = args[0];
+			//demFile = "C:\\tmp\\demfiles\\2021-03-29\\auto0-20210329-193658-1526021228-cs_assault-IXI-GO__Monday_Nights__Marco_.dem";
+			//demFile = args[0];
 
 			Demo demo = new Demo();
 			demo.Path = demFile;
@@ -35,12 +35,8 @@ namespace DemParser
 				//additional damage info
 				int heDamage = 0;
 				int fireDamage = 0;
-				//check the player played at least 80% of the match
-				Boolean matchPlayed = false;
-				if (player.RoundPlayedCount > demo.Rounds.Count * 0.8)
-                {
-					matchPlayed = true;
-				}
+				//check the player played what percentage of the match
+				double matchPlayedPercent = (double)(player.RoundPlayedCount + 1) / (double)(demo.Rounds.Count);
 				foreach (PlayerHurtedEvent hurt in player.PlayersHurted)
                 {
 					if (hurt.AttackerSteamId == player.SteamId && hurt.Weapon.Name.Equals(Weapon.HE)){
@@ -90,7 +86,7 @@ namespace DemParser
 					player.MolotovThrownCount + player.IncendiaryThrownCount,
 					heDamage,
 					fireDamage,
-					matchPlayed
+					matchPlayedPercent
 					));
 			}
 		}

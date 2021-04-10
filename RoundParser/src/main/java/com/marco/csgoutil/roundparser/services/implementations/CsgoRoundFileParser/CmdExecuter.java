@@ -88,7 +88,7 @@ public class CmdExecuter {
 				ums.setAssistsPerRound(parseDouble(tmp[RoundParserUtils.DEM_COL_ASSIST_PER_ROUND]));
 				ums.setDeathPerRound(parseDouble(tmp[RoundParserUtils.DEM_COL_DEATH_PER_ROUND]));
 				ums.setAverageDamagePerRound(parseDouble(tmp[RoundParserUtils.DEM_COL_AVERAGE_DAMAGE_PER_ROUND]));
-				ums.setMatchPlayed(Boolean.parseBoolean(tmp[RoundParserUtils.DEM_COL_MATCH_PLAYED]));
+				ums.setMatchPlayed(parseDouble(tmp[RoundParserUtils.DEM_COL_MATCH_PLAYED]));
 				
 				usersStats.add(ums);
 				healtyDem = true;

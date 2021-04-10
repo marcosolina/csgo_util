@@ -1,4 +1,12 @@
 /*
+ * Terminating all the connections
+ */
+
+SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'demfiles';
+
+DROP DATABASE IF EXISTS DEMFILES;
+
+/*
  * Create the Database
  */
 CREATE DATABASE DEMFILES;

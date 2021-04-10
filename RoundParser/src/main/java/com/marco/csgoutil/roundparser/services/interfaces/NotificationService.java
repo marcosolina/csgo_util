@@ -1,7 +1,5 @@
 package com.marco.csgoutil.roundparser.services.interfaces;
 
-import java.util.List;
-
 /**
  * This interface provides some methods to send notifications
  * 
@@ -15,6 +13,6 @@ public interface NotificationService {
 	 * 
 	 * @param recipients
 	 */
-	public void sendParsingCompleteNotification(List<String> recipients, String title, String message);
+	public void sendParsingCompleteNotification(String title, String message);
 
 }

@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
@@ -75,9 +76,7 @@ public class RoundsServiceMarco implements RoundsService {
 	@Value("${com.marco.csgoutil.roundparser.executionType}")
 	private ParserExecutionType executionType;
 	@Autowired
-	private NotificationService notificationService;
-	@Value("${com.marco.csgoutil.notification.emailrecipients}")
-	private List<String> emailRecipients;
+    private ApplicationContext appContext;
 
 	@Override
 	public List<MapStats> processNewDemFiles() throws MarcoException {
@@ -131,9 +130,12 @@ public class RoundsServiceMarco implements RoundsService {
 				StringBuilder message = new StringBuilder();
 				message.append(String.format("%d new files were processed ", mapStats.size()));
 				message.append("in " + duration);
-				message.append("\nCheck the new stats at https://marco.selfip.net/cstrike/");
+				message.append("\n\nCheck the new stats at https://marco.selfip.net/cstrike/");
 				
-				notificationService.sendParsingCompleteNotification(emailRecipients, "CSGO - Dem Files Processed", message.toString());
+				Map<String, NotificationService> notificationBeans = appContext.getBeansOfType(NotificationService.class);
+				
+				notificationBeans.forEach((n, b) -> b.sendParsingCompleteNotification("CSGO - Dem Files Processed", message.toString()));
+				
 				_LOGGER.info("Files parsing completed");
 			} catch (MarcoException e1) {
 				_LOGGER.error(e1.getMessage());

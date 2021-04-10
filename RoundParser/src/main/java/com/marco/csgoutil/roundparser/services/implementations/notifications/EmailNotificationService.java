@@ -20,27 +20,28 @@ import com.marco.csgoutil.roundparser.services.interfaces.NotificationService;
 public class EmailNotificationService implements NotificationService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(EmailNotificationService.class);
 	
-	@Value("${com.marco.csgoutil.notification.enabled}")
+	@Value("${com.marco.csgoutil.notification.email.enabled}")
 	private boolean notificationEnabled;
 	@Value("${spring.mail.username}")
     private String emailFrom;
     @Autowired
     private JavaMailSender emailSender;
+    @Value("${com.marco.csgoutil.notification.email.emailrecipients}")
+	private List<String> emailRecipients;
 	
 	@Override
-	public void sendParsingCompleteNotification(List<String> recipients, String title, String message) {
+	public void sendParsingCompleteNotification(String title, String message) {
 		if(!notificationEnabled) {
-			LOGGER.info("Notification not enabled");
 			return;
 		}
+		LOGGER.info("Sending email notification");
 		SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom(emailFrom);
-        email.setTo(recipients.toArray(new String[recipients.size()]));
+        email.setTo(emailRecipients.toArray(new String[emailRecipients.size()]));
         email.setSubject(title);
         email.setText(message);
         emailSender.send(email);
-        LOGGER.info("Notification sent");
-
+        LOGGER.info("Email notification sent");
 	}
 
 }

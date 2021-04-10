@@ -13,6 +13,7 @@ import org.springframework.context.support.ReloadableResourceBundleMessageSource
 import org.springframework.core.Ordered;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.marco.csgoutil.roundparser.enums.Environment;
@@ -24,6 +25,7 @@ import com.marco.csgoutil.roundparser.services.implementations.RoundFileServiceM
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserRasp;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserWindows;
 import com.marco.csgoutil.roundparser.services.implementations.notifications.EmailNotificationService;
+import com.marco.csgoutil.roundparser.services.implementations.notifications.TelegramNotificationService;
 import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsDynamicSearchTree;
 import com.marco.csgoutil.roundparser.services.implementations.partitionteams.PartitionTeamsIxigo;
 import com.marco.csgoutil.roundparser.services.implementations.roundsservice.RoundsServiceMarco;
@@ -101,6 +103,16 @@ public class Beans {
 	@Bean(name = "email")
 	public NotificationService getEmailNotificationService() {
 		return new EmailNotificationService();
+	}
+	
+	@Bean(name = "telegram")
+	public NotificationService getTelegramNotificationService() {
+		return new TelegramNotificationService();
+	}
+	
+	@Bean
+	public WebClient.Builder getWebClientBuilder(){
+		return WebClient.builder();
 	}
 	
 	@Bean

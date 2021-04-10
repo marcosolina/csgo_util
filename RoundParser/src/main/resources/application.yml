@@ -33,8 +33,15 @@ com:
   marco:
     csgoutil:
       notification:
-        enabled: false
-        emailrecipients: marcosolina@gmail.com # A list of comma separated email addresses
+        email:
+          enabled: false
+          emailrecipients: marcosolina@gmail.com # A list of comma separated email addresses
+        telegram:
+          enabled: false
+          telegramToken: ${TELEGRAM_BOT_TOKEN:xxxxxx}
+          chatGroupId: ${TELEGRAM_CHAT_GROUP_ID:xxxxxx}
+          # Bot Name: IxiGo
+          # Bot user: @ixigo_bot
       roundparser:
         version: ^project.version^
         environment: WINDOWS # Enum: WINDOWS, RASP

@@ -15,12 +15,33 @@ spring:
     url: jdbc:postgresql://localhost:5432/demfiles
     username: ${POSTGRES_USER:REPLACE_ME} # Replace the value
     password: ${POSTGRES_PASSW:REPLACE_ME} # Replace the value
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: XXXX
+    password: XXXX
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 server:
   servlet:
     context-path: /demparser
 com:
   marco:
     csgoutil:
+      notification:
+        email:
+          enabled: false
+          emailrecipients: marcosolina@gmail.com # A list of comma separated email addresses
+        telegram:
+          enabled: false
+          telegramToken: ${TELEGRAM_BOT_TOKEN:xxxxxx}
+          chatGroupId: ${TELEGRAM_CHAT_GROUP_ID:xxxxxx}
+          # Bot Name: IxiGo
+          # Bot user: @ixigo_bot
       roundparser:
         version: ^project.version^
         environment: WINDOWS # Enum: WINDOWS, RASP

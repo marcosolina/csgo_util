@@ -2,8 +2,6 @@ package com.marco.csgoutil.roundparser.model.rest;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Column;
-
 import io.swagger.annotations.ApiModelProperty;
 
 /**

@@ -349,6 +349,7 @@ public class RoundsServiceMarco implements RoundsService {
 			uas.setAssistsPerRound(			fromBigDecimalToBidecimalAvg(EntityUserScore::getAssistsPerRound,			userRecords, 2));
 			uas.setDeathPerRound(			fromBigDecimalToBidecimalAvg(EntityUserScore::getDeathPerRound,				userRecords, 2));
 			uas.setAverageDamagePerRound(	fromBigDecimalToBidecimalAvg(EntityUserScore::getAverageDamagePerRound,		userRecords, 2));
+			uas.setMatchPlayed(				fromBigDecimalToBidecimalAvg(EntityUserScore::getMatchPlayed,				userRecords, 2));
 			
 			uas.setKills(				fromLongToBidecimalAvg(EntityUserScore::getKills,					userRecords, 2));
 			uas.setAssists(				fromLongToBidecimalAvg(EntityUserScore::getAssists,					userRecords, 2));

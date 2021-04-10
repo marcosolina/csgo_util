@@ -16,8 +16,8 @@ namespace DemParser
 		{
 			string demFile = ""; 
 			demFile = "C:\\demos\\auto0-20210405-190514-472545077-de_dust2-IXI-GO__Monday_Nights__Marco_.dem";
-			//demFile = "C:\\tmp\\demfiles\\2021-03-29\\auto0-20210329-193658-1526021228-cs_assault-IXI-GO__Monday_Nights__Marco_.dem";
-			//demFile = args[0];
+			demFile = "C:\\tmp\\demfiles\\2021-03-29\\auto0-20210329-193658-1526021228-cs_assault-IXI-GO__Monday_Nights__Marco_.dem";
+			demFile = args[0];
 
 			Demo demo = new Demo();
 			demo.Path = demFile;

@@ -11,10 +11,12 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.init = function(){
         PlayersManager.getUsersList();
         $("#selectRoundToConsider").change(PlayersManager.createTeams);
+        $("#selectScoreType").change(PlayersManager.createTeams);
         $('input[name=partitionType]').change(PlayersManager.createTeams);
         $('#penaltyWeigth').change(PlayersManager.createTeams);
         $("#partitionTypeIxigo").prop("checked", true);
         PlayersManager.getAvailableGames();
+        PlayersManager.getScoreTypes();
     }
 
     PlayersManager.getAvailableGames = function(){
@@ -27,7 +29,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.availableGamesRetrieved = function(resp){
 
         if(resp && resp.status){
-            let strTmpl =   '<option value="%count%">%count%</option>';
+            let strTmpl = '<option value="%count%">%count%</option>';
             let jSelect = $("#selectRoundToConsider");
             jSelect.empty();
             for(let i = 1; i <= resp.availableGames.length; i++){
@@ -39,6 +41,35 @@ var PlayersManager = ((function(PlayersManager){
             }else{
                 jSelect.val(resp.availableGames.length);
             }
+        }
+        
+    }
+
+    PlayersManager.getScoreTypes = function(){
+        MarcoUtils.executeAjax({
+            type: "GET",
+            url: "https://marco.selfip.net/demparser/scorestype",
+        }).then(PlayersManager.scoreTypesRetrieved);
+    }
+
+    PlayersManager.scoreTypesRetrieved = function(resp){
+
+        if(resp && resp.status){
+            let strTmpl = '<option value="%key%">%val%</option>';
+            let jSelect = $("#selectScoreType");
+            jSelect.empty();
+
+            let values = [];
+            for(let prop in resp.types){
+                values.push({key: prop, val: resp.types[prop]});
+            }
+
+            values.sort((o1, o2) => {
+                return o1.val.toLowerCase() < o2.val.toLowerCase() ? -1 : 1;
+            });
+
+            values.forEach(el => jSelect.append(MarcoUtils.template(strTmpl, el)));
+            jSelect.val("RWS");
         }
         
     }
@@ -110,6 +141,7 @@ var PlayersManager = ((function(PlayersManager){
         let url = "https://marco.selfip.net/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
         url += "&partitionType=" + $('input[name=partitionType]:checked').val();
         url += "&penaltyWeigth=" + $('#penaltyWeigth').val();
+        url += "&partitionScore=" + $("#selectScoreType").val();
 
         MarcoUtils.executeAjax({
             type: "GET",

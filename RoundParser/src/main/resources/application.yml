@@ -34,7 +34,7 @@ com:
     csgoutil:
       notification:
         enabled: false
-        emailrecipients: marcosolina@gmail.com # A list of comma separated emails
+        emailrecipients: marcosolina@gmail.com # A list of comma separated email addresses
       roundparser:
         version: ^project.version^
         environment: WINDOWS # Enum: WINDOWS, RASP

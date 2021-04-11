@@ -69,10 +69,15 @@ EOD;
 	<!-- Javascript -->
 	<script src="https://code.jquery.com/jquery-3.5.1.min.js" integrity="sha256-9/aliU8dGd2tb6OSsuzixeV4y/faTqgFtohetphbbj0=" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+	<script src="./js/Chart.min.js"></script>
 	<script src="./js/pnotify.custom.min.js"></script>
 	<script src="./js/MarcoUtils.js"></script>
 	<script src="./js/PlayersManager.js"></script>
 	<script src="./js/Csgo.js"></script>
+	<script src="./js/CsgoChart.js"></script>
+	<script src="./js/CsgoChartDataset.js"></script>
+	<script src="./js/PlayerScoreChart.js"></script>
+	<script src="./js/ChartsManager.js"></script>
 
 	<script>
 		<?php
@@ -88,6 +93,7 @@ EOD;
 		$(document).ready(function () {
 			Csgo.init();
 			PlayersManager.init();
+			ChartsManager.init();
 		});
 	</script>
 
@@ -114,6 +120,9 @@ EOD;
 				</li>
 				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="players-tab" data-toggle="tab" href="#playersDiv" role="tab" aria-controls="players" aria-selected="false">Players</a>
+				</li>
+				<li class="nav-item" role="presentation">
+					<a class="nav-link" id="charts-tab" data-toggle="tab" href="#chartsDiv" role="tab" aria-controls="charts" aria-selected="false">Charts</a>
 				</li>
 				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="rcon-tab" data-toggle="tab" href="#rconDiv" role="tab" aria-controls="rcon" aria-selected="false">Rcon</a>
@@ -206,6 +215,7 @@ EOD;
 					<!-- END Dem files Accordion -->
 				</div>
 				<div class="tab-pane fade" id="playersDiv" role="tabpanel" aria-labelledby="players-tab">
+					<!-- START Players -->
 					<div class="container-fluid">
 						<div class="row">
 							<div class="col-12">
@@ -301,6 +311,47 @@ EOD;
 							</div>
 						</div>
 					</div>
+					<!-- END Players -->
+				</div>
+				<div class="tab-pane fade" id="chartsDiv" role="tabpanel" aria-labelledby="charts-tab">
+					<!-- START CHARTS -->
+					<div class="container-fluid">
+						<div class="row">
+							<div class="col-12">
+								&nbsp;
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6" >
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<label class="input-group-text" for="chartRoundToConsider">Rounds to consider</label>
+									</div>
+									<select class="custom-select" id="chartRoundToConsider">
+									</select>
+								</div>
+							</div>
+							<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-6" >
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<label class="input-group-text" for="chartSelectScoreType">Score Type</label>
+									</div>
+									<select class="custom-select" id="chartSelectScoreType">
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="row">
+							<div class="col-12">
+								<div class="row" id="chartRowPlayers">
+								</div>
+							</div>
+						</div>
+						<div class="col-12">
+							<canvas id="playerScoresChart"></canvas>
+						</div>
+					</div>
+					<!-- END Charts -->
 				</div>
 				<div class="tab-pane fade" id="rconDiv" role="tabpanel" aria-labelledby="dem-tab">
 					<!-- START RCON -->

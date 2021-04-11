@@ -83,8 +83,7 @@ EOD;
 			$demFilesRootFolder = "C:\\tmp\demfiles";
 			$filesRootFolder = "C:\\tmp\\rcon\maps";
 		}
-		echo "__URLS = {API_BASE: '" + $apiBaseUrl + "'};";
-
+		echo "__URLS = {API_BASE: '".$apiBaseUrl."'};";
 		?>
 		$(document).ready(function () {
 			Csgo.init();

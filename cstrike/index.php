@@ -75,6 +75,17 @@ EOD;
 	<script src="./js/Csgo.js"></script>
 
 	<script>
+		<?php
+		$demFilesRootFolder = "./demfiles";
+		$filesRootFolder = "./rcon/maps";
+		$apiBaseUrl = getenv("PHP_BASE_URL");
+		if(strpos($apiBaseUrl, "localhost") !== false){
+			$demFilesRootFolder = "C:\\tmp\demfiles";
+			$filesRootFolder = "C:\\tmp\\rcon\maps";
+		}
+		echo "__URLS = {API_BASE: '" + $apiBaseUrl + "'};";
+
+		?>
 		$(document).ready(function () {
 			Csgo.init();
 			PlayersManager.init();
@@ -114,7 +125,6 @@ EOD;
 					<!-- START Dem files Accordion -->
 					<div class="accordion" id="accordionExample">
 						<?php
-						$demFilesRootFolder = "./demfiles";
 						$demFolders = scandir($demFilesRootFolder, 1);
 						foreach ($demFolders as $demFolder) {
 							if ($demFolder == "." || $demFolder == "..") {
@@ -222,7 +232,16 @@ EOD;
 									</select>
 								</div>
 							</div>
-							<div class="col-12 col-sm-6 col-md-6 col-lg-3 col-xl-4">
+							<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<label class="input-group-text" for="selectMinPercPlayed">Min % Played</label>
+									</div>
+									<select class="custom-select" id="selectMinPercPlayed">
+									</select>
+								</div>
+							</div>
+							<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-4">
 								<div class="input-group mb-3">
 								<div class="input-group-prepend">
 										<label class="input-group-text" for="penaltyWeigth">Penalty Weight</label>
@@ -230,7 +249,7 @@ EOD;
 									<input id="penaltyWeigth" type="text" class="form-control" placeholder="Penalty Weight" value="2.00">
 								</div>
                         	</div>
-							<div class="col-12 col-sm-12 col-md-6 col-lg-5 col-xl-4">
+							<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4">
 								<div class="form-check form-check-inline">
 									<input class="form-check-input" type="radio" name="partitionType" id="partitionTypeIxigo" value="IXIGO">
 									<label class="form-check-label" for="inlineRadio1">IxiGo</label>
@@ -347,7 +366,7 @@ EOD;
 					$rconSection = new RconSection("Maps");
 
 					// Scanning the folder
-					$filesRootFolder = "./rcon/maps";
+					//$filesRootFolder = "./rcon/maps";
 					$files = scandir($filesRootFolder, 0);
 					$maps = array();
 

@@ -132,6 +132,7 @@ class PlayerScoreChart {
 	fetchData() {
 		let activeCheckboses = $("#chartRowPlayers input:checked");
 		if(activeCheckboses.length == 0){
+			this.drawChart();
 			return;
 		}
 		let usersId = "";

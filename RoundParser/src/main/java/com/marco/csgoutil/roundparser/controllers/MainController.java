@@ -194,9 +194,9 @@ public class MainController {
 	public ResponseEntity<Teams> getTeams(@PathVariable("teamsCounter") Integer teamsCounter,
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
 			@RequestParam(name = "partitionType", defaultValue = "SIMPLE") PartitionType partitionType,
-			@RequestParam(name = "penaltyWeigth", defaultValue = "0") Double penaltyWeigth,
+			@RequestParam(name = "penaltyWeigth", defaultValue = "0.1") Double penaltyWeigth,
 			@RequestParam(name = "partitionScore", defaultValue = "RWS") ScoreType partitionScore,
-			@RequestParam(name = "minPercPlayed", defaultValue = "0") BigDecimal minPercPlayed) {
+			@RequestParam(name = "minPercPlayed", defaultValue = "0.9") BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside MainController.getTeams");
 
 		Teams resp = new Teams();

@@ -52,6 +52,7 @@ var PlayersManager = ((function(PlayersManager){
         for(let i = 0; i < 101; i++){
             jSelect.append(MarcoUtils.template(strTmpl, {key: i/100, val: i + " %"}));
         }
+		jSelect.val(90);
     }
     
 

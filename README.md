@@ -18,4 +18,9 @@ This is a personal project that I made to simplify couple of things when playing
 
 - Java 11
 - PHP >=5
-- C#
+- .NET Core
+- PostgreSQL
+
+## Misc
+
+- [Run Chrome and allow CORS calls](https://stackoverflow.com/questions/3102819/disable-same-origin-policy-in-chrome)

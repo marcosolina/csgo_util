@@ -1,6 +1,7 @@
 package com.marco.csgoutil.roundparser.services.interfaces;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public interface RoundsService {
 	 * @return
 	 * @throws MarcoException
 	 */
-	public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
+	public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed)
 			throws MarcoException;
 
 	/**
@@ -84,7 +85,7 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
-			ScoreType partionByScore) throws MarcoException;
+			ScoreType partionByScore, BigDecimal minPercPlayed) throws MarcoException;
 
 	/**
 	 * It will generate "teamsCounter" number of teams. It will calculate the
@@ -98,7 +99,7 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs,
-			ScoreType scoreType) throws MarcoException;
+			ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException;
 
 	/**
 	 * It works similar to "generateTeams", but if one team have more players (delta
@@ -112,7 +113,7 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
-			List<String> usersIDs, double penaltyWeigth, ScoreType scoreType) throws MarcoException;
+			List<String> usersIDs, double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException;
 
 	/**
 	 * It will generate two teams and add some penalty to make even teams
@@ -124,7 +125,7 @@ public interface RoundsService {
 	 * @throws MarcoException
 	 */
 	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
-			double penaltyWeigth, ScoreType scoreType) throws MarcoException;
+			double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException;
 
 	/**
 	 * It returns the list off available games stored into the system

@@ -1,5 +1,6 @@
 package com.marco.csgoutil.roundparser.repositories.interfaces;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.marco.csgoutil.roundparser.model.entities.DaoGames;
@@ -42,7 +43,7 @@ public interface RepoUserScore {
 	 * @param steamID
 	 * @return
 	 */
-	public List<EntityUserScore> getLastXUserScores(Integer counter, String steamID);
+	public List<EntityUserScore> getLastXUserScores(Integer counter, String steamID, BigDecimal minPercPLayer);
 
 	
 	/**

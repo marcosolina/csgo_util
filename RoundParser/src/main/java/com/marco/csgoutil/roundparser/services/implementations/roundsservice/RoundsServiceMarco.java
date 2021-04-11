@@ -327,7 +327,7 @@ public class RoundsServiceMarco implements RoundsService {
 	}
 
 	@Override
-	public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs)
+	public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed)
 			throws MarcoException {
 		Map<String, List<MapStats>> map = new HashMap<>();
 
@@ -338,7 +338,7 @@ public class RoundsServiceMarco implements RoundsService {
 				continue;
 			}
 
-			List<EntityUserScore> scores = repoUserScore.getLastXUserScores(gamesCounter, steamId);
+			List<EntityUserScore> scores = repoUserScore.getLastXUserScores(gamesCounter, steamId, minPercPlayed);
 			map.put(steamId, scores.stream().map(s -> fromDbDataToMapStats(user, s)).collect(Collectors.toList()));
 		}
 
@@ -347,7 +347,7 @@ public class RoundsServiceMarco implements RoundsService {
 
 	@Override
 	public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
-			ScoreType partionByScore) throws MarcoException {
+			ScoreType partionByScore, BigDecimal minPercPlayed) throws MarcoException {
 
 		Map<String, UserAvgScore> map = new HashMap<>();
 
@@ -362,7 +362,10 @@ public class RoundsServiceMarco implements RoundsService {
 			uas.setSteamID(steamId);
 			uas.setUserName(user.getUserName());
 
-			List<EntityUserScore> userRecords = repoUserScore.getLastXUserScores(gamesCounter, steamId);
+			List<EntityUserScore> userRecords = repoUserScore.getLastXUserScores(gamesCounter, steamId, minPercPlayed);
+			if(userRecords.isEmpty()) {
+				continue;
+			}
 
 			// @formatter:off
 			uas.setRoundWinShare(			fromBigDecimalToBidecimalAvg(EntityUserScore::getRoundWinShare,				userRecords, 2));
@@ -553,16 +556,16 @@ public class RoundsServiceMarco implements RoundsService {
 
 	@Override
 	public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs,
-			ScoreType scoreType) throws MarcoException {
-		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType);
+			ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException {
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType, minPercPlayed);
 
 		return standardPartition.partitionTheUsersComparingTheScores(usersList, teamsCounter, 0);
 	}
 
 	@Override
 	public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
-			List<String> usersIDs, double penaltyWeigth, ScoreType scoreType) throws MarcoException {
-		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType);
+			List<String> usersIDs, double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException {
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType, minPercPlayed);
 		return standardPartition.partitionTheUsersComparingTheScoresAndTeamMembers(usersList, teamsCounter,
 				penaltyWeigth);
 	}
@@ -574,15 +577,15 @@ public class RoundsServiceMarco implements RoundsService {
 
 	@Override
 	public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
-			double penaltyWeigth, ScoreType scoreType) throws MarcoException {
-		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType);
+			double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException {
+		List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType, minPercPlayed);
 
 		return ixigoPartition.partitionTheUsersComparingTheScores(usersList, 2, penaltyWeigth);
 	}
 
-	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs, ScoreType scoreType)
+	private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs, ScoreType scoreType, BigDecimal minPercPlayed)
 			throws MarcoException {
-		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs, scoreType);
+		Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs, scoreType, minPercPlayed);
 		List<UserAvgScore> usersList = new ArrayList<>();
 
 		usersAvg.forEach((k, v) -> usersList.add(v));

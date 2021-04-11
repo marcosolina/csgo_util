@@ -1,5 +1,6 @@
 package com.marco.csgoutil.roundparser.controllers;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -133,12 +134,13 @@ public class MainController {
 	@GetMapping(RoundParserUtils.MAPPING_GET_USER_LAST_SCORES)
 	@ApiOperation(value = "It will return the last \"counter\" number of scores associated to the Users provided in the input list")
 	public ResponseEntity<UsersScores> getUsersLastScores(@PathVariable("counter") Integer counter,
-			@RequestParam("usersIDs") List<String> usersIDs) {
+			@RequestParam("usersIDs") List<String> usersIDs,
+			@RequestParam(name = "minPercPlayed", defaultValue = "0") BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside MainController.getUsersLastScores");
 
 		UsersScores resp = new UsersScores();
 		try {
-			resp.setUsersScores(service.getUsersStatsForLastXGames(counter, usersIDs));
+			resp.setUsersScores(service.getUsersStatsForLastXGames(counter, usersIDs, minPercPlayed));
 			resp.setStatus(true);
 			return new ResponseEntity<>(resp, HttpStatus.OK);
 		} catch (MarcoException e) {
@@ -159,12 +161,13 @@ public class MainController {
 	@ApiOperation(value = "It will return the \"average\" score of the users provided in the input list. "
 			+ "The average will be calculated on the last \"counter\" games")
 	public ResponseEntity<UserSvgScores> getUsersAvgScores(@PathVariable("counter") Integer counter,
-			@RequestParam("usersIDs") List<String> usersIDs) {
+			@RequestParam("usersIDs") List<String> usersIDs,
+			@RequestParam(name = "minPercPlayed", defaultValue = "0") BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside MainController.getUsersAvgScores");
 
 		UserSvgScores resp = new UserSvgScores();
 		try {
-			resp.setAvgScores(service.getUsersAvgStatsForLastXGames(counter, usersIDs, ScoreType.RWS));
+			resp.setAvgScores(service.getUsersAvgStatsForLastXGames(counter, usersIDs, ScoreType.RWS, minPercPlayed));
 			resp.setStatus(true);
 			return new ResponseEntity<>(resp, HttpStatus.OK);
 		} catch (MarcoException e) {
@@ -192,7 +195,8 @@ public class MainController {
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
 			@RequestParam(name = "partitionType", defaultValue = "SIMPLE") PartitionType partitionType,
 			@RequestParam(name = "penaltyWeigth", defaultValue = "0") Double penaltyWeigth,
-			@RequestParam(name = "partitionScore", defaultValue = "RWS") ScoreType partitionScore) {
+			@RequestParam(name = "partitionScore", defaultValue = "RWS") ScoreType partitionScore,
+			@RequestParam(name = "minPercPlayed", defaultValue = "0") BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside MainController.getTeams");
 
 		Teams resp = new Teams();
@@ -200,14 +204,14 @@ public class MainController {
 			List<Team> teams = null;
 			switch (partitionType) {
 			case IXIGO:
-				teams = service.generateTwoTeamsForcingSimilarTeamSizes(counter, usersIDs, penaltyWeigth, partitionScore);
+				teams = service.generateTwoTeamsForcingSimilarTeamSizes(counter, usersIDs, penaltyWeigth, partitionScore, minPercPlayed);
 				break;
 			case FORCE_PLAYERS:
 				teams = service.generateTeamsForcingSimilarTeamSizes(teamsCounter, counter, usersIDs, penaltyWeigth,
-						partitionScore);
+						partitionScore, minPercPlayed);
 				break;
 			case SIMPLE:
-				teams = service.generateTeams(teamsCounter, counter, usersIDs, partitionScore);
+				teams = service.generateTeams(teamsCounter, counter, usersIDs, partitionScore, minPercPlayed);
 				break;
 			default:
 				break;

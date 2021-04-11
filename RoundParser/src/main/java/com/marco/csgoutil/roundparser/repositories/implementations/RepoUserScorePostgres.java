@@ -1,5 +1,6 @@
 package com.marco.csgoutil.roundparser.repositories.implementations;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -75,7 +76,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 	}
 
 	@Override
-	public List<EntityUserScore> getLastXUserScores(Integer counter, String steamID) {
+	public List<EntityUserScore> getLastXUserScores(Integer counter, String steamID, BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.getLastXUserScores");
 		
 		CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -83,11 +84,14 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		Root<EntityUserScore> root = cq.from(EntityUserScore.class);
 		
 		/*
-		 * SELECT * FROM USERS_SCORES WHERE STEAM_ID = 'xxx' ORDER BY GAME_DATE DESC LIMIT y
+		 * SELECT * FROM USERS_SCORES WHERE STEAM_ID = 'xxx' and MD >= y ORDER BY GAME_DATE DESC LIMIT y
 		 */
 		// @formatter:off
 		cq.select(root)
-			.where(cb.equal(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.STEAM_ID), steamID))
+			.where(
+				cb.equal(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.STEAM_ID), steamID),
+				cb.greaterThanOrEqualTo(root.get(EntityUserScore_.MATCH_PLAYED), minPercPlayed)
+			)
 			.orderBy(cb.desc(root.get(EntityUserScore_.ID).get(EntityUserScorePk_.GAME_DATE)));
 		// @formatter:on
 		

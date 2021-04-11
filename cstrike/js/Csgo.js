@@ -28,7 +28,7 @@ var Csgo = ((function(Csgo){
         MarcoUtils.executeAjax(
             {
                 body: request,
-                url: "https://marco.selfip.net/rcon/cmd",
+                url: __URLS.API_BASE + "/rcon/cmd",
                 showLoading: true
             }).then(Csgo.rconCmdSent);
     }

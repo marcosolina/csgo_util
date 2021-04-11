@@ -5,15 +5,16 @@ var PlayersManager = ((function(PlayersManager){
 		PlayersManager = {};
 	}
 
-    let usersForGame = {};
     let timeOut;
 
     PlayersManager.init = function(){
         PlayersManager.getUsersList();
+        PlayersManager.initMinPercSelect();
         $("#selectRoundToConsider").change(PlayersManager.createTeams);
         $("#selectScoreType").change(PlayersManager.createTeams);
         $('input[name=partitionType]').change(PlayersManager.createTeams);
         $('#penaltyWeigth').change(PlayersManager.createTeams);
+        $("#selectMinPercPlayed").change(PlayersManager.createTeams);
         $("#partitionTypeIxigo").prop("checked", true);
         PlayersManager.getAvailableGames();
         PlayersManager.getScoreTypes();
@@ -22,7 +23,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.getAvailableGames = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: "https://marco.selfip.net/demparser/games/list",
+            url: __URLS.API_BASE + "/demparser/games/list",
         }).then(PlayersManager.availableGamesRetrieved);
     }
 
@@ -45,10 +46,19 @@ var PlayersManager = ((function(PlayersManager){
         
     }
 
+    PlayersManager.initMinPercSelect = function(){
+        let strTmpl = '<option value="%key%">%val%</option>';
+        let jSelect = $("#selectMinPercPlayed");
+        for(let i = 0; i < 101; i++){
+            jSelect.append(MarcoUtils.template(strTmpl, {key: i/100, val: i + " %"}));
+        }
+    }
+    
+
     PlayersManager.getScoreTypes = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: "https://marco.selfip.net/demparser/scorestype",
+            url: __URLS.API_BASE + "/demparser/scorestype",
         }).then(PlayersManager.scoreTypesRetrieved);
     }
 
@@ -77,7 +87,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.getUsersList = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: "https://marco.selfip.net/demparser/users",
+            url: __URLS.API_BASE + "/demparser/users",
         }).then(PlayersManager.usersListRetrieved);
     }
 
@@ -138,10 +148,11 @@ var PlayersManager = ((function(PlayersManager){
         let queryParam = "";
         steamIds.forEach(v => {queryParam += "," + v;});
         let gamesToConsider = $("#selectRoundToConsider").val()
-        let url = "https://marco.selfip.net/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
+        let url = __URLS.API_BASE + "/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
         url += "&partitionType=" + $('input[name=partitionType]:checked').val();
         url += "&penaltyWeigth=" + $('#penaltyWeigth').val();
         url += "&partitionScore=" + $("#selectScoreType").val();
+        url += "&minPercPlayed=" + $("#selectMinPercPlayed").val();
 
         MarcoUtils.executeAjax({
             type: "GET",

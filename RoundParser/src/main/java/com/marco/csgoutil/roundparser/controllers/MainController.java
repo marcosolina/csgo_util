@@ -193,7 +193,7 @@ public class MainController {
 			+ "split the users in different in different teams (teamsCounter) ")
 	public ResponseEntity<Teams> getTeams(@PathVariable("teamsCounter") Integer teamsCounter,
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
-			@RequestParam(name = "partitionType", defaultValue = "SIMPLE") PartitionType partitionType,
+			@RequestParam(name = "partitionType", defaultValue = "IXIGO") PartitionType partitionType,
 			@RequestParam(name = "penaltyWeigth", defaultValue = "0.1") Double penaltyWeigth,
 			@RequestParam(name = "partitionScore", defaultValue = "RWS") ScoreType partitionScore,
 			@RequestParam(name = "minPercPlayed", defaultValue = "0.9") BigDecimal minPercPlayed) {

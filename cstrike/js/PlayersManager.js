@@ -80,7 +80,7 @@ var PlayersManager = ((function(PlayersManager){
             });
 
             values.forEach(el => jSelect.append(MarcoUtils.template(strTmpl, el)));
-            jSelect.val("RWS");
+            jSelect.val("HLTV");
         }
         
     }
@@ -159,10 +159,10 @@ var PlayersManager = ((function(PlayersManager){
             type: "GET",
             url: url,
             showLoading: true,
-        }).then(PlayersManager.teamsCreate);
+        }).then(PlayersManager.teamsCreated);
     }
 
-    PlayersManager.teamsCreate = function(resp){
+    PlayersManager.teamsCreated = function(resp){
 
         if(resp && resp.status){
             var strTmpl =   '<li class="list-group-item d-flex justify-content-between align-items-center">' +

@@ -125,7 +125,7 @@ class PlayerScoreChart {
 		});
 
 		values.forEach(el => jSelect.append(MarcoUtils.template(strTmpl, el)));
-		jSelect.val("RWS");
+		jSelect.val("HLTV");
 		jSelect.change(this.drawChart.bind(this));
 	}
 

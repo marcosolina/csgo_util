@@ -162,7 +162,7 @@ public class MainController {
 			+ "The average will be calculated on the last \"counter\" games")
 	public ResponseEntity<UserSvgScores> getUsersAvgScores(@PathVariable("counter") Integer counter,
 			@RequestParam("usersIDs") List<String> usersIDs,
-			@RequestParam(name = "minPercPlayed", defaultValue = "0") BigDecimal minPercPlayed) {
+			@RequestParam(name = "minPercPlayed", defaultValue = "0.9") BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside MainController.getUsersAvgScores");
 
 		UserSvgScores resp = new UserSvgScores();
@@ -195,7 +195,7 @@ public class MainController {
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
 			@RequestParam(name = "partitionType", defaultValue = "IXIGO") PartitionType partitionType,
 			@RequestParam(name = "penaltyWeigth", defaultValue = "0.1") Double penaltyWeigth,
-			@RequestParam(name = "partitionScore", defaultValue = "RWS") ScoreType partitionScore,
+			@RequestParam(name = "partitionScore", defaultValue = "HLTV") ScoreType partitionScore,
 			@RequestParam(name = "minPercPlayed", defaultValue = "0.9") BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside MainController.getTeams");
 

@@ -69,8 +69,9 @@ public class RconServiceMarcoRconApi implements RconService {
 			rconApiRequest.setRconPass(rconProps.getCsgorconpassw());
 			rconApiRequest.setRconPort(27015);
 			
-			
-			URL url = new URL(rconProps.getProtocol() + rconProps.getIp() + rconProps.getEndpoint());
+			String stringUrl = rconProps.getProtocol() + rconProps.getIp() + rconProps.getEndpoint();
+			_LOGGER.debug(String.format("Url RCON: %s", stringUrl));
+			URL url = new URL(stringUrl);
 			ClientResponse resp = performRequest(HttpMethod.POST, url, null, null, MediaType.APPLICATION_JSON, rconApiRequest);
 			RconResponse rconResp = getBodyFromResponse(resp, RconResponse.class);
 			

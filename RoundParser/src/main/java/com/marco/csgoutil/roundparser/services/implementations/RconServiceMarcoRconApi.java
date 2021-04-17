@@ -95,7 +95,7 @@ public class RconServiceMarcoRconApi implements RconService {
 		 * Create the request and adds query parameters if provided
 		 */
 		RequestBodySpec rbs = wcb.build().method(method).uri(uriBuilder -> {
-			UriBuilder ub = uriBuilder.scheme(url.getProtocol()).host(url.getHost()).path(url.getPath());
+			UriBuilder ub = uriBuilder.scheme(url.getProtocol()).host(url.getHost()).port(url.getPort()).path(url.getPath());
 			if (queryParameters != null) {
 				for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
 					ub = ub.queryParam(entry.getKey(), entry.getValue());

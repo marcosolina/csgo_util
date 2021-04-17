@@ -5,7 +5,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
+import com.marco.csgoutil.roundparser.model.rest.players.UserAvgScore;
 
 import io.swagger.annotations.ApiModelProperty;
 

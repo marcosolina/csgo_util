@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.model.rest;
+package com.marco.csgoutil.roundparser.model.rest.players;
 
 import java.time.LocalDateTime;
 import java.util.List;

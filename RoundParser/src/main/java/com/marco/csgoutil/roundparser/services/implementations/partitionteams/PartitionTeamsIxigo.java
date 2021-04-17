@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
+import com.marco.csgoutil.roundparser.model.rest.players.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.csgoutil.roundparser.partitionlibrary.PartitionTwoTeams;
 import com.marco.csgoutil.roundparser.partitionlibrary.Subset;

@@ -21,6 +21,7 @@ import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserPostg
 import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserScorePostgres;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
+import com.marco.csgoutil.roundparser.services.implementations.RconServiceMarcoRconApi;
 import com.marco.csgoutil.roundparser.services.implementations.RoundFileServiceMarco;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserRasp;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserWindows;
@@ -32,6 +33,7 @@ import com.marco.csgoutil.roundparser.services.implementations.roundsservice.Rou
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
 import com.marco.csgoutil.roundparser.services.interfaces.NotificationService;
 import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
+import com.marco.csgoutil.roundparser.services.interfaces.RconService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
 
@@ -113,6 +115,11 @@ public class Beans {
 	@Bean
 	public WebClient.Builder getWebClientBuilder(){
 		return WebClient.builder();
+	}
+	
+	@Bean 
+	public RconService getRconService() {
+		return new RconServiceMarcoRconApi();
 	}
 	
 	@Bean

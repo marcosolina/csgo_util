@@ -2,7 +2,7 @@ package com.marco.csgoutil.roundparser.services.interfaces;
 
 import java.util.List;
 
-import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
+import com.marco.csgoutil.roundparser.model.rest.players.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.utils.MarcoException;
 

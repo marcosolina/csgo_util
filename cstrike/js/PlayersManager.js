@@ -6,6 +6,7 @@ var PlayersManager = ((function(PlayersManager){
 	}
 
     let timeOut;
+    let teamTerrorists;
 
     PlayersManager.init = function(){
         PlayersManager.getUsersList();
@@ -16,8 +17,25 @@ var PlayersManager = ((function(PlayersManager){
         $('#penaltyWeigth').change(PlayersManager.createTeams);
         $("#selectMinPercPlayed").change(PlayersManager.createTeams);
         $("#partitionTypeIxigo").prop("checked", true);
+        $("#setPlayerOnServer").hide();
+        $("#setPlayerOnServer").click(PlayersManager.setPlayersOnServer);
         PlayersManager.getAvailableGames();
         PlayersManager.getScoreTypes();
+    }
+
+    PlayersManager.setPlayersOnServer = function(){
+        if(teamTerrorists == undefined){
+            return;
+        }
+
+        let steamIds = "";
+        teamTerrorists.members.forEach(e => {
+            steamIds += "\"" + e.userName + "\" ";
+            });
+
+        let cmd = "sm_move_players " + steamIds + "dummy";
+        $("#rconCmd").val(cmd);
+        $("#sendRcon").click();
     }
 
     PlayersManager.getAvailableGames = function(){
@@ -143,6 +161,7 @@ var PlayersManager = ((function(PlayersManager){
 
             $("#terroristPlayers .badge").html("");
             $("#ctPlayers .badge").html("");
+            $("#setPlayerOnServer").fadeOut();
             return;
         }
         
@@ -170,7 +189,7 @@ var PlayersManager = ((function(PlayersManager){
                                 '<span class="badge badge-pill %badgType%">%teamSplitScore%</span>' +
                             '</li>';
 
-            let teamTerrorists = resp.teams[0];
+            teamTerrorists = resp.teams[0];
             let teamCt = resp.teams[1];
             let arrTerrorist = teamTerrorists.members.sort(sortUserByScore);
             let arrCt = teamCt.members.sort(sortUserByScore);
@@ -196,6 +215,7 @@ var PlayersManager = ((function(PlayersManager){
                 ct.teamSplitScore = ct.teamSplitScore.length < 5 ? "0" + ct.teamSplitScore : ct.teamSplitScore;
                 jCtList.append(MarcoUtils.template(strTmpl, ct));
             });
+            $("#setPlayerOnServer").fadeIn();
         }
     }
 

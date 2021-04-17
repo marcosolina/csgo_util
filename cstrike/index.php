@@ -272,6 +272,9 @@ EOD;
 									<label class="form-check-label" for="inlineRadio3">Equal Numbers</label>
 								</div>
                         	</div>
+							<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">
+								<button id="setPlayerOnServer" type="button" class="btn btn-secondary btn-block">Set these players on the server</button>
+                        	</div>
 						</div>
 						<div class="row">
 							<div class="col-12">

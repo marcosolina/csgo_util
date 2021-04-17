@@ -81,6 +81,7 @@ public class RconServiceMarcoRconApi implements RconService {
 			}
 			return true;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new MarcoException(e);
 		}
 	}

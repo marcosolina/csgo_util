@@ -16,14 +16,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marco.csgoutil.roundparser.enums.PartitionType;
 import com.marco.csgoutil.roundparser.enums.ScoreType;
-import com.marco.csgoutil.roundparser.model.rest.AvailableGames;
-import com.marco.csgoutil.roundparser.model.rest.MapsScores;
-import com.marco.csgoutil.roundparser.model.rest.ScoreTypes;
-import com.marco.csgoutil.roundparser.model.rest.Teams;
-import com.marco.csgoutil.roundparser.model.rest.UserScores;
-import com.marco.csgoutil.roundparser.model.rest.UserSvgScores;
-import com.marco.csgoutil.roundparser.model.rest.Users;
-import com.marco.csgoutil.roundparser.model.rest.UsersScores;
+import com.marco.csgoutil.roundparser.model.rest.players.AvailableGames;
+import com.marco.csgoutil.roundparser.model.rest.players.MapsScores;
+import com.marco.csgoutil.roundparser.model.rest.players.ScoreTypes;
+import com.marco.csgoutil.roundparser.model.rest.players.Teams;
+import com.marco.csgoutil.roundparser.model.rest.players.UserScores;
+import com.marco.csgoutil.roundparser.model.rest.players.UserSvgScores;
+import com.marco.csgoutil.roundparser.model.rest.players.Users;
+import com.marco.csgoutil.roundparser.model.rest.players.UsersScores;
 import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
 import com.marco.csgoutil.roundparser.utils.RoundParserUtils;
@@ -194,7 +194,7 @@ public class MainController {
 	public ResponseEntity<Teams> getTeams(@PathVariable("teamsCounter") Integer teamsCounter,
 			@PathVariable("counter") Integer counter, @RequestParam("usersIDs") List<String> usersIDs,
 			@RequestParam(name = "partitionType", defaultValue = "IXIGO") PartitionType partitionType,
-			@RequestParam(name = "penaltyWeigth", defaultValue = "0.1") Double penaltyWeigth,
+			@RequestParam(name = "penaltyWeigth", defaultValue = "0.4") Double penaltyWeigth,
 			@RequestParam(name = "partitionScore", defaultValue = "HLTV") ScoreType partitionScore,
 			@RequestParam(name = "minPercPlayed", defaultValue = "0.9") BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside MainController.getTeams");

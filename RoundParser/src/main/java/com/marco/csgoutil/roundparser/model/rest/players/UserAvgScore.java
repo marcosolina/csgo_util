@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.model.rest;
+package com.marco.csgoutil.roundparser.model.rest.players;
 
 import java.math.BigDecimal;
 

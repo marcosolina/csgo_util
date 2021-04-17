@@ -1,4 +1,4 @@
-package com.marco.csgoutil.roundparser.model.rest;
+package com.marco.csgoutil.roundparser.model.rest.players;
 
 import java.util.List;
 import java.util.Map;

@@ -24,6 +24,11 @@ public class RoundParserUtils {
 	public static final String MAPPING_GET_GAMES_LIST = "/games/list";
 	
 	/*
+	 * RCON Controller
+	 */
+	public static final String MAPPING_GET_MOVE_PLAYERS = "/rcon/moveplayers";
+	
+	/*
 	 * DEM PARSER CSV COLUMNS
 	 */
 	public static final int DEM_COL_USER_NAME = 0;

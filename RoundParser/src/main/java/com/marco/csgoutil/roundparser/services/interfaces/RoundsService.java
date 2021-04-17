@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.marco.csgoutil.roundparser.enums.ScoreType;
-import com.marco.csgoutil.roundparser.model.rest.User;
-import com.marco.csgoutil.roundparser.model.rest.UserAvgScore;
+import com.marco.csgoutil.roundparser.model.rest.players.User;
+import com.marco.csgoutil.roundparser.model.rest.players.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.MapStats;
 import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.utils.MarcoException;

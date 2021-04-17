@@ -255,7 +255,7 @@ EOD;
 								<div class="input-group-prepend">
 										<label class="input-group-text" for="penaltyWeigth">Penalty Weight</label>
 									</div>
-									<input id="penaltyWeigth" type="text" class="form-control" placeholder="Penalty Weight" value="2.00">
+									<input id="penaltyWeigth" type="text" class="form-control" placeholder="Penalty Weight" value="0.4">
 								</div>
                         	</div>
 							<div class="col-12 col-sm-12 col-md-6 col-lg-6 col-xl-4">

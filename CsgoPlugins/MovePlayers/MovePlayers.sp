@@ -40,26 +40,28 @@ public Action movePlayer(int client, int args)
 	int maxNameLength = 50;
 	
 	for (int iArg = 0; iArg < args; iArg++){
-		char[] inputName = new char[maxNameLength];
-		int charsWritten = GetCmdArg(iArg, inputName, maxNameLength);
+		char[] inputSteamID = new char[maxNameLength];
+		int charsWritten = GetCmdArg(iArg, inputSteamID, maxNameLength);
 		
-		ReplyToCommand(client, "Processing Param: %s", inputName);
+		ReplyToCommand(client, "Processing Param: %s", inputSteamID);
 		if(charsWritten > 0)
 		{
 			for (int i = 1; i <= MaxClients; i++)
 			{
 			    if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))
 			    {
-			    	char[] gamePName = new char[maxNameLength];
-			    	GetClientName(i, gamePName, maxNameLength);
-			    	
-			    	if(StrEqual(inputName, gamePName)){
-			    		ReplyToCommand(client, "Moving %s to the Terrorist Team", gamePName);
-			    		CS_SwitchTeam(i, CS_TEAM_T);
-			    	}else{
-			    		ReplyToCommand(client, "Moving %s to the CT Team", gamePName);
-			    		CS_SwitchTeam(i, CS_TEAM_CT);
+			    	char[] playerSteamID = new char[maxNameLength];
+			    	if(GetClientAuthId(i, AuthId_SteamID64, playerSteamID, maxNameLength)){
+			    		if(StrEqual(inputSteamID, playerSteamID)){
+				    		ReplyToCommand(client, "Moving %s to the Terrorist Team", playerSteamID);
+				    		CS_SwitchTeam(i, CS_TEAM_T);
+				    	}else{
+				    		ReplyToCommand(client, "Moving %s to the CT Team", playerSteamID);
+				    		CS_SwitchTeam(i, CS_TEAM_CT);
+				   		}
 			   		}
+			    	
+			    	
 			    }
 			}
 		}else{

@@ -16,19 +16,19 @@ EngineVersion g_Game;
 
 public Plugin myinfo = 
 {
-	name = "Move Players",
-	author = PLUGIN_AUTHOR,
-	description = "Testing CsGO plugins",
-	version = PLUGIN_VERSION,
+	name = "Move Players", 
+	author = PLUGIN_AUTHOR, 
+	description = "Testing CsGO plugins", 
+	version = PLUGIN_VERSION, 
 	url = "https://github.com/marcosolina/csgo_util/blob/main/CsgoPlugins/MovePlayers/MovePlayers.sp"
 };
 
 public void OnPluginStart()
 {
 	g_Game = GetEngineVersion();
-	if(g_Game != Engine_CSGO && g_Game != Engine_CSS)
+	if (g_Game != Engine_CSGO && g_Game != Engine_CSS)
 	{
-		SetFailState("This plugin is for CSGO/CSS only.");	
+		SetFailState("This plugin is for CSGO/CSS only.");
 	}
 	
 	RegConsoleCmd("sm_move_players", movePlayer, "It will move the players across the teams");
@@ -36,39 +36,49 @@ public void OnPluginStart()
 
 public Action movePlayer(int client, int args)
 {
-	ReplyToCommand(client, "Number of arguments: %d", args);
 	int maxNameLength = 50;
 	
-	for (int iArg = 0; iArg < args; iArg++){
-		char[] inputSteamID = new char[maxNameLength];
-		int charsWritten = GetCmdArg(iArg, inputSteamID, maxNameLength);
-		
-		ReplyToCommand(client, "Processing Param: %s", inputSteamID);
-		if(charsWritten > 0)
+	// Loop all the clients
+	for (int i = 1; i <= MaxClients; i++)
+	{
+		// If it is a Human
+		if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))
 		{
-			for (int i = 1; i <= MaxClients; i++)
+			bool terrorist = false;
+			char[] playerSteamID = new char[maxNameLength];
+			char[] playerName = new char[maxNameLength];
+			
+			if (GetClientAuthId(i, AuthId_SteamID64, playerSteamID, maxNameLength))
 			{
-			    if (IsClientConnected(i) && IsClientInGame(i) && !IsFakeClient(i))
-			    {
-			    	char[] playerSteamID = new char[maxNameLength];
-			    	if(GetClientAuthId(i, AuthId_SteamID64, playerSteamID, maxNameLength)){
-			    		if(StrEqual(inputSteamID, playerSteamID)){
-				    		ReplyToCommand(client, "Moving %s to the Terrorist Team", playerSteamID);
-				    		CS_SwitchTeam(i, CS_TEAM_T);
-				    	}else{
-				    		ReplyToCommand(client, "Moving %s to the CT Team", playerSteamID);
-				    		CS_SwitchTeam(i, CS_TEAM_CT);
-				   		}
-			   		}
-			    	
-			    	
-			    }
+				GetClientName(i, playerName, maxNameLength);
+				
+				// Search through the input steam IDs
+				for (int iArg = 0; iArg < args; iArg++)
+				{
+					char[] inputSteamID = new char[maxNameLength];
+					if (GetCmdArg(iArg, inputSteamID, maxNameLength) > 0)
+					{
+						if (StrEqual(inputSteamID, playerSteamID))
+						{
+							terrorist = true;
+							break;
+						}
+					}
+				}
+				
+				if (terrorist)
+				{
+					CS_SwitchTeam(i, CS_TEAM_T);
+					ReplyToCommand(client, "Moved %s to Terrorist Team", playerName);
+				}
+				else
+				{
+					CS_SwitchTeam(i, CS_TEAM_CT);
+					ReplyToCommand(client, "Moved %s to CT", playerName);
+				}
 			}
-		}else{
-			ReplyToCommand(client, "Not Able to read argument");
 		}
 	}
-	ReplyToCommand(client, "Plugin Execution completed");
 	
 	return Plugin_Handled;
 }

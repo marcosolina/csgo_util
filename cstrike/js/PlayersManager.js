@@ -30,7 +30,7 @@ var PlayersManager = ((function(PlayersManager){
 
         let steamIds = "";
         teamTerrorists.members.forEach(e => {
-            steamIds += "\"" + e.userName + "\" ";
+            steamIds += "\"" + e.steamID + "\" ";
             });
 
         let cmd = "sm_move_players " + steamIds + "dummy";

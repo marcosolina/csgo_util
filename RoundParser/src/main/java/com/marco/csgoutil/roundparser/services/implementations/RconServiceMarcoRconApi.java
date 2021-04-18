@@ -15,11 +15,9 @@ import org.springframework.web.reactive.function.client.WebClient.RequestBodySpe
 import org.springframework.web.util.UriBuilder;
 
 import com.marco.csgoutil.roundparser.config.properties.RconProperties;
-import com.marco.csgoutil.roundparser.model.rest.players.User;
 import com.marco.csgoutil.roundparser.model.rest.rcon.RconResponse;
 import com.marco.csgoutil.roundparser.model.service.RconCmd;
 import com.marco.csgoutil.roundparser.services.interfaces.RconService;
-import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
 import com.marco.utils.MarcoException;
 
 /**
@@ -40,8 +38,6 @@ public class RconServiceMarcoRconApi implements RconService {
 	@Autowired
 	private RconProperties rconProps;
 	@Autowired
-	private RoundsService roundService;
-	@Autowired
 	private WebClient.Builder wcb;
 
 	@Override
@@ -51,16 +47,13 @@ public class RconServiceMarcoRconApi implements RconService {
 		_LOGGER.debug("Calling rcon API");
 		try {
 
-			List<User> users = roundService.getListOfUsers();
 			StringBuilder sb = new StringBuilder();
 			// @formatter:off
-			users.stream()
-				.filter(u -> terroristSteamIDs.contains(u.getSteamId()))
-				.forEach(u -> {
-					sb.append(" \"");
-					sb.append(u.getUserName());
-					sb.append("\"");
-				});
+			terroristSteamIDs.stream().forEach(steamId -> {
+				sb.append(" \"");
+				sb.append(steamId);
+				sb.append("\"");
+			});
 			// @formatter:on
 
 			RconCmd rconApiRequest = new RconCmd();
@@ -70,11 +63,13 @@ public class RconServiceMarcoRconApi implements RconService {
 			rconApiRequest.setRconPort(27015);
 			
 			String stringUrl = rconProps.getProtocol() + rconProps.getIp() + rconProps.getEndpoint();
-			_LOGGER.debug(String.format("Url RCON: %s", stringUrl));
+			if(_LOGGER.isDebugEnabled()) {
+				_LOGGER.debug(String.format("Url RCON: %s", stringUrl));
+			}
+			
 			URL url = new URL(stringUrl);
 			ClientResponse resp = performRequest(HttpMethod.POST, url, null, null, MediaType.APPLICATION_JSON, rconApiRequest);
 			RconResponse rconResp = getBodyFromResponse(resp, RconResponse.class);
-			
 			
 			if(_LOGGER.isDebugEnabled()) {
 				_LOGGER.debug(String.format("RCON Resp status: %s", rconResp.isStatus()));
@@ -95,7 +90,11 @@ public class RconServiceMarcoRconApi implements RconService {
 		 * Create the request and adds query parameters if provided
 		 */
 		RequestBodySpec rbs = wcb.build().method(method).uri(uriBuilder -> {
-			UriBuilder ub = uriBuilder.scheme(url.getProtocol()).host(url.getHost()).port(url.getPort()).path(url.getPath());
+			UriBuilder ub = uriBuilder
+					.scheme(url.getProtocol())
+					.host(url.getHost())
+					.port(url.getPort())
+					.path(url.getPath());
 			if (queryParameters != null) {
 				for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
 					ub = ub.queryParam(entry.getKey(), entry.getValue());

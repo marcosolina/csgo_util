@@ -34,6 +34,24 @@ class MapsPlayedChart {
 		let arrLabels = [];
 		let arrData = [];
 		let arrColor = [];
+		
+		this.lastResponse.maps.forEach(element => {
+			let mapName = element.mapName
+			if(mapName.startsWith("workshop")){
+				let tmp = mapName.split("_");
+				mapName = "";
+				for(let i = 2; i < tmp.length; i++){
+					mapName += "_" + tmp[i];
+				}
+				mapName = mapName.substring(1);
+			}
+			element.mapName = mapName;
+		});
+
+		this.lastResponse.maps.sort((a, b) => {
+			return a.mapName < b.mapName ? -1 : 1;
+		});
+		
 		let i = 0;
 		this.lastResponse.maps.forEach(element => {
 			arrLabels.push(element.mapName);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.marco.csgoutil.roundparser.enums.PartitionType;
 import com.marco.csgoutil.roundparser.enums.ScoreType;
 import com.marco.csgoutil.roundparser.model.rest.players.AvailableGames;
+import com.marco.csgoutil.roundparser.model.rest.players.MapsPlayed;
 import com.marco.csgoutil.roundparser.model.rest.players.MapsScores;
 import com.marco.csgoutil.roundparser.model.rest.players.ScoreTypes;
 import com.marco.csgoutil.roundparser.model.rest.players.Teams;
@@ -77,6 +78,17 @@ public class MainController {
 		resp.setStatus(true);
 		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
+	
+	@GetMapping(RoundParserUtils.MAPPING_GET_MAP_PLAYED_LIST)
+    @ApiOperation(value = "It will returns how many times we played a map")
+    public ResponseEntity<MapsPlayed> getMapPlayedCount() {
+        _LOGGER.trace("Inside MainController.getMapPlayedCount");
+
+        MapsPlayed resp = new MapsPlayed();
+        resp.setMaps(service.countGamesOnAMap());
+        resp.setStatus(true);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
 
 	/**
 	 * It returns a list of the known users

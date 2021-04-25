@@ -29,7 +29,7 @@ var ChartsManager = ((function(ChartsManager){
 	colorPalette.push("rgb( 255, 255, 255, 1)");// Bianco
 	colorPalette.push("rgb( 101, 46, 122 , 1)");// Viola Scuro
 	colorPalette.push("rgb( 255, 0, 0, 1)");// Rosso
-	colorPalette.push("rgb( 0, 0, 0, 1)");// Nero
+	//colorPalette.push("rgb( 0, 0, 0, 1)");// Nero
 	
 	var charts = {}
     
@@ -44,6 +44,9 @@ var ChartsManager = ((function(ChartsManager){
 		charts.playeScoreChart = new PlayerScoreChart("playerScoresChart", "chartRowPlayers", colorPalette, gamesList.length);
 		charts.playeScoreChart.addCheckboxes(players, scoreTypes);
 		charts.playeScoreChart.fetchData();
+
+		charts.mapsPlayed = new MapsPlayedChart("mapsPlayedChart", colorPalette);
+		charts.mapsPlayed.fetchData();
 	}
 
 	ChartsManager.getScoreTypes = function(){

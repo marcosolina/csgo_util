@@ -12,10 +12,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marco.csgoutil.roundparser.enums.PartitionType;
 import com.marco.csgoutil.roundparser.enums.ScoreType;
+import com.marco.csgoutil.roundparser.model.rest.ProcessNewFilesRequest;
 import com.marco.csgoutil.roundparser.model.rest.players.AvailableGames;
 import com.marco.csgoutil.roundparser.model.rest.players.MapsPlayed;
 import com.marco.csgoutil.roundparser.model.rest.players.MapsScores;
@@ -53,13 +55,15 @@ public class MainController {
 	 */
 	@PostMapping(RoundParserUtils.MAPPING_ADD_NEW_DATA)
 	@ApiOperation(value = "It will trigger the scan process for new .dem files")
-	public ResponseEntity<MapsScores> addNewScores() {
+	public ResponseEntity<MapsScores> addNewScores(@RequestBody(required = false) ProcessNewFilesRequest request ) {
 		_LOGGER.trace("Inside MainController.addNewScores");
-
+		if(request == null) {
+		    request = new ProcessNewFilesRequest();
+		}
 		MapsScores resp = new MapsScores();
 		try {
 
-			resp.setMapScores(service.processNewDemFiles());
+			resp.setMapScores(service.processNewDemFiles(request.isForceDeleteBadFiles()));
 			resp.setStatus(true);
 			return new ResponseEntity<>(resp, HttpStatus.OK);
 		} catch (MarcoException e) {

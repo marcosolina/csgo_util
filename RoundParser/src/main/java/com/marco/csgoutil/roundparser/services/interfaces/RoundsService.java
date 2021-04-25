@@ -30,7 +30,7 @@ public interface RoundsService {
      * @return
      * @throws MarcoException
      */
-    public List<MapStats> processNewDemFiles() throws MarcoException;
+    public List<MapStats> processNewDemFiles(boolean forceDeleteBadFiles) throws MarcoException;
 
     /**
      * It returns a map of available scores

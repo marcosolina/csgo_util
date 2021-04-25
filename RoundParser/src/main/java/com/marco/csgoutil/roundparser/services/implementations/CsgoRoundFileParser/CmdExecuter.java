@@ -103,7 +103,7 @@ public class CmdExecuter {
 				throw new MarcoException(sb.toString());
 			}
 
-		} catch (IOException | InterruptedException e) {
+		} catch (IOException | InterruptedException | NumberFormatException e) {
 			if (_LOGGER.isTraceEnabled()) {
 				e.printStackTrace();
 			}

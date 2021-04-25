@@ -3,6 +3,7 @@
 This folder contains the CSGO plugins written for our games
 
 - [SourcePawn APIs](https://sm.alliedmods.net/new-api/)
+- [Sourcemod Events](https://wiki.alliedmods.net/Game_Events_(Source))
 - [Introduction to SourcePawn](https://wiki.alliedmods.net/Introduction_to_SourcePawn_1.7)
 - [SourcePawn IDE](https://forums.alliedmods.net/showthread.php?t=259917)
 - [Metamod](https://www.metamodsource.net/downloads.php)

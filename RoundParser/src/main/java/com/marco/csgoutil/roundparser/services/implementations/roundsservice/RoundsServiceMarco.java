@@ -81,9 +81,11 @@ public class RoundsServiceMarco implements RoundsService {
     private ApplicationContext appContext;
 
 	@Override
-	public List<MapStats> processNewDemFiles() throws MarcoException {
+	public List<MapStats> processNewDemFiles(boolean forceDeleteBadFiles) throws MarcoException {
 
 		List<MapStats> mapStats = new ArrayList<>();
+		Map<String, NotificationService> notificationBeans = appContext.getBeansOfType(NotificationService.class);
+		
 		Runnable parser = () -> {
 			try {
 				// Get the list of all the available dem files
@@ -112,8 +114,10 @@ public class RoundsServiceMarco implements RoundsService {
 							});
 							mapStats.add(m);
 						} catch (MarcoException e) {
-							_LOGGER.error(String.format("Could not process DEM file: %s", f.getAbsoluteFile()));
-							if(deleteBadDemFiles) {
+						    String message = String.format("Could not process DEM file: %s", f.getAbsoluteFile());
+							_LOGGER.error(message);
+							notificationBeans.forEach((n, b) -> b.sendParsingCompleteNotification("CSGO - Dem Files Process", message));
+							if(deleteBadDemFiles || forceDeleteBadFiles) {
 								_LOGGER.info(String.format("File deleted: %b", f.delete()));
 							}
 						}
@@ -133,8 +137,6 @@ public class RoundsServiceMarco implements RoundsService {
 				message.append(String.format("%d new files were processed ", mapStats.size()));
 				message.append("in " + duration);
 				message.append("\n\nCheck the new stats at https://marco.selfip.net/cstrike/");
-				
-				Map<String, NotificationService> notificationBeans = appContext.getBeansOfType(NotificationService.class);
 				
 				notificationBeans.forEach((n, b) -> b.sendParsingCompleteNotification("CSGO - Dem Files Processed", message.toString()));
 				

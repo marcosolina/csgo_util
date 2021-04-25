@@ -355,6 +355,12 @@ EOD;
 							<canvas id="playerScoresChart"></canvas>
 						</div>
 						<div class="col-12">
+							&nbsp;
+						</div>
+						<div class="col-12 d-flex justify-content-center">
+							<h5>Maps Played</h5>
+						</div>
+						<div class="col-12">
 							<canvas id="mapsPlayedChart"></canvas>
 						</div>
 					</div>

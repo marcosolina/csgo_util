@@ -77,6 +77,7 @@ EOD;
 	<script src="./js/CsgoChart.js"></script>
 	<script src="./js/CsgoChartDataset.js"></script>
 	<script src="./js/PlayerScoreChart.js"></script>
+	<script src="./js/MapsPlayedChart.js"></script>
 	<script src="./js/ChartsManager.js"></script>
 
 	<script>
@@ -352,6 +353,9 @@ EOD;
 						</div>
 						<div class="col-12">
 							<canvas id="playerScoresChart"></canvas>
+						</div>
+						<div class="col-12">
+							<canvas id="mapsPlayedChart"></canvas>
 						</div>
 					</div>
 					<!-- END Charts -->

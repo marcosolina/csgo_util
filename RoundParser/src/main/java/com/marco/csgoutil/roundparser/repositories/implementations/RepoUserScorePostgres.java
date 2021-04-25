@@ -1,10 +1,13 @@
 package com.marco.csgoutil.roundparser.repositories.implementations;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
@@ -14,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.marco.csgoutil.roundparser.model.entities.DaoGames;
+import com.marco.csgoutil.roundparser.model.entities.DaoMapPlayed;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScore;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScorePk_;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScore_;
@@ -97,6 +101,33 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		
 		return em.createQuery(cq).setMaxResults(counter).getResultList();
 	}
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public List<DaoMapPlayed> getMapsPlayed() {
+        _LOGGER.trace("Inside RepoUserScorePostgres.getMapsPlayed");
+        StringBuilder sb = new StringBuilder();
+        sb.append("SELECT a.map, COUNT(*)");
+        sb.append(" FROM ");
+        sb.append(" (");
+        sb.append("     SELECT game_date, map");
+        sb.append("     FROM");
+        sb.append("     users_scores");
+        sb.append("     GROUP BY");
+        sb.append("     game_date, map");
+        sb.append(" ) as a");
+        sb.append(" GROUP BY");
+        sb.append(" map ");
+        sb.append(" order by map");
+
+        Query query = em.createNativeQuery(sb.toString());
+        
+        List<Object[]> result = query.getResultList();
+        
+        return result.stream().map(obj -> 
+            new DaoMapPlayed(String.class.cast(obj[0]), BigInteger.class.cast(obj[1]).longValue())
+            ).collect(Collectors.toList());
+    }
 
 	
 	/*

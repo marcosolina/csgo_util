@@ -26,9 +26,11 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import com.marco.csgoutil.roundparser.enums.ParserExecutionType;
 import com.marco.csgoutil.roundparser.enums.ScoreType;
 import com.marco.csgoutil.roundparser.model.entities.DaoGames;
+import com.marco.csgoutil.roundparser.model.entities.DaoMapPlayed;
 import com.marco.csgoutil.roundparser.model.entities.EntityUser;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScore;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScorePk;
+import com.marco.csgoutil.roundparser.model.rest.players.MapPlayed;
 import com.marco.csgoutil.roundparser.model.rest.players.User;
 import com.marco.csgoutil.roundparser.model.rest.players.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.MapStats;
@@ -598,5 +600,16 @@ public class RoundsServiceMarco implements RoundsService {
 		Arrays.stream(ScoreType.values()).forEach(s -> map.put(s.name(), s.getDesc()));
 		return map;
 	}
+
+    @Override
+    public List<MapPlayed> countGamesOnAMap() {
+        List<DaoMapPlayed> maps = repoUserScore.getMapsPlayed();
+        return maps.stream().map(dao -> {
+            MapPlayed mp = new MapPlayed();
+            mp.setCount(dao.getCount());
+            mp.setMapName(dao.getMapName());
+            return mp;
+        }).collect(Collectors.toList());
+    }
 
 }

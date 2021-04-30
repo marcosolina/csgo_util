@@ -82,7 +82,6 @@ public class RconServiceMarcoRconApi implements RconService {
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private ClientResponse performRequest(HttpMethod method, URL url, Map<String, String> headers,
 			Map<String, String> queryParameters, MediaType contentType, Object body) {
 

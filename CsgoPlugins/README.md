@@ -20,3 +20,11 @@ sm_move_players <playerName1> <playerName2> <playerName3> ... <playerNameX> dumm
 ~~~~
 
 **NOTE**: I don't know why but you have to pass a "dummy" additional parameter, otherwise the plugin will not process the last player name
+
+### LogEvent
+
+This plugin will write in a txt file the name of the event that has occured on the server. Managed events:
+
+- **cs_win_panel_match** Triggered when the match is over and the "Vote Screen" is displayed
+- **round_start**: Triggered when a new round starts (The warmup round triggers this event)
+- **round_end**: Triggered when the round ends (The warmup round does NOT trigger this event)

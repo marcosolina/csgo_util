@@ -24,7 +24,7 @@ This is a personal project that I made to simplify couple of things when playing
 
 ## Register a CSGO Event Listener
 
-The [CsgoRespApi](https://github.com/marcosolina/csgo_util/tree/main/CsgoRestApi) project exposes some [APIs](https://marco.selfip.net/rcon/swagger-ui.html) which allows you to register a CSGO event listener. One you have registered an event listener, that listener will receive a REST call every time one of the managed CSGO events is fired.
+The [CsgoRespApi](https://github.com/marcosolina/csgo_util/tree/main/CsgoRestApi) project exposes some [APIs](https://marco.selfip.net/rcon/swagger-ui.html) which allows you to register a CSGO event listener. Once you have registered your event listener, that listener will receive a REST call every time a CSGO event is fired.
 Supported events:
 
 - **ROUND_END**: Triggered when the round ends (The warmup round does NOT trigger this event)
@@ -33,9 +33,12 @@ Supported events:
 
 ### Register an event listener
 
-To register your event listener you have to perform an HTTP POST request to the service and provide the name of the event that you want to register for and the URL to call back one the specific event occurs.
+To register your event listener you have to perform an HTTP POST request to the service and provide:
 
-**IMPORTANT**: When the CSGO event is fired, the service will send an HTTP POST request to the URL you have registered with a "content-type: application/json" and a JSON object simlar to this one: "{"eventTime":"2021-05-01T19:35:32.178Z", "eventType": "ROUND_END" }" in the body
+- The name of the event that you want to register for
+- The URL to call back when the specific event occurs.
+
+**IMPORTANT**: When the CSGO event is fired, your URL will receive an HTTP POST with a "content-type: application/json" and a JSON object in the body simlar to this one: "{"eventTime":"2021-05-01T19:35:32.178Z", "eventType": "ROUND_END" }"
 
 ### **Examples**
 

@@ -27,6 +27,7 @@ import com.marco.csgoutil.roundparser.enums.ParserExecutionType;
 import com.marco.csgoutil.roundparser.enums.ScoreType;
 import com.marco.csgoutil.roundparser.model.entities.DaoGames;
 import com.marco.csgoutil.roundparser.model.entities.DaoMapPlayed;
+import com.marco.csgoutil.roundparser.model.entities.EntityErrorMapSent;
 import com.marco.csgoutil.roundparser.model.entities.EntityUser;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScore;
 import com.marco.csgoutil.roundparser.model.entities.EntityUserScorePk;
@@ -36,6 +37,7 @@ import com.marco.csgoutil.roundparser.model.rest.players.UserAvgScore;
 import com.marco.csgoutil.roundparser.model.service.MapStats;
 import com.marco.csgoutil.roundparser.model.service.Team;
 import com.marco.csgoutil.roundparser.model.service.UserMapStats;
+import com.marco.csgoutil.roundparser.repositories.interfaces.RepoErrorMapSent;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
 import com.marco.csgoutil.roundparser.services.interfaces.CsgoRoundFileParser;
@@ -66,6 +68,8 @@ public class RoundsServiceMarco implements RoundsService {
 	@Autowired
 	private RepoUserScore repoUserScore;
 	@Autowired
+	private RepoErrorMapSent errorsNotified;
+	@Autowired
 	@Qualifier("Simple")
 	private PartitionTeams standardPartition;
 	@Autowired
@@ -79,7 +83,7 @@ public class RoundsServiceMarco implements RoundsService {
 	private ParserExecutionType executionType;
 	@Autowired
     private ApplicationContext appContext;
-
+	
 	@Override
 	public List<MapStats> processNewDemFiles(boolean forceDeleteBadFiles) throws MarcoException {
 
@@ -114,12 +118,7 @@ public class RoundsServiceMarco implements RoundsService {
 							});
 							mapStats.add(m);
 						} catch (MarcoException e) {
-						    String message = String.format("Could not process DEM file: %s", f.getAbsoluteFile());
-							_LOGGER.error(message);
-							notificationBeans.forEach((n, b) -> b.sendParsingCompleteNotification("CSGO - Dem Files Process", message));
-							if(deleteBadDemFiles || forceDeleteBadFiles) {
-								_LOGGER.info(String.format("File deleted: %b", f.delete()));
-							}
+						    sendErrorNotification(f, forceDeleteBadFiles);
 						}
 					});
 				// @formatter:on
@@ -168,6 +167,23 @@ public class RoundsServiceMarco implements RoundsService {
 		MapStats ms = setMapNameAndTime(f);
 		ms.setUsersStats(roundParserService.extractPlayersScore(f));
 		return ms;
+	}
+	
+	private void sendErrorNotification(File f, boolean forceDeleteBadFiles) {
+        String message = String.format("Could not process DEM file: %s", f.getAbsoluteFile());
+        _LOGGER.error(message);
+        LocalDateTime playedOn = setMapNameAndTime(f).getPlayedOn();
+        if(errorsNotified.findById(playedOn) == null) {
+            Map<String, NotificationService> notificationBeans = appContext.getBeansOfType(NotificationService.class);
+            notificationBeans.forEach((n, b) -> b.sendParsingCompleteNotification("CSGO - Dem Files Process", message));
+            EntityErrorMapSent entity = new EntityErrorMapSent();
+            entity.setGameDate(playedOn);
+            entity.setSentOn(LocalDateTime.now());
+            errorsNotified.insertUpdateUser(entity);
+        }
+        if(deleteBadDemFiles || forceDeleteBadFiles) {
+            _LOGGER.info(String.format("File deleted: %b", f.delete()));
+        }
 	}
 
 	/**

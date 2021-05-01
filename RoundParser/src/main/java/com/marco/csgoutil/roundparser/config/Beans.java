@@ -17,8 +17,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import com.fasterxml.classmate.TypeResolver;
 import com.marco.csgoutil.roundparser.enums.Environment;
+import com.marco.csgoutil.roundparser.repositories.implementations.RepoErrorMapSentPostgres;
 import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserPostgres;
 import com.marco.csgoutil.roundparser.repositories.implementations.RepoUserScorePostgres;
+import com.marco.csgoutil.roundparser.repositories.interfaces.RepoErrorMapSent;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
 import com.marco.csgoutil.roundparser.services.implementations.RconServiceMarcoRconApi;
@@ -156,6 +158,11 @@ public class Beans {
 	@Bean
 	public RepoUserScore getRepoUserScore() {
 		return new RepoUserScorePostgres();
+	}
+	
+	@Bean
+	public RepoErrorMapSent getRepoErrorMapSent() {
+	    return new RepoErrorMapSentPostgres();
 	}
 
 	/*

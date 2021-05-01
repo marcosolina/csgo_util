@@ -1,4 +1,4 @@
-package com.marco.csgorestapi.model;
+package com.marco.csgorestapi.model.rest;
 
 import com.marco.utils.http.MarcoResponse;
 

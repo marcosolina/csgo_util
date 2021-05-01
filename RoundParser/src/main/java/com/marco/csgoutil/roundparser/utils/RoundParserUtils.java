@@ -30,6 +30,11 @@ public class RoundParserUtils {
 	public static final String MAPPING_GET_MOVE_PLAYERS = "/rcon/moveplayers";
 	
 	/*
+	 * Events controller
+	 */
+	public static final String MAPPING_POST_EVENTS = "/events";
+	
+	/*
 	 * DEM PARSER CSV COLUMNS
 	 */
 	public static final int DEM_COL_USER_NAME = 0;

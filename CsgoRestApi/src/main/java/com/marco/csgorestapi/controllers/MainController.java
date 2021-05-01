@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.marco.csgorestapi.model.RconHttpRequest;
-import com.marco.csgorestapi.model.RconHttpResponse;
+import com.marco.csgorestapi.model.rest.RconHttpRequest;
+import com.marco.csgorestapi.model.rest.RconHttpResponse;
 import com.marco.csgorestapi.services.interfaces.RconService;
 import com.marco.utils.MarcoException;
 

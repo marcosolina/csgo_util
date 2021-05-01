@@ -1,10 +1,18 @@
 server:
   servlet:
     context-path: /rcon
+  port: 8081
     
 csgorestapi:
   version: ^project.version^
-    
+
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/csgorcon
+    username: ${POSTGRES_USER:REPLACE_ME} # Replace the value
+    password: ${POSTGRES_PASSW:REPLACE_ME} # Replace the value
+
 logging:
   file:
     name: ./logs/csgo-rcon-status.log

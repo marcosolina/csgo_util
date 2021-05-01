@@ -47,5 +47,5 @@ public class MainController {
 		LOGGER.trace("Leaving MainController.postRconCommand");
 		return new ResponseEntity<>(resp, HttpStatus.OK);
 	}
-
+	
 }

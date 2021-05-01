@@ -25,6 +25,14 @@ CREATE TABLE USERS (
 );
 
 /*
+ * Table to store the errors sent via the notification system
+ */
+CREATE TABLE ERROR_MAP_SENT (
+    GAME_DATE               TIMESTAMP                       NOT NULL PRIMARY KEY,
+    SENT_ON                 TIMESTAMP                       NOT NULL
+);
+
+/*
  * Create the users scores table
  */
 CREATE TABLE USERS_SCORES (

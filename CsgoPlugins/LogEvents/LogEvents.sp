@@ -15,7 +15,7 @@ EngineVersion g_Game;
 
 public Plugin myinfo = 
 {
-	name = "End Match", 
+	name = "Log Events", 
 	author = PLUGIN_AUTHOR, 
 	description = "Testing CsGO plugins", 
 	version = PLUGIN_VERSION, 
@@ -76,7 +76,7 @@ public void Event_Round_Start(Event event, const char[] name, bool dontBroadcast
    BuildPath(Path_SM, path, PLATFORM_MAX_PATH, "event.txt");
    
    File file = OpenFile(path, "w");
-   file.WriteLine("Round started");
+   file.WriteLine("Round Started");
    file.Close();
    
 }

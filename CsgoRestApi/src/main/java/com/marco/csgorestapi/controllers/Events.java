@@ -35,7 +35,7 @@ public class Events {
     private EventService service;
 
     @PostMapping()
-    @ApiOperation(value = "It receives the CSGO Server events", code = 200)
+    @ApiOperation(value = "It receives the event from the CSGO server", code = 200)
     public ResponseEntity<Void> receiveServerEvent(@RequestBody EventHttpRequest request) {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format("New event received: %s", request.toString()));
@@ -50,7 +50,7 @@ public class Events {
     }
 
     @PostMapping("/register")
-    @ApiOperation(value = "It receives the CSGO Server events", code = 200)
+    @ApiOperation(value = "End point to use if you want to register your event listener", code = 200)
     public ResponseEntity<EventSimpleHttpResponse> registerListener(@RequestBody EventListenerHttpRequest request) {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format("Registering listener: %s - %s", request.getUrl(), request.getEventType()));
@@ -66,7 +66,7 @@ public class Events {
     }
 
     @DeleteMapping("/unregister")
-    @ApiOperation(value = "It receives the CSGO Server events", code = 200)
+    @ApiOperation(value = "End point to use if you want to delete your event listener", code = 200)
     public ResponseEntity<EventSimpleHttpResponse> unregisterListener(@RequestBody EventListenerHttpRequest request) {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format("UnRegistering listener: %s - %s", request.getUrl(), request.getEventType()));

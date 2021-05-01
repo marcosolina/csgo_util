@@ -11,12 +11,13 @@
 	</parent>
 	<groupId>com.marco</groupId>
 	<artifactId>CsgoRestApi</artifactId>
-	<version>1.0.1</version>
+	<version>1.0.2</version>
 	<name>CsgoRestApi</name>
 	<description>CSGO Utils APIs project</description>
 	<properties>
 		<java.version>8</java.version>
 		<swagger.version>2.9.2</swagger.version>
+		<postgresql.version>42.2.19</postgresql.version>
 		<resource.delimiter>^</resource.delimiter>
 		<spring-cloud.version>Hoxton.SR11</spring-cloud.version>
 	</properties>
@@ -43,6 +44,32 @@
 			<version>${swagger.version}</version>
 		</dependency>
 		<!-- End swagger dependencies -->
+		<!-- Providing JPA support -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!-- Generates JPA metamodels -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+		</dependency>
+		<!-- PostgreSQL JDBC -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+		<!-- To be able to use the WebClient API since the RestTemplate API is 
+			going to be deprecated -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>

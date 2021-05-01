@@ -1,9 +1,14 @@
 package com.marco.csgorestapi.enums;
 
+/**
+ * These are the events that the CSGO server can send me
+ * 
+ * @author Marco
+ *
+ */
 public enum EventType {
     // @formatter:off
     ROUND_END("Round End"),
-    START_VOTE("Start Vote"),
     ROUND_START("Round Started"),
     CS_WIN_PANEL_MATCH("End Map"),
     // @formatter:on

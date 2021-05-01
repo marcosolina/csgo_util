@@ -24,7 +24,7 @@ This is a personal project that I made to simplify couple of things when playing
 
 ## Register a CSGO Event Listener
 
-The [CsgoRespApi](https://github.com/marcosolina/csgo_util/tree/main/CsgoRestApi) project exposes some [APIs](https://marco.selfip.net/rcon/swagger-ui.html) which allows you to register a CSGO event listener. One you have registered an event listener, that listener will receive a REST call every time one of the managed CSGO events is fired.
+The [CsgoRespApi](https://github.com/marcosolina/csgo_util/tree/main/CsgoRestApi) project exposes some [APIs](https://marco.selfip.net/rcon/swagger-ui.html#/events) which allows you to register a CSGO event listener. One you have registered an event listener, that listener will receive a REST call every time one of the managed CSGO events is fired.
 Supported events:
 
 - **ROUND_END**: Triggered when the round ends (The warmup round does NOT trigger this event)

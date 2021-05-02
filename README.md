@@ -31,6 +31,8 @@ Supported events:
 - **ROUND_END**: Triggered when the round ends (The warmup round does NOT trigger this event)
 - **ROUND_START**: Triggered when a new round starts (The warmup round triggers this event)
 - **CS_WIN_PANEL_MATCH**: Triggered when the match is over and the "Vote Screen" is displayed
+- **WARMUP_START**: Triggered when the warmup starts
+- **WARMUP_END**: This is calculated by the service, it will be fired when CSGO distpaches the first "ROUND_START" after the "WARMUP_START"
 
 ### Register an event listener
 
@@ -39,7 +41,11 @@ To register your event listener you have to perform an HTTP POST request to the 
 - The name of the event that you want to register for
 - The URL to call back when the specific event occurs.
 
-**IMPORTANT**: When the CSGO event is fired, your URL will receive an HTTP POST with a "content-type: application/json" and a JSON object in the body simlar to this one: "{"eventTime":"2021-05-01T19:35:32.178Z", "eventType": "ROUND_END" }"
+**IMPORTANT**
+
+- When the CSGO event is fired, your URL will receive an HTTP POST with a "content-type: application/json" and a JSON object in the body simlar to this one: "{"eventTime":"2021-05-01T19:35:32.178Z", "eventType": "ROUND_END" }"
+- Your endpoint must reply with an OK HTTP Status Code (200)
+- If your endpoint does not return 200 for more than three times in a row it will be "disabled". In this case you have to "un-register" and register it again
 
 ### **Examples**
 

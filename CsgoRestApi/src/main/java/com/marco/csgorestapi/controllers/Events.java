@@ -1,5 +1,7 @@
 package com.marco.csgorestapi.controllers;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,16 +35,17 @@ public class Events {
 
     @Autowired
     private EventService service;
-
+    
+    
     @PostMapping()
     @ApiOperation(value = "It receives the event from the CSGO server", code = 200)
-    public ResponseEntity<Void> receiveServerEvent(@RequestBody EventHttpRequest request) {
+    public ResponseEntity<Void> receiveServerEvent(@RequestBody EventHttpRequest request, HttpServletRequest httRequest) {
         if (LOGGER.isInfoEnabled()) {
             LOGGER.info(String.format("New event received: %s", request.toString()));
         }
 
         if (EventType.fromString(request.getEventName()) != null) {
-            new Thread(() -> service.newIncomingEventFromServer(EventType.fromString(request.getEventName()))).start();
+            new Thread(() -> service.newIncomingEventFromServer(EventType.fromString(request.getEventName()), httRequest.getRemoteAddr())).start();
             LOGGER.trace("Leaving Events.receiveServerEvent");
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }

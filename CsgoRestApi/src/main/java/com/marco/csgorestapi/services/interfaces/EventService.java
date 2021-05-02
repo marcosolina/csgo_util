@@ -15,7 +15,7 @@ public interface EventService {
      * 
      * @param event
      */
-    public void newIncomingEventFromServer(EventType event);
+    public void newIncomingEventFromServer(EventType event, String clientIp);
 
     /**
      * It register a new event listener

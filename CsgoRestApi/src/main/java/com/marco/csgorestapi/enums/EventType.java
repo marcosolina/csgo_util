@@ -11,6 +11,8 @@ public enum EventType {
     ROUND_END("Round End"),
     ROUND_START("Round Started"),
     CS_WIN_PANEL_MATCH("End Map"),
+    WARMUP_START("round_announce_warmup"),
+    WARMUP_END("xxx"),
     // @formatter:on
 
     ;

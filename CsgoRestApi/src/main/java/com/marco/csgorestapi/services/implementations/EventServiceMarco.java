@@ -5,6 +5,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,13 +45,24 @@ public class EventServiceMarco implements EventService {
 
     @Autowired
     private WebClient.Builder wcb;
+    
+    private static final Map<String, EventType> previousEvent = new ConcurrentHashMap<>();
 
     @Override
-    public void newIncomingEventFromServer(EventType event) {
+    public void newIncomingEventFromServer(EventType event, String clientIp) {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(String.format("Processing event: %s", event.name()));
         }
+        
+        if(previousEvent.get(clientIp) == EventType.WARMUP_START && event == EventType.ROUND_START) {
+            dispatchEvent(EventType.WARMUP_END);
+        }
 
+        previousEvent.put(clientIp, event);
+        dispatchEvent(event);
+    }
+    
+    private void dispatchEvent(EventType event) {
         ListenerMessage lm = new ListenerMessage();
         lm.setEventTime(LocalDateTime.now());
         lm.setEventType(event);
@@ -80,7 +92,6 @@ public class EventServiceMarco implements EventService {
             }).start();
         });
         // @formatter:on
-
     }
 
     private void setFailure(EntityEventListener l) {

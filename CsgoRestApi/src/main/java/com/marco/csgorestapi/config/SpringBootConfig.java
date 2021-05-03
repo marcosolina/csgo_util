@@ -10,7 +10,9 @@ import com.marco.csgorestapi.repositories.implementations.RepoEntityEventListene
 import com.marco.csgorestapi.repositories.interfaces.RepoEntityEventListener;
 import com.marco.csgorestapi.services.implementations.EventServiceMarco;
 import com.marco.csgorestapi.services.implementations.RconServiceSteamCondenser;
+import com.marco.csgorestapi.services.implementations.TelegramNotificationService;
 import com.marco.csgorestapi.services.interfaces.EventService;
+import com.marco.csgorestapi.services.interfaces.NotificationService;
 import com.marco.csgorestapi.services.interfaces.RconService;
 
 /**
@@ -36,10 +38,15 @@ public class SpringBootConfig {
     public RepoEntityEventListener getRepoEntityEventListener() {
         return new RepoEntityEventListenerPostgres();
     }
-    
+
     @Bean
-    public WebClient.Builder getWebClientBuilder(){
+    public WebClient.Builder getWebClientBuilder() {
         return WebClient.builder();
+    }
+
+    @Bean
+    public NotificationService getNotificationService() {
+        return new TelegramNotificationService();
     }
 
     @Bean

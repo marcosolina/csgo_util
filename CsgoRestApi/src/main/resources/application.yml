@@ -5,6 +5,11 @@ server:
     
 csgorestapi:
   version: ^project.version^
+  notification:
+    telegram:
+      enabled: true
+      telegramToken: TELEGRAM_TOKEN
+      chatGroupId: TELGRAM_GROUP_ID
 
 
 spring:

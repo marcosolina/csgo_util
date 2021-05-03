@@ -26,6 +26,7 @@ import com.marco.csgorestapi.model.entities.EntityEventListenerPk;
 import com.marco.csgorestapi.model.rest.ListenerMessage;
 import com.marco.csgorestapi.repositories.interfaces.RepoEntityEventListener;
 import com.marco.csgorestapi.services.interfaces.EventService;
+import com.marco.csgorestapi.services.interfaces.NotificationService;
 import com.marco.utils.MarcoException;
 
 /**
@@ -39,13 +40,13 @@ public class EventServiceMarco implements EventService {
 
     @Autowired
     private RepoEntityEventListener repo;
-
     @Autowired
     private MessageSource msgSource;
-
+    @Autowired
+    private NotificationService ns;
     @Autowired
     private WebClient.Builder wcb;
-    
+
     private static final Map<String, EventType> previousEvent = new ConcurrentHashMap<>();
 
     @Override
@@ -53,15 +54,15 @@ public class EventServiceMarco implements EventService {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(String.format("Processing event: %s", event.name()));
         }
-        
-        if(previousEvent.get(clientIp) == EventType.WARMUP_START && event == EventType.ROUND_START) {
+
+        if (previousEvent.get(clientIp) == EventType.WARMUP_START && event == EventType.ROUND_START) {
             dispatchEvent(EventType.WARMUP_END);
         }
 
         previousEvent.put(clientIp, event);
         dispatchEvent(event);
     }
-    
+
     private void dispatchEvent(EventType event) {
         ListenerMessage lm = new ListenerMessage();
         lm.setEventTime(LocalDateTime.now());
@@ -81,27 +82,36 @@ public class EventServiceMarco implements EventService {
                     ClientResponse resp = this.performRequest(HttpMethod.POST, url, null, null, MediaType.APPLICATION_JSON, lm);
                     LOGGER.debug(String.format("Call %s Status Code: %s", l.getId().getUrlListener(), resp.statusCode().name()));
                     if(resp.statusCode() != HttpStatus.OK) {
-                        setFailure(l);
+                        setFailure(l, String.format("Http status: %s", resp.statusCode().name()));
                     }else {
                         setSuccess(l);
                     }
                 } catch (Exception e) {
                     LOGGER.error(e.getMessage());
-                    setFailure(l);
+                    setFailure(l, e.getMessage());
                 }
             }).start();
         });
         // @formatter:on
     }
 
-    private void setFailure(EntityEventListener l) {
+    private void setFailure(EntityEventListener l, String errorMessage) {
         l.setLastFailure(LocalDateTime.now());
         l.setConsecutiveFailure(l.getConsecutiveFailure() + 1);
+        
         if (l.getConsecutiveFailure() > 2) {
             l.setActive("N");
         }
         try {
             repo.updateEntity(l);
+            
+            StringBuilder sb = new StringBuilder();
+            sb.append(String.format("\n- URL: %s", l.getId().getUrlListener()));
+            sb.append(String.format("\n- Event: %s", l.getId().getEventType().name()));
+            sb.append(String.format("\n- Attempt: %d", l.getConsecutiveFailure()));
+            sb.append(String.format("\n- Reason: %s", errorMessage));
+            
+            sendNotifcation("Not able to dispatch the event", sb.toString());
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
@@ -134,8 +144,22 @@ public class EventServiceMarco implements EventService {
         if (repo.findListener(pk) != null) {
             throw new MarcoException(msgSource.getMessage("CSGOAPI00008", null, LocaleContextHolder.getLocale()));
         }
-
-        return repo.registerNewListener(listener);
+        
+        boolean resp = repo.registerNewListener(listener);
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("\n- URL: %s", listener.getId().getUrlListener()));
+        sb.append(String.format("\n- Event: %s", listener.getId().getEventType().name()));
+        sendNotifcation("New Event Listener registerd", sb.toString());
+        
+        return resp;
+    }
+    
+    private void sendNotifcation(String title, String message) {
+        try {
+            ns.sendEventServiceError(title, message);
+        }catch(Exception e){
+            LOGGER.error(e.getMessage());
+        }
     }
 
     @Override
@@ -144,7 +168,13 @@ public class EventServiceMarco implements EventService {
         EntityEventListenerPk pk = new EntityEventListenerPk();
         pk.setEventType(event);
         pk.setUrlListener(listenerUrl);
-        return repo.deleteListener(pk);
+        boolean resp = repo.deleteListener(pk);
+        
+        StringBuilder sb = new StringBuilder();
+        sb.append(String.format("\n- URL: %s", pk.getUrlListener()));
+        sb.append(String.format("\n- Event: %s", pk.getEventType().name()));
+        sendNotifcation("Delete Event Listener", sb.toString());
+        return resp;
     }
 
     private void checkListenerKey(String listenerUrl, EventType event) throws MarcoException {

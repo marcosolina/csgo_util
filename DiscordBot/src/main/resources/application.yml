@@ -1,0 +1,26 @@
+logging:
+  file:
+    name: ./logs/discordbot.log
+  pattern:
+    console: "%d %-5level : %msg%n"
+    file: "%d %-5level : %msg%n"
+  level:
+    root: INFO
+    com:
+      marco:
+        discordbot: DEBUG
+
+server:
+  servlet:
+    context-path: /discordbot
+  port: 8082
+
+discordbot:
+  version: ^project.version^
+  token: ${DISCORD_BOT_TOKEN}
+  discord:
+    serverId: 838818767219195924
+    voiceChannels:
+      terrorist: 838818771136413777
+      ct: 839591293545611305
+      general: 838818767219195932

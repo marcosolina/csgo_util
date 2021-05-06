@@ -14,6 +14,12 @@ server:
   servlet:
     context-path: /discordbot
   port: 8082
+  
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/discordbot
+    username: ${POSTGRES_USER:REPLACE_ME} # Replace the value
+    password: ${POSTGRES_PASSW:REPLACE_ME} # Replace the value
 
 discordbot:
   version: ^project.version^

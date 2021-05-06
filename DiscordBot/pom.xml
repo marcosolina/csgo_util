@@ -29,7 +29,27 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
-
+		<!-- Providing JPA support -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<!-- Generates JPA metamodels -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-jpamodelgen</artifactId>
+		</dependency>
+		<!-- PostgreSQL JDBC -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+		</dependency>
+		<!-- To be able to use the WebClient API since the RestTemplate API is 
+            going to be deprecated -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
 		<!--Start Swagger Dependencies https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api -->
 		<dependency>
 			<groupId>io.springfox</groupId>
@@ -79,7 +99,7 @@
 		</dependencies>
 	</dependencyManagement>
 
-    <!-- JDA Repository (Discord API wrapper) -->
+	<!-- JDA Repository (Discord API wrapper) -->
 	<repositories>
 		<repository>
 			<id>dv8tion</id>

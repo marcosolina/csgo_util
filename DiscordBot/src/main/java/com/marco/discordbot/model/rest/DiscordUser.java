@@ -4,6 +4,15 @@ public class DiscordUser {
     private Long id;
     private String name;
 
+    public DiscordUser() {
+    }
+
+    public DiscordUser(Long id, String name) {
+        super();
+        this.id = id;
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

@@ -3,6 +3,7 @@ package com.marco.discordbot.services.interfaces;
 import java.util.List;
 
 import com.marco.discordbot.model.rest.DiscordUser;
+import com.marco.discordbot.model.rest.Player;
 import com.marco.utils.MarcoException;
 
 /**
@@ -52,4 +53,21 @@ public interface IxiGoBot {
      * @throws MarcoException
      */
     public boolean balanceTheTeamsAndMoveThemInTheAppropirateChannel() throws MarcoException;
+
+    /**
+     * It returns the list of discord users mapped to the Steam user
+     * 
+     * @return
+     * @throws MarcoException
+     */
+    public List<Player> getListOfPlayers() throws MarcoException;
+
+    /**
+     * It stores the player details
+     * 
+     * @param player
+     * @return
+     * @throws MarcoException
+     */
+    public boolean storePlayerDetails(Player player) throws MarcoException;
 }

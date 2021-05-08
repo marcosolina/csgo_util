@@ -14,8 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.marco.discordbot.model.rest.GenericResponse;
 import com.marco.discordbot.model.rest.GetMembersResponse;
 import com.marco.discordbot.model.rest.GetPlayersResponse;
-import com.marco.discordbot.model.rest.GetSteamUsersResp;
-import com.marco.discordbot.model.rest.Player;
+import com.marco.discordbot.model.rest.SavePlayersMapping;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
 
@@ -58,12 +57,12 @@ public class MainController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
     
-    @GetMapping("/players")
+    @GetMapping("/mapped/players")
     public ResponseEntity<GetPlayersResponse> getPlayers() {
         GetPlayersResponse resp = new GetPlayersResponse();
         try {
             LOGGER.debug("Getting the list of known players");
-            resp.setPlayers(ixiGoBot.getListOfPlayers());
+            resp.setPlayers(ixiGoBot.getListOfMappedPlayers());
             resp.setStatus(true);
         } catch (MarcoException e) {
             if(LOGGER.isTraceEnabled()) {
@@ -74,27 +73,12 @@ public class MainController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
     
-    @GetMapping("/steamusers")
-    public ResponseEntity<GetSteamUsersResp> getSteamUsers() {
-        GetSteamUsersResp resp = new GetSteamUsersResp();
-        try {
-            LOGGER.debug("Getting the list of known steam players");
-            resp.setUsers(ixiGoBot.getSteamUsers());
-        } catch (MarcoException e) {
-            if(LOGGER.isTraceEnabled()) {
-                e.printStackTrace();
-            }
-            resp.addError(e);
-        }
-        return new ResponseEntity<>(resp, HttpStatus.OK);
-    }
-    
-    @PostMapping("/player")
-    public ResponseEntity<GenericResponse> storePlayerDetails(@RequestBody Player player) {
+    @PostMapping("/players/mapping")
+    public ResponseEntity<GenericResponse> storePlayerDetails(@RequestBody SavePlayersMapping players) {
         GenericResponse resp = new GenericResponse();
         try {
             LOGGER.debug("Storing player details");
-            resp.setStatus(ixiGoBot.storePlayerDetails(player));
+            resp.setStatus(ixiGoBot.storePlayersDetails(players.getPlayers()));
         } catch (MarcoException e) {
             if(LOGGER.isTraceEnabled()) {
                 e.printStackTrace();

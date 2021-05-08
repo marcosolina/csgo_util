@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
-import com.marco.discordbot.model.rest.SteamUser;
 import com.marco.utils.MarcoException;
 
 /**
@@ -61,22 +60,14 @@ public interface IxiGoBot {
      * @return
      * @throws MarcoException
      */
-    public List<Player> getListOfPlayers() throws MarcoException;
+    public List<Player> getListOfMappedPlayers() throws MarcoException;
 
     /**
-     * It stores the player details
+     * It stores the players details
      * 
      * @param player
      * @return
      * @throws MarcoException
      */
-    public boolean storePlayerDetails(Player player) throws MarcoException;
-
-    /**
-     * It returns a list of steam users
-     * 
-     * @return
-     * @throws MarcoException
-     */
-    public List<SteamUser> getSteamUsers() throws MarcoException;
+    public boolean storePlayersDetails(List<Player> players) throws MarcoException;
 }

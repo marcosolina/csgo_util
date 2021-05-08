@@ -1,9 +1,6 @@
 package com.marco.discordbot.services.implementations;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.security.auth.login.LoginException;
@@ -14,14 +11,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.web.reactive.function.client.ClientResponse;
 
 import com.marco.discordbot.config.properties.DemParserProperties;
 import com.marco.discordbot.config.properties.DiscordServerProps;
 import com.marco.discordbot.listeners.IxiGoDiscordListenerMarco;
 import com.marco.discordbot.model.entities.EntitySteamMap;
 import com.marco.discordbot.model.rest.DiscordUser;
-import com.marco.discordbot.model.rest.GetSteamUsersResp;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.discordbot.model.rest.SteamUser;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
@@ -102,7 +97,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                     .filter(m -> !m.getUser().isBot())
                     .map(m -> {
                         DiscordUser du = new DiscordUser();
-                        du.setId(m.getIdLong());
+                        du.setId(new Long(m.getIdLong()).toString());
                         du.setName(m.getUser().getName());
                         return du;
                     }).collect(Collectors.toList());
@@ -138,7 +133,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                 .filter(m -> !m.getUser().isBot())
                 .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {
                     DiscordUser du = new DiscordUser();
-                    du.setId(m.getIdLong());
+                    du.setId(new Long(m.getIdLong()).toString());
                     du.setName(m.getUser().getName());
                     return du;
                 }).collect(Collectors.toList());
@@ -155,14 +150,14 @@ public class IxiGoBotMarco implements IxiGoBot {
     }
 
     @Override
-    public List<Player> getListOfPlayers() throws MarcoException {
+    public List<Player> getListOfMappedPlayers() throws MarcoException {
         // @formatter:off
         
         List<DiscordUser> discordUsers = getMembers();
         discordUsers.stream().forEach(d -> {
-            if(repo.findById(d.getId()) == null) {
+            if(repo.findById(Long.parseLong(d.getId())) == null) {
                 EntitySteamMap entity = new EntitySteamMap();
-                entity.setDiscordId(d.getId());
+                entity.setDiscordId(Long.parseLong(d.getId()));
                 entity.setDiscordName(d.getName());
                 entity.setSteamId("");
                 entity.setSteamName("");
@@ -172,36 +167,22 @@ public class IxiGoBotMarco implements IxiGoBot {
         
         return repo.getAll().stream()
             .map(e -> new Player(
-                    new DiscordUser(e.getDiscordId(), e.getDiscordName()),
+                    new DiscordUser(e.getDiscordId().toString(), e.getDiscordName()),
                     new SteamUser(e.getSteamId(), e.getSteamName())))
             .collect(Collectors.toList());
         // @formatter:on
     }
 
     @Override
-    public boolean storePlayerDetails(Player player) throws MarcoException {
-        EntitySteamMap entity = new EntitySteamMap();
-        entity.setDiscordId(player.getDiscordDetails().getId());
-        entity.setDiscordName(player.getDiscordDetails().getName());
-        entity.setSteamId(player.getSteamDetails().getSteamId());
-        entity.setSteamName(player.getSteamDetails().getUserName());
-        return repo.persist(entity);
-    }
-
-    @Override
-    public List<SteamUser> getSteamUsers() throws MarcoException {
-        try {
-            URL url = new URL("https://marco.selfip.net/demparser/users");
-            url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getGetSteamUsers());
-            ClientResponse resp = nu.performGetRequest(url, Optional.empty(), Optional.empty());
-            GetSteamUsersResp obj = nu.getBodyFromResponse(resp, GetSteamUsersResp.class);
-            return obj.getUsers();
-        } catch (MalformedURLException e) {
-            LOGGER.error(e.getMessage());
-            if (LOGGER.isTraceEnabled()) {
-                e.printStackTrace();
-            }
-            throw new MarcoException(e);
-        }
+    public boolean storePlayersDetails(List<Player> players) throws MarcoException {
+        players.stream().forEach(p -> {
+            EntitySteamMap entity = new EntitySteamMap();
+            entity.setDiscordId(Long.parseLong(p.getDiscordDetails().getId()));
+            entity.setDiscordName(p.getDiscordDetails().getName());
+            entity.setSteamId(p.getSteamDetails().getSteamId());
+            entity.setSteamName(p.getSteamDetails().getUserName());
+            repo.persist(entity);
+        });
+        return true;
     }
 }

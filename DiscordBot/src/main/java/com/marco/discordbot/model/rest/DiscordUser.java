@@ -1,23 +1,23 @@
 package com.marco.discordbot.model.rest;
 
 public class DiscordUser {
-    private Long id;
+    private String id;
     private String name;
 
     public DiscordUser() {
     }
 
-    public DiscordUser(Long id, String name) {
+    public DiscordUser(String id, String name) {
         super();
         this.id = id;
         this.name = name;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

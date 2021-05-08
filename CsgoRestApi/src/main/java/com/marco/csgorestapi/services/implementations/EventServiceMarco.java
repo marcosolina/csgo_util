@@ -11,6 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -42,6 +43,7 @@ public class EventServiceMarco implements EventService {
     @Autowired
     private NotificationService ns;
     @Autowired
+    @Qualifier("NetworkUtilsNotBalanced")
     private MarcoNetworkUtils mnu;
     
     private static final Map<String, EventType> previousEvent = new ConcurrentHashMap<>();

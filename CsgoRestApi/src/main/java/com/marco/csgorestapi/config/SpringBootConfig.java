@@ -42,15 +42,24 @@ public class SpringBootConfig {
         return new RepoEntityEventListenerPostgres();
     }
 
-    @Bean
+    @Bean(name = "WsClientBalanced")
     @LoadBalanced
     public WebClient.Builder getWebClientBuilder() {
         return WebClient.builder();
     }
+    @Bean(name = "WsClientNotBalanced")
+    public WebClient.Builder getWebClientBuilderNotBalanced() {
+        return WebClient.builder();
+    }
     
-    @Bean
+    @Bean(name = "NetworkUtilsBalanced")
     public MarcoNetworkUtils getMarcoNetworkUtils() {
         return new MarcoNetworkUtilsWebFlux(getWebClientBuilder());
+    }
+    
+    @Bean(name = "NetworkUtilsNotBalanced")
+    public MarcoNetworkUtils getMarcoNetworkUtilsNotBalanced() {
+        return new MarcoNetworkUtilsWebFlux(getWebClientBuilderNotBalanced());
     }
 
     @Bean

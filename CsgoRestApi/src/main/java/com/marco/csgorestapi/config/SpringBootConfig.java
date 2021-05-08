@@ -1,5 +1,6 @@
 package com.marco.csgorestapi.config;
 
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +15,8 @@ import com.marco.csgorestapi.services.implementations.TelegramNotificationServic
 import com.marco.csgorestapi.services.interfaces.EventService;
 import com.marco.csgorestapi.services.interfaces.NotificationService;
 import com.marco.csgorestapi.services.interfaces.RconService;
+import com.marco.utils.network.MarcoNetworkUtils;
+import com.marco.utils.network.MarcoNetworkUtilsWebFlux;
 
 /**
  * Standard Spring Boot configuration file
@@ -40,8 +43,14 @@ public class SpringBootConfig {
     }
 
     @Bean
+    @LoadBalanced
     public WebClient.Builder getWebClientBuilder() {
         return WebClient.builder();
+    }
+    
+    @Bean
+    public MarcoNetworkUtils getMarcoNetworkUtils() {
+        return new MarcoNetworkUtilsWebFlux(getWebClientBuilder());
     }
 
     @Bean

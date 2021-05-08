@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -38,6 +39,8 @@ import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RconService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
+import com.marco.utils.network.MarcoNetworkUtils;
+import com.marco.utils.network.MarcoNetworkUtilsWebFlux;
 
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -115,9 +118,15 @@ public class Beans {
 	}
 	
 	@Bean
-	public WebClient.Builder getWebClientBuilder(){
-		return WebClient.builder();
-	}
+    @LoadBalanced
+    public WebClient.Builder getWebClientBuilder() {
+        return WebClient.builder();
+    }
+    
+    @Bean
+    public MarcoNetworkUtils getMarcoNetworkUtils() {
+        return new MarcoNetworkUtilsWebFlux(getWebClientBuilder());
+    }
 	
 	@Bean 
 	public RconService getRconService() {

@@ -50,8 +50,8 @@ com:
         dotnetexecutable: "E:\\Workspaces\\Git\\csgo_util\\DemParser\\bin\\Debug\\netcoreapp3.1\\DemParser.dll"
         deleteBadDemFiles: false
       rconapi:
-        protocol: https://        # https:// or http://
-        ip: marco.selfip.net      # rcon service ip
+        protocol: http            # https or http
+        host: csgo-rest-api      # rcon service ip
         endpoint: /rcon/cmd       # rcon API endpoint
         csgoserverip: ${CSGO_SERVER_IP:xxxxxx}          # Csgo server IP
         csgorconpassw: ${CSGO_SERVER_RCON_PASSW:xxxxxx} # CSGO rcon password

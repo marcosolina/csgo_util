@@ -97,6 +97,7 @@ EOD;
 			Csgo.init();
 			PlayersManager.init();
 			ChartsManager.init();
+			DiscordBot.init();
 		});
 	</script>
 
@@ -142,8 +143,22 @@ EOD;
 							&nbsp;
 						</div>
 						<div class="row">
+							<div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+								<button id="saveMapDiscordUsers" type="button" class="btn btn-info btn-block">Save Mapping</button>
+								<div>&nbsp;</div>
+							</div>
+							<div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+								<button id="startDiscordBot" type="button" class="btn btn-success btn-block">Start The Bot</button>
+								<div>&nbsp;</div>
+							</div>
+							<div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+								<button id="stopDiscordBot" type="button" class="btn btn-danger btn-block">Stop The Bot</button>
+								<div>&nbsp;</div>
+							</div>
+						</div>
+						<div class="row">
 							<div class="col-6">
-								<h1>Discord Users</h1>
+								<h3>Discord Users</h3>
 								<div class="row" id="discordUsers">
 									<div class="col-12">
 										Discord user
@@ -151,7 +166,7 @@ EOD;
 								</div>
 							</div>
 							<div class="col-6">
-								<h1>Mapped Steam Users</h1>
+								<h3>Steam Users</h3>
 								<div class="row" id="mappedSteamUsers">
 									<div class="col-12">
 										Steam mapped

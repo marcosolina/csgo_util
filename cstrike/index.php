@@ -89,9 +89,9 @@ EOD;
 		if(strpos($apiBaseUrl, "localhost") !== false){
 			$demFilesRootFolder = "C:\\tmp\demfiles";
 			$filesRootFolder = "C:\\tmp\\rcon\maps";
-			$apiBaseUrl = "https://marco.selfip.net/zuul";
+			$apiBaseUrl = "https://marco.selfip.net";
 		}
-		echo "__URLS = {API_BASE: '".$apiBaseUrl."'};";
+		echo "__URLS = {API_BASE: '".$apiBaseUrl."/zuul'};";
 		?>
 		$(document).ready(function () {
 			Csgo.init();

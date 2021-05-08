@@ -22,6 +22,7 @@ import com.marco.discordbot.model.rest.SteamUser;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
+import com.marco.utils.MarcoException.ExceptionType;
 import com.marco.utils.network.MarcoNetworkUtils;
 
 import net.dv8tion.jda.api.JDA;
@@ -51,7 +52,7 @@ public class IxiGoBotMarco implements IxiGoBot {
 
     private void checkIfBotIsOnline() throws MarcoException {
         if (!botOnline) {
-            throw new MarcoException(msgSource.getMessage("DISCBOT00001", null, LocaleContextHolder.getLocale()));
+            throw new MarcoException("Warning", msgSource.getMessage("DISCBOT00001", null, LocaleContextHolder.getLocale()), ExceptionType.warning);
         }
     }
 

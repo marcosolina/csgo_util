@@ -163,7 +163,7 @@ var MarcoUtils = ((function(MarcoUtils){
 									title: error.title, 
 									message: error.message, 
 									close: error.close, 
-									type: __NOTIFY_TYPE[error.type]
+									type: __NOTIFY_TYPE[error.type] || error.type
 								});
 							});
 						}
@@ -182,7 +182,7 @@ var MarcoUtils = ((function(MarcoUtils){
 								title: error.title, 
 								message: error.message, 
 								close: error.close, 
-								type: __NOTIFY_TYPE[error.type]
+								type: __NOTIFY_TYPE[error.type] || error.type
 							});
 						});
 					}else{

@@ -79,6 +79,7 @@ EOD;
 	<script src="./js/PlayerScoreChart.js"></script>
 	<script src="./js/MapsPlayedChart.js"></script>
 	<script src="./js/ChartsManager.js"></script>
+	<script src="./js/DiscordBot.js"></script>
 
 	<script>
 		<?php
@@ -117,7 +118,10 @@ EOD;
 		<div class="container">
 			<ul class="nav nav-tabs" id="myTab" role="tablist">
 				<li class="nav-item" role="presentation">
-					<a class="nav-link active" id="dem-tab" data-toggle="tab" href="#demDiv" role="tab" aria-controls="dem" aria-selected="true">Dem Files</a>
+					<a class="nav-link active" id="bot-tab" data-toggle="tab" href="#botDiv" role="tab" aria-controls="bot" aria-selected="true">Discord Bot</a>
+				</li>
+				<li class="nav-item" role="presentation">
+					<a class="nav-link" id="dem-tab" data-toggle="tab" href="#demDiv" role="tab" aria-controls="dem" aria-selected="flase">Dem Files</a>
 				</li>
 				<li class="nav-item" role="presentation">
 					<a class="nav-link" id="players-tab" data-toggle="tab" href="#playersDiv" role="tab" aria-controls="players" aria-selected="false">Players</a>
@@ -130,7 +134,34 @@ EOD;
 				</li>
 			</ul>
 			<div class="tab-content" id="myTabContent">
-				<div class="tab-pane fade show active" id="demDiv" role="tabpanel" aria-labelledby="dem-tab">
+				<div class="tab-pane fade show active" id="botDiv" role="tabpanel" aria-labelledby="charts-tab">
+					<!-- START BOT -->
+					<div class="container-fluid">
+						<div class="row">
+							&nbsp;
+						</div>
+						<div class="row">
+							<div class="col-6">
+								<h1>Discord Users</h1>
+								<div class="row" id="discordUsers">
+									<div class="col-12">
+										Discord user
+									</div>
+								</div>
+							</div>
+							<div class="col-6">
+								<h1>Mapped Steam Users</h1>
+								<div class="row" id="mappedSteamUsers">
+									<div class="col-12">
+										Steam mapped
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END BOT -->
+				</div>
+				<div class="tab-pane fade" id="demDiv" role="tabpanel" aria-labelledby="dem-tab">
 					<!-- START Dem files Accordion -->
 					<div class="accordion" id="accordionExample">
 						<?php

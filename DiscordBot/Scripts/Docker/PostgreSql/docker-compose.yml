@@ -1,8 +1,0 @@
-version: "3.7"
-services:
-  postgres:
-    image: postgres_discord
-    build:
-      context: .
-    ports:
-      - "5432:5432"

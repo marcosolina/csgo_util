@@ -1,5 +1,6 @@
 package com.marco.discordbot.config;
 
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,6 +11,8 @@ import com.marco.discordbot.repositories.implementations.RepoSteamMapPostgres;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
 import com.marco.discordbot.services.implementations.IxiGoBotMarco;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
+import com.marco.utils.network.MarcoNetworkUtils;
+import com.marco.utils.network.MarcoNetworkUtilsWebFlux;
 
 @Configuration
 public class Beans {
@@ -23,10 +26,16 @@ public class Beans {
     public RepoSteamMap getRepoSteamMap() {
         return new RepoSteamMapPostgres();
     }
-
+    
     @Bean
+    @LoadBalanced
     public WebClient.Builder getWebClientBuilder() {
         return WebClient.builder();
+    }
+    
+    @Bean
+    public MarcoNetworkUtils getMarcoNetworkUtils() {
+        return new MarcoNetworkUtilsWebFlux(getWebClientBuilder());
     }
 
     @Bean

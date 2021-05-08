@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.marco.discordbot.model.rest.GenericResponse;
 import com.marco.discordbot.model.rest.GetMembersResponse;
 import com.marco.discordbot.model.rest.GetPlayersResponse;
+import com.marco.discordbot.model.rest.GetSteamUsersResp;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
@@ -63,6 +64,22 @@ public class MainController {
         try {
             LOGGER.debug("Getting the list of known players");
             resp.setPlayers(ixiGoBot.getListOfPlayers());
+            resp.setStatus(true);
+        } catch (MarcoException e) {
+            if(LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
+            }
+            resp.addError(e);
+        }
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+    
+    @GetMapping("/steamusers")
+    public ResponseEntity<GetSteamUsersResp> getSteamUsers() {
+        GetSteamUsersResp resp = new GetSteamUsersResp();
+        try {
+            LOGGER.debug("Getting the list of known steam players");
+            resp.setUsers(ixiGoBot.getSteamUsers());
         } catch (MarcoException e) {
             if(LOGGER.isTraceEnabled()) {
                 e.printStackTrace();

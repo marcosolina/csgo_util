@@ -1,9 +1,9 @@
 package com.marco.discordbot.services.implementations;
 
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.security.auth.login.LoginException;
@@ -14,22 +14,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.util.UriBuilder;
 
+import com.marco.discordbot.config.properties.DemParserProperties;
 import com.marco.discordbot.config.properties.DiscordServerProps;
 import com.marco.discordbot.listeners.IxiGoDiscordListenerMarco;
 import com.marco.discordbot.model.entities.EntitySteamMap;
 import com.marco.discordbot.model.rest.DiscordUser;
+import com.marco.discordbot.model.rest.GetSteamUsersResp;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.discordbot.model.rest.SteamUser;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
+import com.marco.utils.network.MarcoNetworkUtils;
 
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -47,10 +45,12 @@ public class IxiGoBotMarco implements IxiGoBot {
     private MessageSource msgSource;
     @Autowired
     private DiscordServerProps dsProps;
+    @Autowired
+    private DemParserProperties demProps;
     @Value("${discordbot.token}")
     private String botToken;
     @Autowired
-    private WebClient.Builder wcb;
+    private MarcoNetworkUtils nu;
     @Autowired
     private RepoSteamMap repo;
 
@@ -188,46 +188,20 @@ public class IxiGoBotMarco implements IxiGoBot {
         return repo.persist(entity);
     }
 
-    private ClientResponse performRequest(HttpMethod method, URL url, Map<String, String> headers,
-            Map<String, String> queryParameters, MediaType contentType, Object body) {
-
-        /*
-         * Create the request and adds query parameters if provided
-         */
-        RequestBodySpec rbs = wcb.build().method(method).uri(uriBuilder -> {
-            UriBuilder ub = uriBuilder.scheme(url.getProtocol()).host(url.getHost()).port(url.getPort())
-                    .path(url.getPath());
-            if (queryParameters != null) {
-                for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
-                    ub = ub.queryParam(entry.getKey(), entry.getValue());
-                }
+    @Override
+    public List<SteamUser> getSteamUsers() throws MarcoException {
+        try {
+            URL url = new URL("https://marco.selfip.net/demparser/users");
+            url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getGetSteamUsers());
+            ClientResponse resp = nu.performGetRequest(url, Optional.empty(), Optional.empty());
+            GetSteamUsersResp obj = nu.getBodyFromResponse(resp, GetSteamUsersResp.class);
+            return obj.getUsers();
+        } catch (MalformedURLException e) {
+            LOGGER.error(e.getMessage());
+            if (LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
             }
-            return ub.build();
-
-        }).contentType(contentType);
-
-        /*
-         * Add HTTP headers if provided
-         */
-        if (headers != null) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                rbs = rbs.header(entry.getKey(), entry.getValue());
-            }
+            throw new MarcoException(e);
         }
-
-        /*
-         * Perform the call
-         */
-        ClientResponse resp = null;
-        if (body != null) {
-            resp = rbs.bodyValue(body).exchange().block();
-        } else {
-            resp = rbs.exchange().block();
-        }
-        return resp;
-    }
-
-    private <T> T getBodyFromResponse(ClientResponse response, Class<T> clazz) {
-        return response.bodyToMono(clazz).block();
     }
 }

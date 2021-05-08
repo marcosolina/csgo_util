@@ -30,3 +30,11 @@ discordbot:
       terrorist: 838818771136413777
       ct: 839591293545611305
       general: 838818767219195932
+      
+demparser:
+  rest:
+    protocol: http
+    host: csgo-round-parser-api
+    contextPath: /demparser
+    getSteamUsers: "${demparser.rest.contextPath}/users"
+    

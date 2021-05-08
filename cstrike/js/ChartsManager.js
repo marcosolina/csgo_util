@@ -53,7 +53,7 @@ var ChartsManager = ((function(ChartsManager){
 		let deferred = $.Deferred();
 		MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/demparser/scorestype",
+            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/scorestype",
         }).then(function(resp){
 			ChartsManager.getScoreTypesRetrieved(resp);
 			deferred.resolve();
@@ -72,7 +72,7 @@ var ChartsManager = ((function(ChartsManager){
 		let deferred = $.Deferred();
 		MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/demparser/games/list",
+            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/games/list",
         }).then(function(resp){
 			ChartsManager.getAvailableGamesRetrieved(resp);
 			deferred.resolve();
@@ -91,7 +91,7 @@ var ChartsManager = ((function(ChartsManager){
 		let deferred = $.Deferred();
 		MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/demparser/users",
+            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/users",
         }).then(function(resp){
 			ChartsManager.playersRetrieved(resp);
 			deferred.resolve();

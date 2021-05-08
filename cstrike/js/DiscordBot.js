@@ -16,7 +16,7 @@ var DiscordBot = ((function(DiscordBot){
     }
 
     DiscordBot.getDiscordUsersWithMapping = function(){
-        let url = __URLS.API_BASE + "/discordbot/players";
+        let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/players";
         MarcoUtils.executeAjax({type: "GET", url: url}).then(DiscordBot.discordUsersWithMappingRetrieved);
     }
 

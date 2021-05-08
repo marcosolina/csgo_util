@@ -41,7 +41,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.getAvailableGames = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/demparser/games/list",
+            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/games/list",
         }).then(PlayersManager.availableGamesRetrieved);
     }
 
@@ -77,7 +77,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.getScoreTypes = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/demparser/scorestype",
+            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/scorestype",
         }).then(PlayersManager.scoreTypesRetrieved);
     }
 
@@ -106,7 +106,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.getUsersList = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/demparser/users",
+            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/users",
         }).then(PlayersManager.usersListRetrieved);
     }
 
@@ -168,7 +168,7 @@ var PlayersManager = ((function(PlayersManager){
         let queryParam = "";
         steamIds.forEach(v => {queryParam += "," + v;});
         let gamesToConsider = $("#selectRoundToConsider").val()
-        let url = __URLS.API_BASE + "/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
+        let url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
         url += "&partitionType=" + $('input[name=partitionType]:checked').val();
         url += "&penaltyWeigth=" + $('#penaltyWeigth').val();
         url += "&partitionScore=" + $("#selectScoreType").val();

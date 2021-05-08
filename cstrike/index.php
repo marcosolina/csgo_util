@@ -89,6 +89,7 @@ EOD;
 		if(strpos($apiBaseUrl, "localhost") !== false){
 			$demFilesRootFolder = "C:\\tmp\demfiles";
 			$filesRootFolder = "C:\\tmp\\rcon\maps";
+			$apiBaseUrl = "https://marco.selfip.net/zuul";
 		}
 		echo "__URLS = {API_BASE: '".$apiBaseUrl."'};";
 		?>

@@ -142,7 +142,7 @@ class PlayerScoreChart {
 
 		this.countGamesSelected = $("#" + this.idSelctRoundToConsider).val();
 
-		let url = __URLS.API_BASE + "/demparser/users/last/" + this.countGamesSelected + "/games/scores?usersIDs=" + usersId.substr(1);
+		let url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/users/last/" + this.countGamesSelected + "/games/scores?usersIDs=" + usersId.substr(1);
 		MarcoUtils.executeAjax({type: "GET", url: url}).then(this.dataRetrieved.bind(this));
 	}
 

@@ -7,7 +7,7 @@ csgorestapi:
   version: ^project.version^
   notification:
     telegram:
-      enabled: true
+      enabled: false
       telegramToken: TELEGRAM_TOKEN
       chatGroupId: TELGRAM_GROUP_ID
 

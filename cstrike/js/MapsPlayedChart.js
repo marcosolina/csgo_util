@@ -18,7 +18,7 @@ class MapsPlayedChart {
 	}
 
 	fetchData() {
-		let url = __URLS.API_BASE + "/demparser/map/played/list";
+		let url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/map/played/list";
 		MarcoUtils.executeAjax({type: "GET", url: url}).then(this.dataRetrieved.bind(this));
 	}
 

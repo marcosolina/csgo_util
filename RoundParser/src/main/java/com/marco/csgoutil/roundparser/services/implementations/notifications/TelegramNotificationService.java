@@ -1,12 +1,18 @@
 package com.marco.csgoutil.roundparser.services.implementations.notifications;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import com.marco.csgoutil.roundparser.services.interfaces.NotificationService;
+import com.marco.utils.network.MarcoNetworkUtils;
 
 public class TelegramNotificationService implements NotificationService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(TelegramNotificationService.class);
@@ -19,7 +25,7 @@ public class TelegramNotificationService implements NotificationService {
 	private String chatId;
 	
 	@Autowired
-	private WebClient.Builder wcb;
+	private MarcoNetworkUtils mnu;
 	
 	@Override
 	public void sendParsingCompleteNotification(String title, String message) {
@@ -28,6 +34,18 @@ public class TelegramNotificationService implements NotificationService {
 		}
 		
 		LOGGER.info("Sending Telegram notification");
+		try {
+            URL url = new URL(String.format("https://api.telegram.org/bot%s/sendMessage", botToken));
+            Map<String, String> queryParam = new HashMap<>();
+            queryParam.put("chat_id", chatId);
+            queryParam.put("text", String.format("%s%n%n%s", title, message));
+            mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+        }
+		//mnu.performGetRequest(url, Optional.empty(), queryParameters)
+		/*
 		WebClient wb = wcb.baseUrl(String.format("https://api.telegram.org/bot%s/sendMessage", botToken)).build();
 		// @formatter:off
 		wb.get()
@@ -40,6 +58,8 @@ public class TelegramNotificationService implements NotificationService {
 			.retrieve()
 			.bodyToMono(String.class).block();
 		// @formatter:on
+		 * 
+		 */
 		LOGGER.info("Telegram notification sent");
 	}
 

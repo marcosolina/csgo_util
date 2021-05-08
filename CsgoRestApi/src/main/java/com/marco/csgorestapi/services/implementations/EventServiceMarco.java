@@ -5,6 +5,7 @@ import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
@@ -12,13 +13,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.ClientResponse;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.util.UriBuilder;
 
 import com.marco.csgorestapi.enums.EventType;
 import com.marco.csgorestapi.model.entities.EntityEventListener;
@@ -28,6 +24,7 @@ import com.marco.csgorestapi.repositories.interfaces.RepoEntityEventListener;
 import com.marco.csgorestapi.services.interfaces.EventService;
 import com.marco.csgorestapi.services.interfaces.NotificationService;
 import com.marco.utils.MarcoException;
+import com.marco.utils.network.MarcoNetworkUtils;
 
 /**
  * My implementation
@@ -45,8 +42,8 @@ public class EventServiceMarco implements EventService {
     @Autowired
     private NotificationService ns;
     @Autowired
-    private WebClient.Builder wcb;
-
+    private MarcoNetworkUtils mnu;
+    
     private static final Map<String, EventType> previousEvent = new ConcurrentHashMap<>();
 
     @Override
@@ -79,7 +76,7 @@ public class EventServiceMarco implements EventService {
             new Thread(() -> {
                 try {
                     URL url = new URL(l.getId().getUrlListener());
-                    ClientResponse resp = this.performRequest(HttpMethod.POST, url, null, null, MediaType.APPLICATION_JSON, lm);
+                    ClientResponse resp = mnu.performPostRequest(url, Optional.empty(), Optional.of(lm));
                     LOGGER.debug(String.format("Call %s Status Code: %s", l.getId().getUrlListener(), resp.statusCode().name()));
                     if(resp.statusCode() != HttpStatus.OK) {
                         setFailure(l, String.format("Http status: %s", resp.statusCode().name()));
@@ -187,44 +184,5 @@ public class EventServiceMarco implements EventService {
         } catch (MalformedURLException e) {
             throw new MarcoException(msgSource.getMessage("CSGOAPI00007", null, LocaleContextHolder.getLocale()));
         }
-    }
-
-    private ClientResponse performRequest(HttpMethod method, URL url, Map<String, String> headers,
-            Map<String, String> queryParameters, MediaType contentType, Object body) {
-
-        /*
-         * Create the request and adds query parameters if provided
-         */
-        RequestBodySpec rbs = wcb.build().method(method).uri(uriBuilder -> {
-            UriBuilder ub = uriBuilder.scheme(url.getProtocol()).host(url.getHost()).port(url.getPort())
-                    .path(url.getPath());
-            if (queryParameters != null) {
-                for (Map.Entry<String, String> entry : queryParameters.entrySet()) {
-                    ub = ub.queryParam(entry.getKey(), entry.getValue());
-                }
-            }
-            return ub.build();
-
-        }).contentType(contentType);
-
-        /*
-         * Add HTTP headers if provided
-         */
-        if (headers != null) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                rbs = rbs.header(entry.getKey(), entry.getValue());
-            }
-        }
-
-        /*
-         * Perform the call
-         */
-        ClientResponse resp = null;
-        if (body != null) {
-            resp = rbs.bodyValue(body).exchange().block();
-        } else {
-            resp = rbs.exchange().block();
-        }
-        return resp;
     }
 }

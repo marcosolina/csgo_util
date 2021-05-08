@@ -6,50 +6,50 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConfigurationProperties(prefix = "com.marco.csgoutil.rconapi")
 public class RconProperties {
-	private String protocol;
-	private String ip;
-	private String endpoint;
-	private String csgoserverip;
-	private String csgorconpassw;
+    private String protocol;
+    private String host;
+    private String endpoint;
+    private String csgoserverip;
+    private String csgorconpassw;
 
-	public String getProtocol() {
-		return protocol;
-	}
+    public String getProtocol() {
+        return protocol;
+    }
 
-	public void setProtocol(String protocol) {
-		this.protocol = protocol;
-	}
+    public void setProtocol(String protocol) {
+        this.protocol = protocol;
+    }
 
-	public String getIp() {
-		return ip;
-	}
+    public String getHost() {
+        return host;
+    }
 
-	public void setIp(String ip) {
-		this.ip = ip;
-	}
+    public void setHost(String host) {
+        this.host = host;
+    }
 
-	public String getEndpoint() {
-		return endpoint;
-	}
+    public String getEndpoint() {
+        return endpoint;
+    }
 
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
-	}
+    public void setEndpoint(String endpoint) {
+        this.endpoint = endpoint;
+    }
 
-	public String getCsgoserverip() {
-		return csgoserverip;
-	}
+    public String getCsgoserverip() {
+        return csgoserverip;
+    }
 
-	public void setCsgoserverip(String csgoserverip) {
-		this.csgoserverip = csgoserverip;
-	}
+    public void setCsgoserverip(String csgoserverip) {
+        this.csgoserverip = csgoserverip;
+    }
 
-	public String getCsgorconpassw() {
-		return csgorconpassw;
-	}
+    public String getCsgorconpassw() {
+        return csgorconpassw;
+    }
 
-	public void setCsgorconpassw(String csgorconpassw) {
-		this.csgorconpassw = csgorconpassw;
-	}
+    public void setCsgorconpassw(String csgorconpassw) {
+        this.csgorconpassw = csgorconpassw;
+    }
 
 }

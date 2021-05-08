@@ -24,10 +24,15 @@ var DiscordBot = ((function(DiscordBot){
     DiscordBot.startStopDiscordBot = function(boolStart){
         if(boolStart){
             let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/start";
-            MarcoUtils.executeAjax({type: "POST", url: url}).then(DiscordBot.receivedResponse);
+            MarcoUtils.executeAjax({type: "POST", url: url, showLoading: true}).then(function(resp){
+                DiscordBot.receivedResponse(resp);
+                if(resp.status){
+                    DiscordBot.getSteamUsers();
+                }
+            });
         }else{
             let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/stop";
-            MarcoUtils.executeAjax({type: "DELETE", url: url}).then(DiscordBot.receivedResponse);
+            MarcoUtils.executeAjax({type: "DELETE", url: url, showLoading: true}).then(DiscordBot.receivedResponse);
         }
     }
 
@@ -57,12 +62,12 @@ var DiscordBot = ((function(DiscordBot){
         });
 
         let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/players/mapping";
-        MarcoUtils.executeAjax({type: "POST", url: url, body: {players: players}}).then(DiscordBot.receivedResponse);
+        MarcoUtils.executeAjax({type: "POST", url: url, showLoading: true, body: {players: players}}).then(DiscordBot.receivedResponse);
     }
 
     DiscordBot.getSteamUsers = function(){
         let url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/users";
-        MarcoUtils.executeAjax({type: "GET", url: url}).then(DiscordBot.steamUsersRetrieved);
+        MarcoUtils.executeAjax({type: "GET", url: url, showLoading: true}).then(DiscordBot.steamUsersRetrieved);
     }
 
     DiscordBot.steamUsersRetrieved = function(resp){
@@ -77,7 +82,7 @@ var DiscordBot = ((function(DiscordBot){
 
     DiscordBot.getDiscordUsersWithMapping = function(){
         let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/mapped/players";
-        MarcoUtils.executeAjax({type: "GET", url: url}).then(DiscordBot.discordUsersWithMappingRetrieved);
+        MarcoUtils.executeAjax({type: "GET", url: url, showLoading: true}).then(DiscordBot.discordUsersWithMappingRetrieved);
     }
 
     DiscordBot.discordUsersWithMappingRetrieved = function(resp){

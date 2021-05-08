@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.marco.discordbot.misc.DiscordBotUtils;
 import com.marco.discordbot.model.rest.GenericResponse;
 import com.marco.discordbot.model.rest.GetMembersResponse;
 import com.marco.discordbot.model.rest.GetPlayersResponse;
@@ -25,7 +26,7 @@ public class MainController {
     @Autowired
     private IxiGoBot ixiGoBot;
 
-    @PostMapping("/start")
+    @PostMapping(DiscordBotUtils.MAPPING_START_BOT)
     public ResponseEntity<GenericResponse> startBot() {
         GenericResponse resp = new GenericResponse();
         try {
@@ -41,7 +42,7 @@ public class MainController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
-    @DeleteMapping("/stop")
+    @DeleteMapping(DiscordBotUtils.MAPPING_START_BOT)
     public ResponseEntity<GenericResponse> endBot() {
         GenericResponse resp = new GenericResponse();
         try {
@@ -57,7 +58,20 @@ public class MainController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
     
-    @GetMapping("/mapped/players")
+    @GetMapping("/test")
+    public ResponseEntity<Void> test() {
+        try {
+            LOGGER.debug("Getting the list of known players");
+            ixiGoBot.moveAllMembersIntoGeneralChannel();
+        } catch (MarcoException e) {
+            if(LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @GetMapping(DiscordBotUtils.MAPPING_GET_MAPPED_PLAYERS)
     public ResponseEntity<GetPlayersResponse> getPlayers() {
         GetPlayersResponse resp = new GetPlayersResponse();
         try {
@@ -73,7 +87,7 @@ public class MainController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
     
-    @PostMapping("/players/mapping")
+    @PostMapping(DiscordBotUtils.MAPPING_STORE_MAPPED_PLAYERS)
     public ResponseEntity<GenericResponse> storePlayerDetails(@RequestBody SavePlayersMapping players) {
         GenericResponse resp = new GenericResponse();
         try {
@@ -88,7 +102,7 @@ public class MainController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
-    @GetMapping("/members")
+    @GetMapping(DiscordBotUtils.MAPPING_GET_DISCORD_USERS)
     public ResponseEntity<GetMembersResponse> get() {
         GetMembersResponse resp = new GetMembersResponse();
         try {

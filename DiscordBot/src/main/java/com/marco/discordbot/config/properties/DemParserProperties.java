@@ -8,7 +8,26 @@ import org.springframework.context.annotation.Configuration;
 public class DemParserProperties {
     private String protocol;
     private String host;
+    private String contextPath;
     private String getSteamUsers;
+    private String createTeams;
+    private String movePlayers;
+
+    public String getMovePlayers() {
+        return movePlayers;
+    }
+
+    public void setMovePlayers(String movePlayers) {
+        this.movePlayers = movePlayers;
+    }
+
+    public String getCreateTeams() {
+        return createTeams;
+    }
+
+    public void setCreateTeams(String createTeams) {
+        this.createTeams = createTeams;
+    }
 
     public String getProtocol() {
         return protocol;
@@ -32,6 +51,14 @@ public class DemParserProperties {
 
     public void setGetSteamUsers(String getSteamUsers) {
         this.getSteamUsers = getSteamUsers;
+    }
+
+    public String getContextPath() {
+        return contextPath;
+    }
+
+    public void setContextPath(String contextPath) {
+        this.contextPath = contextPath;
     }
 
 }

@@ -52,7 +52,9 @@ public interface IxiGoBot {
      * @return
      * @throws MarcoException
      */
-    public boolean balanceTheTeamsAndMoveThemInTheAppropirateChannel() throws MarcoException;
+    public boolean moveDiscordUsersInTheAppropirateChannel() throws MarcoException;
+    
+    public boolean balanceTheTeams() throws MarcoException;
 
     /**
      * It returns the list of discord users mapped to the Steam user

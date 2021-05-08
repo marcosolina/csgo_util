@@ -1,6 +1,12 @@
 package com.marco.discordbot.services.implementations;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.security.auth.login.LoginException;
@@ -11,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.ClientResponse;
 
 import com.marco.discordbot.config.properties.DemParserProperties;
 import com.marco.discordbot.config.properties.DiscordServerProps;
@@ -19,6 +27,8 @@ import com.marco.discordbot.model.entities.EntitySteamMap;
 import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.discordbot.model.rest.SteamUser;
+import com.marco.discordbot.model.rest.roundparser.Team;
+import com.marco.discordbot.model.rest.roundparser.Teams;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
@@ -28,8 +38,10 @@ import com.marco.utils.network.MarcoNetworkUtils;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.RestAction;
 
 public class IxiGoBotMarco implements IxiGoBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(IxiGoBotMarco.class);
@@ -46,13 +58,17 @@ public class IxiGoBotMarco implements IxiGoBot {
     @Value("${discordbot.token}")
     private String botToken;
     @Autowired
-    private MarcoNetworkUtils nu;
+    private MarcoNetworkUtils mnu;
     @Autowired
     private RepoSteamMap repo;
 
+    private static Team terrorist = null;
+    private static Team ct = null;
+
     private void checkIfBotIsOnline() throws MarcoException {
         if (!botOnline) {
-            throw new MarcoException("Warning", msgSource.getMessage("DISCBOT00001", null, LocaleContextHolder.getLocale()), ExceptionType.warning);
+            throw new MarcoException("Warning",
+                    msgSource.getMessage("DISCBOT00001", null, LocaleContextHolder.getLocale()), ExceptionType.warning);
         }
     }
 
@@ -98,7 +114,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                     .filter(m -> !m.getUser().isBot())
                     .map(m -> {
                         DiscordUser du = new DiscordUser();
-                        du.setId(new Long(m.getIdLong()).toString());
+                        du.setId(Long.toString(m.getIdLong()));
                         du.setName(m.getUser().getName());
                         return du;
                     }).collect(Collectors.toList());
@@ -118,36 +134,78 @@ public class IxiGoBotMarco implements IxiGoBot {
         guild.loadMembers().get().parallelStream()
             .filter(m -> !m.getUser().isBot())
             .filter(m -> m.getVoiceState().inVoiceChannel())
-            .forEach(m -> guild.moveVoiceMember(m, v));
+            .forEach(m -> guild.moveVoiceMember(m, v).complete());
         // @formatter:on
         return true;
     }
 
     @Override
-    public boolean balanceTheTeamsAndMoveThemInTheAppropirateChannel() throws MarcoException {
+    public boolean moveDiscordUsersInTheAppropirateChannel() throws MarcoException {
         checkIfBotIsOnline();
 
         Guild guild = jda.getGuildById(dsProps.getServerId());
-
+        Map<Long, Member> membersMap = new HashMap<>();
         // @formatter:off
-        List<DiscordUser> users = guild.loadMembers().get().parallelStream()
+        List<DiscordUser> onlineDiscordUsers = guild.loadMembers().get().parallelStream()
                 .filter(m -> !m.getUser().isBot())
                 .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {
                     DiscordUser du = new DiscordUser();
-                    du.setId(new Long(m.getIdLong()).toString());
+                    du.setId(Long.toString(m.getIdLong()));
                     du.setName(m.getUser().getName());
+                    membersMap.put(m.getIdLong(), m);
                     return du;
                 }).collect(Collectors.toList());
+        
+        
+        Map<String, Long> userMap = new HashMap<>();
+        
+        onlineDiscordUsers.stream()
+            .map(du -> repo.findById(Long.parseLong(du.getId())))
+            .forEach(entity -> userMap.put(entity.getSteamId(), entity.getDiscordId()));
         // @formatter:on
 
-        /**
-         * TODO
-         * 
-         * - Call the Round Service to split the team and move them into the appropriate
-         * channel
-         */
+        if (terrorist != null && ct != null) {
+            VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
+            VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
+
+            terrorist.getMembers().parallelStream().forEach(u -> {
+                Long discordId = userMap.get(u.getSteamID());
+                guild.moveVoiceMember(membersMap.get(discordId), teamRed).complete();
+            });
+
+            ct.getMembers().parallelStream().forEach(u -> {
+                Long discordId = userMap.get(u.getSteamID());
+                guild.moveVoiceMember(membersMap.get(discordId), teamBlue).complete();
+            });
+
+        }
 
         return false;
+    }
+
+    private void generateCsgoTeams(List<String> steamIds) {
+        StringBuilder sb = new StringBuilder();
+        steamIds.forEach(id -> sb.append("," + id));
+        Map<String, String> queryParam = new HashMap<>();
+        queryParam.put("usersIDs", sb.substring(1));
+
+        terrorist = null;
+        ct = null;
+
+        try {
+            URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getCreateTeams());
+            ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
+            if (clientResp.statusCode() == HttpStatus.OK) {
+                Teams teams = mnu.getBodyFromResponse(clientResp, Teams.class);
+                if (teams.getTeams().size() == 2) {
+                    terrorist = teams.getTeams().get(0);
+                    ct = teams.getTeams().get(1);
+                }
+            }
+        } catch (MalformedURLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -185,5 +243,54 @@ public class IxiGoBotMarco implements IxiGoBot {
             repo.persist(entity);
         });
         return true;
+    }
+
+    @Override
+    public boolean balanceTheTeams() throws MarcoException {
+        checkIfBotIsOnline();
+
+        Guild guild = jda.getGuildById(dsProps.getServerId());
+
+        // @formatter:off
+        List<DiscordUser> onlineDiscordUsers = guild.loadMembers().get().parallelStream()
+                .filter(m -> !m.getUser().isBot())
+                .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {
+                    DiscordUser du = new DiscordUser();
+                    du.setId(Long.toString(m.getIdLong()));
+                    du.setName(m.getUser().getName());
+                    return du;
+                }).collect(Collectors.toList());
+        
+        
+        Map<String, Long> userMap = new HashMap<>();
+        List<String> steamIds = new ArrayList<>();
+        
+        onlineDiscordUsers.stream()
+            .map(du -> repo.findById(Long.parseLong(du.getId())))
+            .forEach(entity -> {
+                userMap.put(entity.getSteamId(), entity.getDiscordId());
+                steamIds.add(entity.getSteamId());
+            });
+        // @formatter:on
+
+        generateCsgoTeams(steamIds);
+        if (terrorist != null) {
+
+            StringBuilder sb = new StringBuilder();
+            terrorist.getMembers().stream().forEach(m -> sb.append("," + m.getSteamID()));
+            Map<String, String> queryParam = new HashMap<>();
+            queryParam.put("terroristIDs", sb.substring(1));
+
+            try {
+                URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getMovePlayers());
+                ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
+                return clientResp.statusCode() == HttpStatus.OK;
+            } catch (MalformedURLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        return false;
     }
 }

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -176,6 +177,8 @@ public class IxiGoBotMarco implements IxiGoBot {
         Map<String, Long> userMap = new HashMap<>();
         onlineDiscordUsers.parallelStream()
             .map(du -> repo.findById(Long.parseLong(du.getId())))
+            .filter(Objects::nonNull)
+            .filter(entity -> entity.getSteamId() != null && !entity.getSteamId().isEmpty())
             .forEach(entity -> userMap.put(entity.getSteamId(), entity.getDiscordId()));
         // @formatter:on
 
@@ -183,27 +186,30 @@ public class IxiGoBotMarco implements IxiGoBot {
          * Loop through the teams, retrieve the cached discord ID and move the user into
          * the appropriate channel
          */
-        if (terrorist != null) {
-            VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
-
-            terrorist.getMembers().parallelStream().forEach(u -> {
-                Long discordId = userMap.get(u.getSteamID());
-                guild.moveVoiceMember(membersMap.get(discordId), teamRed).complete();
-            });
-
+        boolean status = false;
+        if(userMap.size() > 0) {
+            if (terrorist != null) {
+                VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
+                
+                terrorist.getMembers().parallelStream().forEach(u -> {
+                    Long discordId = userMap.get(u.getSteamID());
+                    guild.moveVoiceMember(membersMap.get(discordId), teamRed).complete();
+                });
+                status = true;
+            }
+            
+            if (ct != null) {
+                VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
+                
+                ct.getMembers().parallelStream().forEach(u -> {
+                    Long discordId = userMap.get(u.getSteamID());
+                    guild.moveVoiceMember(membersMap.get(discordId), teamBlue).complete();
+                });
+                status = true;
+            }
         }
 
-        if (ct != null) {
-            VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
-
-            ct.getMembers().parallelStream().forEach(u -> {
-                Long discordId = userMap.get(u.getSteamID());
-                guild.moveVoiceMember(membersMap.get(discordId), teamBlue).complete();
-            });
-
-        }
-
-        return false;
+        return status;
     }
 
     private void generateCsgoTeams(List<String> steamIds) {
@@ -310,9 +316,9 @@ public class IxiGoBotMarco implements IxiGoBot {
         
         onlineDiscordUsers.stream()
             .map(du -> repo.findById(Long.parseLong(du.getId())))
-            .forEach(entity -> {
-                steamIds.add(entity.getSteamId());
-            });
+            .filter(Objects::nonNull)
+            .filter(entity -> entity.getSteamId() != null && !entity.getSteamId().isEmpty())
+            .forEach(entity -> steamIds.add(entity.getSteamId()));
         // @formatter:on
 
         generateCsgoTeams(steamIds);
@@ -386,6 +392,8 @@ public class IxiGoBotMarco implements IxiGoBot {
         Map<String, Long> userMap = new HashMap<>();
         onlineDiscordUsers.parallelStream()
             .map(du -> repo.findById(Long.parseLong(du.getId())))
+            .filter(Objects::nonNull)
+            .filter(entity -> entity.getSteamId() != null && !entity.getSteamId().isEmpty())
             .forEach(entity -> userMap.put(entity.getSteamId(), entity.getDiscordId()));
 
         GeneratedTeams t = new GeneratedTeams();

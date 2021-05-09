@@ -80,7 +80,11 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
             case "!moveToChannel":
                 runInSeparateThread(() -> {
                     try {
-                        this.ixiGoBot.moveDiscordUsersInTheAppropirateChannel();
+                        if(this.ixiGoBot.moveDiscordUsersInTheAppropirateChannel()) {
+                            channel.sendMessage("Done").queue();
+                        }else {
+                            channel.sendMessage("Sorry, I cannot do that").queue();
+                        }
                     } catch (MarcoException e) {
                         channel.sendMessage(String.format("Mmmm... %s", e.getMessage())).queue();
                     }

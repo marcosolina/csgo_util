@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
+import com.marco.discordbot.model.rest.roundparser.GeneratedTeams;
 import com.marco.utils.MarcoException;
 
 /**
@@ -77,6 +78,13 @@ public interface IxiGoBot {
      * @return
      */
     public boolean isAutobalance();
+
+    /**
+     * It the returns the current teams
+     * 
+     * @return
+     */
+    public GeneratedTeams getCurrentTeams() throws MarcoException;
 
     /**
      * It returns the list of discord users mapped to the Steam user

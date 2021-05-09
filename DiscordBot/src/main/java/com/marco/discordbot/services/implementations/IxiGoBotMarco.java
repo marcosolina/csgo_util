@@ -27,6 +27,7 @@ import com.marco.discordbot.model.entities.EntitySteamMap;
 import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.discordbot.model.rest.SteamUser;
+import com.marco.discordbot.model.rest.roundparser.GeneratedTeams;
 import com.marco.discordbot.model.rest.roundparser.Team;
 import com.marco.discordbot.model.rest.roundparser.Teams;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
@@ -207,13 +208,16 @@ public class IxiGoBotMarco implements IxiGoBot {
     }
 
     private void generateCsgoTeams(List<String> steamIds) {
+        terrorist = null;
+        ct = null;
+        
+        if(steamIds == null || steamIds.isEmpty()) {
+            return;
+        }
         StringBuilder sb = new StringBuilder();
         steamIds.forEach(id -> sb.append("," + id));
         Map<String, String> queryParam = new HashMap<>();
         queryParam.put("usersIDs", sb.substring(1));
-
-        terrorist = null;
-        ct = null;
 
         try {
             /*
@@ -347,5 +351,65 @@ public class IxiGoBotMarco implements IxiGoBot {
     @Override
     public boolean isAutobalance() {
         return this.autoBalance;
+    }
+
+    @Override
+    public GeneratedTeams getCurrentTeams() throws MarcoException {
+        
+        checkIfBotIsOnline();
+
+        Guild guild = jda.getGuildById(dsProps.getServerId());
+        Map<Long, Member> membersMap = new HashMap<>();
+        // @formatter:off
+        /*
+         * Get the definition of the online users in Discord.
+         * These users are already in a vaoice channe
+         */
+        List<DiscordUser> onlineDiscordUsers = guild.loadMembers().get().parallelStream()
+                .filter(m -> !m.getUser().isBot())
+                .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {
+                    DiscordUser du = new DiscordUser();
+                    du.setId(Long.toString(m.getIdLong()));
+                    du.setName(m.getUser().getName());
+                    membersMap.put(m.getIdLong(), m);
+                    return du;
+                }).collect(Collectors.toList());
+        
+        /*
+         * Caching the mapping between steam user
+         * id and discord user id
+         * KEY -> Steam ID
+         * VALUE -> Discord ID 
+         */
+        Map<String, Long> userMap = new HashMap<>();
+        onlineDiscordUsers.parallelStream()
+            .map(du -> repo.findById(Long.parseLong(du.getId())))
+            .forEach(entity -> userMap.put(entity.getSteamId(), entity.getDiscordId()));
+
+        GeneratedTeams t = new GeneratedTeams();
+        if (terrorist != null) {
+            t.setTerrorist(terrorist.getMembers().parallelStream().map(u -> {
+                Long discordId = userMap.get(u.getSteamID());
+                Member m = membersMap.get(discordId);
+                DiscordUser du = new DiscordUser();
+                du.setId(Long.toString(m.getIdLong()));
+                du.setName(m.getUser().getName());
+                return du;
+            }).collect(Collectors.toList()));
+        }
+        
+        if (ct != null) {
+            t.setCt(ct.getMembers().parallelStream().map(u -> {
+                Long discordId = userMap.get(u.getSteamID());
+                Member m = membersMap.get(discordId);
+                DiscordUser du = new DiscordUser();
+                du.setId(Long.toString(m.getIdLong()));
+                du.setName(m.getUser().getName());
+                return du;
+            }).collect(Collectors.toList()));
+
+        }
+        // @formatter:on
+        return t;
     }
 }

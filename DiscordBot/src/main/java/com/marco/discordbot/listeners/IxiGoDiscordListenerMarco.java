@@ -1,15 +1,13 @@
 package com.marco.discordbot.listeners;
 
 import com.marco.discordbot.config.properties.DiscordServerProps;
+import com.marco.discordbot.model.rest.roundparser.GeneratedTeams;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
 
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageChannel;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.ReadyEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -17,12 +15,12 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
 
     private IxiGoBot ixiGoBot;
     private DiscordServerProps dsProps;
-    
+
     public IxiGoDiscordListenerMarco(IxiGoBot ixiGoBot, DiscordServerProps dsProps) {
         this.ixiGoBot = ixiGoBot;
         this.dsProps = dsProps;
     }
-    
+
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
         // @formatter:off
@@ -52,9 +50,18 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
                     try {
                         channel.sendMessage("Let me see...").queue();
                         if(this.ixiGoBot.balanceTheTeams()) {
-                            channel.sendMessage("Done").queue();
+                            StringBuilder sb = new StringBuilder();
+                            sb.append("Done\n");
+                            GeneratedTeams gt = this.ixiGoBot.getCurrentTeams();
+                            sb.append("\n Ct: ");
+                            gt.getCt().stream().forEach(user -> sb.append(user.getName() + " "));
+                            
+                            sb.append("\n\n Terrorist: ");
+                            gt.getTerrorist().stream().forEach(user -> sb.append(user.getName() + " "));
+                            
+                            channel.sendMessage(sb.toString()).queue();
                         }else {
-                            channel.sendMessage("Sorry, I was not able to do it").queue();
+                            channel.sendMessage("Sorry, I was not able to do it. There are no players in any voice channel").queue();
                         }
                     } catch (MarcoException e) {
                         channel.sendMessage(String.format("Mmmm... %s", e.getMessage())).queue();
@@ -90,6 +97,10 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
                 this.ixiGoBot.setAutoBalance(false);
                 channel.sendMessage("Done").queue();
                 break;
+            case "!autoBalanceStatus":
+                String tmpMessage = this.ixiGoBot.isAutobalance() ? "Autobalance is On" : "Autobalance is Off";
+                channel.sendMessage(tmpMessage).queue();
+                break;
             default:
                 break;
             }
@@ -97,24 +108,19 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
         
         // @formatter:on
     }
-    
+
     private void runInSeparateThread(Runnable r) {
         new Thread(r).start();
     }
 
     /*
-    @Override
-    public void onReady(ReadyEvent event) {
-        super.onReady(event);
-        JDA jda = event.getJDA();
-        TextChannel txtc = jda.getTextChannelById(this.dsProps.getTextChannels().getGeneral());
-        if(txtc != null) {
-            txtc.sendMessage(listOfCommandsMessage().toString()).queue();
-        }
-    }
-    
-    */
-    
+     * @Override public void onReady(ReadyEvent event) { super.onReady(event); JDA
+     * jda = event.getJDA(); TextChannel txtc =
+     * jda.getTextChannelById(this.dsProps.getTextChannels().getGeneral()); if(txtc
+     * != null) { txtc.sendMessage(listOfCommandsMessage().toString()).queue(); } }
+     * 
+     */
+
     private StringBuilder listOfCommandsMessage() {
         StringBuilder sb = new StringBuilder();
         sb.append("Hi!\n");
@@ -123,10 +129,12 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
         sb.append("\n- !balance -> Generate the CSGO teams and move the players (in the game)");
         sb.append("\n- !together -> Move everybody in the general voice channel");
         sb.append("\n- !moveToChannel -> Move everybody in the appropirat voice channel");
-        sb.append("\n- !autoBalanceOn -> I will monitor the game, balance the teams and move the users in the appropriate voice channels");
+        sb.append(
+                "\n- !autoBalanceOn -> I will monitor the game, balance the teams and move the users in the appropriate voice channels");
         sb.append("\n- !autoBalanceOff -> Turn off the auto balance");
+        sb.append("\n- !autoBalanceStatus -> It tells you if the auto balance is On or Off");
         sb.append("\n- !help -> Print this message again");
-        
+
         return sb;
     }
 

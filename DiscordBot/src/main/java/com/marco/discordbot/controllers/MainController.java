@@ -42,7 +42,7 @@ public class MainController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
-    @DeleteMapping(DiscordBotUtils.MAPPING_START_BOT)
+    @DeleteMapping(DiscordBotUtils.MAPPING_STOP_BOT)
     public ResponseEntity<GenericResponse> endBot() {
         GenericResponse resp = new GenericResponse();
         try {

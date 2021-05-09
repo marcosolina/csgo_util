@@ -489,7 +489,7 @@ EOD;
 								<h3>Discord Users</h3>
 								<div class="row" id="discordUsers">
 									<div class="col-12">
-										Discord user
+										Please Start the Bot
 									</div>
 								</div>
 							</div>
@@ -497,7 +497,7 @@ EOD;
 								<h3>Steam Users</h3>
 								<div class="row" id="mappedSteamUsers">
 									<div class="col-12">
-										Steam mapped
+										Please Start the Bot
 									</div>
 								</div>
 							</div>

@@ -102,6 +102,7 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
         new Thread(r).start();
     }
 
+    /*
     @Override
     public void onReady(ReadyEvent event) {
         super.onReady(event);
@@ -111,6 +112,8 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
             txtc.sendMessage(listOfCommandsMessage().toString()).queue();
         }
     }
+    
+    */
     
     private StringBuilder listOfCommandsMessage() {
         StringBuilder sb = new StringBuilder();

@@ -7,7 +7,8 @@ var DiscordBot = ((function(DiscordBot){
 
     let steamUsers = [];
 
-    let tplDiscord = '<div class="col-12" data-discord-id="%id%" data-discord-name=%name%>%name%</div>';
+    let tplDiscord = '<div class="col-12" data-discord-id="%id%" data-discord-name=%name%>' +
+                        '<input class="form-control form-control-sm" type="text" value="%name%" readonly></div>';
     let tplSteam = '<div class="col-12"><select class="form-control form-control-sm" id="steam-discord-select-%discordId%"><option value=""></option></select></div>';
 	
 	if(DiscordBot === undefined){

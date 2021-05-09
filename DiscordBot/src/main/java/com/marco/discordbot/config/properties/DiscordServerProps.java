@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class DiscordServerProps {
     private Long serverId;
     private VoiceChannels voiceChannels;
+    private TextChannels textChannels;
 
     public Long getServerId() {
         return serverId;
@@ -24,4 +25,13 @@ public class DiscordServerProps {
     public void setVoiceChannels(VoiceChannels voiceChannels) {
         this.voiceChannels = voiceChannels;
     }
+
+    public TextChannels getTextChannels() {
+        return textChannels;
+    }
+
+    public void setTextChannels(TextChannels textChannels) {
+        this.textChannels = textChannels;
+    }
+
 }

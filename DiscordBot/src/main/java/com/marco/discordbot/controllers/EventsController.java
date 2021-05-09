@@ -37,28 +37,30 @@ public class EventsController {
         }
 
         // @formatter:off
-        switch (request.getEventType()) {
-        case CS_WIN_PANEL_MATCH:
-            new Thread(() -> {
-                try {service.moveAllMembersIntoGeneralChannel();}catch(MarcoException e) {e.printStackTrace();}
-            }).start();
-            break;
-        case WARMUP_START:
-            new Thread(() -> {
-                try {service.balanceTheTeams();}catch(MarcoException e) {e.printStackTrace();}
-            }).start();
-            break;
-        case WARMUP_END:
-            new Thread(() -> {
-                try {service.moveDiscordUsersInTheAppropirateChannel();}catch(MarcoException e) {e.printStackTrace();}
-            }).start();
-            break;
-        default:
-            break;
+        if(service.isAutobalance()) {
+            switch (request.getEventType()) {
+            case CS_WIN_PANEL_MATCH:
+                new Thread(() -> {
+                    try {service.moveAllMembersIntoGeneralChannel();}catch(MarcoException e) {e.printStackTrace();}
+                }).start();
+                break;
+            case WARMUP_START:
+                new Thread(() -> {
+                    try {Thread.sleep(60L * 1000);service.balanceTheTeams();}catch(InterruptedException | MarcoException e) {e.printStackTrace();}
+                }).start();
+                break;
+            case WARMUP_END:
+                new Thread(() -> {
+                    try {service.moveDiscordUsersInTheAppropirateChannel();}catch(MarcoException e) {e.printStackTrace();}
+                }).start();
+                break;
+            default:
+                break;
+            }
         }
         // @formatter:on
         if (_LOGGER.isInfoEnabled()) {
-            _LOGGER.info(String.format("Received OK to CSGO event: %s", request.toString()));
+            _LOGGER.info(String.format("Sending OK to CSGO event: %s", request.toString()));
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

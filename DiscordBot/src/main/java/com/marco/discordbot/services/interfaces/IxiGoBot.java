@@ -53,8 +53,30 @@ public interface IxiGoBot {
      * @throws MarcoException
      */
     public boolean moveDiscordUsersInTheAppropirateChannel() throws MarcoException;
-    
+
+    /**
+     * It retrieves the discords players which are in a chat, and then call the Dem
+     * Service to generate the CSGO teams and move the players in the appropriate
+     * team
+     * 
+     * @return
+     * @throws MarcoException
+     */
     public boolean balanceTheTeams() throws MarcoException;
+
+    /**
+     * It enables / disable the auto balance
+     * 
+     * @param active
+     */
+    public void setAutoBalance(boolean active);
+
+    /**
+     * It tells you if the option is acitve
+     * 
+     * @return
+     */
+    public boolean isAutobalance();
 
     /**
      * It returns the list of discord users mapped to the Steam user

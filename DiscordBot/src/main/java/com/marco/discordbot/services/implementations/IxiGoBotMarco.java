@@ -61,7 +61,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     private MarcoNetworkUtils mnu;
     @Autowired
     private RepoSteamMap repo;
-    
+
     private boolean autoBalance = false;
 
     private static Team terrorist = null;
@@ -180,9 +180,8 @@ public class IxiGoBotMarco implements IxiGoBot {
         // @formatter:on
 
         /*
-         * Loop through the teams, retrieve the
-         * cached discord ID and move the user
-         * into the appropriate channel
+         * Loop through the teams, retrieve the cached discord ID and move the user into
+         * the appropriate channel
          */
         if (terrorist != null) {
             VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
@@ -193,7 +192,7 @@ public class IxiGoBotMarco implements IxiGoBot {
             });
 
         }
-        
+
         if (ct != null) {
             VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
 
@@ -210,8 +209,8 @@ public class IxiGoBotMarco implements IxiGoBot {
     private void generateCsgoTeams(List<String> steamIds) {
         terrorist = null;
         ct = null;
-        
-        if(steamIds == null || steamIds.isEmpty()) {
+
+        if (steamIds == null || steamIds.isEmpty()) {
             return;
         }
         StringBuilder sb = new StringBuilder();
@@ -221,8 +220,7 @@ public class IxiGoBotMarco implements IxiGoBot {
 
         try {
             /*
-             * Call the Round Parser service to
-             * balance the teams
+             * Call the Round Parser service to balance the teams
              */
             URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getCreateTeams());
             ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
@@ -252,13 +250,17 @@ public class IxiGoBotMarco implements IxiGoBot {
         
         List<DiscordUser> discordUsers = getMembers();
         discordUsers.stream().forEach(d -> {
-            if(repo.findById(Long.parseLong(d.getId())) == null) {
+            EntitySteamMap e = repo.findById(Long.parseLong(d.getId()));
+            if(e == null) { // New User, save it
                 EntitySteamMap entity = new EntitySteamMap();
                 entity.setDiscordId(Long.parseLong(d.getId()));
                 entity.setDiscordName(d.getName());
                 entity.setSteamId("");
                 entity.setSteamName("");
                 repo.persist(entity);
+            }else if(!e.getDiscordName().equals(d.getName())){ // The Discord user name is changed, update the DB
+                e.setDiscordName(d.getName());
+                repo.persist(e);
             }
         });
         
@@ -289,7 +291,7 @@ public class IxiGoBotMarco implements IxiGoBot {
         checkIfBotIsOnline();
 
         Guild guild = jda.getGuildById(dsProps.getServerId());
-        
+
         /*
          * Get the list of discord user in a voice channel
          */
@@ -328,9 +330,9 @@ public class IxiGoBotMarco implements IxiGoBot {
                 URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getMovePlayers());
                 ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
                 boolean ok = clientResp.statusCode() == HttpStatus.OK;
-                if(ok) {
+                if (ok) {
                     LOGGER.debug("CSGO Teams set");
-                }else {
+                } else {
                     LOGGER.debug("CSGO Teams NOT set");
                 }
                 return ok;
@@ -355,7 +357,7 @@ public class IxiGoBotMarco implements IxiGoBot {
 
     @Override
     public GeneratedTeams getCurrentTeams() throws MarcoException {
-        
+
         checkIfBotIsOnline();
 
         Guild guild = jda.getGuildById(dsProps.getServerId());

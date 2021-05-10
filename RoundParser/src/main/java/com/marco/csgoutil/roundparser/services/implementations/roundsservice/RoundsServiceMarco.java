@@ -181,9 +181,11 @@ public class RoundsServiceMarco implements RoundsService {
             entity.setSentOn(LocalDateTime.now());
             errorsNotified.insertUpdateUser(entity);
         }
+        /*
         if(deleteBadDemFiles || forceDeleteBadFiles) {
             _LOGGER.info(String.format("File deleted: %b", f.delete()));
         }
+        */
 	}
 
 	/**

@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -113,6 +114,22 @@ public class MainController {
                 e.printStackTrace();
             }
             resp.addError(e);
+        }
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+    
+    @PutMapping(DiscordBotUtils.MAPPING_POST_AUTO_BALANCE)
+    public ResponseEntity<GenericResponse> setAutoBalance() {
+        GenericResponse resp = new GenericResponse();
+        try {
+            ixiGoBot.setAutoBalance(!ixiGoBot.isAutobalance());
+            LOGGER.debug("Autobalance set to: " + ixiGoBot.isAutobalance());
+            resp.setStatus(true);
+        } catch (Exception e) {
+            if(LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
+            }
+            resp.addError(new MarcoException(e));
         }
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }

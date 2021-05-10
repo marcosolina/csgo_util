@@ -10,4 +10,5 @@ public class DiscordBotUtils {
     public static final String MAPPING_GET_MAPPED_PLAYERS = "/mapped/players";
     public static final String MAPPING_STORE_MAPPED_PLAYERS = "/players/mapping";
     public static final String MAPPING_GET_DISCORD_USERS = "/members";
+    public static final String MAPPING_POST_AUTO_BALANCE = "/invert/autoBalance";
 }

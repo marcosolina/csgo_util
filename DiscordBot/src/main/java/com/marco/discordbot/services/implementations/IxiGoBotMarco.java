@@ -43,6 +43,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class IxiGoBotMarco implements IxiGoBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(IxiGoBotMarco.class);
@@ -83,6 +85,8 @@ public class IxiGoBotMarco implements IxiGoBot {
                 LOGGER.debug("Starting the bot");
                 // @formatter:off
                 jda = JDABuilder.createDefault(botToken)
+                        .setChunkingFilter(ChunkingFilter.NONE)
+                        .setMemberCachePolicy(MemberCachePolicy.NONE)
                         .enableIntents(GatewayIntent.GUILD_MEMBERS)
                         .addEventListeners(new IxiGoDiscordListenerMarco(this, this.dsProps))
                         .build();
@@ -158,7 +162,6 @@ public class IxiGoBotMarco implements IxiGoBot {
          * Get the definition of the online users in Discord.
          * These users are already in a vaoice channe
          */
-        guild.pruneMemberCache();
         List<DiscordUser> onlineDiscordUsers = guild.loadMembers().get().parallelStream()
                 .filter(m -> !m.getUser().isBot())
                 .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {

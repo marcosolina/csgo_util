@@ -17,7 +17,7 @@ server:
   
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/discordbot
+    url: jdbc:postgresql://192.168.1.14:5432/discordbot
     username: ${POSTGRES_USER:REPLACE_ME} # Replace the value
     password: ${POSTGRES_PASSW:REPLACE_ME} # Replace the value
 

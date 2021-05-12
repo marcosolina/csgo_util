@@ -158,6 +158,7 @@ public class IxiGoBotMarco implements IxiGoBot {
          * Get the definition of the online users in Discord.
          * These users are already in a vaoice channe
          */
+        guild.pruneMemberCache();
         List<DiscordUser> onlineDiscordUsers = guild.loadMembers().get().parallelStream()
                 .filter(m -> !m.getUser().isBot())
                 .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {
@@ -193,7 +194,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                 
                 terrorist.getMembers().parallelStream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
-                    guild.moveVoiceMember(membersMap.get(discordId), teamRed).complete();
+                    this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamRed);
                 });
                 status = true;
             }
@@ -203,13 +204,21 @@ public class IxiGoBotMarco implements IxiGoBot {
                 
                 ct.getMembers().parallelStream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
-                    guild.moveVoiceMember(membersMap.get(discordId), teamBlue).complete();
+                    this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamBlue);
                 });
                 status = true;
             }
         }
 
         return status;
+    }
+    
+    private void moveMemberToVoiceChannel(Guild guild, Member m, VoiceChannel v) {
+        if(guild != null && m != null && v != null) {
+            guild.moveVoiceMember(m, v).complete();
+        }else {
+            LOGGER.error("Either the Guild, m or v are null");
+        }
     }
 
     private void generateCsgoTeams(List<String> steamIds) {

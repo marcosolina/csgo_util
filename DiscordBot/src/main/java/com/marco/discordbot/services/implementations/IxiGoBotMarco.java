@@ -192,32 +192,34 @@ public class IxiGoBotMarco implements IxiGoBot {
          */
         boolean status = false;
         if(userMap.size() > 0) {
-            if (terrorist != null) {
+            if (terrorist != null && terrorist.getMembers() != null && !terrorist.getMembers().isEmpty()) {
                 VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
-                
-                terrorist.getMembers().parallelStream().forEach(u -> {
+                LOGGER.debug(String.format("Moving to team: %s", teamRed.getName()));
+                terrorist.getMembers().stream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
                     this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamRed);
                 });
                 status = true;
             }
             
-            if (ct != null) {
+            if (ct != null && ct.getMembers() != null && !ct.getMembers().isEmpty()) {
                 VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
-                
-                ct.getMembers().parallelStream().forEach(u -> {
+                LOGGER.debug(String.format("Moving to team: %s", teamBlue.getName()));
+                ct.getMembers().stream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
                     this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamBlue);
                 });
                 status = true;
             }
         }
+        LOGGER.debug("Players moved to the voice channels");
 
         return status;
     }
     
     private void moveMemberToVoiceChannel(Guild guild, Member m, VoiceChannel v) {
         if(guild != null && m != null && v != null) {
+            LOGGER.debug(String.format("Moving %s", m.getUser().getName()));
             guild.moveVoiceMember(m, v).complete();
         }else {
             LOGGER.error("Either the Guild, m or v are null");

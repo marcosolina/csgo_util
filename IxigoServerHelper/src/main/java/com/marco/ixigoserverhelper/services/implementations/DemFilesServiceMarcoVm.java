@@ -76,8 +76,6 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
             return ldt.compareTo(ldt2) * -1;
         });
 
-        fileNameList.remove(0);
-
         fileNameList.stream().filter(ldt -> {
             String tmp = filesSent.get(ldt);
             return !"Y".equals(tmp);

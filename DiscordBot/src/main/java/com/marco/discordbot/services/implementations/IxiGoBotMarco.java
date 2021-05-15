@@ -201,7 +201,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                     LOGGER.debug(String.format("Moving to team: %s", teamRed.getName()));
                 }
                 
-                terrorist.getMembers().stream().forEach(u -> {
+                terrorist.getMembers().parallelStream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
                     this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamRed);
                 });
@@ -214,7 +214,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                     LOGGER.debug(String.format("Moving to team: %s", teamBlue.getName()));
                 }
                 
-                ct.getMembers().stream().forEach(u -> {
+                ct.getMembers().parallelStream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
                     this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamBlue);
                 });

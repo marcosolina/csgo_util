@@ -86,7 +86,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                 // @formatter:off
                 jda = JDABuilder.createDefault(botToken)
                         //.setChunkingFilter(ChunkingFilter.NONE)
-                        .setMemberCachePolicy(MemberCachePolicy.NONE)
+                        //.setMemberCachePolicy(MemberCachePolicy.NONE)
                         .enableIntents(GatewayIntent.GUILD_MEMBERS)
                         .addEventListeners(new IxiGoDiscordListenerMarco(this, this.dsProps))
                         .build();
@@ -172,7 +172,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                     return du;
                 }).collect(Collectors.toList());
         
-        LOGGER.debug(String.format("There are %n members online", onlineDiscordUsers.size()));
+        LOGGER.debug(String.format("There are %d members online", onlineDiscordUsers.size()));
         
         /*
          * Caching the mapping between steam user
@@ -328,7 +328,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                     return du;
                 }).collect(Collectors.toList());
         
-        LOGGER.debug(String.format("There are %n members online", onlineDiscordUsers.size()));
+        LOGGER.debug(String.format("There are %d members online", onlineDiscordUsers.size()));
         
         
         List<String> steamIds = new ArrayList<>();

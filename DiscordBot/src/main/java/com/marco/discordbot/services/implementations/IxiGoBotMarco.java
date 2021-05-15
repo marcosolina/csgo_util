@@ -85,7 +85,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                 LOGGER.debug("Starting the bot");
                 // @formatter:off
                 jda = JDABuilder.createDefault(botToken)
-                        .setChunkingFilter(ChunkingFilter.NONE)
+                        //.setChunkingFilter(ChunkingFilter.NONE)
                         .setMemberCachePolicy(MemberCachePolicy.NONE)
                         .enableIntents(GatewayIntent.GUILD_MEMBERS)
                         .addEventListeners(new IxiGoDiscordListenerMarco(this, this.dsProps))
@@ -172,6 +172,8 @@ public class IxiGoBotMarco implements IxiGoBot {
                     return du;
                 }).collect(Collectors.toList());
         
+        LOGGER.debug(String.format("There are %n members online", onlineDiscordUsers.size()));
+        
         /*
          * Caching the mapping between steam user
          * id and discord user id
@@ -239,6 +241,7 @@ public class IxiGoBotMarco implements IxiGoBot {
         queryParam.put("usersIDs", sb.substring(1));
 
         try {
+            LOGGER.debug(String.format("Calling the API to balance the teams"));
             /*
              * Call the Round Parser service to balance the teams
              */
@@ -324,6 +327,8 @@ public class IxiGoBotMarco implements IxiGoBot {
                     du.setName(m.getUser().getName());
                     return du;
                 }).collect(Collectors.toList());
+        
+        LOGGER.debug(String.format("There are %n members online", onlineDiscordUsers.size()));
         
         
         List<String> steamIds = new ArrayList<>();

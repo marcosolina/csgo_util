@@ -45,11 +45,18 @@ public class EventsController {
                 break;
             case WARMUP_START:
                 new Thread(() -> {try {service.warmUpBalanceTeamApi();}catch(MarcoException e) {e.printStackTrace();}}).start();
-                r = () -> {try {Thread.sleep(50L * 1000);service.balanceTheTeams();}catch(InterruptedException | MarcoException e) {e.printStackTrace();}};
+                r = () -> {try {
+                    Thread.sleep(50L * 1000);
+                    service.balanceTheTeams();
+                    Thread.sleep(15L * 1000);
+                    service.moveDiscordUsersInTheAppropirateChannel();
+                    }catch(InterruptedException | MarcoException e) {e.printStackTrace();}};
                 break;
+                /*
             case WARMUP_END:
                 r = () -> {try {service.moveDiscordUsersInTheAppropirateChannel();}catch(MarcoException e) {e.printStackTrace();}};
                 break;
+                */
             default:
                 break;
             }

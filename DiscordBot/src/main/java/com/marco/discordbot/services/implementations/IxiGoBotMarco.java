@@ -140,10 +140,10 @@ public class IxiGoBotMarco implements IxiGoBot {
         VoiceChannel v = guild.getVoiceChannelById(dsProps.getVoiceChannels().getGeneral());
 
         // @formatter:off
-        guild.loadMembers().get().parallelStream()
+        guild.loadMembers().get().stream()
             .filter(m -> !m.getUser().isBot())
             .filter(m -> m.getVoiceState().inVoiceChannel())
-            .forEach(m -> guild.moveVoiceMember(m, v).complete());
+            .forEach(m -> moveMemberToVoiceChannel(guild, m, v));
         // @formatter:on
         return true;
     }
@@ -201,7 +201,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                     LOGGER.debug(String.format("Moving to team: %s", teamRed.getName()));
                 }
                 
-                terrorist.getMembers().parallelStream().forEach(u -> {
+                terrorist.getMembers().stream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
                     this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamRed);
                 });
@@ -214,7 +214,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                     LOGGER.debug(String.format("Moving to team: %s", teamBlue.getName()));
                 }
                 
-                ct.getMembers().parallelStream().forEach(u -> {
+                ct.getMembers().stream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
                     this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamBlue);
                 });
@@ -227,13 +227,17 @@ public class IxiGoBotMarco implements IxiGoBot {
     }
     
     private void moveMemberToVoiceChannel(Guild guild, Member m, VoiceChannel v) {
-        if(guild != null && m != null && v != null) {
-            if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug(String.format("Moving %s", m.getUser().getName()));
+        try {
+            if(guild != null && m != null && v != null) {
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(String.format("Moving %s", m.getUser().getName()));
+                }
+                guild.moveVoiceMember(m, v).queue();
+            }else {
+                LOGGER.error("Either the Guild, m or v are null");
             }
-            guild.moveVoiceMember(m, v).complete();
-        }else {
-            LOGGER.error("Either the Guild, m or v are null");
+        } catch(Exception e) {
+            LOGGER.error(e.getMessage());
         }
     }
 

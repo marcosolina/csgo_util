@@ -38,20 +38,25 @@ public class EventsController {
 
         // @formatter:off
         Runnable r = null;
-        if(service.isAutobalance()) {
-            switch (request.getEventType()) {
-            case CS_WIN_PANEL_MATCH:
-                r = () -> {try {service.moveAllMembersIntoGeneralChannel();}catch(MarcoException e) {e.printStackTrace();}};
-                break;
-            case WARMUP_START:
-                r = () -> {try {Thread.sleep(50L * 1000);service.balanceTheTeams();}catch(InterruptedException | MarcoException e) {e.printStackTrace();}};
-                break;
-            case WARMUP_END:
-                r = () -> {try {service.moveDiscordUsersInTheAppropirateChannel();}catch(MarcoException e) {e.printStackTrace();}};
-                break;
-            default:
-                break;
+        try {
+            if(service.isAutobalance()) {
+                switch (request.getEventType()) {
+                case CS_WIN_PANEL_MATCH:
+                    r = () -> {try {service.moveAllMembersIntoGeneralChannel();}catch(MarcoException e) {e.printStackTrace();}};
+                    break;
+                case WARMUP_START:
+                    service.warmUpBalanceTeamApi();
+                    r = () -> {try {Thread.sleep(50L * 1000);service.balanceTheTeams();}catch(InterruptedException | MarcoException e) {e.printStackTrace();}};
+                    break;
+                case WARMUP_END:
+                    r = () -> {try {service.moveDiscordUsersInTheAppropirateChannel();}catch(MarcoException e) {e.printStackTrace();}};
+                    break;
+                default:
+                    break;
+                }
             }
+        } catch(MarcoException e) {
+            _LOGGER.error(e.getMessage());
         }
         
         if(r != null) {

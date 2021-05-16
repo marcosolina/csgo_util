@@ -63,7 +63,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     @Autowired
     private RepoSteamMap repo;
 
-    private boolean autoBalance = false;
+    private boolean autoBalance = true;
 
     private static Team terrorist = null;
     private static Team ct = null;
@@ -469,5 +469,37 @@ public class IxiGoBotMarco implements IxiGoBot {
         }
         // @formatter:on
         return t;
+    }
+
+    @Override
+    public boolean warmUpBalanceTeamApi() throws MarcoException {
+        List<String> dummySteamId = new ArrayList<>();
+        dummySteamId.add("00000");
+        generateCsgoTeams(dummySteamId);
+        
+        StringBuilder sb = new StringBuilder();
+        dummySteamId.stream().forEach(m -> sb.append("," + m));
+        Map<String, String> queryParam = new HashMap<>();
+        queryParam.put("terroristIDs", sb.substring(1));
+
+        try {
+            URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getMovePlayers());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Setting terrorists: %s", queryParam.toString()));
+            }
+            
+            ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
+            boolean ok = clientResp.statusCode() == HttpStatus.OK;
+            if (ok) {
+                LOGGER.debug("Warmup Team Balance OK");
+            } else {
+                LOGGER.debug("Warmup Team Balance KO");
+            }
+            return ok;
+        } catch (MalformedURLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return true;
     }
 }

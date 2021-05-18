@@ -12,6 +12,7 @@ public class DemParserProperties {
     private String getSteamUsers;
     private String createTeams;
     private String movePlayers;
+    private String getActivePlayers;
 
     public String getMovePlayers() {
         return movePlayers;
@@ -59,6 +60,14 @@ public class DemParserProperties {
 
     public void setContextPath(String contextPath) {
         this.contextPath = contextPath;
+    }
+
+    public String getGetActivePlayers() {
+        return getActivePlayers;
+    }
+
+    public void setGetActivePlayers(String getActivePlayers) {
+        this.getActivePlayers = getActivePlayers;
     }
 
 }

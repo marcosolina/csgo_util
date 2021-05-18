@@ -61,7 +61,7 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
                             
                             channel.sendMessage(sb.toString()).queue();
                         }else {
-                            channel.sendMessage("Sorry, I was not able to do it. There are no players in any voice channel").queue();
+                            channel.sendMessage("Sorry, I was not able to do it. There are no players on the server").queue();
                         }
                     } catch (MarcoException e) {
                         channel.sendMessage(String.format("Mmmm... %s", e.getMessage())).queue();

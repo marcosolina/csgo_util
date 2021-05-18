@@ -23,14 +23,16 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 
 import com.marco.discordbot.config.properties.DemParserProperties;
 import com.marco.discordbot.config.properties.DiscordServerProps;
+import com.marco.discordbot.enums.TeamType;
 import com.marco.discordbot.listeners.IxiGoDiscordListenerMarco;
 import com.marco.discordbot.model.entities.EntitySteamMap;
 import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.discordbot.model.rest.SteamUser;
+import com.marco.discordbot.model.rest.roundparser.ActivePlayersResponse;
 import com.marco.discordbot.model.rest.roundparser.GeneratedTeams;
-import com.marco.discordbot.model.rest.roundparser.Team;
 import com.marco.discordbot.model.rest.roundparser.Teams;
+import com.marco.discordbot.model.rest.roundparser.User;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
@@ -63,10 +65,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     @Autowired
     private RepoSteamMap repo;
 
-    private boolean autoBalance = true;
-
-    private static Team terrorist = null;
-    private static Team ct = null;
+    private boolean autoBalance = false;
 
     private void checkIfBotIsOnline() throws MarcoException {
         if (!botOnline) {
@@ -193,102 +192,107 @@ public class IxiGoBotMarco implements IxiGoBot {
          * the appropriate channel
          */
         boolean status = false;
-        if(userMap.size() > 0) {
-            if (terrorist != null && terrorist.getMembers() != null && !terrorist.getMembers().isEmpty()) {
-                VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
-                
-                if(LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(String.format("Moving to team: %s", teamRed.getName()));
+        if (userMap.size() > 0) {
+
+            Map<TeamType, List<User>> inGamePlayers = getCurrentActivePlayers();
+
+            if (inGamePlayers != null) {
+                if (inGamePlayers.get(TeamType.TERRORISTS) != null) {
+                    VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
+
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug(String.format("Moving to team: %s", teamRed.getName()));
+                    }
+
+                    inGamePlayers.get(TeamType.TERRORISTS).stream().forEach(u -> {
+                        Long discordId = userMap.get(u.getSteamId());
+                        this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamRed);
+                    });
+                    status = true;
                 }
-                
-                terrorist.getMembers().stream().forEach(u -> {
-                    Long discordId = userMap.get(u.getSteamID());
-                    this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamRed);
-                });
-                status = true;
-            }
-            
-            if (ct != null && ct.getMembers() != null && !ct.getMembers().isEmpty()) {
-                VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
-                if(LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(String.format("Moving to team: %s", teamBlue.getName()));
+
+                if (inGamePlayers.get(TeamType.CT) != null) {
+                    VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
+                    if (LOGGER.isDebugEnabled()) {
+                        LOGGER.debug(String.format("Moving to team: %s", teamBlue.getName()));
+                    }
+
+                    inGamePlayers.get(TeamType.CT).stream().forEach(u -> {
+                        Long discordId = userMap.get(u.getSteamId());
+                        this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamBlue);
+                    });
+                    status = true;
                 }
-                
-                ct.getMembers().stream().forEach(u -> {
-                    Long discordId = userMap.get(u.getSteamID());
-                    this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamBlue);
-                });
-                status = true;
             }
         }
         LOGGER.debug("Players moved to the voice channels");
 
         return status;
     }
-    
+
     private void moveMemberToVoiceChannel(Guild guild, Member m, VoiceChannel v) {
         try {
-            if(guild != null && m != null && v != null) {
-                if(LOGGER.isDebugEnabled()) {
+            if (guild != null && m != null && v != null) {
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(String.format("Moving %s", m.getUser().getName()));
                 }
                 guild.moveVoiceMember(m, v).queue();
-            }else {
+            } else {
                 LOGGER.error("Either the Guild, m or v are null");
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
     }
 
-    private void generateCsgoTeams(List<String> steamIds) {
-        terrorist = null;
-        ct = null;
+    private Teams generateCsgoTeams() {
+        Map<TeamType, List<User>> inGamePlayers = getCurrentActivePlayers();
+        
+        if (inGamePlayers != null && inGamePlayers.size() == 2) {
+            StringBuilder sb = new StringBuilder();
+            inGamePlayers.get(TeamType.CT).stream().forEach(u -> sb.append("," + u.getSteamId()));
+            inGamePlayers.get(TeamType.TERRORISTS).stream().forEach(u -> sb.append("," + u.getSteamId()));
+            Map<String, String> queryParam = new HashMap<>();
+            if(sb.length() == 0) {
+                return null;
+            }
+            queryParam.put("usersIDs", sb.substring(1));
+            try {
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug("Calling the API to balance the teams");
+                }
+                /*
+                 * Call the Round Parser service to balance the teams
+                 */
+                URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getCreateTeams());
+                ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
+                if (clientResp.statusCode() == HttpStatus.OK) {
+                    return mnu.getBodyFromResponse(clientResp, Teams.class);
+                } else {
+                    if (LOGGER.isErrorEnabled()) {
+                        LOGGER.error(String.format("Error when calling: %s", url.toString()));
+                    }
+                }
 
-        if (steamIds == null || steamIds.isEmpty()) {
-            return;
+            } catch (MalformedURLException e) {
+                LOGGER.error(e.getMessage());
+                e.printStackTrace();
+            }
         }
-        StringBuilder sb = new StringBuilder();
-        steamIds.forEach(id -> sb.append("," + id));
-        Map<String, String> queryParam = new HashMap<>();
-        queryParam.put("usersIDs", sb.substring(1));
+        return null;
+    }
 
+    private Map<TeamType, List<User>> getCurrentActivePlayers() {
         try {
-            if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug("Calling the API to balance the teams");
-            }
-            /*
-             * Call the Round Parser service to balance the teams
-             */
-            URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getCreateTeams());
-            ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
+            URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getGetActivePlayers());
+            ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.empty());
             if (clientResp.statusCode() == HttpStatus.OK) {
-                Teams teams = mnu.getBodyFromResponse(clientResp, Teams.class);
-                
-                if(LOGGER.isDebugEnabled()) {
-                    LOGGER.debug(teams.toString());
-                }
-                
-                switch (teams.getTeams().size()) {
-                case 2:
-                    ct = teams.getTeams().get(1);
-                    // there is no break on purpose
-                case 1:
-                    terrorist = teams.getTeams().get(0);
-                    break;
-                default:
-                    break;
-                }
-            }else {
-                if(LOGGER.isErrorEnabled()) {
-                    LOGGER.error(String.format("Error when calling: %s", url.toString()));
-                }
+                return mnu.getBodyFromResponse(clientResp, ActivePlayersResponse.class).getPlayers();
             }
-            
         } catch (MalformedURLException e) {
-            LOGGER.error(e.getMessage());
             e.printStackTrace();
         }
+        return null;
     }
 
     @Override
@@ -365,23 +369,23 @@ public class IxiGoBotMarco implements IxiGoBot {
             .forEach(entity -> steamIds.add(entity.getSteamId()));
         // @formatter:on
 
-        generateCsgoTeams(steamIds);
-        if (terrorist != null) {
+        Teams teams = generateCsgoTeams();
+        if (teams != null) {
 
             /*
              * Sending the list of terrorist players
              */
             StringBuilder sb = new StringBuilder();
-            terrorist.getMembers().stream().forEach(m -> sb.append("," + m.getSteamID()));
+            teams.getTeams().get(0).getMembers().stream().forEach(m -> sb.append("," + m.getSteamID()));
             Map<String, String> queryParam = new HashMap<>();
             queryParam.put("terroristIDs", sb.substring(1));
 
             try {
                 URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getMovePlayers());
-                if(LOGGER.isDebugEnabled()) {
+                if (LOGGER.isDebugEnabled()) {
                     LOGGER.debug(String.format("Setting terrorists: %s", queryParam.toString()));
                 }
-                
+
                 ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
                 boolean ok = clientResp.statusCode() == HttpStatus.OK;
                 if (ok) {
@@ -445,8 +449,10 @@ public class IxiGoBotMarco implements IxiGoBot {
             .forEach(entity -> userMap.put(entity.getSteamId(), entity.getDiscordId()));
 
         GeneratedTeams t = new GeneratedTeams();
-        if (terrorist != null) {
-            t.setTerrorist(terrorist.getMembers().parallelStream().map(u -> {
+        Teams teams = generateCsgoTeams();
+        if(teams != null) {
+            
+            t.setTerrorist(teams.getTeams().get(0).getMembers().parallelStream().map(u -> {
                 Long discordId = userMap.get(u.getSteamID());
                 Member m = membersMap.get(discordId);
                 DiscordUser du = new DiscordUser();
@@ -454,10 +460,8 @@ public class IxiGoBotMarco implements IxiGoBot {
                 du.setName(m.getUser().getName());
                 return du;
             }).collect(Collectors.toList()));
-        }
-        
-        if (ct != null) {
-            t.setCt(ct.getMembers().parallelStream().map(u -> {
+            
+            t.setCt(teams.getTeams().get(1).getMembers().parallelStream().map(u -> {
                 Long discordId = userMap.get(u.getSteamID());
                 Member m = membersMap.get(discordId);
                 DiscordUser du = new DiscordUser();
@@ -465,7 +469,6 @@ public class IxiGoBotMarco implements IxiGoBot {
                 du.setName(m.getUser().getName());
                 return du;
             }).collect(Collectors.toList()));
-
         }
         // @formatter:on
         return t;
@@ -473,33 +476,7 @@ public class IxiGoBotMarco implements IxiGoBot {
 
     @Override
     public boolean warmUpBalanceTeamApi() throws MarcoException {
-        List<String> dummySteamId = new ArrayList<>();
-        dummySteamId.add("00000");
-        generateCsgoTeams(dummySteamId);
-        
-        StringBuilder sb = new StringBuilder();
-        dummySteamId.stream().forEach(m -> sb.append("," + m));
-        Map<String, String> queryParam = new HashMap<>();
-        queryParam.put("terroristIDs", sb.substring(1));
-
-        try {
-            URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getMovePlayers());
-            if(LOGGER.isDebugEnabled()) {
-                LOGGER.debug(String.format("Setting terrorists: %s", queryParam.toString()));
-            }
-            
-            ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
-            boolean ok = clientResp.statusCode() == HttpStatus.OK;
-            if (ok) {
-                LOGGER.debug("Warmup Team Balance OK");
-            } else {
-                LOGGER.debug("Warmup Team Balance KO");
-            }
-            return ok;
-        } catch (MalformedURLException e) {
-            LOGGER.error(e.getMessage());
-            e.printStackTrace();
-        }
+        generateCsgoTeams();
         return true;
     }
 }

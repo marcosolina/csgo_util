@@ -41,4 +41,5 @@ demparser:
     getSteamUsers: "${demparser.rest.contextPath}/users"
     createTeams: "${demparser.rest.contextPath}/2/using/last/20/games/scores"
     movePlayers: "${demparser.rest.contextPath}/rcon/moveplayers"
+    getActivePlayers: "${demparser.rest.contextPath}/rcon/activeplayers"
     

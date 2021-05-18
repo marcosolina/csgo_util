@@ -28,6 +28,7 @@ public class RoundParserUtils {
 	 * RCON Controller
 	 */
 	public static final String MAPPING_GET_MOVE_PLAYERS = "/rcon/moveplayers";
+	public static final String MAPPING_GET_ACTIVE_PLAYERS = "/rcon/activeplayers";
 	
 	/*
 	 * Events controller

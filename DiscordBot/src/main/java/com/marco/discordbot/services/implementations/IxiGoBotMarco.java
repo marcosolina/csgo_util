@@ -43,8 +43,6 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class IxiGoBotMarco implements IxiGoBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(IxiGoBotMarco.class);
@@ -65,7 +63,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     @Autowired
     private RepoSteamMap repo;
 
-    private boolean autoBalance = false;
+    private boolean autoBalance = true;
 
     private static Team terrorist = null;
     private static Team ct = null;
@@ -85,8 +83,8 @@ public class IxiGoBotMarco implements IxiGoBot {
                 LOGGER.debug("Starting the bot");
                 // @formatter:off
                 jda = JDABuilder.createDefault(botToken)
-                        .setChunkingFilter(ChunkingFilter.NONE)
-                        .setMemberCachePolicy(MemberCachePolicy.NONE)
+                        //.setChunkingFilter(ChunkingFilter.NONE)
+                        //.setMemberCachePolicy(MemberCachePolicy.NONE)
                         .enableIntents(GatewayIntent.GUILD_MEMBERS)
                         .addEventListeners(new IxiGoDiscordListenerMarco(this, this.dsProps))
                         .build();
@@ -142,10 +140,10 @@ public class IxiGoBotMarco implements IxiGoBot {
         VoiceChannel v = guild.getVoiceChannelById(dsProps.getVoiceChannels().getGeneral());
 
         // @formatter:off
-        guild.loadMembers().get().parallelStream()
+        guild.loadMembers().get().stream()
             .filter(m -> !m.getUser().isBot())
             .filter(m -> m.getVoiceState().inVoiceChannel())
-            .forEach(m -> guild.moveVoiceMember(m, v).complete());
+            .forEach(m -> moveMemberToVoiceChannel(guild, m, v));
         // @formatter:on
         return true;
     }
@@ -172,6 +170,10 @@ public class IxiGoBotMarco implements IxiGoBot {
                     return du;
                 }).collect(Collectors.toList());
         
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug(String.format("There are %d members online", onlineDiscordUsers.size()));
+        }
+        
         /*
          * Caching the mapping between steam user
          * id and discord user id
@@ -192,35 +194,50 @@ public class IxiGoBotMarco implements IxiGoBot {
          */
         boolean status = false;
         if(userMap.size() > 0) {
-            if (terrorist != null) {
+            if (terrorist != null && terrorist.getMembers() != null && !terrorist.getMembers().isEmpty()) {
                 VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
                 
-                terrorist.getMembers().parallelStream().forEach(u -> {
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(String.format("Moving to team: %s", teamRed.getName()));
+                }
+                
+                terrorist.getMembers().stream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
                     this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamRed);
                 });
                 status = true;
             }
             
-            if (ct != null) {
+            if (ct != null && ct.getMembers() != null && !ct.getMembers().isEmpty()) {
                 VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(String.format("Moving to team: %s", teamBlue.getName()));
+                }
                 
-                ct.getMembers().parallelStream().forEach(u -> {
+                ct.getMembers().stream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamID());
                     this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamBlue);
                 });
                 status = true;
             }
         }
+        LOGGER.debug("Players moved to the voice channels");
 
         return status;
     }
     
     private void moveMemberToVoiceChannel(Guild guild, Member m, VoiceChannel v) {
-        if(guild != null && m != null && v != null) {
-            guild.moveVoiceMember(m, v).complete();
-        }else {
-            LOGGER.error("Either the Guild, m or v are null");
+        try {
+            if(guild != null && m != null && v != null) {
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(String.format("Moving %s", m.getUser().getName()));
+                }
+                guild.moveVoiceMember(m, v).queue();
+            }else {
+                LOGGER.error("Either the Guild, m or v are null");
+            }
+        } catch(Exception e) {
+            LOGGER.error(e.getMessage());
         }
     }
 
@@ -237,6 +254,9 @@ public class IxiGoBotMarco implements IxiGoBot {
         queryParam.put("usersIDs", sb.substring(1));
 
         try {
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Calling the API to balance the teams");
+            }
             /*
              * Call the Round Parser service to balance the teams
              */
@@ -244,7 +264,11 @@ public class IxiGoBotMarco implements IxiGoBot {
             ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
             if (clientResp.statusCode() == HttpStatus.OK) {
                 Teams teams = mnu.getBodyFromResponse(clientResp, Teams.class);
-
+                
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(teams.toString());
+                }
+                
                 switch (teams.getTeams().size()) {
                 case 2:
                     ct = teams.getTeams().get(1);
@@ -255,7 +279,12 @@ public class IxiGoBotMarco implements IxiGoBot {
                 default:
                     break;
                 }
+            }else {
+                if(LOGGER.isErrorEnabled()) {
+                    LOGGER.error(String.format("Error when calling: %s", url.toString()));
+                }
             }
+            
         } catch (MalformedURLException e) {
             LOGGER.error(e.getMessage());
             e.printStackTrace();
@@ -323,6 +352,9 @@ public class IxiGoBotMarco implements IxiGoBot {
                     return du;
                 }).collect(Collectors.toList());
         
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug(String.format("There are %d members online", onlineDiscordUsers.size()));
+        }
         
         List<String> steamIds = new ArrayList<>();
         
@@ -346,6 +378,10 @@ public class IxiGoBotMarco implements IxiGoBot {
 
             try {
                 URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getMovePlayers());
+                if(LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(String.format("Setting terrorists: %s", queryParam.toString()));
+                }
+                
                 ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
                 boolean ok = clientResp.statusCode() == HttpStatus.OK;
                 if (ok) {
@@ -433,5 +469,37 @@ public class IxiGoBotMarco implements IxiGoBot {
         }
         // @formatter:on
         return t;
+    }
+
+    @Override
+    public boolean warmUpBalanceTeamApi() throws MarcoException {
+        List<String> dummySteamId = new ArrayList<>();
+        dummySteamId.add("00000");
+        generateCsgoTeams(dummySteamId);
+        
+        StringBuilder sb = new StringBuilder();
+        dummySteamId.stream().forEach(m -> sb.append("," + m));
+        Map<String, String> queryParam = new HashMap<>();
+        queryParam.put("terroristIDs", sb.substring(1));
+
+        try {
+            URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getMovePlayers());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Setting terrorists: %s", queryParam.toString()));
+            }
+            
+            ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
+            boolean ok = clientResp.statusCode() == HttpStatus.OK;
+            if (ok) {
+                LOGGER.debug("Warmup Team Balance OK");
+            } else {
+                LOGGER.debug("Warmup Team Balance KO");
+            }
+            return ok;
+        } catch (MalformedURLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return true;
     }
 }

@@ -13,4 +13,10 @@ public class Team {
     public void setMembers(List<RoundParserUser> members) {
         this.members = members;
     }
+
+    @Override
+    public String toString() {
+        return "Team [members=" + members + "]";
+    }
+
 }

@@ -19,4 +19,8 @@ ixigohelper:
   version: ^project.version^
   demfilesserice: 
     demFilesFolderFullPath: "E:\\VmSharedFiles\\CsgoServer\\ixi_go\\CsgoServer\\csgo"
+    parserservice:
+      protocol: "http"
+      host: "csgo-round-parser-api"
+      endpoint: "/demparser/newdata"
     

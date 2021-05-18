@@ -24,4 +24,9 @@ public class RoundParserUser {
         this.userName = userName;
     }
 
+    @Override
+    public String toString() {
+        return "RoundParserUser [steamID=" + steamID + ", userName=" + userName + "]";
+    }
+
 }

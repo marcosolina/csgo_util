@@ -4,22 +4,30 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.reactive.function.client.ClientResponse;
 
 import com.marco.ixigoserverhelper.config.DemFilesServiceProps;
+import com.marco.ixigoserverhelper.config.RoundParserServiceProp;
+import com.marco.ixigoserverhelper.models.rest.demparser.ParseNewFiles;
 import com.marco.ixigoserverhelper.services.interfaces.DemFilesService;
 import com.marco.utils.DateUtils;
 import com.marco.utils.MarcoException;
 import com.marco.utils.enums.DateFormats;
+import com.marco.utils.network.MarcoNetworkUtils;
 
 /**
  * The implementation that I run on my IxiGo VM
@@ -31,6 +39,10 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
     private static final Logger _LOGGER = LoggerFactory.getLogger(DemFilesServiceMarcoVm.class);
     @Autowired
     private DemFilesServiceProps props;
+    @Autowired
+    private RoundParserServiceProp parserService;
+    @Autowired
+    private MarcoNetworkUtils mnu;
 
     private static Map<String, String> filesSent = new HashMap<>();
 
@@ -40,11 +52,15 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
 
         File folder = new File(props.getDemFilesFolderFullPath());
         File[] files = folder.listFiles();
-        Arrays.stream(files).filter(f -> f.getName().endsWith(".dem")).filter(f -> {
-            return !filesSent.containsKey(f.getAbsolutePath());
-        }).forEach(f -> {
-            filesSent.put(f.getAbsolutePath(), "N");
-        });
+        Arrays.stream(files).filter(f -> f.getName().endsWith(".dem"))
+        .filter(f -> {
+            long bytes = f.length();
+            long kb = bytes / 1024;
+            long mb = kb / 1024;
+            return mb > 2;
+        })
+        .filter(f -> !filesSent.containsKey(f.getAbsolutePath()))
+        .forEach(f -> filesSent.put(f.getAbsolutePath(), "N"));
 
         List<String> fileNameList = filesSent.keySet().stream().collect(Collectors.toList());
         
@@ -60,8 +76,6 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
             return ldt.compareTo(ldt2) * -1;
         });
 
-        fileNameList.remove(0);
-
         fileNameList.stream().filter(ldt -> {
             String tmp = filesSent.get(ldt);
             return !"Y".equals(tmp);
@@ -70,10 +84,16 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
     }
     
     private void triggerParseNewDem() {
-        String cmd = String.format(
-                "curl --location --request POST 'http://%s:8080/demparser/newdata' --header 'Content-Type: application/json' --data-raw '{\"forceDeleteBadFiles\": true}'", 
-                System.getenv().get("ENV_SSH_IP"));
-        sendCmd(cmd);
+        ParseNewFiles body = new ParseNewFiles(true);
+        try {
+            URL url = new URL(parserService.getProtocol(), parserService.getHost(), parserService.getEndpoint());
+            ClientResponse clientResp = mnu.performPostRequest(url, Optional.empty(), Optional.of(body));
+            if(clientResp.statusCode() != HttpStatus.OK) {
+                _LOGGER.error("Not able to trigger the dem parsers api");
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
     }
     
     private String createRemoteDemDirectory(String fileName) {

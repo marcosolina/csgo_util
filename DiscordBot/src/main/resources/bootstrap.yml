@@ -5,6 +5,7 @@ eureka:
       #try the value from the system props, or get the fall back
       defaultZone: ${EUREKA_SERVER:http://localhost:8762/discovery/eureka}
   instance:    preferIpAddress: true 
+    
 
 spring:
   profiles:
@@ -13,6 +14,8 @@ spring:
   application:
     name: ixigo-discord-bot
   cloud:
+    inetutils:
+      preferred-networks: 192.168.1
     config:
       uri: ${SPRING_CONFIG_SERVER_URI:http://localhost:8888/config}
       username: ${SPRING_CONFIG_SERVER_USER}

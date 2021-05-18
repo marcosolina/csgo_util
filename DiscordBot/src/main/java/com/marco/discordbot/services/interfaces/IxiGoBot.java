@@ -66,6 +66,15 @@ public interface IxiGoBot {
     public boolean balanceTheTeams() throws MarcoException;
 
     /**
+     * It does not move any players, it just attempt a call to warm up the service
+     * call
+     * 
+     * @return
+     * @throws MarcoException
+     */
+    public boolean warmUpBalanceTeamApi() throws MarcoException;
+
+    /**
      * It enables / disable the auto balance
      * 
      * @param active

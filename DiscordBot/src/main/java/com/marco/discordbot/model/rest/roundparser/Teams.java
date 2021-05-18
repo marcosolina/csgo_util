@@ -12,4 +12,10 @@ public class Teams {
     public void setTeams(List<Team> teams) {
         this.teams = teams;
     }
+
+    @Override
+    public String toString() {
+        return "Teams [teams=" + teams + "]";
+    }
+
 }

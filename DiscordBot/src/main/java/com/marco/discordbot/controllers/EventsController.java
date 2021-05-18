@@ -37,27 +37,35 @@ public class EventsController {
         }
 
         // @formatter:off
+        Runnable r = null;
         if(service.isAutobalance()) {
             switch (request.getEventType()) {
             case CS_WIN_PANEL_MATCH:
-                new Thread(() -> {
-                    try {service.moveAllMembersIntoGeneralChannel();}catch(MarcoException e) {e.printStackTrace();}
-                }).start();
+                r = () -> {try {service.moveAllMembersIntoGeneralChannel();}catch(MarcoException e) {e.printStackTrace();}};
                 break;
             case WARMUP_START:
-                new Thread(() -> {
-                    try {Thread.sleep(60L * 1000);service.balanceTheTeams();}catch(InterruptedException | MarcoException e) {e.printStackTrace();}
-                }).start();
+                new Thread(() -> {try {service.warmUpBalanceTeamApi();}catch(MarcoException e) {e.printStackTrace();}}).start();
+                r = () -> {try {
+                    Thread.sleep(50L * 1000);
+                    service.balanceTheTeams();
+                    Thread.sleep(15L * 1000);
+                    service.moveDiscordUsersInTheAppropirateChannel();
+                    }catch(InterruptedException | MarcoException e) {e.printStackTrace();}};
                 break;
+                /*
             case WARMUP_END:
-                new Thread(() -> {
-                    try {service.moveDiscordUsersInTheAppropirateChannel();}catch(MarcoException e) {e.printStackTrace();}
-                }).start();
+                r = () -> {try {service.moveDiscordUsersInTheAppropirateChannel();}catch(MarcoException e) {e.printStackTrace();}};
                 break;
+                */
             default:
                 break;
             }
         }
+        
+        if(r != null) {
+            new Thread(r).start();
+        }
+        
         // @formatter:on
         if (_LOGGER.isInfoEnabled()) {
             _LOGGER.info(String.format("Sending OK to CSGO event: %s", request.toString()));

@@ -13,6 +13,13 @@ public class User {
 	private String steamId;
 	@ApiModelProperty(notes = "User Name")
 	private String userName;
+	
+	public User() {}
+	
+	public User(String steamId) {
+	    this.steamId = steamId;
+	    this.userName = "";
+	}
 
 	public String getSteamId() {
 		return steamId;

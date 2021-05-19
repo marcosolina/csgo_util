@@ -25,3 +25,11 @@ CREATE TABLE EVENT_LISTENERS (
     ACTIVE                 VARCHAR(1)           DEFAULT ''  NOT NULL,
     PRIMARY KEY(URL_LISTENER, EVENT_TYPE)
 );
+
+INSERT INTO EVENT_LISTENERS VALUES
+('http://192.168.1.26:8763/zuul/ixigo-discord-bot/discordbot/csgoevent', 'CS_WIN_PANEL_MATCH', NULL, NULL, 0, 'Y'),
+('http://192.168.1.26:8763/zuul/ixigo-discord-bot/discordbot/csgoevent', 'WARMUP_END', NULL, NULL, 0, 'Y'),
+('http://192.168.1.26:8763/zuul/ixigo-discord-bot/discordbot/csgoevent', 'WARMUP_START', NULL, NULL, 0, 'Y'),
+('http://192.168.1.26:8763/zuul/ixigo-server-helper/ixigohelper/event', 'WARMUP_START', NULL, NULL, 0, 'Y'),
+('http://192.168.1.26:8763/zuul/ixigo-server-helper/ixigohelper/event', 'SHUT_DOWN', NULL, NULL, 0, 'Y');
+

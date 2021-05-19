@@ -63,7 +63,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     @Autowired
     private RepoSteamMap repo;
 
-    private boolean autoBalance = false;
+    private boolean autoBalance = true;
 
     private void checkIfBotIsOnline() throws MarcoException {
         if (!botOnline) {

@@ -13,6 +13,7 @@ public enum EventType {
     CS_WIN_PANEL_MATCH,
     WARMUP_START,
     WARMUP_END,
+    SHUT_DOWN(),
     // @formatter:on
     ;
 

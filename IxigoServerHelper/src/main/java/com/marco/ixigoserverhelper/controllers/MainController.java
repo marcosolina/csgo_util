@@ -1,8 +1,5 @@
 package com.marco.ixigoserverhelper.controllers;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +28,7 @@ public class MainController {
             _LOGGER.info(String.format("Received CSGO event: %s", request.toString()));
         }
 
-        if (request.getEventType() == EventType.WARMUP_START/* && LocalDate.now().getDayOfWeek() == DayOfWeek.MONDAY*/) {
+        if (request.getEventType() == EventType.WARMUP_START || request.getEventType() == EventType.SHUT_DOWN) {
             /*
              * Detach from the main flow
              */

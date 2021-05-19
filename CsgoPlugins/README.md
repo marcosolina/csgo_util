@@ -28,3 +28,23 @@ This plugin will write in a txt file the name of the event that has occured on t
 - **cs_win_panel_match** Triggered when the match is over and the "Vote Screen" is displayed
 - **round_start**: Triggered when a new round starts (The warmup round triggers this event)
 - **round_end**: Triggered when the round ends (The warmup round does NOT trigger this event)
+
+### List Players
+
+It print the steam ID of the currently active players on the server
+
+~~~~
+sm_list_players
+
+# Output
+TERRORISTS
+123
+456
+CT
+789
+321
+~~~~
+
+## Misc
+
+- [Return to normal warmup in competitive mode](https://github.com/Ilusion9/fix-warmup-csgo)

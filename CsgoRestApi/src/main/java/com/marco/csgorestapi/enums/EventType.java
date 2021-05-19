@@ -13,6 +13,7 @@ public enum EventType {
     CS_WIN_PANEL_MATCH("End Map"),
     WARMUP_START("round_announce_warmup"),
     WARMUP_END("xxx"),
+    SHUT_DOWN("shutdown"),
     // @formatter:on
 
     ;

@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.marco.csgoutil.roundparser.enums.TeamType;
 import com.marco.csgoutil.roundparser.model.rest.players.User;
+import com.marco.csgoutil.roundparser.model.rest.rcon.RconResponse;
 import com.marco.utils.MarcoException;
 
 /**
@@ -32,4 +33,12 @@ public interface RconService {
      * @throws MarcoException
      */
     public Map<TeamType, List<User>> getCurrentPlayersIds() throws MarcoException;
+
+    /**
+     * It restarts the IxiGo Round
+     * 
+     * @return
+     * @throws MarcoException
+     */
+    public RconResponse restartTheRound() throws MarcoException;
 }

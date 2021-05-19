@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.marco.csgoutil.roundparser.model.rest.rcon.ActivePlayersResponse;
 import com.marco.csgoutil.roundparser.model.rest.rcon.MovePlayersResponse;
+import com.marco.csgoutil.roundparser.model.rest.rcon.RconResponse;
 import com.marco.csgoutil.roundparser.services.interfaces.RconService;
 import com.marco.csgoutil.roundparser.utils.RoundParserUtils;
 import com.marco.utils.MarcoException;
@@ -55,6 +56,22 @@ public class RconController {
         ActivePlayersResponse resp = new ActivePlayersResponse();
         try {
             resp.setPlayers(rconService.getCurrentPlayersIds());
+            resp.setStatus(true);
+        } catch (MarcoException e) {
+            resp.addError(e);
+        }
+
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+    
+    @GetMapping(RoundParserUtils.MAPPING_GET_RESTART_THE_ROUND)
+    @ApiOperation(value = "It restarts the IxiGo Round")
+    public ResponseEntity<RconResponse> restartTheRound() {
+        _LOGGER.trace("Inside RconController.movePlayers");
+
+        RconResponse resp = new RconResponse();
+        try {
+            resp = rconService.restartTheRound();
         } catch (MarcoException e) {
             resp.addError(e);
         }

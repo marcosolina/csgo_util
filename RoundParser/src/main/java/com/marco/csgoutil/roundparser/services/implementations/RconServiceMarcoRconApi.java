@@ -62,9 +62,6 @@ public class RconServiceMarcoRconApi implements RconService {
 
             RconCmd rconApiRequest = new RconCmd();
             rconApiRequest.setRconCmd(String.format("sm_move_players %s dummy", sb.toString().substring(1)));
-            rconApiRequest.setRconHost(rconProps.getCsgoserverip());
-            rconApiRequest.setRconPass(rconProps.getCsgorconpassw());
-            rconApiRequest.setRconPort(27015);
 
             sendRconCmd(rconApiRequest);
             return true;
@@ -78,9 +75,6 @@ public class RconServiceMarcoRconApi implements RconService {
     public Map<TeamType, List<User>> getCurrentPlayersIds() throws MarcoException {
         RconCmd rconApiRequest = new RconCmd();
         rconApiRequest.setRconCmd("sm_list_players");
-        rconApiRequest.setRconHost(rconProps.getCsgoserverip());
-        rconApiRequest.setRconPass(rconProps.getCsgorconpassw());
-        rconApiRequest.setRconPort(27015);
         
         RconResponse resp = sendRconCmd(rconApiRequest);
         
@@ -117,6 +111,9 @@ public class RconServiceMarcoRconApi implements RconService {
     }
 
     private RconResponse sendRconCmd(RconCmd rconApiRequest) throws MarcoException {
+        rconApiRequest.setRconHost(rconProps.getCsgoserverip());
+        rconApiRequest.setRconPass(rconProps.getCsgorconpassw());
+        rconApiRequest.setRconPort(27015);
         try {
             URL url = new URL(rconProps.getProtocol(), rconProps.getHost(), rconProps.getEndpoint());
             ClientResponse resp = mnu.performPostRequest(url, Optional.empty(), Optional.of(rconApiRequest));
@@ -130,6 +127,13 @@ public class RconServiceMarcoRconApi implements RconService {
         } catch (MalformedURLException e) {
             throw new MarcoException(e);
         }
+    }
+
+    @Override
+    public RconResponse restartTheRound() throws MarcoException {
+        RconCmd rconCmd = new RconCmd();
+        rconCmd.setRconCmd("mp_restartgame 5");
+        return sendRconCmd(rconCmd);
     }
 
 }

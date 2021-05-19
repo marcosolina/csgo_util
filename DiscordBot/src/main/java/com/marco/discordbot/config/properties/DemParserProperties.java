@@ -13,6 +13,7 @@ public class DemParserProperties {
     private String createTeams;
     private String movePlayers;
     private String getActivePlayers;
+    private String restartRound;
 
     public String getMovePlayers() {
         return movePlayers;
@@ -68,6 +69,14 @@ public class DemParserProperties {
 
     public void setGetActivePlayers(String getActivePlayers) {
         this.getActivePlayers = getActivePlayers;
+    }
+
+    public String getRestartRound() {
+        return restartRound;
+    }
+
+    public void setRestartRound(String restartRound) {
+        this.restartRound = restartRound;
     }
 
 }

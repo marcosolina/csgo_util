@@ -2,7 +2,6 @@ package com.marco.discordbot.services.implementations;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,7 +29,6 @@ import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.discordbot.model.rest.SteamUser;
 import com.marco.discordbot.model.rest.roundparser.ActivePlayersResponse;
-import com.marco.discordbot.model.rest.roundparser.GeneratedTeams;
 import com.marco.discordbot.model.rest.roundparser.Teams;
 import com.marco.discordbot.model.rest.roundparser.User;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
@@ -85,7 +83,7 @@ public class IxiGoBotMarco implements IxiGoBot {
                         //.setChunkingFilter(ChunkingFilter.NONE)
                         //.setMemberCachePolicy(MemberCachePolicy.NONE)
                         .enableIntents(GatewayIntent.GUILD_MEMBERS)
-                        .addEventListeners(new IxiGoDiscordListenerMarco(this, this.dsProps))
+                        .addEventListeners(new IxiGoDiscordListenerMarco(this))
                         .build();
                 // @formatter:on
                 jda.awaitReady();
@@ -111,7 +109,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     }
 
     @Override
-    public List<DiscordUser> getMembers() throws MarcoException {
+    public List<DiscordUser> getAllDiscordServerMembers() throws MarcoException {
         LOGGER.debug("IxiGoBotMarco.getMembers");
         checkIfBotIsOnline();
 
@@ -147,54 +145,50 @@ public class IxiGoBotMarco implements IxiGoBot {
         return true;
     }
 
+    /**
+     * It returns a map which contains the Users which are in a voice channel
+     * <ul>
+     *  <li><b>KEY:</b> Steam ID</li>
+     *  <li><b>VALUE:</b> Discord ID</li>
+     * </ul>
+     * 
+     * @return
+     */
+    private Map<String, Long> getUsersInAVoiceChannel() {
+        Map<String, Long> userMap = new HashMap<>();
+
+        Guild guild = jda.getGuildById(dsProps.getServerId());
+        // @formatter:off
+        guild.loadMembers().get().parallelStream()
+                .filter(m -> !m.getUser().isBot()) // Skip the bots
+                .filter(m -> m.getVoiceState().inVoiceChannel()) // The member must be in any voice channel
+                .map(m -> repo.findById(m.getIdLong())) // Retrieve the Steam ID of the Discord member
+                .filter(Objects::nonNull) // Skip the not founded member
+                .filter(entity -> entity.getSteamId() != null && !entity.getSteamId().isEmpty()) // I must have his steam ID
+                .forEach(entity -> userMap.put(entity.getSteamId(), entity.getDiscordId()));// Store it in the map
+        // @formatter:on
+        return userMap;
+    }
+
     @Override
     public boolean moveDiscordUsersInTheAppropirateChannel() throws MarcoException {
         LOGGER.debug("IxiGoBotMarco.moveDiscordUsersInTheAppropirateChannel");
         checkIfBotIsOnline();
 
-        Guild guild = jda.getGuildById(dsProps.getServerId());
-        Map<Long, Member> membersMap = new HashMap<>();
-        // @formatter:off
-        /*
-         * Get the definition of the online users in Discord.
-         * These users are already in a vaoice channe
-         */
-        List<DiscordUser> onlineDiscordUsers = guild.loadMembers().get().parallelStream()
-                .filter(m -> !m.getUser().isBot())
-                .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {
-                    DiscordUser du = new DiscordUser();
-                    du.setId(Long.toString(m.getIdLong()));
-                    du.setName(m.getUser().getName());
-                    membersMap.put(m.getIdLong(), m);
-                    return du;
-                }).collect(Collectors.toList());
-        
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("There are %d members online", onlineDiscordUsers.size()));
+        Map<String, Long> userMap = getUsersInAVoiceChannel();
+        if (LOGGER.isDebugEnabled()) {
+            LOGGER.debug(String.format("There are %d members online", userMap.size()));
         }
-        
-        /*
-         * Caching the mapping between steam user
-         * id and discord user id
-         * KEY -> Steam ID
-         * VALUE -> Discord ID 
-         */
-        Map<String, Long> userMap = new HashMap<>();
-        onlineDiscordUsers.parallelStream()
-            .map(du -> repo.findById(Long.parseLong(du.getId())))
-            .filter(Objects::nonNull)
-            .filter(entity -> entity.getSteamId() != null && !entity.getSteamId().isEmpty())
-            .forEach(entity -> userMap.put(entity.getSteamId(), entity.getDiscordId()));
-        // @formatter:on
 
         /*
          * Loop through the teams, retrieve the cached discord ID and move the user into
          * the appropriate channel
          */
+        Guild guild = jda.getGuildById(dsProps.getServerId());
         boolean status = false;
         if (userMap.size() > 0) {
 
-            Map<TeamType, List<User>> inGamePlayers = getCurrentActivePlayers();
+            Map<TeamType, List<User>> inGamePlayers = getCurrentActivePlayersOnTheIxiGoServer();
 
             if (inGamePlayers != null) {
                 if (inGamePlayers.get(TeamType.TERRORISTS) != null) {
@@ -206,7 +200,7 @@ public class IxiGoBotMarco implements IxiGoBot {
 
                     inGamePlayers.get(TeamType.TERRORISTS).stream().forEach(u -> {
                         Long discordId = userMap.get(u.getSteamId());
-                        this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamRed);
+                        this.moveMemberToVoiceChannel(guild, guild.getMemberById(discordId), teamRed);
                     });
                     status = true;
                 }
@@ -219,7 +213,7 @@ public class IxiGoBotMarco implements IxiGoBot {
 
                     inGamePlayers.get(TeamType.CT).stream().forEach(u -> {
                         Long discordId = userMap.get(u.getSteamId());
-                        this.moveMemberToVoiceChannel(guild, membersMap.get(discordId), teamBlue);
+                        this.moveMemberToVoiceChannel(guild, guild.getMemberById(discordId), teamBlue);
                     });
                     status = true;
                 }
@@ -246,14 +240,14 @@ public class IxiGoBotMarco implements IxiGoBot {
     }
 
     private Teams generateCsgoTeams() {
-        Map<TeamType, List<User>> inGamePlayers = getCurrentActivePlayers();
-        
+        Map<TeamType, List<User>> inGamePlayers = getCurrentActivePlayersOnTheIxiGoServer();
+
         if (inGamePlayers != null && inGamePlayers.size() == 2) {
             StringBuilder sb = new StringBuilder();
             inGamePlayers.get(TeamType.CT).stream().forEach(u -> sb.append("," + u.getSteamId()));
             inGamePlayers.get(TeamType.TERRORISTS).stream().forEach(u -> sb.append("," + u.getSteamId()));
             Map<String, String> queryParam = new HashMap<>();
-            if(sb.length() == 0) {
+            if (sb.length() == 0) {
                 return null;
             }
             queryParam.put("usersIDs", sb.substring(1));
@@ -282,7 +276,7 @@ public class IxiGoBotMarco implements IxiGoBot {
         return null;
     }
 
-    private Map<TeamType, List<User>> getCurrentActivePlayers() {
+    private Map<TeamType, List<User>> getCurrentActivePlayersOnTheIxiGoServer() {
         try {
             URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getGetActivePlayers());
             ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.empty());
@@ -299,7 +293,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     public List<Player> getListOfMappedPlayers() throws MarcoException {
         // @formatter:off
         
-        List<DiscordUser> discordUsers = getMembers();
+        List<DiscordUser> discordUsers = getAllDiscordServerMembers();
         discordUsers.stream().forEach(d -> {
             EntitySteamMap e = repo.findById(Long.parseLong(d.getId()));
             if(e == null) { // New User, save it
@@ -340,34 +334,6 @@ public class IxiGoBotMarco implements IxiGoBot {
     public boolean balanceTheTeams() throws MarcoException {
         LOGGER.debug("IxiGoBotMarco.balanceTheTeams");
         checkIfBotIsOnline();
-
-        Guild guild = jda.getGuildById(dsProps.getServerId());
-
-        /*
-         * Get the list of discord user in a voice channel
-         */
-        // @formatter:off
-        List<DiscordUser> onlineDiscordUsers = guild.loadMembers().get().parallelStream()
-                .filter(m -> !m.getUser().isBot())
-                .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {
-                    DiscordUser du = new DiscordUser();
-                    du.setId(Long.toString(m.getIdLong()));
-                    du.setName(m.getUser().getName());
-                    return du;
-                }).collect(Collectors.toList());
-        
-        if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("There are %d members online", onlineDiscordUsers.size()));
-        }
-        
-        List<String> steamIds = new ArrayList<>();
-        
-        onlineDiscordUsers.stream()
-            .map(du -> repo.findById(Long.parseLong(du.getId())))
-            .filter(Objects::nonNull)
-            .filter(entity -> entity.getSteamId() != null && !entity.getSteamId().isEmpty())
-            .forEach(entity -> steamIds.add(entity.getSteamId()));
-        // @formatter:on
 
         Teams teams = generateCsgoTeams();
         if (teams != null) {
@@ -414,69 +380,27 @@ public class IxiGoBotMarco implements IxiGoBot {
     }
 
     @Override
-    public GeneratedTeams getCurrentTeams() throws MarcoException {
-
-        checkIfBotIsOnline();
-
-        Guild guild = jda.getGuildById(dsProps.getServerId());
-        Map<Long, Member> membersMap = new HashMap<>();
-        // @formatter:off
-        /*
-         * Get the definition of the online users in Discord.
-         * These users are already in a vaoice channe
-         */
-        List<DiscordUser> onlineDiscordUsers = guild.loadMembers().get().parallelStream()
-                .filter(m -> !m.getUser().isBot())
-                .filter(m -> m.getVoiceState().inVoiceChannel()).map(m -> {
-                    DiscordUser du = new DiscordUser();
-                    du.setId(Long.toString(m.getIdLong()));
-                    du.setName(m.getUser().getName());
-                    membersMap.put(m.getIdLong(), m);
-                    return du;
-                }).collect(Collectors.toList());
-        
-        /*
-         * Caching the mapping between steam user
-         * id and discord user id
-         * KEY -> Steam ID
-         * VALUE -> Discord ID 
-         */
-        Map<String, Long> userMap = new HashMap<>();
-        onlineDiscordUsers.parallelStream()
-            .map(du -> repo.findById(Long.parseLong(du.getId())))
-            .filter(Objects::nonNull)
-            .filter(entity -> entity.getSteamId() != null && !entity.getSteamId().isEmpty())
-            .forEach(entity -> userMap.put(entity.getSteamId(), entity.getDiscordId()));
-
-        GeneratedTeams t = new GeneratedTeams();
-        Teams teams = generateCsgoTeams();
-        if(teams != null) {
-            
-            t.setTerrorist(teams.getTeams().get(0).getMembers().parallelStream().map(u -> {
-                Long discordId = userMap.get(u.getSteamID());
-                Member m = membersMap.get(discordId);
-                DiscordUser du = new DiscordUser();
-                du.setId(Long.toString(m.getIdLong()));
-                du.setName(m.getUser().getName());
-                return du;
-            }).collect(Collectors.toList()));
-            
-            t.setCt(teams.getTeams().get(1).getMembers().parallelStream().map(u -> {
-                Long discordId = userMap.get(u.getSteamID());
-                Member m = membersMap.get(discordId);
-                DiscordUser du = new DiscordUser();
-                du.setId(Long.toString(m.getIdLong()));
-                du.setName(m.getUser().getName());
-                return du;
-            }).collect(Collectors.toList()));
-        }
-        // @formatter:on
-        return t;
-    }
-
-    @Override
     public boolean warmUpBalanceTeamApi() throws MarcoException {
         generateCsgoTeams();
         return true;
+    }
+
+    @Override
+    public boolean restartIxiGoRound() throws MarcoException {
+        try {
+            URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getRestartRound());
+            ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.empty());
+            boolean ok = clientResp.statusCode() == HttpStatus.OK;
+            if (ok) {
+                LOGGER.debug("Round restarted");
+            } else {
+                LOGGER.debug("Failed to restart the round");
+            }
+            return ok;
+        } catch (MalformedURLException e) {
+            LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
+        return false;
     }
 }

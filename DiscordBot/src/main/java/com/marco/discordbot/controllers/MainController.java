@@ -108,7 +108,7 @@ public class MainController {
         GetMembersResponse resp = new GetMembersResponse();
         try {
             LOGGER.debug("Getting the members of the server");
-            resp.setMembers(ixiGoBot.getMembers());
+            resp.setMembers(ixiGoBot.getAllDiscordServerMembers());
         } catch (MarcoException e) {
             if(LOGGER.isTraceEnabled()) {
                 e.printStackTrace();

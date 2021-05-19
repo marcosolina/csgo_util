@@ -4,7 +4,6 @@ import java.util.List;
 
 import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
-import com.marco.discordbot.model.rest.roundparser.GeneratedTeams;
 import com.marco.utils.MarcoException;
 
 /**
@@ -35,7 +34,7 @@ public interface IxiGoBot {
      * 
      * @return
      */
-    public List<DiscordUser> getMembers() throws MarcoException;
+    public List<DiscordUser> getAllDiscordServerMembers() throws MarcoException;
 
     /**
      * It moves all the members from the specific CSGO channel into the general
@@ -64,6 +63,13 @@ public interface IxiGoBot {
      * @throws MarcoException
      */
     public boolean balanceTheTeams() throws MarcoException;
+    
+    /**
+     * It will restart the IxiGo Round
+     * @return
+     * @throws MarcoException
+     */
+    public boolean restartIxiGoRound() throws MarcoException;
 
     /**
      * It does not move any players, it just attempt a call to warm up the service
@@ -87,13 +93,6 @@ public interface IxiGoBot {
      * @return
      */
     public boolean isAutobalance();
-
-    /**
-     * It the returns the current teams
-     * 
-     * @return
-     */
-    public GeneratedTeams getCurrentTeams() throws MarcoException;
 
     /**
      * It returns the list of discord users mapped to the Steam user

@@ -1,7 +1,5 @@
 package com.marco.discordbot.listeners;
 
-import com.marco.discordbot.config.properties.DiscordServerProps;
-import com.marco.discordbot.model.rest.roundparser.GeneratedTeams;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
 
@@ -14,11 +12,9 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 public class IxiGoDiscordListenerMarco extends ListenerAdapter {
 
     private IxiGoBot ixiGoBot;
-    private DiscordServerProps dsProps;
 
-    public IxiGoDiscordListenerMarco(IxiGoBot ixiGoBot, DiscordServerProps dsProps) {
+    public IxiGoDiscordListenerMarco(IxiGoBot ixiGoBot) {
         this.ixiGoBot = ixiGoBot;
-        this.dsProps = dsProps;
     }
 
     @Override
@@ -52,12 +48,6 @@ public class IxiGoDiscordListenerMarco extends ListenerAdapter {
                         if(this.ixiGoBot.balanceTheTeams()) {
                             StringBuilder sb = new StringBuilder();
                             sb.append("Done\n");
-                            GeneratedTeams gt = this.ixiGoBot.getCurrentTeams();
-                            sb.append("\n Ct: ");
-                            gt.getCt().stream().forEach(user -> sb.append(user.getName() + " "));
-                            
-                            sb.append("\n\n Terrorist: ");
-                            gt.getTerrorist().stream().forEach(user -> sb.append(user.getName() + " "));
                             
                             channel.sendMessage(sb.toString()).queue();
                         }else {

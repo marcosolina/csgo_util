@@ -23,4 +23,9 @@ ixigohelper:
       protocol: "http"
       host: "csgo-round-parser-api"
       endpoint: "/demparser/newdata"
+  rconservice:
+      protocol: "http"
+      host: ${ENV_SSH_IP}
+      port: 8763
+      eventEndpoint: "/zuul/csgo-rest-api/rcon/event"
     

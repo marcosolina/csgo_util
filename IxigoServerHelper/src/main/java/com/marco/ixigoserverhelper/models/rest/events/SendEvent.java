@@ -1,5 +1,12 @@
 package com.marco.ixigoserverhelper.models.rest.events;
 
+/**
+ * Rest model used to notify the RCON service that a new IxiGo event occurred on
+ * the Game server
+ * 
+ * @author Marco
+ *
+ */
 public class SendEvent {
     private String eventName;
 

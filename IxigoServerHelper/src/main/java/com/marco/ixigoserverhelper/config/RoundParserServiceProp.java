@@ -3,6 +3,12 @@ package com.marco.ixigoserverhelper.config;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * Properties used to call the DEM Service
+ * 
+ * @author Marco
+ *
+ */
 @Configuration
 @ConfigurationProperties(prefix = "ixigohelper.demfilesserice.parserservice")
 public class RoundParserServiceProp {

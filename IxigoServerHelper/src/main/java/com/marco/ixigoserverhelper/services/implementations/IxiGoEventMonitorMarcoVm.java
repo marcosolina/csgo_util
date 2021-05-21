@@ -44,10 +44,13 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
             try {
                 SendEvent body = new SendEvent(oldValue);
                 URL url = new URL(rconServiceProps.getProtocol(), rconServiceProps.getHost(), rconServiceProps.getPort(), rconServiceProps.getEventEndpoint());
-                _LOGGER.debug(String.format("Sending event: %s ", oldValue));
+                if(_LOGGER.isDebugEnabled()) {
+                    _LOGGER.debug(String.format("Sending event: %s ", oldValue));
+                }
+                
                 ClientResponse clientResp = mnu.performPostRequest(url, Optional.empty(), Optional.of(body));
-                if(clientResp.statusCode() != HttpStatus.ACCEPTED) {
-                    _LOGGER.error("Not able to send the event");
+                if(clientResp.statusCode() != HttpStatus.ACCEPTED && _LOGGER.isErrorEnabled()) {
+                    _LOGGER.error(String.format("Not able to send the event: %s ", oldValue));
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -67,6 +70,7 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
             String input = null;
             Process p = Runtime.getRuntime().exec(cmd);
             p.waitFor();
+            
             BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
             BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
             StringBuilder sbError = new StringBuilder();

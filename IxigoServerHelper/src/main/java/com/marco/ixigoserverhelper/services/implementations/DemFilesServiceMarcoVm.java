@@ -6,6 +6,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -48,19 +50,27 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
 
     @Override
     public void scpLastDemFiles() throws MarcoException {
-        // auto0-20210512-172448-378433005-workshop_523638720_fy_simpsons-IXI-GO__Monday_Nights
 
+        if (LocalDate.now().getDayOfWeek() != DayOfWeek.MONDAY) {
+            _LOGGER.info("It is not the IxiGo night, no need to copy the dem files");
+            return;
+        }
+
+        // Get all the files in the Server Folder
         File folder = new File(props.getDemFilesFolderFullPath());
         File[] files = folder.listFiles();
-        Arrays.stream(files).filter(f -> f.getName().endsWith(".dem"))
-        .filter(f -> {
+
+        // @formatter:off
+        Arrays.stream(files)
+        .filter(f -> f.getName().endsWith(".dem")) // Look for the "dem files"
+        .filter(f -> { // Skip the small one (when nobody is playing)
             long bytes = f.length();
             long kb = bytes / 1024;
             long mb = kb / 1024;
             return mb > 2;
         })
-        .filter(f -> !filesSent.containsKey(f.getAbsolutePath()))
-        .forEach(f -> filesSent.put(f.getAbsolutePath(), "N"));
+        .filter(f -> !filesSent.containsKey(f.getAbsolutePath())) // Skip if the files is already managed
+        .forEach(f -> filesSent.put(f.getAbsolutePath(), "N")); // Mark it to be sent
 
         List<String> fileNameList = filesSent.keySet().stream().collect(Collectors.toList());
         
@@ -68,6 +78,9 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
             return;
         }
         
+        /*
+         * Sort the dem files by played date Descending
+         */
         fileNameList.sort((o1, o2) -> {
             String[] tmp = o1.split("-");
             LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(String.format("%s %s", tmp[1], tmp[2]), DateFormats.FILE_NAME_WITH_SPACE);
@@ -76,43 +89,48 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
             return ldt.compareTo(ldt2) * -1;
         });
 
+        /*
+         * Scp the files which are not sent yet
+         */
         fileNameList.stream().filter(ldt -> {
             String tmp = filesSent.get(ldt);
             return !"Y".equals(tmp);
             }).forEach(this::performScpCommand);
+        // @formatter:on
+
+        /*
+         * Notify the DEM service that new dem files are available for processing
+         */
         triggerParseNewDem();
     }
-    
+
     private void triggerParseNewDem() {
         ParseNewFiles body = new ParseNewFiles(true);
         try {
             URL url = new URL(parserService.getProtocol(), parserService.getHost(), parserService.getEndpoint());
             ClientResponse clientResp = mnu.performPostRequest(url, Optional.empty(), Optional.of(body));
-            if(clientResp.statusCode() != HttpStatus.OK) {
+            if (clientResp.statusCode() != HttpStatus.OK) {
                 _LOGGER.error("Not able to trigger the dem parsers api");
             }
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
     }
-    
+
     private String createRemoteDemDirectory(String fileName) {
         String[] tmp = fileName.split("-");
-        String folderName = DateUtils.fromLocalDateToString(DateUtils.fromStringToLocalDate(tmp[1], DateFormats.FOLDER_NAME), DateFormats.DB_DATE);
-        
+        String folderName = DateUtils.fromLocalDateToString(
+                DateUtils.fromStringToLocalDate(tmp[1], DateFormats.FOLDER_NAME), DateFormats.DB_DATE);
+
         folderName = String.format("%s/demfiles/%s", System.getenv().get("ENV_SSH_FOLDER"), folderName);
-        
-        String cmd = String.format(
-                "ssh %s@%s mkdir -p %s",
-                System.getenv().get("ENV_SSH_USER"),
-                System.getenv().get("ENV_SSH_IP"),
-                folderName
-                );
-        
+
+        String cmd = String.format("ssh %s@%s mkdir -p %s", System.getenv().get("ENV_SSH_USER"),
+                System.getenv().get("ENV_SSH_IP"), folderName);
+
         sendCmd(cmd);
         return folderName;
     }
-    
+
     private void sendCmd(String cmd) {
         _LOGGER.debug(cmd);
 
@@ -128,7 +146,7 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
             while ((err = stdError.readLine()) != null) {
                 sb.append(err);
             }
-            
+
             if (sb.length() != 0) {
                 _LOGGER.error(sb.toString());
             }
@@ -140,12 +158,8 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
 
     private void performScpCommand(String fileName) {
         String folderName = createRemoteDemDirectory(fileName);
-        String cmd = String.format(
-                "scp %s %s@%s:%s", 
-                fileName, 
-                System.getenv().get("ENV_SSH_USER"), 
-                System.getenv().get("ENV_SSH_IP"), 
-                folderName);
+        String cmd = String.format("scp %s %s@%s:%s", fileName, System.getenv().get("ENV_SSH_USER"),
+                System.getenv().get("ENV_SSH_IP"), folderName);
         _LOGGER.debug(cmd);
 
         try {
@@ -160,10 +174,10 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
             while ((err = stdError.readLine()) != null) {
                 sb.append(err);
             }
-            
+
             if (sb.length() == 0) {
                 filesSent.put(fileName, "Y");
-            }else {
+            } else {
                 _LOGGER.error(sb.toString());
             }
         } catch (IOException | InterruptedException e) {
@@ -171,7 +185,6 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
             e.printStackTrace();
         }
 
-        
     }
 
 }

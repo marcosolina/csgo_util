@@ -11,6 +11,12 @@ import com.marco.ixigoserverhelper.services.interfaces.DemFilesService;
 import com.marco.utils.network.MarcoNetworkUtils;
 import com.marco.utils.network.MarcoNetworkUtilsWebFlux;
 
+/**
+ * Standard Spring Config class
+ * 
+ * @author Marco
+ *
+ */
 @Configuration
 public class Beans {
     @Bean
@@ -18,12 +24,17 @@ public class Beans {
         return new DemFilesServiceMarcoVm();
     }
 
+    /**
+     * Client Side load balancing
+     * 
+     * @return
+     */
     @Bean
     @LoadBalanced
     public WebClient.Builder getWebClientBuilder() {
         return WebClient.builder();
     }
-    
+
     @Bean
     public WebClient.Builder getNonBalancedWebClientBuilder() {
         return WebClient.builder();
@@ -34,7 +45,13 @@ public class Beans {
     public MarcoNetworkUtils getMarcoNetworkUtils() {
         return new MarcoNetworkUtilsWebFlux(getWebClientBuilder());
     }
-    
+
+    /**
+     * When I need to perform an HTTP call to a service which is not registered on
+     * my Discovery Server.
+     * 
+     * @return
+     */
     @Bean(name = "NonBalanced")
     public MarcoNetworkUtils getNonBalancedMarcoNetworkUtils() {
         return new MarcoNetworkUtilsWebFlux(getNonBalancedWebClientBuilder());

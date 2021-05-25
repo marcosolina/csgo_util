@@ -8,8 +8,23 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 @EnableDiscoveryClient
 public class DiscordBotApplication {
 
+    
     public static void main(String[] args) {
         SpringApplication.run(DiscordBotApplication.class, args);
     }
+    
+    /*
+    @Autowired
+    private IxiGoBot bot;
+    @Bean
+    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+        return new CommandLineRunner() {
+            @Override
+            public void run(String... args) throws Exception {
+                bot.start();
+            }
+        };
+    }
+    */
 
 }

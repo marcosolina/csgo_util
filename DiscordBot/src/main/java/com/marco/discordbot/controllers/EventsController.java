@@ -50,10 +50,12 @@ public class EventsController {
                 r = () -> {
                         try {
                             service.balanceTheTeams();
-                            service.moveDiscordUsersInTheAppropirateChannel();
+                            Thread.sleep(1000);
                             service.restartIxiGoRound();
+                            Thread.sleep(500);
+                            service.moveDiscordUsersInTheAppropirateChannel();
                         }
-                        catch(MarcoException e) {
+                        catch(MarcoException | InterruptedException e) {
                             e.printStackTrace();
                         }
                     };

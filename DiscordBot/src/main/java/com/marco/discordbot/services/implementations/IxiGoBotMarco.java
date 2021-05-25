@@ -43,6 +43,8 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.utils.ChunkingFilter;
+import net.dv8tion.jda.api.utils.MemberCachePolicy;
 
 public class IxiGoBotMarco implements IxiGoBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(IxiGoBotMarco.class);
@@ -79,10 +81,13 @@ public class IxiGoBotMarco implements IxiGoBot {
             try {
                 LOGGER.debug("Starting the bot");
                 // @formatter:off
-                jda = JDABuilder.createDefault(botToken)
-                        //.setChunkingFilter(ChunkingFilter.NONE)
-                        //.setMemberCachePolicy(MemberCachePolicy.NONE)
-                        .enableIntents(GatewayIntent.GUILD_MEMBERS)
+                jda = JDABuilder.create(
+                            botToken, 
+                            GatewayIntent.GUILD_MEMBERS, 
+                            GatewayIntent.GUILD_MESSAGES,
+                            GatewayIntent.GUILD_VOICE_STATES)
+                        .setChunkingFilter(ChunkingFilter.ALL)
+                        .setMemberCachePolicy(MemberCachePolicy.ALL)
                         .addEventListeners(new IxiGoDiscordListenerMarco(this))
                         .build();
                 // @formatter:on
@@ -116,7 +121,7 @@ public class IxiGoBotMarco implements IxiGoBot {
         Guild guild = jda.getGuildById(dsProps.getServerId());
 
         // @formatter:off
-        return guild.loadMembers().get().parallelStream()
+        return guild.loadMembers().get().stream()
                     .filter(m -> !m.getUser().isBot())
                     .map(m -> {
                         DiscordUser du = new DiscordUser();
@@ -138,6 +143,7 @@ public class IxiGoBotMarco implements IxiGoBot {
 
         // @formatter:off
         guild.loadMembers().get().stream()
+            .filter(Objects::nonNull)
             .filter(m -> !m.getUser().isBot())
             .filter(m -> m.getVoiceState().inVoiceChannel())
             .forEach(m -> moveMemberToVoiceChannel(guild, m, v));
@@ -159,7 +165,8 @@ public class IxiGoBotMarco implements IxiGoBot {
 
         Guild guild = jda.getGuildById(dsProps.getServerId());
         // @formatter:off
-        guild.loadMembers().get().parallelStream()
+        guild.loadMembers().get().stream()
+                .filter(Objects::nonNull)
                 .filter(m -> !m.getUser().isBot()) // Skip the bots
                 .filter(m -> m.getVoiceState().inVoiceChannel()) // The member must be in any voice channel
                 .map(m -> repo.findById(m.getIdLong())) // Retrieve the Steam ID of the Discord member
@@ -190,33 +197,22 @@ public class IxiGoBotMarco implements IxiGoBot {
 
             Map<TeamType, List<User>> inGamePlayers = getCurrentActivePlayersOnTheIxiGoServer();
 
-            if (inGamePlayers != null) {
-                if (inGamePlayers.get(TeamType.TERRORISTS) != null) {
-                    VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
+            if (inGamePlayers != null && inGamePlayers.get(TeamType.TERRORISTS) != null) {
+                VoiceChannel teamRed = guild.getVoiceChannelById(dsProps.getVoiceChannels().getTerrorist());
 
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug(String.format("Moving to team: %s", teamRed.getName()));
-                    }
+                if (LOGGER.isDebugEnabled()) {
+                    LOGGER.debug(String.format("Moving to team: %s", teamRed.getName()));
+                }
 
-                    inGamePlayers.get(TeamType.TERRORISTS).stream().forEach(u -> {
-                        Long discordId = userMap.get(u.getSteamId());
+                inGamePlayers.get(TeamType.TERRORISTS).stream().forEach(u -> {
+                    Long discordId = userMap.get(u.getSteamId());
+                    if(discordId != null) {
                         this.moveMemberToVoiceChannel(guild, guild.getMemberById(discordId), teamRed);
-                    });
-                    status = true;
-                }
-
-                if (inGamePlayers.get(TeamType.CT) != null) {
-                    VoiceChannel teamBlue = guild.getVoiceChannelById(dsProps.getVoiceChannels().getCt());
-                    if (LOGGER.isDebugEnabled()) {
-                        LOGGER.debug(String.format("Moving to team: %s", teamBlue.getName()));
+                    }else {
+                        LOGGER.error("Member not in cache " + u.getSteamId());
                     }
-
-                    inGamePlayers.get(TeamType.CT).stream().forEach(u -> {
-                        Long discordId = userMap.get(u.getSteamId());
-                        this.moveMemberToVoiceChannel(guild, guild.getMemberById(discordId), teamBlue);
-                    });
-                    status = true;
-                }
+                });
+                status = true;
             }
         }
         LOGGER.debug("Players moved to the voice channels");
@@ -276,6 +272,11 @@ public class IxiGoBotMarco implements IxiGoBot {
         return null;
     }
 
+    /**
+     * It performs a REST call to retrieve the list of users
+     * currently playing on the IxiGo Server
+     * @return
+     */
     private Map<TeamType, List<User>> getCurrentActivePlayersOnTheIxiGoServer() {
         try {
             URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getGetActivePlayers());

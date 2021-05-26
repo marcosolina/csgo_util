@@ -51,9 +51,9 @@ public class EventsController {
                         try {
                             service.balanceTheTeams();
                             Thread.sleep(1000);
-                            service.restartIxiGoRound();
-                            Thread.sleep(500);
                             service.moveDiscordUsersInTheAppropirateChannel();
+                            Thread.sleep(1000);
+                            service.restartIxiGoRound();
                         }
                         catch(MarcoException | InterruptedException e) {
                             e.printStackTrace();

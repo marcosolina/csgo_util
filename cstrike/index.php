@@ -381,7 +381,7 @@ EOD;
 								<div class="input-group-prepend">
 									<span class="input-group-text" id="rconHostText">Rcon Host</span>
 								</div>
-								<input type="text" class="form-control" id="rconHost" value="192.168.1.10">
+								<input type="text" class="form-control" id="rconHost" value="192.168.1.24">
 							</div>
 						</div>
 						<div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4">

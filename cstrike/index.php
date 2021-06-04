@@ -471,22 +471,31 @@ EOD;
 							&nbsp;
 						</div>
 						<div class="row">
-							<div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+							<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
+								<div class="input-group mb-3">
+									<div class="input-group-prepend">
+										<label class="input-group-text" for="botRoundToConsider">Rounds to consider</label>
+									</div>
+									<select class="custom-select" id="botRoundToConsider">
+									</select>
+								</div>
+							</div>
+							<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
 								<button id="saveMapDiscordUsers" type="button" class="btn btn-info btn-block">Save Mapping</button>
 								<div>&nbsp;</div>
 							</div>
-							<div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+							<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
 								<button id="startDiscordBot" type="button" class="btn btn-success btn-block">Start The Bot</button>
 								<div>&nbsp;</div>
 							</div>
-							<div class="col-12 col-sm-4 col-md-4 col-lg-4 col-xl-4">
+							<div class="col-12 col-sm-6 col-md-6 col-lg-4 col-xl-3">
 								<button id="stopDiscordBot" type="button" class="btn btn-danger btn-block">Stop The Bot</button>
 								<div>&nbsp;</div>
 							</div>
 						</div>
 						<div class="row">
 							<div class="col-6">
-								<h3>Discord Users</h3>
+								<h3>Discord ID</h3>
 								<div class="row" id="discordUsers">
 									<div class="col-12">
 										Please Start the Bot
@@ -494,7 +503,7 @@ EOD;
 								</div>
 							</div>
 							<div class="col-6">
-								<h3>Steam Users</h3>
+								<h3>Steam ID</h3>
 								<div class="row" id="mappedSteamUsers">
 									<div class="col-12">
 										Please Start the Bot

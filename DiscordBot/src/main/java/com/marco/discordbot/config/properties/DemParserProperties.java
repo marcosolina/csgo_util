@@ -23,8 +23,8 @@ public class DemParserProperties {
         this.movePlayers = movePlayers;
     }
 
-    public String getCreateTeams() {
-        return createTeams;
+    public String getCreateTeams(int roundsToConsider) {
+        return String.format(createTeams, roundsToConsider);
     }
 
     public void setCreateTeams(String createTeams) {

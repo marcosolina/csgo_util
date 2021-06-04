@@ -22,15 +22,19 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 
 import com.marco.discordbot.config.properties.DemParserProperties;
 import com.marco.discordbot.config.properties.DiscordServerProps;
+import com.marco.discordbot.enums.BotConfigKey;
 import com.marco.discordbot.enums.TeamType;
 import com.marco.discordbot.listeners.IxiGoDiscordListenerMarco;
+import com.marco.discordbot.model.entities.EntityBotConfig;
 import com.marco.discordbot.model.entities.EntitySteamMap;
+import com.marco.discordbot.model.rest.BotConfig;
 import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.discordbot.model.rest.SteamUser;
 import com.marco.discordbot.model.rest.roundparser.ActivePlayersResponse;
 import com.marco.discordbot.model.rest.roundparser.Teams;
 import com.marco.discordbot.model.rest.roundparser.User;
+import com.marco.discordbot.repositories.interfaces.RepoEntityBotConfig;
 import com.marco.discordbot.repositories.interfaces.RepoSteamMap;
 import com.marco.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
@@ -64,6 +68,8 @@ public class IxiGoBotMarco implements IxiGoBot {
     private MarcoNetworkUtils mnu;
     @Autowired
     private RepoSteamMap repo;
+    @Autowired
+    private RepoEntityBotConfig repoBotConfig;
 
     private boolean autoBalance = true;
 
@@ -154,8 +160,8 @@ public class IxiGoBotMarco implements IxiGoBot {
     /**
      * It returns a map which contains the Users which are in a voice channel
      * <ul>
-     *  <li><b>KEY:</b> Steam ID</li>
-     *  <li><b>VALUE:</b> Discord ID</li>
+     * <li><b>KEY:</b> Steam ID</li>
+     * <li><b>VALUE:</b> Discord ID</li>
      * </ul>
      * 
      * @return
@@ -206,9 +212,9 @@ public class IxiGoBotMarco implements IxiGoBot {
 
                 inGamePlayers.get(TeamType.TERRORISTS).stream().forEach(u -> {
                     Long discordId = userMap.get(u.getSteamId());
-                    if(discordId != null) {
+                    if (discordId != null) {
                         this.moveMemberToVoiceChannel(guild, guild.getMemberById(discordId), teamRed);
-                    }else {
+                    } else {
                         LOGGER.error("Member not in cache " + u.getSteamId());
                     }
                 });
@@ -254,7 +260,8 @@ public class IxiGoBotMarco implements IxiGoBot {
                 /*
                  * Call the Round Parser service to balance the teams
                  */
-                URL url = new URL(demProps.getProtocol(), demProps.getHost(), demProps.getCreateTeams());
+                URL url = new URL(demProps.getProtocol(), demProps.getHost(),
+                        demProps.getCreateTeams(getConfigRoundToConsiderForSplitTeam()));
                 ClientResponse clientResp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
                 if (clientResp.statusCode() == HttpStatus.OK) {
                     return mnu.getBodyFromResponse(clientResp, Teams.class);
@@ -272,9 +279,23 @@ public class IxiGoBotMarco implements IxiGoBot {
         return null;
     }
 
+    private int getConfigRoundToConsiderForSplitTeam() {
+        EntityBotConfig config = repoBotConfig.fingConfig(BotConfigKey.ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION);
+        int roundsToConsider = 50;
+        if (config != null) {
+            try {
+                roundsToConsider = Integer.parseInt(config.getConfigVal());
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage());
+            }
+        }
+        return roundsToConsider;
+    }
+
     /**
-     * It performs a REST call to retrieve the list of users
-     * currently playing on the IxiGo Server
+     * It performs a REST call to retrieve the list of users currently playing on
+     * the IxiGo Server
+     * 
      * @return
      */
     private Map<TeamType, List<User>> getCurrentActivePlayersOnTheIxiGoServer() {
@@ -403,5 +424,25 @@ public class IxiGoBotMarco implements IxiGoBot {
             e.printStackTrace();
         }
         return false;
+    }
+
+    @Override
+    public boolean updateBotConfig(BotConfig config) throws MarcoException {
+        EntityBotConfig entity = new EntityBotConfig();
+        entity.setConfigKey(config.getConfigKey());
+        entity.setConfigVal(config.getConfigVal());
+        return repoBotConfig.saveConfig(entity);
+    }
+
+    @Override
+    public BotConfig getBotConfig(BotConfigKey key) throws MarcoException {
+        BotConfig config = null;
+        EntityBotConfig entity = repoBotConfig.fingConfig(key);
+        if(entity != null) {
+            config = new BotConfig();
+            config.setConfigKey(entity.getConfigKey());
+            config.setConfigVal(entity.getConfigVal());
+        }
+        return config;
     }
 }

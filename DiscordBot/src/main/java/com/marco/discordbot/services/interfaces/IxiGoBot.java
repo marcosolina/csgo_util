@@ -2,6 +2,8 @@ package com.marco.discordbot.services.interfaces;
 
 import java.util.List;
 
+import com.marco.discordbot.enums.BotConfigKey;
+import com.marco.discordbot.model.rest.BotConfig;
 import com.marco.discordbot.model.rest.DiscordUser;
 import com.marco.discordbot.model.rest.Player;
 import com.marco.utils.MarcoException;
@@ -63,9 +65,10 @@ public interface IxiGoBot {
      * @throws MarcoException
      */
     public boolean balanceTheTeams() throws MarcoException;
-    
+
     /**
      * It will restart the IxiGo Round
+     * 
      * @return
      * @throws MarcoException
      */
@@ -110,4 +113,20 @@ public interface IxiGoBot {
      * @throws MarcoException
      */
     public boolean storePlayersDetails(List<Player> players) throws MarcoException;
+
+    /**
+     * It update the config value
+     * 
+     * @param config
+     * @return
+     */
+    public boolean updateBotConfig(BotConfig config) throws MarcoException;
+    
+    /**
+     * Get the config value
+     * @param key
+     * @return
+     * @throws MarcoException
+     */
+    public BotConfig getBotConfig(BotConfigKey key) throws MarcoException;
 }

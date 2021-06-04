@@ -3,7 +3,7 @@ var DiscordBot = ((function(DiscordBot){
 
     let discordUsersWrapperId = "discordUsers";
     let mappedSteamUsersWrapperId = "mappedSteamUsers";
-    let nonMappedSteamUsersWrapperId = "nonMappedSteamUsers";
+    let dpRoundToConsiderId = "botRoundToConsider";
 
     let steamUsers = [];
 
@@ -20,6 +20,42 @@ var DiscordBot = ((function(DiscordBot){
         $("#saveMapDiscordUsers").click(DiscordBot.saveMapping);
         $("#startDiscordBot").click(function(){DiscordBot.startStopDiscordBot(true);});
         $("#stopDiscordBot").click(function(){DiscordBot.startStopDiscordBot(false);});
+
+        let jSelectRoundsToConsider = $("#" + dpRoundToConsiderId);
+        for(let i = 1; i < 100; i++){
+            jSelectRoundsToConsider.append(MarcoUtils.template("<option value='%number%'>%number%</option>", {number: i}));
+        }
+        DiscordBot.getRoundsToConsider();
+        jSelectRoundsToConsider.change(DiscordBot.changeRoundsToConsider);
+    }
+
+    DiscordBot.changeRoundsToConsider = function(){
+        let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/config";
+        MarcoUtils.executeAjax({
+                type: "PUT",
+                url: url,
+                showLoading: true,
+                body: {
+                    configKey: "ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION",
+                    configVal: $(this).val()
+                }
+            }).then(function(resp){
+                if(resp.status){
+                    MarcoUtils.showNotification({type: "success", title: "Ok", message: "Configuration saved"});
+                }
+            });
+    }
+
+    DiscordBot.getRoundsToConsider = function(){
+        let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/config?config=ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION";
+        MarcoUtils.executeAjax({
+                type: "GET",
+                url: url
+            }).then(function(resp){
+                if(resp.status){
+                    $("#" + dpRoundToConsiderId).val(resp.config.configVal);
+                }
+            });
     }
 
     DiscordBot.startStopDiscordBot = function(boolStart){

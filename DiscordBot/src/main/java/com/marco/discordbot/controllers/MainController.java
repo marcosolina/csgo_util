@@ -10,10 +10,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.marco.discordbot.enums.BotConfigKey;
 import com.marco.discordbot.misc.DiscordBotUtils;
+import com.marco.discordbot.model.rest.BotConfig;
 import com.marco.discordbot.model.rest.GenericResponse;
+import com.marco.discordbot.model.rest.GetConfigValue;
 import com.marco.discordbot.model.rest.GetMembersResponse;
 import com.marco.discordbot.model.rest.GetPlayersResponse;
 import com.marco.discordbot.model.rest.SavePlayersMapping;
@@ -59,17 +63,35 @@ public class MainController {
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
     
-    @GetMapping("/test")
-    public ResponseEntity<Void> test() {
+    @GetMapping(DiscordBotUtils.MAPPING_GET_CONFIG)
+    public ResponseEntity<GetConfigValue> getConfig(@RequestParam("config") BotConfigKey key) {
+        GetConfigValue resp = new GetConfigValue();
         try {
-            LOGGER.debug("Getting the list of known players");
-            ixiGoBot.moveAllMembersIntoGeneralChannel();
+            LOGGER.debug("Get config value");
+            resp.setConfig(ixiGoBot.getBotConfig(key));
+            resp.setStatus(true);
         } catch (MarcoException e) {
             if(LOGGER.isTraceEnabled()) {
                 e.printStackTrace();
             }
+            resp.addError(e);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+    
+    @PutMapping(DiscordBotUtils.MAPPING_PUT_CONFIG)
+    public ResponseEntity<GetPlayersResponse> updateBotConfig(@RequestBody BotConfig config) {
+        GetPlayersResponse resp = new GetPlayersResponse();
+        try {
+            LOGGER.debug("Update config value");
+            resp.setStatus(ixiGoBot.updateBotConfig(config));
+        } catch (MarcoException e) {
+            if(LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
+            }
+            resp.addError(e);
+        }
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
     
     @GetMapping(DiscordBotUtils.MAPPING_GET_MAPPED_PLAYERS)

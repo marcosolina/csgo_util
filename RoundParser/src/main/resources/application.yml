@@ -11,6 +11,8 @@ logging:
         csgoutil:
           roundparser: DEBUG
 spring:
+  servlet:    multipart:      max-file-size: 100MB
+      max-request-size: 100MB
   datasource:
     url: jdbc:postgresql://localhost:5432/demfiles
     username: ${POSTGRES_USER:REPLACE_ME} # Replace the value

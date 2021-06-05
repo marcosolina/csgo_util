@@ -15,5 +15,5 @@ public interface DemFilesService {
      * 
      * @throws MarcoException
      */
-    public void scpLastDemFiles() throws MarcoException;
+    public void sendLastDemFiles() throws MarcoException;
 }

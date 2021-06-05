@@ -14,8 +14,8 @@ import org.springframework.context.annotation.Configuration;
 public class RconServiceProps {
     private String protocol;
     private String host;
-    private int port;
     private String eventEndpoint;
+    private boolean sendEvents;
 
     public String getProtocol() {
         return protocol;
@@ -33,20 +33,20 @@ public class RconServiceProps {
         this.host = host;
     }
 
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
     public String getEventEndpoint() {
         return eventEndpoint;
     }
 
     public void setEventEndpoint(String eventEndpoint) {
         this.eventEndpoint = eventEndpoint;
+    }
+
+    public boolean isSendEvents() {
+        return sendEvents;
+    }
+
+    public void setSendEvents(boolean sendEvents) {
+        this.sendEvents = sendEvents;
     }
 
 }

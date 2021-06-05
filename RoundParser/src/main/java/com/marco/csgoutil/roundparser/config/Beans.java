@@ -26,6 +26,7 @@ import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUser;
 import com.marco.csgoutil.roundparser.repositories.interfaces.RepoUserScore;
 import com.marco.csgoutil.roundparser.services.implementations.RconServiceMarcoRconApi;
 import com.marco.csgoutil.roundparser.services.implementations.RoundFileServiceMarco;
+import com.marco.csgoutil.roundparser.services.implementations.StorageServiceMarco;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserRasp;
 import com.marco.csgoutil.roundparser.services.implementations.CsgoRoundFileParser.CsgoRoundFileParserWindows;
 import com.marco.csgoutil.roundparser.services.implementations.notifications.EmailNotificationService;
@@ -39,6 +40,7 @@ import com.marco.csgoutil.roundparser.services.interfaces.PartitionTeams;
 import com.marco.csgoutil.roundparser.services.interfaces.RconService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundFileService;
 import com.marco.csgoutil.roundparser.services.interfaces.RoundsService;
+import com.marco.csgoutil.roundparser.services.interfaces.StorageService;
 import com.marco.utils.network.MarcoNetworkUtils;
 import com.marco.utils.network.MarcoNetworkUtilsWebFlux;
 
@@ -82,6 +84,11 @@ public class Beans {
 	@Bean
 	public RoundFileService getRoundFileService() {
 		return new RoundFileServiceMarco();
+	}
+	
+	@Bean
+	public StorageService getStorageService() {
+	    return new StorageServiceMarco();
 	}
 
 	@Bean

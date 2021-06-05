@@ -40,7 +40,7 @@ public class MainController {
              */
             new Thread(() -> {
                 try {
-                    demService.scpLastDemFiles();
+                    demService.sendLastDemFiles();
                 } catch (MarcoException e) {
                     _LOGGER.error(e.getMessage());
                     e.printStackTrace();

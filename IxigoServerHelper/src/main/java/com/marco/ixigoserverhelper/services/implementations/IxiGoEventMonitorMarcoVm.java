@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -30,20 +29,23 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
     @Autowired
     private RconServiceProps rconServiceProps;
     @Autowired
-    @Qualifier("NonBalanced")
+    //@Qualifier("NonBalanced")
     private MarcoNetworkUtils mnu;
     private String oldValue = "NO";
 
     @Override
     @Scheduled(cron = "*/1 * * * * *")
     public String checkForNewEvent() {
+        if(!rconServiceProps.isSendEvents()) {
+            return oldValue;
+        }
         _LOGGER.trace("Checking event file");
         String currentValue = readFile();
         if(currentValue != null && !oldValue.equals(currentValue)) {
             oldValue = currentValue;
             try {
                 SendEvent body = new SendEvent(oldValue);
-                URL url = new URL(rconServiceProps.getProtocol(), rconServiceProps.getHost(), rconServiceProps.getPort(), rconServiceProps.getEventEndpoint());
+                URL url = new URL(rconServiceProps.getProtocol(), rconServiceProps.getHost(), rconServiceProps.getEventEndpoint());
                 if(_LOGGER.isDebugEnabled()) {
                     _LOGGER.debug(String.format("Sending event: %s ", oldValue));
                 }

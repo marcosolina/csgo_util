@@ -9,13 +9,17 @@ This is a personal project that I made to simplify couple of things when playing
 ![Rcon UI](./misc/pictures/Services_Diagram.png)
 
 - csgo_util
-  - [CsgoRespApi](https://github.com/marcosolina/csgo_util/tree/main/CsgoRestApi): SpringBoot microservice which exposes a REST API to send the RCON commands
+  - [Csgo Plugins](https://github.com/marcosolina/csgo_util/tree/main/CsgoPlugins): This folder contains some custom "sourcemod" plugins written for our CSGO server
+  - [CsgoRestApi](https://github.com/marcosolina/csgo_util/tree/main/CsgoRestApi): SpringBoot microservice which exposes a REST API to send the RCON commands
+  - [Dem Parser](https://github.com/marcosolina/csgo_util/tree/main/DemParser): C# project created to extract information from the DEM files
+  - [Discord Bot](https://github.com/marcosolina/csgo_util/tree/main/DiscordBot): SpringBoot service used to automate some task on [Discord](https://discord.com/brand-new)
+  - [IxiGo Server Helper](https://github.com/marcosolina/csgo_util/tree/main/IxigoServerHelper): This Springboot app runs on the IxiGo server, it monitors the output of the custom CSGO plugins and fires the events accordingly
+  - [Round Parser](https://github.com/marcosolina/csgo_util/tree/main/RoundParser): SpringBoot Project used to process the information that we extract from the dem files, and also automate some RCON commands or queries to the custom Csgo Plugins
+  - **Scripts**: This folder contains scripts used to setup the project
+    - **Docker**: Docker files/scripts
+      - **PostgreSql**: Scripts used to setup the databases
   - [cstrike](https://marco.selfip.net/cstrike/): This folder contains all the files used to generate teh UI (PHP, Javascript, CSS)
-  - Misc: Extra files used for documentation or the UI (CSGO Font, logo, Screenshots...)
-  - [Dem Parser](https://github.com/marcosolina/csgo_util/tree/main/DemParser): C# project that I have created to extract information from the DEM files
-  - [Round Parser](https://github.com/marcosolina/csgo_util/tree/main/RoundParser): SpringBoot Project that I created to retrieve the information that we extract from the dem files, and also automate some RCON commands or queries to the custom Csgo Plugins
-  - [Csgo Plugins](https://github.com/marcosolina/csgo_util/tree/main/CsgoPlugins): This folder contains some "sourcemod" plugins written for our CSGO server
-  - [Discord Bot](https://github.com/marcosolina/csgo_util/tree/main/DiscordBot): This folder contains the project we use to automate some procedures on discords
+  - **Misc**: Extra files used for documentation or the UI (CSGO Font, logo, Screenshots...)
 
 ## Requirements
 

@@ -1,7 +1,7 @@
 package com.marco.csgoutil.roundparser.controllers;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -67,16 +67,17 @@ public class FilesController {
         GetFiles resp = new GetFiles();
         try {
 
-            List<FileInfo> fileInfos = ss.loadAll().map(path -> {
-                String filename = path.getFileName().toString();
-                String url = MvcUriComponentsBuilder
-                        .fromMethodName(FilesController.class, "getFile", path.getFileName().toString()).build()
+            Map<String, List<FileInfo>> games = ss.loadAllFileNames();
+            games.forEach((k, v) -> {
+                v.stream().forEach(fi -> {
+                    String url = MvcUriComponentsBuilder
+                        .fromMethodName(FilesController.class, "getFile", fi.getName()).build()
                         .toString();
+                    fi.setUrl(url);
+                });
+            });
 
-                return new FileInfo(filename, url);
-            }).collect(Collectors.toList());
-
-            resp.setFiles(fileInfos);
+            resp.setFiles(games);
             resp.setStatus(true);
         } catch (MarcoException e) {
             resp.addError(e);

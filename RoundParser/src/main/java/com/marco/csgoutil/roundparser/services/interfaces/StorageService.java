@@ -1,14 +1,18 @@
 package com.marco.csgoutil.roundparser.services.interfaces;
 
-import java.nio.file.Path;
-import java.util.stream.Stream;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.marco.csgoutil.roundparser.model.rest.FileInfo;
 import com.marco.utils.MarcoException;
 
 public interface StorageService {
+    
+    void init(String rootDemFolder);
+    
     /**
      * It saves the files
      * 
@@ -31,5 +35,5 @@ public interface StorageService {
      * @return
      * @throws MarcoException
      */
-    public Stream<Path> loadAll() throws MarcoException;
+    public Map<String, List<FileInfo>> loadAllFileNames() throws MarcoException;
 }

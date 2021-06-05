@@ -14,6 +14,8 @@ spring:
   application:
     name: csgo-round-parser-api
   cloud:
+    inetutils:
+      preferred-networks: 192.168.1
     config:
       uri: ${SPRING_CONFIG_SERVER_URI:http://localhost:8888/config}
       username: ${SPRING_CONFIG_SERVER_USER}

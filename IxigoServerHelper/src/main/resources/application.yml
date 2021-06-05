@@ -18,14 +18,17 @@ server:
 ixigohelper:
   version: ^project.version^
   demfilesserice: 
-    demFilesFolderFullPath: "E:\\VmSharedFiles\\CsgoServer\\ixi_go\\CsgoServer\\csgo"
+    demFilesFolderFullPath: "C:\\tmp\\demfiles"
     parserservice:
-      protocol: "http"
-      host: "csgo-round-parser-api"
-      endpoint: "/demparser/newdata"
+      protocol: "https"
+      host: "marco.selfip.net"
+      commonPath: "/zuul/csgo-round-parser-api/demparser"
+      endpoint: "${ixigohelper.demfilesservice.parserservice.commonPath}/newdata"
+      demFilesUploaEndpoint: "${ixigohelper.demfilesservice.parserservice.commonPath}/files"
   rconservice:
-      protocol: "http"
-      host: ${ENV_SSH_IP}
-      port: 8763
-      eventEndpoint: "/zuul/csgo-rest-api/rcon/event"
+      protocol: "https"
+      host: marco.selfip.net
+      commonPath: "/zuul/csgo-rest-api/rcon"
+      eventEndpoint: "${ixigohelper.rconservice.commonPath}/event"
+      sendEvents: false
     

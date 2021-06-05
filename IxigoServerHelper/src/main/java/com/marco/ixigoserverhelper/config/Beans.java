@@ -30,6 +30,7 @@ public class Beans {
      * @return
      */
     @Bean
+    @Primary
     @LoadBalanced
     public WebClient.Builder getWebClientBuilder() {
         return WebClient.builder();

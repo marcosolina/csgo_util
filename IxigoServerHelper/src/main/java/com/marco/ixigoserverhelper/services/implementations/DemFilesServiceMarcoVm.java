@@ -1,13 +1,11 @@
 package com.marco.ixigoserverhelper.services.implementations;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -19,8 +17,16 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.MultipartBodyBuilder;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriBuilder;
 
 import com.marco.ixigoserverhelper.config.DemFilesServiceProps;
 import com.marco.ixigoserverhelper.config.RoundParserServiceProp;
@@ -45,16 +51,20 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
     private RoundParserServiceProp parserService;
     @Autowired
     private MarcoNetworkUtils mnu;
+    @Autowired
+    private WebClient.Builder wb;
 
     private static Map<String, String> filesSent = new HashMap<>();
 
     @Override
-    public void scpLastDemFiles() throws MarcoException {
+    public void sendLastDemFiles() throws MarcoException {
 
+        /*
         if (LocalDate.now().getDayOfWeek() != DayOfWeek.MONDAY) {
             _LOGGER.info("It is not the IxiGo night, no need to copy the dem files");
             return;
         }
+        */
 
         // Get all the files in the Server Folder
         File folder = new File(props.getDemFilesFolderFullPath());
@@ -95,7 +105,7 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
         fileNameList.stream().filter(ldt -> {
             String tmp = filesSent.get(ldt);
             return !"Y".equals(tmp);
-            }).forEach(this::performScpCommand);
+            }).forEach(this::postLastDemFile);
         // @formatter:on
 
         /*
@@ -117,6 +127,7 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
         }
     }
 
+    /*
     private String createRemoteDemDirectory(String fileName) {
         String[] tmp = fileName.split("-");
         String folderName = DateUtils.fromLocalDateToString(
@@ -185,6 +196,45 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
             e.printStackTrace();
         }
 
+    }
+    */
+
+    private void postLastDemFile(String fileNameAbsolutePath){
+        try {
+            Path file = Paths.get(fileNameAbsolutePath);
+            Resource resource = new UrlResource(file.toUri());
+
+            MultipartBodyBuilder builder = new MultipartBodyBuilder();
+            builder.part("file", resource).filename(file.toFile().getName());
+
+            MultiValueMap<String, HttpEntity<?>> parts = builder.build();
+
+            URL url = new URL(parserService.getProtocol(), parserService.getHost(),
+                    parserService.getDemFilesUploaEndpoint());
+            // @formatter:off
+            ClientResponse resp = wb.build().post().uri(uriBuilder -> {
+                    UriBuilder ub = uriBuilder
+                            .scheme(url.getProtocol())
+                            .host(url.getHost())
+                            .port(url.getPort())
+                            .path(url.getPath());
+                    return ub.build();
+    
+                })
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .bodyValue(parts)
+                .exchange()
+                .block();
+            // @formatter:on
+
+            _LOGGER.debug(resp.statusCode().toString());
+            if (resp.statusCode() == HttpStatus.OK) {
+                filesSent.put(fileNameAbsolutePath, "Y");
+            }
+        } catch (IOException e) {
+            _LOGGER.error(e.getMessage());
+            e.printStackTrace();
+        }
     }
 
 }

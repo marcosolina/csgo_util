@@ -15,6 +15,7 @@ public class RoundParserServiceProp {
     private String protocol;
     private String host;
     private String endpoint;
+    private String demFilesUploaEndpoint;
 
     public String getProtocol() {
         return protocol;
@@ -38,5 +39,13 @@ public class RoundParserServiceProp {
 
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
+    }
+
+    public String getDemFilesUploaEndpoint() {
+        return demFilesUploaEndpoint;
+    }
+
+    public void setDemFilesUploaEndpoint(String demFilesUploaEndpoint) {
+        this.demFilesUploaEndpoint = demFilesUploaEndpoint;
     }
 }

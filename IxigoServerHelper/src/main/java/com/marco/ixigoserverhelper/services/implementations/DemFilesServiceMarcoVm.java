@@ -6,6 +6,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -59,12 +61,10 @@ public class DemFilesServiceMarcoVm implements DemFilesService {
     @Override
     public void sendLastDemFiles() throws MarcoException {
 
-        /*
         if (LocalDate.now().getDayOfWeek() != DayOfWeek.MONDAY) {
             _LOGGER.info("It is not the IxiGo night, no need to copy the dem files");
             return;
         }
-        */
 
         // Get all the files in the Server Folder
         File folder = new File(props.getDemFilesFolderFullPath());

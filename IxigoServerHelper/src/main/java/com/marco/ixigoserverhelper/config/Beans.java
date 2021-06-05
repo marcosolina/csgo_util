@@ -1,6 +1,5 @@
 package com.marco.ixigoserverhelper.config;
 
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -24,18 +23,6 @@ public class Beans {
         return new DemFilesServiceMarcoVm();
     }
 
-    /**
-     * Client Side load balancing
-     * 
-     * @return
-     */
-    @Bean
-    @Primary
-    @LoadBalanced
-    public WebClient.Builder getWebClientBuilder() {
-        return WebClient.builder();
-    }
-
     @Bean
     public WebClient.Builder getNonBalancedWebClientBuilder() {
         return WebClient.builder();
@@ -44,7 +31,7 @@ public class Beans {
     @Bean
     @Primary
     public MarcoNetworkUtils getMarcoNetworkUtils() {
-        return new MarcoNetworkUtilsWebFlux(getWebClientBuilder());
+        return new MarcoNetworkUtilsWebFlux(getNonBalancedWebClientBuilder());
     }
 
     /**

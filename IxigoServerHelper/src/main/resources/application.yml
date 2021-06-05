@@ -23,8 +23,8 @@ ixigohelper:
       protocol: "https"
       host: "marco.selfip.net"
       commonPath: "/zuul/csgo-round-parser-api/demparser"
-      endpoint: "${ixigohelper.demfilesservice.parserservice.commonPath}/newdata"
-      demFilesUploaEndpoint: "${ixigohelper.demfilesservice.parserservice.commonPath}/files"
+      endpoint: "${ixigohelper.demfilesserice.parserservice.commonPath}/newdata"
+      demFilesUploaEndpoint: "${ixigohelper.demfilesserice.parserservice.commonPath}/files"
   rconservice:
       protocol: "https"
       host: marco.selfip.net

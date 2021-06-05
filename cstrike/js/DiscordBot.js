@@ -104,7 +104,11 @@ var DiscordBot = ((function(DiscordBot){
 
     DiscordBot.getSteamUsers = function(){
         let url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/users";
-        MarcoUtils.executeAjax({type: "GET", url: url, showLoading: true}).then(DiscordBot.steamUsersRetrieved);
+        MarcoUtils.executeAjax({type: "GET", url: url, showLoading: true})
+            .then(DiscordBot.steamUsersRetrieved)
+            .fail(function(){
+                MarcoUtils.showNotification({type: "error", title: "Sorry", message: "The bot service is down"});
+            });
     }
 
     DiscordBot.steamUsersRetrieved = function(resp){

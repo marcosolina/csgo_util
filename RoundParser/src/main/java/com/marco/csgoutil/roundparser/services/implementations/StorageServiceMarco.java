@@ -7,6 +7,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -69,7 +70,7 @@ public class StorageServiceMarco implements StorageService {
 
     @Override
     public Map<String, List<FileInfo>> loadAllFileNames() throws MarcoException {
-        Map<String, List<FileInfo>> map = new TreeMap<>();
+        Map<String, List<FileInfo>> map = new TreeMap<>(Comparator.reverseOrder());
         
         roundFildeService.retrieveAllDemFiles().stream().forEach(f -> {
             String folderName = getFolderFromFileName(f.getName());

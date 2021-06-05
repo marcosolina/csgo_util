@@ -80,6 +80,7 @@ EOD;
 	<script src="./js/MapsPlayedChart.js"></script>
 	<script src="./js/ChartsManager.js"></script>
 	<script src="./js/DiscordBot.js"></script>
+	<script src="./js/DemFilesManager.js"></script>
 
 	<script>
 		<?php
@@ -88,13 +89,13 @@ EOD;
 		$apiBaseUrl = getenv("PHP_BASE_URL");
 		if(strpos($apiBaseUrl, "localhost") !== false){
 			$demFilesRootFolder = "C:\\tmp\demfiles";
-			$filesRootFolder = "C:\\tmp\\rcon\maps";
 			$apiBaseUrl = "https://marco.selfip.net";
 		}
 		echo "__URLS = {API_BASE: '".$apiBaseUrl."/zuul'};";
 		?>
 		$(document).ready(function () {
 			Csgo.init();
+			DemFilesManager.init();
 			PlayersManager.init();
 			ChartsManager.init();
 			DiscordBot.init();
@@ -139,85 +140,6 @@ EOD;
 				<div class="tab-pane fade show active" id="demDiv" role="tabpanel" aria-labelledby="dem-tab">
 					<!-- START Dem files Accordion -->
 					<div class="accordion" id="accordionExample">
-						<?php
-						$demFolders = scandir($demFilesRootFolder, 1);
-						foreach ($demFolders as $demFolder) {
-							if ($demFolder == "." || $demFolder == "..") {
-								continue;
-							}
-							if (is_dir($demFilesRootFolder . "/" . $demFolder)) {
-						?>
-								<div class="card">
-									<div class="card-header" id="card_<?php echo $demFolder; ?>">
-										<h2 class="mb-0">
-											<button 
-												class="btn btn-link btn-card"
-												type="button"
-												data-toggle="collapse" 
-												data-target="#collapse_<?php echo $demFolder; ?>"
-												aria-expanded="false"
-												aria-controls="collapse_<?php echo $demFolder; ?>">
-													<?php
-													$date =  date_create_from_format('Y-m-d', $demFolder);
-													echo date_format($date, 'd M Y');
-													?>
-											</button>
-										</h2>
-									</div>
-
-									<div 
-										id="collapse_<?php echo $demFolder; ?>" 
-										class="collapse"
-										aria-labelledby="card_<?php echo $demFolder; ?>"
-										data-parent="#accordionExample">
-										<div class="card-body">
-											<ul class="list-group">
-												<?php
-												$demFiles = scandir($demFilesRootFolder . "/" . $demFolder);
-												foreach ($demFiles as $demFile) {
-													if (!is_dir($demFile)) {
-														$fullFileName = $demFilesRootFolder . "/" . $demFolder . "/" . $demFile;
-														$fileSize = filesize($fullFileName);
-														if ($fileSize < 1048576) {
-															continue;
-														}
-												?>
-														<li class="list-group-item">
-															<div class="row">
-																<div class="col-12 col-sm-8">
-																	<?php
-																	echo explode("-", $demFile)[4];
-																	?>
-																</div>
-																<div class="col-4 col-sm-3 col-md-3">
-																	<?php
-																	echo formatSizeUnits($fileSize);
-																	?>
-																</div>
-																<div class="col-1">
-																	<a
-																		href="<?php echo $fullFileName; ?>"
-																		target="_blank">
-																		<i 
-																			class="fa fa-cloud-download"
-																			aria-hidden="true">
-																		</i>
-																	</a>
-																</div>
-															</div>
-														</li>
-												<?php
-													}
-												}
-												?>
-											</ul>
-										</div>
-									</div>
-								</div>
-						<?php
-							}
-						}
-						?>
 					</div>
 					<!-- END Dem files Accordion -->
 				</div>

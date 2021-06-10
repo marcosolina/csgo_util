@@ -19,18 +19,25 @@ CREATE DATABASE DISCORDBOT;
 /*
  * Create the users table
  */
-CREATE TABLE STEAMMAP (
+CREATE TABLE USERS_MAP (
     DISCORD_ID             BIGINT          DEFAULT 0   NOT NULL PRIMARY KEY,
     STEAM_ID               VARCHAR(100)    DEFAULT ''  NOT NULL,
     DISCORD_NAME           VARCHAR(50)     DEFAULT ''  NOT NULL,
     STEAM_NAME             VARCHAR(50)     DEFAULT ''  NOT NULL
 );
 
+/*
+ * Misc values stored as config 
+ */
 CREATE TABLE BOT_CONFIG (
     CONFIG_KEY             VARCHAR(100)    DEFAULT ''  NOT NULL PRIMARY KEY,
     CONFIG_VAL             VARCHAR(100)    DEFAULT ''  NOT NULL
 );
 
+
+/*
+ * Insert default values
+ */
 INSERT INTO BOT_CONFIG VALUES ('ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION', '50');
 
 INSERT INTO STEAMMAP VALUES

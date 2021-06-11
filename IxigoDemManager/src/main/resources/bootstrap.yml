@@ -18,5 +18,5 @@ spring:
       preferred-networks: 192.168.1
     config:
       uri: ${IXIGO_CONFIG_SERVER_URI:http://localhost:8888/config}
-      username: ${IXIGO_CONFIG_SERVER_USER}
-      password: ${IXIGO_CONFIG_SERVER_PASSW}
+      username: ${IXIGO_CONFIG_SERVER_USER:REPLACE_ME}
+      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}

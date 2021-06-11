@@ -4,5 +4,5 @@ COPY initDemFilesDb.sql  /docker-entrypoint-initdb.d
 COPY initDiscordDb.sql  /docker-entrypoint-initdb.d
 COPY initEventDispatcherDb.sql  /docker-entrypoint-initdb.d
 
-ENV POSTGRES_PASSWORD=postgres
-ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=REPLACE_ME
+ENV POSTGRES_USER=REPLACE_ME

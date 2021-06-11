@@ -1,0 +1,55 @@
+logging:
+  file:
+    name: ./logs/ixigo-dem-manager.log
+  pattern:
+    console: "%d %-5level : %msg%n"
+    file: "%d %-5level : %msg%n"
+  level:
+    root: INFO
+    com:
+      marco:
+        csgoutil:
+          roundparser: DEBUG
+spring:
+  servlet:
+    multipart:
+      max-file-size: 100MB # To be able to recevie HTTP request with big files
+      max-request-size: 100MB # To be able to recevie HTTP request with big files
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demfiles
+    username: ${IXIGO_POSTGRES_USER:REPLACE_ME} # Replace the value
+    password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME} # Replace the value
+  mail:
+    host: smtp.gmail.com # If you want to send email notification using GMAIL
+    port: 587
+    username: XXXX
+    password: XXXX
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+server:
+  servlet:
+    context-path: /demmanager
+com:
+  marco:
+    ixigo:
+      demmanager:
+        version: ^project.version^
+        notifications:
+          email:
+            enabled: false
+            emailrecipients: marcosolina@gmail.com # A list of comma separated email addresses
+          telegram:
+            enabled: false
+            telegramToken: ${TELEGRAM_BOT_TOKEN:xxxxxx}
+            chatGroupId: ${TELEGRAM_CHAT_GROUP_ID:xxxxxx}
+            # Bot Name: IxiGo
+            # Bot user: @ixigo_bot
+        demparser:
+          environment: WINDOWS # Enum: WINDOWS, RASP
+          executionType: SYNC # Enum: ASYNC, SYNC
+          demfolder: "C:\\tmp\\demfiles"
+          dotnetexecutable: "E:\\Workspaces\\Git\\csgo_util\\DemParser\\bin\\Debug\\netcoreapp3.1\\DemParser.dll"

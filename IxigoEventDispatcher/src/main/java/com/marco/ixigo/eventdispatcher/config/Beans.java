@@ -2,6 +2,7 @@ package com.marco.ixigo.eventdispatcher.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -14,6 +15,7 @@ import com.marco.ixigo.eventdispatcher.services.interfaces.NotificationService;
 import com.marco.utils.network.MarcoNetworkUtils;
 import com.marco.utils.network.MarcoNetworkUtilsWebFlux;
 
+@Configuration
 public class Beans {
     @Bean(name = "NetworkUtilsNotBalanced")
     public MarcoNetworkUtils getMarcoNetworkUtilsNotBalanced() {

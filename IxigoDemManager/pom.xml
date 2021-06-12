@@ -78,12 +78,6 @@
 			<artifactId>Utils</artifactId>
 			<version>0.0.2</version>
 		</dependency>
-		<!-- My custom libraries. You can find the source code on my GitHub https://github.com/marcosolina/javautils -->
-		<dependency>
-			<groupId>com.marco.utils</groupId>
-			<artifactId>Partitioning</artifactId>
-			<version>0.0.2</version>
-		</dependency>
 		<!-- For sending emails -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

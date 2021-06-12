@@ -1,0 +1,27 @@
+server:
+  port: 8763
+  servlet:
+    context-path: /ixigoproxy
+
+spring:
+  application:
+    name: ixigo-proxy
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+
+ribbon:
+  ReadTimeout: 120000 # processing request time
+  ConnectTimeout: 30000 # connection request time
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${IXIGO_EUREKA_SERVER:http://localhost:8765/ixigodiscovery/eureka}

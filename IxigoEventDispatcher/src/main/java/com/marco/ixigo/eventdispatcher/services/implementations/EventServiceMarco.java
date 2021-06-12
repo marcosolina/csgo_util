@@ -137,7 +137,7 @@ public class EventServiceMarco implements EventService {
         listener.setConsecutiveFailure(0);
 
         if (repo.findListener(pk) != null) {
-            throw new MarcoException(msgSource.getMessage("CSGOAPI00008", null, LocaleContextHolder.getLocale()));
+            throw new MarcoException(msgSource.getMessage("DISP00001", null, LocaleContextHolder.getLocale()));
         }
         
         boolean resp = repo.registerNewListener(listener);

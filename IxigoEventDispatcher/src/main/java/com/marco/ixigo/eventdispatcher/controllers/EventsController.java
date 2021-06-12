@@ -1,4 +1,4 @@
-package com.marco.ixigo.eventdispatcher;
+package com.marco.ixigo.eventdispatcher.controllers;
 
 import javax.servlet.http.HttpServletRequest;
 

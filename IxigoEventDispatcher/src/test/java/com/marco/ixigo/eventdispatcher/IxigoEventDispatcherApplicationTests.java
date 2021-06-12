@@ -1,12 +1,9 @@
 package com.marco.ixigo.eventdispatcher;
 
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-@SpringBootTest
+//@SpringBootTest
 class IxigoEventDispatcherApplicationTests {
 
-	@Test
+	//@Test
 	void contextLoads() {
 	}
 

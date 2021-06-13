@@ -9,6 +9,8 @@ import com.marco.ixigo.demmanager.repositories.implementations.RepoUserScorePost
 import com.marco.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.marco.ixigo.demmanager.repositories.interfaces.RepoUser;
 import com.marco.ixigo.demmanager.repositories.interfaces.RepoUserScore;
+import com.marco.ixigo.demmanager.services.implementations.DemFileManagerMarco;
+import com.marco.ixigo.demmanager.services.interfaces.DemFileManager;
 
 @Configuration
 public class Beans {
@@ -26,5 +28,10 @@ public class Beans {
     @Bean
     public RepoUserScore getRepoUserScore() {
         return new RepoUserScorePostgres();
+    }
+    
+    @Bean
+    public DemFileManager getDemFileManager() {
+        return new DemFileManagerMarco();
     }
 }

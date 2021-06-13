@@ -80,6 +80,7 @@ public class DemFileParserMarco implements DemFileParser {
                     repoUser.insertUpdateUser(user);
                     
                     EntityUserScore us = fromUserMapStatsToEntityUserScore(m, u);
+                    us.setFileName(f.getAbsolutePath());
                     
                     repoUserScore.insertUpdateUserScore(us);
                 });

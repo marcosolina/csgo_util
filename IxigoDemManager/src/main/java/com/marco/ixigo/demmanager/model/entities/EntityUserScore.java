@@ -18,6 +18,8 @@ import javax.persistence.Table;
 public class EntityUserScore {
     @EmbeddedId
     private EntityUserScorePk id;
+    @Column(name = "FILE_NAME")
+    private String fileName;
     @Column(name = "RWS")
     private BigDecimal roundWinShare;
     @Column(name = "KILLS")
@@ -99,6 +101,14 @@ public class EntityUserScore {
 
     public EntityUserScorePk getId() {
         return id;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
     }
 
     public void setId(EntityUserScorePk id) {

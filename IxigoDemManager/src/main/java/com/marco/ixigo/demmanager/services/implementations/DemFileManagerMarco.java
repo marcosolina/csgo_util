@@ -7,7 +7,6 @@ import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -28,11 +27,11 @@ import com.marco.utils.DateUtils;
 import com.marco.utils.MarcoException;
 import com.marco.utils.enums.DateFormats;
 
-public class DemFileManagerMarco implements DemFileManager{
+public class DemFileManagerMarco implements DemFileManager {
     private static final Logger _LOGGER = LoggerFactory.getLogger(DemFileManagerMarco.class);
 
-    @Value("${com.marco.csgoutil.roundparser.demfolder}")
-    private Path root = Paths.get("C:\\tmp");
+    @Value("${com.marco.ixigo.demmanager.demFileManager.rootFolder}")
+    private Path root;
 
     @Override
     public void store(MultipartFile file) throws MarcoException {
@@ -67,7 +66,7 @@ public class DemFileManagerMarco implements DemFileManager{
     @Override
     public Map<String, List<FileInfo>> loadAllFileNames() throws MarcoException {
         Map<String, List<FileInfo>> map = new TreeMap<>(Comparator.reverseOrder());
-        
+
         List<File> files = new ArrayList<>();
         try (Stream<Path> walk = Files.walk(root)) {
             walk.filter(p -> p.toFile().getName().endsWith(".dem")).map(Path::toFile).forEach(files::add);
@@ -77,11 +76,11 @@ public class DemFileManagerMarco implements DemFileManager{
             }
             throw new MarcoException(e);
         }
-        
+
         files.stream().forEach(f -> {
             String folderName = getFolderFromFileName(f.getName());
             map.compute(folderName, (k, v) -> {
-                if(v == null) {
+                if (v == null) {
                     v = new ArrayList<>();
                 }
                 FileInfo fi = new FileInfo();
@@ -94,24 +93,25 @@ public class DemFileManagerMarco implements DemFileManager{
                 long fileSizeInKB = fileSizeInBytes / 1024;
                 // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
                 long fileSizeInMB = fileSizeInKB / 1024;
-                
+
                 fi.setSize(new BigDecimal(fileSizeInMB).setScale(2, RoundingMode.DOWN).toString() + " MB");
                 v.add(fi);
-                
+
                 return v;
             });
         });
-        
+
         return map;
     }
-    
+
     private String getFolderFromFileName(String fileName) {
-        String [] arr = fileName.split("-");
-        return DateUtils.fromLocalDateToString(DateUtils.fromStringToLocalDate(arr[1], DateFormats.FOLDER_NAME), DateFormats.DB_DATE);
+        String[] arr = fileName.split("-");
+        return DateUtils.fromLocalDateToString(DateUtils.fromStringToLocalDate(arr[1], DateFormats.FOLDER_NAME),
+                DateFormats.DB_DATE);
     }
 
     private String getMapFromFileName(String fileName) {
-        String [] arr = fileName.split("-");
+        String[] arr = fileName.split("-");
         return arr[4];
     }
 }

@@ -8,6 +8,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -52,7 +53,7 @@ public class DemFileManagerMarco implements DemFileManager {
             EntityProcessQueue entity = new EntityProcessQueue();
             entity.setFileName(fileDestination.toFile().getAbsolutePath());
             entity.setProcessStatus(DemProcessStatus.NOT_PROCESSED);
-            entity.setQueuedOn(LocalDateTime.now());
+            entity.setQueuedOn(LocalDateTime.now(ZoneOffset.UTC));
             repoQueue.saveEntity(entity);
             
             return fileDestination;

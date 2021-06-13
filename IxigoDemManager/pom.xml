@@ -16,7 +16,6 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>1.8</java.version>
-		<spring-cloud.version>2020.0.3</spring-cloud.version>
 		<resource.delimiter>^</resource.delimiter>
 		<postgresql.version>42.2.19</postgresql.version>
 		<swagger.version>2.9.2</swagger.version>

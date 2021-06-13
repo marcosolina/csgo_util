@@ -1,4 +1,4 @@
-package com.marco.ixigo.demmanager.services.implementations.demparser;
+package com.marco.ixigo.demmanager.services.implementations.demprocessor;
 
 import java.io.BufferedReader;
 import java.io.IOException;

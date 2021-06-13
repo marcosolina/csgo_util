@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class DemFileManagerMarco implements DemFileManager {
             Path fileFolder = this.root.resolve(folderName);
             Files.createDirectories(fileFolder);
             Path fileDestination = fileFolder.resolve(file.getOriginalFilename());
-            Files.copy(file.getInputStream(), fileDestination);
+            Files.copy(file.getInputStream(), fileDestination, StandardCopyOption.REPLACE_EXISTING);
             
             EntityProcessQueue entity = new EntityProcessQueue();
             entity.setFileName(fileDestination.toFile().getAbsolutePath());

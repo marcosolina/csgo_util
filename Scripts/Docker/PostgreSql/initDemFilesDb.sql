@@ -30,7 +30,7 @@ CREATE TABLE USERS (
 CREATE TABLE DEM_PROCESS_QUEUE (
     FILE_NAME               VARCHAR(1000)       DEFAULT ''  NOT NULL PRIMARY KEY,
     QUEUED_ON               TIMESTAMP                       NOT NULL,
-    PROCESSED_ON            TIMESTAMP                       NOT NULL,
+    PROCESSED_ON            TIMESTAMP,
     PROCESS_STATUS          VARCHAR(50)         DEFAULT ''  NOT NULL
 );
 

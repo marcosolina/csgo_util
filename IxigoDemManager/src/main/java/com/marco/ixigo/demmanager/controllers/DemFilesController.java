@@ -31,13 +31,13 @@ public class DemFilesController {
     private static final Logger _LOGGER = LoggerFactory.getLogger(DemFilesController.class);
 
     @Autowired
-    private DemFileManager fileService;
+    private DemFileManager fileManagerService;
 
     @PostMapping
     public ResponseEntity<Void> handleFileUpload(@RequestParam("file") MultipartFile file) {
         _LOGGER.trace("Inside FilesController.handleFileUpload");
         try {
-            fileService.store(file);
+            fileManagerService.store(file);
         } catch (MarcoException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -52,7 +52,7 @@ public class DemFilesController {
         _LOGGER.trace("Inside FilesController.getFile");
         Resource file;
         try {
-            file = fileService.load(filename);
+            file = fileManagerService.load(filename);
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                     .body(file);
@@ -67,7 +67,7 @@ public class DemFilesController {
         GetFilesResponse resp = new GetFilesResponse();
         try {
 
-            Map<String, List<FileInfo>> games = fileService.loadAllFileNames();
+            Map<String, List<FileInfo>> games = fileManagerService.loadAllFileNames();
             games.forEach((k, v) -> {
                 v.stream().forEach(fi -> {
                     String url = MvcUriComponentsBuilder

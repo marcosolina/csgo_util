@@ -19,4 +19,6 @@ public interface RepoProcessQueue {
      * @return
      */
     public boolean saveEntity(EntityProcessQueue entity);
+    
+    public EntityProcessQueue findById(String absFileName);
 }

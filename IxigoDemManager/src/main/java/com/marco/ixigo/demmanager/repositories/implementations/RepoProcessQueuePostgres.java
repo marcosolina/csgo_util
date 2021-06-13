@@ -51,4 +51,9 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
         return true;
     }
 
+    @Override
+    public EntityProcessQueue findById(String absFileName) {
+        return em.find(EntityProcessQueue.class, absFileName);
+    }
+
 }

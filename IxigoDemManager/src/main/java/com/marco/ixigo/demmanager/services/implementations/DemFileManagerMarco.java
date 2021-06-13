@@ -7,6 +7,7 @@ import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -16,12 +17,16 @@ import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.marco.ixigo.demmanager.enums.DemProcessStatus;
+import com.marco.ixigo.demmanager.model.entities.EntityProcessQueue;
 import com.marco.ixigo.demmanager.model.rest.FileInfo;
+import com.marco.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.marco.ixigo.demmanager.services.interfaces.DemFileManager;
 import com.marco.utils.DateUtils;
 import com.marco.utils.MarcoException;
@@ -32,6 +37,8 @@ public class DemFileManagerMarco implements DemFileManager {
 
     @Value("${com.marco.ixigo.demmanager.demFileManager.rootFolder}")
     private Path root;
+    @Autowired
+    private RepoProcessQueue repoQueue;
 
     @Override
     public Path store(MultipartFile file) throws MarcoException {
@@ -41,6 +48,13 @@ public class DemFileManagerMarco implements DemFileManager {
             Files.createDirectories(fileFolder);
             Path fileDestination = fileFolder.resolve(file.getOriginalFilename());
             Files.copy(file.getInputStream(), fileDestination);
+            
+            EntityProcessQueue entity = new EntityProcessQueue();
+            entity.setFileName(fileDestination.toFile().getAbsolutePath());
+            entity.setProcessStatus(DemProcessStatus.NOT_PROCESSED);
+            entity.setQueuedOn(LocalDateTime.now());
+            repoQueue.saveEntity(entity);
+            
             return fileDestination;
         } catch (Exception e) {
             _LOGGER.error(e.getMessage());

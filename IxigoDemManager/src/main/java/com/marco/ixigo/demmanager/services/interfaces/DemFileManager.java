@@ -1,5 +1,6 @@
 package com.marco.ixigo.demmanager.services.interfaces;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 
@@ -11,12 +12,13 @@ import com.marco.utils.MarcoException;
 
 public interface DemFileManager {
     /**
-     * It saves the files
+     * It saves the file and return the path of the saved file
      * 
      * @param file
+     * @return
      * @throws MarcoException
      */
-    void store(MultipartFile file) throws MarcoException;
+    public Path store(MultipartFile file) throws MarcoException;
 
     /**
      * It returns the file

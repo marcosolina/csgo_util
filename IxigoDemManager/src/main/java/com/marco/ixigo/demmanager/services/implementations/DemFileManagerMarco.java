@@ -34,12 +34,14 @@ public class DemFileManagerMarco implements DemFileManager {
     private Path root;
 
     @Override
-    public void store(MultipartFile file) throws MarcoException {
+    public Path store(MultipartFile file) throws MarcoException {
         try {
             String folderName = getFolderFromFileName(file.getOriginalFilename());
             Path fileFolder = this.root.resolve(folderName);
             Files.createDirectories(fileFolder);
-            Files.copy(file.getInputStream(), fileFolder.resolve(file.getOriginalFilename()));
+            Path fileDestination = fileFolder.resolve(file.getOriginalFilename());
+            Files.copy(file.getInputStream(), fileDestination);
+            return fileDestination;
         } catch (Exception e) {
             _LOGGER.error(e.getMessage());
             throw new MarcoException(e);

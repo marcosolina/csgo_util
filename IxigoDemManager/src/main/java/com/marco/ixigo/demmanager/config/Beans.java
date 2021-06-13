@@ -12,9 +12,11 @@ import com.marco.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.marco.ixigo.demmanager.repositories.interfaces.RepoUser;
 import com.marco.ixigo.demmanager.repositories.interfaces.RepoUserScore;
 import com.marco.ixigo.demmanager.services.implementations.DemFileManagerMarco;
+import com.marco.ixigo.demmanager.services.implementations.DemFileParserMarco;
 import com.marco.ixigo.demmanager.services.implementations.demprocessor.DemProcessorRasp;
 import com.marco.ixigo.demmanager.services.implementations.demprocessor.DemProcessorWindows;
 import com.marco.ixigo.demmanager.services.interfaces.DemFileManager;
+import com.marco.ixigo.demmanager.services.interfaces.DemFileParser;
 import com.marco.ixigo.demmanager.services.interfaces.DemProcessor;
 
 @Configuration
@@ -41,6 +43,11 @@ public class Beans {
     @Bean
     public DemFileManager getDemFileManager() {
         return new DemFileManagerMarco();
+    }
+
+    @Bean
+    public DemFileParser getDemFileParser() {
+        return new DemFileParserMarco();
     }
 
     @Bean

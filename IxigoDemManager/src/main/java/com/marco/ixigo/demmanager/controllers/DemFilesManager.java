@@ -27,8 +27,8 @@ import com.marco.utils.MarcoException;
 
 @Controller
 @RequestMapping(value = "/files")
-public class DemFilesController {
-    private static final Logger _LOGGER = LoggerFactory.getLogger(DemFilesController.class);
+public class DemFilesManager {
+    private static final Logger _LOGGER = LoggerFactory.getLogger(DemFilesManager.class);
 
     @Autowired
     private DemFileManager fileManagerService;
@@ -71,7 +71,7 @@ public class DemFilesController {
             games.forEach((k, v) -> {
                 v.stream().forEach(fi -> {
                     String url = MvcUriComponentsBuilder
-                        .fromMethodName(DemFilesController.class, "getFile", fi.getName()).build()
+                        .fromMethodName(DemFilesManager.class, "getFile", fi.getName()).build()
                         .toString();
                     fi.setUrl(url);
                 });

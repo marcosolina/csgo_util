@@ -51,9 +51,9 @@ public class DemFileParserMarco implements DemFileParser {
     public boolean processFiles() throws MarcoException {
         _LOGGER.debug("Processing all the new files files");
         List<EntityProcessQueue> filesEntities = repoQueue.getNotProcessedDemFiles();
-        List<File> filesToProcess = filesEntities.stream().map(e -> {
-            return new File(e.getFileName());
-        }).collect(Collectors.toList());
+        List<File> filesToProcess = filesEntities.stream()
+                .map(e ->new File(e.getFileName()))
+                .collect(Collectors.toList());
         
         switch (execType) {
         case SYNC:

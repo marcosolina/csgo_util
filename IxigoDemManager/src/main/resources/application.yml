@@ -29,9 +29,6 @@ com:
       demmanager:
         version: ^project.version^
         notifications:
-          email:
-            enabled: false
-            emailrecipients: marcosolina@gmail.com # A list of comma separated email addresses
           telegram:
             enabled: false
             telegramToken: ${TELEGRAM_BOT_TOKEN:xxxxxx}

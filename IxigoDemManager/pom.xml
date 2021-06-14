@@ -11,7 +11,7 @@
 	</parent>
 	<groupId>com.marco.ixigo.demmanager</groupId>
 	<artifactId>IxigoDemManager</artifactId>
-	<version>0.0.1</version>
+	<version>1.0.0</version>
 	<name>IxigoDemManager</name>
 	<description>Demo project for Spring Boot</description>
 	<properties>
@@ -76,11 +76,6 @@
 			<groupId>com.marco</groupId>
 			<artifactId>Utils</artifactId>
 			<version>0.0.2</version>
-		</dependency>
-		<!-- For sending emails -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

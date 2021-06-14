@@ -19,17 +19,7 @@ spring:
     url: jdbc:postgresql://localhost:5432/demfiles
     username: ${IXIGO_POSTGRES_USER:REPLACE_ME} # Replace the value
     password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME} # Replace the value
-  mail:
-    host: smtp.gmail.com # If you want to send email notification using GMAIL
-    port: 587
-    username: XXXX
-    password: XXXX
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
+    
 server:
   servlet:
     context-path: /demmanager

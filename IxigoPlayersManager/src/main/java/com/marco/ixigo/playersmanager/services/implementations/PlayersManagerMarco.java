@@ -294,12 +294,12 @@ public class PlayersManagerMarco implements PlayersManager {
                     demManagerProprs.getGetUsersScores());
             Map<String, String> queryParam = new HashMap<>();
             queryParam.put("counter", gamesCounter.toString());
-            queryParam.put("minPercPlayerd", minPercPlayed.toString());
+            queryParam.put("minPercPlayed", minPercPlayed.toString());
 
             StringBuilder sb = new StringBuilder();
             usersIDs.stream().forEach(id -> sb.append("," + id));
             if (sb.length() > 0) {
-                queryParam.put("userIDs", sb.substring(1));
+                queryParam.put("usersIDs", sb.substring(1));
             }
 
             ClientResponse cr = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));

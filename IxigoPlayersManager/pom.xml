@@ -40,7 +40,12 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
-
+        <!-- My custom libraries. You can find the source code on my GitHub https://github.com/marcosolina/javautils -->
+        <dependency>
+            <groupId>com.marco.utils</groupId>
+            <artifactId>Partitioning</artifactId>
+            <version>0.0.2</version>
+        </dependency>
 		<!--Start Swagger Dependencies https://www.baeldung.com/swagger-2-documentation-for-spring-rest-api -->
 		<dependency>
 			<groupId>io.springfox</groupId>

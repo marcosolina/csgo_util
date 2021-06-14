@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +57,7 @@ public class PlayersManagerMarco implements PlayersManager {
     @Override
     public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
             double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException {
-        // TODO Auto-generated method stub
+        List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType, minPercPlayed);
         return null;
     }
 
@@ -330,6 +331,15 @@ public class PlayersManagerMarco implements PlayersManager {
             _LOGGER.error(e.getMessage());
             throw new MarcoException(e);
         }
+    }
+    
+    private List<UserAvgScore> getUsersAvg(Integer gamesCounter, List<String> usersIDs, ScoreType scoreType, BigDecimal minPercPlayed)
+            throws MarcoException {
+        Map<String, UserAvgScore> usersAvg = this.getUsersAvgStatsForLastXGames(gamesCounter, usersIDs, scoreType, minPercPlayed);
+        List<UserAvgScore> usersList = new ArrayList<>();
+
+        usersAvg.forEach((k, v) -> usersList.add(v));
+        return usersList;
     }
 
 }

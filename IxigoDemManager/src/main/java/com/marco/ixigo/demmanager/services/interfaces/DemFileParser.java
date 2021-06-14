@@ -1,8 +1,10 @@
 package com.marco.ixigo.demmanager.services.interfaces;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import com.marco.ixigo.demmanager.model.dto.MapStats;
 import com.marco.ixigo.demmanager.model.rest.demdata.MapPlayed;
 import com.marco.ixigo.demmanager.model.rest.demdata.User;
 import com.marco.utils.MarcoException;
@@ -37,4 +39,15 @@ public interface DemFileParser {
      * @throws MarcoException
      */
     public List<User> getListOfUsers() throws MarcoException;
+    
+    /**
+     * It will return all the Users scores for the most recent "gamesCounter" games
+     * 
+     * @param gamesCounter
+     * @param usersIDs
+     * @return
+     * @throws MarcoException
+     */
+    public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+            BigDecimal minPercPlayed) throws MarcoException;
 }

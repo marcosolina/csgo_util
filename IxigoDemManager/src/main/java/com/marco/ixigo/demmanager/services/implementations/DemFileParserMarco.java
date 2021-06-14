@@ -1,8 +1,10 @@
 package com.marco.ixigo.demmanager.services.implementations;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -217,6 +219,87 @@ public class DemFileParserMarco implements DemFileParser {
         u.setSteamId(entity.getSteamId());
         u.setUserName(entity.getUserName());
         return u;
+    }
+    
+    @Override
+    public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed)
+            throws MarcoException {
+        Map<String, List<MapStats>> map = new HashMap<>();
+
+        for (String steamId : usersIDs) {
+            EntityUser user = repoUser.findById(steamId);
+            if (user == null) {
+                map.put(steamId, new ArrayList<>());
+                continue;
+            }
+
+            List<EntityUserScore> scores = repoUserScore.getLastXUserScores(gamesCounter, steamId, minPercPlayed);
+            map.put(steamId, scores.stream().map(s -> fromDbDataToMapStats(user, s)).collect(Collectors.toList()));
+        }
+
+        return map;
+    }
+    
+    /**
+     * It uses the @{EntityUser} and @{EntityUserScore} to generate a @{MapStats}
+     * 
+     * @param user
+     * @param score
+     * @return
+     */
+    private MapStats fromDbDataToMapStats(EntityUser user, EntityUserScore score) {
+        MapStats ms = new MapStats();
+        ms.setMapName(score.getId().getMap());
+        ms.setPlayedOn(score.getId().getGameDate());
+
+        UserMapStats ums = new UserMapStats();
+
+        ums.setUserName(user.getUserName());
+        ums.setSteamID(user.getSteamId());
+        ums.setKills(score.getKills());
+        ums.setAssists(score.getAssists());
+        ums.setDeaths(score.getDeaths());
+        ums.setTotalDamageHealth(score.getTotalDamageHealth());
+        ums.setTotalDamageArmor(score.getTotalDamageArmor());
+        ums.setOneVersusOne(score.getOneVersusOne());
+        ums.setOneVersusTwo(score.getOneVersusTwo());
+        ums.setOneVersusThree(score.getOneVersusThree());
+        ums.setOneVersusFour(score.getOneVersusFour());
+        ums.setOneVersusFive(score.getOneVersusFive());
+        ums.setGrenadesThrownCount(score.getGrenadesThrownCount());
+        ums.setFlashesThrownCount(score.getFlashesThrownCount());
+        ums.setSmokesThrownCount(score.getSmokesThrownCount());
+        ums.setFireThrownCount(score.getFireThrownCount());
+        ums.setHighExplosiveDamage(score.getHighExplosiveDamage());
+        ums.setFireDamage(score.getFireDamage());
+        ums.setFiveKills(score.getFiveKills());
+        ums.setFourKills(score.getFourKills());
+        ums.setThreeKills(score.getThreeKills());
+        ums.setTwoKills(score.getTwoKills());
+        ums.setOneKill(score.getOneKill());
+        ums.setTradeKill(score.getTradeKill());
+        ums.setTradeDeath(score.getTradeDeath());
+        ums.setTeamKillFriendlyFire(score.getTeamKillFriendlyFire());
+        ums.setEntryKill(score.getEntryKill());
+        ums.setBombPLanted(score.getBombPLanted());
+        ums.setBombDefused(score.getBombDefused());
+        ums.setMostValuablePlayer(score.getMostValuablePlayer());
+        ums.setScore(score.getScore());
+        ums.setHeadShots(score.getHeadShots());
+
+        ums.setRoundWinShare(RoundParserUtils.bigDecimalToDouble(score.getRoundWinShare(), 2));
+        ums.setKillDeathRation(RoundParserUtils.bigDecimalToDouble(score.getKillDeathRation(), 2));
+        ums.setHeadShotsPercentage(RoundParserUtils.bigDecimalToDouble(score.getHeadShotsPercentage(), 2));
+        ums.setHalfLifeTelevisionRating(RoundParserUtils.bigDecimalToDouble(score.getHalfLifeTelevisionRating(), 3));
+        ums.setKillPerRound(RoundParserUtils.bigDecimalToDouble(score.getKillPerRound(), 2));
+        ums.setAssistsPerRound(RoundParserUtils.bigDecimalToDouble(score.getAssistsPerRound(), 2));
+        ums.setDeathPerRound(RoundParserUtils.bigDecimalToDouble(score.getDeathPerRound(), 2));
+        ums.setAverageDamagePerRound(RoundParserUtils.bigDecimalToDouble(score.getAverageDamagePerRound(), 2));
+        ums.setMatchPlayed(RoundParserUtils.bigDecimalToDouble(score.getMatchPlayed(), 2));
+
+        ms.addUserMapStats(ums);
+
+        return ms;
     }
 
 }

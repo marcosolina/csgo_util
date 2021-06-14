@@ -3,7 +3,10 @@ package com.marco.ixigo.demmanager.services.implementations;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -13,12 +16,16 @@ import org.springframework.beans.factory.annotation.Value;
 
 import com.marco.ixigo.demmanager.enums.DemProcessStatus;
 import com.marco.ixigo.demmanager.enums.ParserExecutionType;
+import com.marco.ixigo.demmanager.enums.ScoreType;
 import com.marco.ixigo.demmanager.model.dto.MapStats;
 import com.marco.ixigo.demmanager.model.dto.UserMapStats;
+import com.marco.ixigo.demmanager.model.entities.DaoMapGamesCounter;
 import com.marco.ixigo.demmanager.model.entities.EntityProcessQueue;
 import com.marco.ixigo.demmanager.model.entities.EntityUser;
 import com.marco.ixigo.demmanager.model.entities.EntityUserScore;
 import com.marco.ixigo.demmanager.model.entities.EntityUserScorePk;
+import com.marco.ixigo.demmanager.model.rest.demdata.MapPlayed;
+import com.marco.ixigo.demmanager.model.rest.demdata.User;
 import com.marco.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.marco.ixigo.demmanager.repositories.interfaces.RepoUser;
 import com.marco.ixigo.demmanager.repositories.interfaces.RepoUserScore;
@@ -173,6 +180,43 @@ public class DemFileParserMarco implements DemFileParser {
         ums.setAverageDamagePerRound(RoundParserUtils.doubleToBigDecimal(score.getAverageDamagePerRound(), 2));
         ums.setMatchPlayed(RoundParserUtils.doubleToBigDecimal(score.getMatchPlayed(), 2));
         return ums;
+    }
+    
+
+    @Override
+    public Map<String, String> mapOfAvailableScores() {
+        Map<String, String> map = new HashMap<>();
+        Arrays.stream(ScoreType.values()).forEach(s -> map.put(s.name(), s.getDesc()));
+        return map;
+    }
+
+    @Override
+    public List<MapPlayed> countGamesOnAMap() {
+        List<DaoMapGamesCounter> maps = repoUserScore.getMapsPlayed();
+        return maps.stream().map(dao -> {
+            MapPlayed mp = new MapPlayed();
+            mp.setCount(dao.getCount());
+            mp.setMapName(dao.getMapName());
+            return mp;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<User> getListOfUsers() throws MarcoException {
+        return repoUser.getUsers().stream().map(this::fromEntityUserToRestUser).collect(Collectors.toList());
+    }
+
+    /**
+     * It converts the @{EntityUser} into @{User}
+     * 
+     * @param entity
+     * @return
+     */
+    private User fromEntityUserToRestUser(EntityUser entity) {
+        User u = new User();
+        u.setSteamId(entity.getSteamId());
+        u.setUserName(entity.getUserName());
+        return u;
     }
 
 }

@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.marco.ixigo.demmanager.services.interfaces.DemFileParser;
 import com.marco.utils.MarcoException;
 
+import io.swagger.annotations.ApiOperation;
+
 @Controller
 @RequestMapping(value = "/parse")
 public class DemFilesParser {
@@ -22,6 +24,7 @@ public class DemFilesParser {
     private DemFileParser parser;
     
     @PostMapping
+    @ApiOperation(value = "It will trigger the scan process for new .dem files")
     public ResponseEntity<Void> processNewFiles() {
         _LOGGER.trace("Inside DemFilesProcessor.processNewFiles");
         try {

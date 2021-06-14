@@ -2,9 +2,11 @@ package com.marco.ixigo.playersmanager.services.interfaces;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 
 import com.marco.ixigo.playersmanager.enums.ScoreType;
 import com.marco.ixigo.playersmanager.models.dto.Team;
+import com.marco.ixigo.playersmanager.models.dto.UserAvgScore;
 import com.marco.utils.MarcoException;
 
 public interface PlayersManager {
@@ -49,4 +51,16 @@ public interface PlayersManager {
      */
     public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
             double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException;
+    
+    /**
+     * It will return the Users Average scored calculated using the most recent
+     * "gamesCounter" games
+     * 
+     * @param gamesCounter
+     * @param usersIDs
+     * @return
+     * @throws MarcoException
+     */
+    public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+            ScoreType partionByScore, BigDecimal minPercPlayed) throws MarcoException;
 }

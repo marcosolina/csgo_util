@@ -9,6 +9,15 @@ com:
     ixigo:
       playersmanager:
         version: ^project.version^
+        services:
+          demmanager:
+            protocol: "http"
+            dns: "localhost"
+            port: 8080
+            contextpath: "/demmanager"
+            getUsersScores: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/usersscores"
+            
+            
 
 logging:
   file:

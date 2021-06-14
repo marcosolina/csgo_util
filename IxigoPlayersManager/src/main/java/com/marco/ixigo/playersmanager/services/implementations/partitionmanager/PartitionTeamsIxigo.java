@@ -1,6 +1,5 @@
 package com.marco.ixigo.playersmanager.services.implementations.partitionmanager;
 
-import java.lang.Character.Subset;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -15,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 
+import com.marco.ixigo.playersmanager.ixigopartitionlibrary.PartitionTwoTeams;
+import com.marco.ixigo.playersmanager.ixigopartitionlibrary.Subset;
 import com.marco.ixigo.playersmanager.models.dto.Team;
 import com.marco.ixigo.playersmanager.models.dto.UserAvgScore;
 import com.marco.ixigo.playersmanager.services.interfaces.PartitionTeams;

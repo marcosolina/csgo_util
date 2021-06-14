@@ -16,6 +16,7 @@ import java.util.function.ToLongFunction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 
@@ -27,13 +28,19 @@ import com.marco.ixigo.playersmanager.models.dto.UserAvgScore;
 import com.marco.ixigo.playersmanager.models.dto.UserMapStats;
 import com.marco.ixigo.playersmanager.models.rest.Users;
 import com.marco.ixigo.playersmanager.models.rest.UsersScores;
+import com.marco.ixigo.playersmanager.services.interfaces.PartitionTeams;
 import com.marco.ixigo.playersmanager.services.interfaces.PlayersManager;
 import com.marco.utils.MarcoException;
 import com.marco.utils.network.MarcoNetworkUtils;
 
 public class PlayersManagerMarco implements PlayersManager {
     private static final Logger _LOGGER = LoggerFactory.getLogger(PlayersManagerMarco.class);
-
+    @Autowired
+    @Qualifier("Simple")
+    private PartitionTeams standardPartition;
+    @Autowired
+    @Qualifier("IxiGO")
+    private PartitionTeams ixigoPartition;
     @Autowired
     private MarcoNetworkUtils mnu;
     @Autowired
@@ -42,23 +49,25 @@ public class PlayersManagerMarco implements PlayersManager {
     @Override
     public List<Team> generateTeams(Integer teamsCounter, Integer gamesCounter, List<String> usersIDs,
             ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException {
-        // TODO Auto-generated method stub
-        return null;
+        List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType, minPercPlayed);
+
+        return standardPartition.partitionTheUsersComparingTheScores(usersList, teamsCounter, 0);
     }
 
     @Override
     public List<Team> generateTeamsForcingSimilarTeamSizes(Integer teamsCounter, Integer gamesCounter,
             List<String> usersIDs, double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed)
             throws MarcoException {
-        // TODO Auto-generated method stub
-        return null;
+        List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType, minPercPlayed);
+        return standardPartition.partitionTheUsersComparingTheScoresAndTeamMembers(usersList, teamsCounter,
+                penaltyWeigth);
     }
 
     @Override
     public List<Team> generateTwoTeamsForcingSimilarTeamSizes(Integer gamesCounter, List<String> usersIDs,
             double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws MarcoException {
         List<UserAvgScore> usersList = getUsersAvg(gamesCounter, usersIDs, scoreType, minPercPlayed);
-        return null;
+        return ixigoPartition.partitionTheUsersComparingTheScores(usersList, 2, penaltyWeigth);
     }
 
     @Override

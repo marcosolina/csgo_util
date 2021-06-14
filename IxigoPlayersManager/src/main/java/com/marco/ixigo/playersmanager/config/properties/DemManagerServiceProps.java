@@ -11,6 +11,7 @@ public class DemManagerServiceProps {
     private Integer port;
     private String contextpath;
     private String getUsersScores;
+    private String getUsers;
 
     public String getProtocol() {
         return protocol;
@@ -50,6 +51,14 @@ public class DemManagerServiceProps {
 
     public void setGetUsersScores(String getUsersScores) {
         this.getUsersScores = getUsersScores;
+    }
+
+    public String getGetUsers() {
+        return getUsers;
+    }
+
+    public void setGetUsers(String getUsers) {
+        this.getUsers = getUsers;
     }
 
 }

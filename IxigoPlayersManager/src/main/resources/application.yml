@@ -16,7 +16,7 @@ com:
             port: 8080
             contextpath: "/demmanager"
             getUsersScores: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/usersscores"
-            
+            getUsers: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/users"
             
 
 logging:

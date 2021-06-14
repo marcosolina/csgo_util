@@ -24,6 +24,7 @@ import com.marco.ixigo.playersmanager.models.dto.MapStats;
 import com.marco.ixigo.playersmanager.models.dto.Team;
 import com.marco.ixigo.playersmanager.models.dto.UserAvgScore;
 import com.marco.ixigo.playersmanager.models.dto.UserMapStats;
+import com.marco.ixigo.playersmanager.models.rest.Users;
 import com.marco.ixigo.playersmanager.models.rest.UsersScores;
 import com.marco.ixigo.playersmanager.services.interfaces.PlayersManager;
 import com.marco.utils.MarcoException;
@@ -59,50 +60,23 @@ public class PlayersManagerMarco implements PlayersManager {
         return null;
     }
 
-    private Map<String, List<MapStats>> getUserScoresFromDemManagerService(Integer gamesCounter, List<String> usersIDs,
-            BigDecimal minPercPlayed) throws MarcoException {
-        try {
-            URL url = new URL(demManagerProprs.getProtocol(), demManagerProprs.getDns(), demManagerProprs.getPort(), demManagerProprs.getGetUsersScores());
-            Map<String, String> queryParam = new HashMap<>();
-            queryParam.put("counter", gamesCounter.toString());
-            queryParam.put("minPercPlayerd", minPercPlayed.toString());
-
-            StringBuilder sb = new StringBuilder();
-            usersIDs.stream().forEach(id -> sb.append("," + id));
-            if (sb.length() > 0) {
-                queryParam.put("userIDs", sb.substring(1));
-            }
-
-            ClientResponse cr = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
-            if (cr.statusCode() != HttpStatus.OK) {
-                throw new MarcoException("Not able to retrieve the users scores");
-            }
-
-            return mnu.getBodyFromResponse(cr, UsersScores.class).getUsersScores();
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            _LOGGER.error(e.getMessage());
-            throw new MarcoException(e);
-        }
-    }
-
     @Override
     public Map<String, UserAvgScore> getUsersAvgStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
             ScoreType partionByScore, BigDecimal minPercPlayed) throws MarcoException {
         Map<String, UserAvgScore> map = new HashMap<>();
 
         Map<String, List<MapStats>> usersScores = this.getUserScoresFromDemManagerService(gamesCounter, usersIDs, minPercPlayed);
-        
-        usersScores.forEach((k,v) -> {
-                
-                UserAvgScore uas = new UserAvgScore();
-                uas.setSteamID(k);
-                uas.setUserName(user.getUserName());
-                
-                if (v.isEmpty()) {
-                    continue;
-                }
-                
+        Map<String, String> userDefinitions = this.getUserDefinition();
+
+        usersScores.forEach((k, v) -> {
+
+            UserAvgScore uas = new UserAvgScore();
+            uas.setSteamID(k);
+            uas.setUserName(userDefinitions.get(k));
+
+            if (!v.isEmpty()) {
+            
+
                 // @formatter:off
                 uas.setRoundWinShare(           fromBigDecimalToBidecimalAvg(UserMapStats::getRoundWinShare,             v, 2));
                 uas.setKillDeathRatio(          fromBigDecimalToBidecimalAvg(UserMapStats::getKillDeathRation,           v, 2));
@@ -270,17 +244,15 @@ public class PlayersManagerMarco implements PlayersManager {
                 uas.setTeamSplitScore(function.apply(uas).add(BigDecimal.ZERO));
                 uas.setOriginalTeamSplitScore(function.apply(uas).add(BigDecimal.ZERO));
                 // @formatter:on
-                
-                map.put(steamId, uas);
+            }
+            map.put(k, uas);
         });
-        
-        
 
         return map;
     }
-    
-    private BigDecimal fromLongToBidecimalAvg(ToLongFunction<UserMapStats> function,
-            List<MapStats> userRecords, int scale) {
+
+    private BigDecimal fromLongToBidecimalAvg(ToLongFunction<UserMapStats> function, List<MapStats> userRecords,
+            int scale) {
         // @formatter:off
         return BigDecimal.valueOf(
                     userRecords.stream()
@@ -292,8 +264,8 @@ public class PlayersManagerMarco implements PlayersManager {
         // @formatter:on
     }
 
-    private BigDecimal fromBigDecimalToBidecimalAvg(ToDoubleFunction<UserMapStats> function,
-            List<MapStats> userRecords, int scale) {
+    private BigDecimal fromBigDecimalToBidecimalAvg(ToDoubleFunction<UserMapStats> function, List<MapStats> userRecords,
+            int scale) {
         // @formatter:off
         return BigDecimal.valueOf(
                     userRecords.stream()
@@ -303,6 +275,61 @@ public class PlayersManagerMarco implements PlayersManager {
                     .orElse(0)
                 ).setScale(scale, RoundingMode.DOWN);
         // @formatter:on
+    }
+
+    private Map<String, List<MapStats>> getUserScoresFromDemManagerService(Integer gamesCounter, List<String> usersIDs,
+            BigDecimal minPercPlayed) throws MarcoException {
+        try {
+            URL url = new URL(demManagerProprs.getProtocol(), demManagerProprs.getDns(), demManagerProprs.getPort(),
+                    demManagerProprs.getGetUsersScores());
+            Map<String, String> queryParam = new HashMap<>();
+            queryParam.put("counter", gamesCounter.toString());
+            queryParam.put("minPercPlayerd", minPercPlayed.toString());
+
+            StringBuilder sb = new StringBuilder();
+            usersIDs.stream().forEach(id -> sb.append("," + id));
+            if (sb.length() > 0) {
+                queryParam.put("userIDs", sb.substring(1));
+            }
+
+            ClientResponse cr = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParam));
+            if (cr.statusCode() != HttpStatus.OK) {
+                throw new MarcoException("Not able to retrieve the users scores");
+            }
+
+            return mnu.getBodyFromResponse(cr, UsersScores.class).getUsersScores();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            _LOGGER.error(e.getMessage());
+            throw new MarcoException(e);
+        }
+    }
+
+    /**
+     * It returns a map of the users. The key is the steam ID, the value is the user
+     * name
+     * 
+     * @return
+     * @throws MarcoException
+     */
+    private Map<String, String> getUserDefinition() throws MarcoException {
+        try {
+            URL url = new URL(demManagerProprs.getProtocol(), demManagerProprs.getDns(), demManagerProprs.getPort(),
+                    demManagerProprs.getGetUsers());
+            ClientResponse cr = mnu.performGetRequest(url, Optional.empty(), Optional.empty());
+            if (cr.statusCode() != HttpStatus.OK) {
+                throw new MarcoException("Not able to retrieve the users definition");
+            }
+
+            Users users = mnu.getBodyFromResponse(cr, Users.class);
+            Map<String, String> usersMap = new HashMap<String, String>();
+            users.getUsers().stream().forEach(u -> usersMap.put(u.getSteamId(), u.getUserName()));
+            return usersMap;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            _LOGGER.error(e.getMessage());
+            throw new MarcoException(e);
+        }
     }
 
 }

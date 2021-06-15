@@ -41,6 +41,9 @@ com:
             port: 8080
             contextPath: /demparser
             sendcommand: ""
+            csgoServerPort: 27015
+            csgoServerHost: marco.selfip.net
+            csgoServerPassw: REPLACE_ME
           demmanager:
             protocol: http
             host: csgo-round-parser-api

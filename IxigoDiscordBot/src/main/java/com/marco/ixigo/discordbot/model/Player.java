@@ -1,14 +1,17 @@
 package com.marco.ixigo.discordbot.model;
 
+import com.marco.ixigo.discordbot.model.demmanager.User;
+import com.marco.ixigo.discordbot.model.discord.DiscordUser;
+
 public class Player {
     private DiscordUser discordDetails;
-    private SteamUser steamDetails;
+    private User steamDetails;
 
     public Player() {
 
     }
 
-    public Player(DiscordUser discordDetails, SteamUser steamDetails) {
+    public Player(DiscordUser discordDetails, User steamDetails) {
         super();
         this.discordDetails = discordDetails;
         this.steamDetails = steamDetails;
@@ -22,11 +25,11 @@ public class Player {
         this.discordDetails = discordDetails;
     }
 
-    public SteamUser getSteamDetails() {
+    public User getSteamDetails() {
         return steamDetails;
     }
 
-    public void setSteamDetails(SteamUser steamDetails) {
+    public void setSteamDetails(User steamDetails) {
         this.steamDetails = steamDetails;
     }
 

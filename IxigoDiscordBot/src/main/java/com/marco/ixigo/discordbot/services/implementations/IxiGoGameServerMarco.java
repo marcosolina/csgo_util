@@ -40,7 +40,7 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
              */
             URL url = new URL(rconApiProps.getProtocol(), rconApiProps.getHost(), rconApiProps.getPort(),
                     rconApiProps.getSendcommand());
-            RconHttpRequest request = new RconHttpRequest();
+            RconHttpRequest request = getDefaultRconHttpRequest();
             request.setRconCmd("sm_list_players");
             
             ClientResponse resp = mnu.performPostRequest(url, Optional.empty(), Optional.of(request));
@@ -107,7 +107,7 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
             sb.append("\"");
         });
 
-        RconHttpRequest request = new RconHttpRequest();
+        RconHttpRequest request = getDefaultRconHttpRequest();
         request.setRconCmd(String.format("sm_move_players %s dummy", sb.toString().substring(1)));
         try {
             URL url = new URL(rconApiProps.getProtocol(), rconApiProps.getHost(), rconApiProps.getPort(),
@@ -124,7 +124,7 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
 
     @Override
     public boolean restartIxiGoRound() throws MarcoException {
-        RconHttpRequest request = new RconHttpRequest();
+        RconHttpRequest request = getDefaultRconHttpRequest();
         request.setRconCmd("mp_restartgame 5");
         try {
             URL url = new URL(rconApiProps.getProtocol(), rconApiProps.getHost(), rconApiProps.getPort(),
@@ -137,6 +137,14 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
             LOGGER.error(e.getMessage());
             throw new MarcoException(e);
         }
+    }
+    
+    private RconHttpRequest getDefaultRconHttpRequest() {
+        RconHttpRequest request = new RconHttpRequest();
+        request.setRconHost(rconApiProps.getCsgoServerHost());
+        request.setRconPort(rconApiProps.getPort());
+        request.setRconPass(rconApiProps.getCsgoServerPassw());
+        return request;
     }
 
 }

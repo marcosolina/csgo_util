@@ -11,6 +11,9 @@ public class RconApiProps {
     private Integer port;
     private String contextPath;
     private String sendcommand;
+    private Integer csgoServerPort;
+    private String csgoServerHost;
+    private String csgoServerPassw;
 
     public String getProtocol() {
         return protocol;
@@ -50,6 +53,30 @@ public class RconApiProps {
 
     public void setSendcommand(String sendcommand) {
         this.sendcommand = sendcommand;
+    }
+
+    public Integer getCsgoServerPort() {
+        return csgoServerPort;
+    }
+
+    public void setCsgoServerPort(Integer csgoServerPort) {
+        this.csgoServerPort = csgoServerPort;
+    }
+
+    public String getCsgoServerHost() {
+        return csgoServerHost;
+    }
+
+    public void setCsgoServerHost(String csgoServerHost) {
+        this.csgoServerHost = csgoServerHost;
+    }
+
+    public String getCsgoServerPassw() {
+        return csgoServerPassw;
+    }
+
+    public void setCsgoServerPassw(String csgoServerPassw) {
+        this.csgoServerPassw = csgoServerPassw;
     }
 
 }

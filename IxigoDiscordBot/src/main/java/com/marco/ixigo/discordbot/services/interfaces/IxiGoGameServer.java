@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.marco.ixigo.discordbot.enums.TeamType;
-import com.marco.ixigo.discordbot.model.csgogame.User;
+import com.marco.ixigo.discordbot.model.demmanager.User;
 import com.marco.ixigo.discordbot.model.playersmanager.Teams;
 import com.marco.utils.MarcoException;
 

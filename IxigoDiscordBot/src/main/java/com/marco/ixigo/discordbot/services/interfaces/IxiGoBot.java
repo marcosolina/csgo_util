@@ -3,6 +3,8 @@ package com.marco.ixigo.discordbot.services.interfaces;
 import java.util.List;
 
 import com.marco.ixigo.discordbot.enums.BotConfigKey;
+import com.marco.ixigo.discordbot.model.Player;
+import com.marco.ixigo.discordbot.model.discord.BotConfig;
 import com.marco.ixigo.discordbot.model.discord.DiscordUser;
 import com.marco.utils.MarcoException;
 

@@ -1,7 +1,9 @@
 package com.marco.ixigo.discordbot.config;
 
+import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.marco.ixigo.discordbot.repositories.implementations.RepoEntityBotConfigPostgres;
@@ -39,5 +41,13 @@ public class Beans {
     @Bean(name = "WsClientNotBalanced")
     public WebClient.Builder getWebClientBuilderNotBalanced() {
         return WebClient.builder();
+    }
+    
+    @Bean
+    public MessageSource messageSource() {
+        ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames("classpath:/messages/errorCodes");
+
+        return messageSource;
     }
 }

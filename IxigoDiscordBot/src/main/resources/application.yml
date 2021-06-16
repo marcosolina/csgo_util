@@ -25,6 +25,7 @@ com:
   marco:
     ixigo:
       discordbot:
+        bottoken: adasda
         version: ^project.version^
         services:
           discord:
@@ -37,20 +38,17 @@ com:
               general: 838818767219195932
           rconapi:
             protocol: http
-            host: csgo-round-parser-api
+            host: localhost
             port: 8080
             contextPath: /demparser
             sendcommand: ""
             csgoServerPort: 27015
             csgoServerHost: marco.selfip.net
             csgoServerPassw: REPLACE_ME
-          demmanager:
+          playersManager:
             protocol: http
-            host: csgo-round-parser-api
-            contextPath: /demparser
-            getSteamUsers: "${demparser.rest.contextPath}/users"
-            createTeams: "${demparser.rest.contextPath}/2/using/last/%d/games/scores"
-            movePlayers: "${demparser.rest.contextPath}/rcon/moveplayers"
-            getActivePlayers: "${demparser.rest.contextPath}/rcon/activeplayers"
-            restartRound: "${demparser.rest.contextPath}/rcon/restart"
+            host: localhost
+            port: 8080
+            contextPath: /playersmanager
+            generateTeams: "${com.marco.ixigo.discordbot.service.playersManager.contextPath}/teams"
             

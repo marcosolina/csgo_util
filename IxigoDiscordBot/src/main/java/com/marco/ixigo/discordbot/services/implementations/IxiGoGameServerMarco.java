@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 
-import com.marco.ixigo.discordbot.config.RconApiProps;
+import com.marco.ixigo.discordbot.config.properties.RconApiProps;
 import com.marco.ixigo.discordbot.enums.TeamType;
 import com.marco.ixigo.discordbot.model.demmanager.User;
 import com.marco.ixigo.discordbot.model.playersmanager.Team;

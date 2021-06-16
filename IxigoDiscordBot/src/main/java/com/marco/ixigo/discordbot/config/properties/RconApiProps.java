@@ -1,4 +1,4 @@
-package com.marco.ixigo.discordbot.config;
+package com.marco.ixigo.discordbot.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

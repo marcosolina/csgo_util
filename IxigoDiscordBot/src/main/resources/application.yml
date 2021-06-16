@@ -39,16 +39,16 @@ com:
           rconapi:
             protocol: http
             host: localhost
-            port: 8080
-            contextPath: /demparser
-            sendcommand: ""
+            port: 8084
+            contextPath: /rcon
+            sendcommand: "${com.marco.ixigo.discordbot.services.rconapi.contextPath}"
             csgoServerPort: 27015
-            csgoServerHost: marco.selfip.net
-            csgoServerPassw: REPLACE_ME
+            csgoServerHost: 192.168.1.10
+            csgoServerPassw: asdasdasdasd
           players-manager:
             protocol: http
             host: localhost
-            port: 8080
+            port: 8087
             contextPath: /playersmanager
-            generateTeams: "${com.marco.ixigo.discordbot.service.playersManager.contextPath}/teams"
+            generateTeams: "${com.marco.ixigo.discordbot.services.playersManager.contextPath}/teams"
             

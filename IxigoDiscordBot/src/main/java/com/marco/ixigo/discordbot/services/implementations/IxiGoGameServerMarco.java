@@ -185,7 +185,7 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
     private RconHttpRequest getDefaultRconHttpRequest() {
         RconHttpRequest request = new RconHttpRequest();
         request.setRconHost(rconApiProps.getCsgoServerHost());
-        request.setRconPort(rconApiProps.getPort());
+        request.setRconPort(rconApiProps.getCsgoServerPort());
         request.setRconPass(rconApiProps.getCsgoServerPassw());
         return request;
     }

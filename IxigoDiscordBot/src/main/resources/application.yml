@@ -45,7 +45,7 @@ com:
             csgoServerPort: 27015
             csgoServerHost: marco.selfip.net
             csgoServerPassw: REPLACE_ME
-          playersManager:
+          players-manager:
             protocol: http
             host: localhost
             port: 8080

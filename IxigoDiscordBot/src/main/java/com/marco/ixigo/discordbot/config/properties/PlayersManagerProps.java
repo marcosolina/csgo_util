@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "com.marco.ixigo.discordbot.service.playersManager")
+@ConfigurationProperties(prefix = "com.marco.ixigo.discordbot.service.players-manager")
 public class PlayersManagerProps {
     private String protocol;
     private String host;

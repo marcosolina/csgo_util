@@ -145,7 +145,9 @@ public class MainController {
         GenericResponse resp = new GenericResponse();
         try {
             ixiGoBot.setAutoBalance(!ixiGoBot.isAutobalance());
-            LOGGER.debug("Autobalance set to: " + ixiGoBot.isAutobalance());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Autobalance set to: %s", ixiGoBot.isAutobalance()));
+            }
             resp.setStatus(true);
         } catch (Exception e) {
             if(LOGGER.isTraceEnabled()) {

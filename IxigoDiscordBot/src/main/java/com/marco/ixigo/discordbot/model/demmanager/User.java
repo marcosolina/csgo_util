@@ -14,6 +14,11 @@ public class User {
         this.steamId = steamId;
         this.userName = "";
     }
+    
+    public User(String steamId, String userName) {
+        this.steamId = steamId;
+        this.userName = userName;
+    }
 
     public String getSteamId() {
         return steamId;

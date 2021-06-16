@@ -158,7 +158,6 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
                     rconApiProps.getSendcommand());
             ClientResponse resp = mnu.performPostRequest(url, Optional.empty(), Optional.of(request));
             return resp.statusCode() != HttpStatus.OK;
-
         } catch (MalformedURLException e) {
             e.printStackTrace();
             LOGGER.error(e.getMessage());

@@ -6,6 +6,15 @@ public class BotConfig {
     private BotConfigKey configKey;
     private String configVal;
 
+    public BotConfig() {
+        
+    }
+    
+    public BotConfig(BotConfigKey configKey, String configVal) {
+        this.configKey = configKey;
+        this.configVal = configVal;
+    }
+    
     public BotConfigKey getConfigKey() {
         return configKey;
     }

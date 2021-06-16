@@ -10,7 +10,9 @@ import com.marco.ixigo.discordbot.repositories.implementations.RepoEntityBotConf
 import com.marco.ixigo.discordbot.repositories.implementations.RepoUsersMapPostgres;
 import com.marco.ixigo.discordbot.repositories.interfaces.RepoEntityBotConfig;
 import com.marco.ixigo.discordbot.repositories.interfaces.RepoUsersMap;
+import com.marco.ixigo.discordbot.services.implementations.IxiGoBotMarco;
 import com.marco.ixigo.discordbot.services.implementations.IxiGoGameServerMarco;
+import com.marco.ixigo.discordbot.services.interfaces.IxiGoBot;
 import com.marco.ixigo.discordbot.services.interfaces.IxiGoGameServer;
 import com.marco.utils.network.MarcoNetworkUtils;
 import com.marco.utils.network.MarcoNetworkUtilsWebFlux;
@@ -31,6 +33,11 @@ public class Beans {
     @Bean
     public RepoUsersMap getRepoUsersMap() {
         return new RepoUsersMapPostgres();
+    }
+    
+    @Bean
+    public IxiGoBot getIxiGoBot() {
+        return new IxiGoBotMarco();
     }
     
     @Bean(name = "NetworkUtilsNotBalanced")

@@ -4,6 +4,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,16 +12,22 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.client.ClientResponse;
 
+import com.marco.ixigo.discordbot.config.properties.PlayersManagerProps;
 import com.marco.ixigo.discordbot.config.properties.RconApiProps;
+import com.marco.ixigo.discordbot.enums.BotConfigKey;
 import com.marco.ixigo.discordbot.enums.TeamType;
 import com.marco.ixigo.discordbot.model.demmanager.User;
+import com.marco.ixigo.discordbot.model.entities.EntityBotConfig;
 import com.marco.ixigo.discordbot.model.playersmanager.Team;
 import com.marco.ixigo.discordbot.model.playersmanager.Teams;
 import com.marco.ixigo.discordbot.model.rconapi.RconHttpRequest;
 import com.marco.ixigo.discordbot.model.rconapi.RconHttpResponse;
+import com.marco.ixigo.discordbot.repositories.interfaces.RepoEntityBotConfig;
 import com.marco.ixigo.discordbot.services.interfaces.IxiGoGameServer;
 import com.marco.utils.MarcoException;
 import com.marco.utils.network.MarcoNetworkUtils;
@@ -31,6 +38,12 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
     private MarcoNetworkUtils mnu;
     @Autowired
     private RconApiProps rconApiProps;
+    @Autowired
+    private PlayersManagerProps playersManProps;
+    @Autowired
+    private RepoEntityBotConfig repoConfig;
+    @Autowired
+    private MessageSource msgSource;
 
     @Override
     public Map<TeamType, List<User>> getCurrentActivePlayersOnTheIxiGoServer() throws MarcoException {
@@ -42,7 +55,7 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
                     rconApiProps.getSendcommand());
             RconHttpRequest request = getDefaultRconHttpRequest();
             request.setRconCmd("sm_list_players");
-            
+
             ClientResponse resp = mnu.performPostRequest(url, Optional.empty(), Optional.of(request));
             if (resp.statusCode() != HttpStatus.OK) {
                 throw new MarcoException("Not able to send the RCON command");
@@ -92,8 +105,39 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
 
     @Override
     public Teams generateCsgoTeams() throws MarcoException {
-        // TODO Auto-generated method stub
-        return null;
+        Map<TeamType, List<User>> activePlayers = this.getCurrentActivePlayersOnTheIxiGoServer();
+        List<String> players = new ArrayList<>();
+        activePlayers.forEach((k, v) -> v.forEach(u -> players.add(u.getSteamId())));
+
+        if (!players.isEmpty()) {
+            try {
+                
+                StringBuilder sb = new StringBuilder();
+                players.stream().forEach(s -> sb.append("," + s));
+                
+                
+                URL url = new URL(playersManProps.getProtocol(), playersManProps.getHost(), playersManProps.getPort(), playersManProps.getGenerateTeams());
+                Map<String, String> queryParameters = new HashMap<>();
+                queryParameters.put("usersIDs", sb.toString().substring(1));
+                
+                EntityBotConfig config = repoConfig.fingConfig(BotConfigKey.ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION);
+                if (config != null) {
+                    queryParameters.put("gamesCounter", config.getConfigVal());
+                }
+
+                ClientResponse resp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParameters));
+                if (resp.statusCode() != HttpStatus.OK) {
+                    throw new MarcoException(
+                            msgSource.getMessage("DISCBOT00002", null, LocaleContextHolder.getLocale()));
+                }
+                return mnu.getBodyFromResponse(resp, Teams.class);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+                LOGGER.error(e.getMessage());
+                throw new MarcoException(e);
+            }
+        }
+        throw new MarcoException(msgSource.getMessage("DISCBOT00003", null, LocaleContextHolder.getLocale()));
     }
 
     @Override
@@ -138,7 +182,7 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
             throw new MarcoException(e);
         }
     }
-    
+
     private RconHttpRequest getDefaultRconHttpRequest() {
         RconHttpRequest request = new RconHttpRequest();
         request.setRconHost(rconApiProps.getCsgoServerHost());

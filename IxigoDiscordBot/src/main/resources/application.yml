@@ -25,7 +25,7 @@ com:
   marco:
     ixigo:
       discordbot:
-        bottoken: adasda
+        bottoken: ${DISCORD_BOT_TOKEN}
         version: ^project.version^
         services:
           discord:

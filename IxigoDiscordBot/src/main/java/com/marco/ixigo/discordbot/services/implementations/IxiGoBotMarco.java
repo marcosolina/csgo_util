@@ -29,6 +29,7 @@ import com.marco.ixigo.discordbot.model.playersmanager.Teams;
 import com.marco.ixigo.discordbot.repositories.interfaces.RepoEntityBotConfig;
 import com.marco.ixigo.discordbot.repositories.interfaces.RepoUsersMap;
 import com.marco.ixigo.discordbot.services.interfaces.IxiGoBot;
+import com.marco.ixigo.discordbot.services.interfaces.IxiGoGameServer;
 import com.marco.utils.MarcoException;
 import com.marco.utils.MarcoException.ExceptionType;
 
@@ -56,7 +57,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     @Autowired
     private DiscordProps dsProps;
     @Autowired
-    private IxiGoGameServerMarco csgoService;
+    private IxiGoGameServer csgoService;
     @Autowired
     private RepoEntityBotConfig repoConfig;
 

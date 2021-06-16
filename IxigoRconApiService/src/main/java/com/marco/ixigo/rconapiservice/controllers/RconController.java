@@ -23,7 +23,7 @@ public class RconController {
     @Autowired
     private RconService rconService;
     
-    @PostMapping()
+    @PostMapping
     @ApiOperation(value = "It sends the command to the specific rcon server", code = 200)
     public ResponseEntity<RconHttpResponse> postRconCommand(@RequestBody RconHttpRequest request) {
         LOGGER.trace("Inside MainController.postRconCommand");

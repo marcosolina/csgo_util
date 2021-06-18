@@ -16,20 +16,24 @@ server:
     context-path: /ixigohelper
   port: 8083
   
-ixigohelper:
-  version: ^project.version^
-  demfilesserice: 
-    demFilesFolderFullPath: "C:\\tmp\\demfiles"
-    parserservice:
-      protocol: "https"
-      host: "marco.selfip.net"
-      commonPath: "/zuul/csgo-round-parser-api/demparser"
-      endpoint: "${ixigohelper.demfilesserice.parserservice.commonPath}/newdata"
-      demFilesUploaEndpoint: "${ixigohelper.demfilesserice.parserservice.commonPath}/files"
-  rconservice:
-      protocol: "https"
-      host: marco.selfip.net
-      commonPath: "/zuul/csgo-rest-api/rcon"
-      eventEndpoint: "${ixigohelper.rconservice.commonPath}/event"
-      sendEvents: false
-    
+com:
+  marco:
+   ixigo:
+     serverhelper:
+       version: ^project.version^
+       demFilesFolderFullPath: "C:\\tmp\\demfiles"
+       services:
+         demmanager:
+           protocol: http
+           host: localhost
+           port: 8080
+           contextPath: "/demmanager"
+           uploadFile: "${com.marco.ixigo.serverhelper.services.demmanager.commonPath}/files"
+           parseFile: "${com.marco.ixigo.serverhelper.services.demmanager.commonPath}/parse"
+         eventDispatcher:
+           protocol: http
+           host: localhost
+           port: 8080
+           contextPath: "/demmanager"
+           dispatchEvent: "${com.marco.ixigo.serverhelper.services.eventDispatcher.commonPath}"
+           sendEvents: false

@@ -146,8 +146,9 @@ public class DemFilesServiceMarco implements DemFilesService {
                 .exchange()
                 .block();
             // @formatter:on
-
-            _LOGGER.debug(resp.statusCode().toString());
+            if(_LOGGER.isDebugEnabled()) {
+                _LOGGER.debug(resp.statusCode().toString());
+            }
             if (resp.statusCode() == HttpStatus.OK) {
                 filesSent.put(fileNameAbsolutePath, "Y");
             }

@@ -33,7 +33,7 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
     private String oldValue = "NO";
 
     @Override
-    @Scheduled(cron = "*/1 * * * * *")
+    @Scheduled(cron = "*/1 * * * * *")// Every second
     public String checkForNewEvent() {
         if(!eventDispatcherProps.isSendEvents()) {
             return oldValue;

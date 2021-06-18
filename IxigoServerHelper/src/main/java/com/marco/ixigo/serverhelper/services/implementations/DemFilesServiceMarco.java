@@ -27,19 +27,28 @@ import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.client.ClientResponse;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 
 import com.marco.ixigo.serverhelper.config.properties.AppProps;
+import com.marco.ixigo.serverhelper.config.properties.DemManager;
 import com.marco.ixigo.serverhelper.services.interfaces.DemFilesService;
 import com.marco.utils.DateUtils;
 import com.marco.utils.MarcoException;
 import com.marco.utils.enums.DateFormats;
+import com.marco.utils.network.MarcoNetworkUtils;
 
 public class DemFilesServiceMarco implements DemFilesService {
     private static final Logger _LOGGER = LoggerFactory.getLogger(DemFilesServiceMarco.class);
     
     @Autowired
     private AppProps appProps;
+    @Autowired
+    private DemManager demManagerProps;
+    @Autowired
+    private MarcoNetworkUtils mnu;
+    @Autowired
+    private WebClient.Builder wb;
     private static Map<String, String> filesSent = new HashMap<>();
 
     @Override
@@ -99,10 +108,9 @@ public class DemFilesServiceMarco implements DemFilesService {
     }
 
     private void triggerParseNewDem() {
-        ParseNewFiles body = new ParseNewFiles(true);
         try {
-            URL url = new URL(parserService.getProtocol(), parserService.getHost(), parserService.getEndpoint());
-            ClientResponse clientResp = mnu.performPostRequest(url, Optional.empty(), Optional.of(body));
+            URL url = new URL(demManagerProps.getProtocol(), demManagerProps.getHost(), demManagerProps.getPort(), demManagerProps.getParseFile());
+            ClientResponse clientResp = mnu.performPostRequest(url, Optional.empty(), Optional.empty());
             if (clientResp.statusCode() != HttpStatus.OK) {
                 _LOGGER.error("Not able to trigger the dem parsers api");
             }
@@ -122,8 +130,7 @@ public class DemFilesServiceMarco implements DemFilesService {
 
             MultiValueMap<String, HttpEntity<?>> parts = builder.build();
 
-            URL url = new URL(parserService.getProtocol(), parserService.getHost(),
-                    parserService.getDemFilesUploaEndpoint());
+            URL url = new URL(demManagerProps.getProtocol(), demManagerProps.getHost(), demManagerProps.getPort(), demManagerProps.getUploadFile());
             // @formatter:off
             ClientResponse resp = wb.build().post().uri(uriBuilder -> {
                     UriBuilder ub = uriBuilder

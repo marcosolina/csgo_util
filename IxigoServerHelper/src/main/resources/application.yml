@@ -30,7 +30,7 @@ com:
            contextPath: "/demmanager"
            uploadFile: "${com.marco.ixigo.serverhelper.services.demmanager.commonPath}/files"
            parseFile: "${com.marco.ixigo.serverhelper.services.demmanager.commonPath}/parse"
-         eventDispatcher:
+         eventdispatcher:
            protocol: http
            host: localhost
            port: 8080

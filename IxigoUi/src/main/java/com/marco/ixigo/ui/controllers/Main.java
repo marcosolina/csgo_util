@@ -53,7 +53,7 @@ public class Main {
             rm.setRconCmd(String.format("map %s", mapName.replaceAll("-", "/")));
             
             String [] mapNameSplit = mapName.split("-");
-            if(mapName.length() == 3) {
+            if(mapNameSplit.length == 3) {
                 rm.setCardDesc(mapNameSplit[2]);
             }else {
                 rm.setCardDesc(mapNameSplit[0]);

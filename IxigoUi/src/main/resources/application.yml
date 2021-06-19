@@ -27,5 +27,6 @@ com:
             get_all_files: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}/files/all"
             download_file: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}/files"
             get_scores_types: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}/demdata/scorestype"
+            get_players: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}/demdata/users"
             
 

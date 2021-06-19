@@ -107,7 +107,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.getUsersList = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/users",
+            url: __URLS.DEM_MANAGER.GET_PLAYERS,
         }).then(PlayersManager.usersListRetrieved);
     }
 

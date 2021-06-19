@@ -30,10 +30,11 @@ var RconApi = ((function(RconApi){
     
     RconApi.addRconCmds = function(){
         let jRconDiv = $("#rconDiv");
+        let jCardContainer;
         
         // Bot Section
         jRconDiv.append(MarcoUtils.template(tplRconSectionTitle, {title: "Bots"}));
-        let jCardContainer = $(MarcoUtils.template(tplRconCmdsContainer, {}));
+        jCardContainer = $(MarcoUtils.template(tplRconCmdsContainer, {}));
         
         jCardContainer.append(MarcoUtils.template(tplRconPictureCmd, {rconCmd: "bot_add_t",  imgSrc: "./pictures/rcon/terrorist.jpg",           cardDesc: "Add a Terrorist Bot"}));
         jCardContainer.append(MarcoUtils.template(tplRconPictureCmd, {rconCmd: "bot_add_ct", imgSrc: "./pictures/rcon/counterterrorist.jpg",    cardDesc: "Add a C.T. Bot"}));
@@ -41,6 +42,17 @@ var RconApi = ((function(RconApi){
         
         jRconDiv.append(jCardContainer);
         
+        
+        // Game Section
+        jRconDiv.append(MarcoUtils.template(tplRconSectionTitle, {title: "Game"}));
+        jCardContainer = $(MarcoUtils.template(tplRconCmdsContainer, {}));
+        
+        jCardContainer.append(MarcoUtils.template(tplRconIconCmd, {rconCmd: "mp_restartgame 5", fontAwesome: "fa fa-refresh",           cardDesc: "Restart Game"}));
+        jCardContainer.append(MarcoUtils.template(tplRconIconCmd, {rconCmd: "pause",            fontAwesome: "fa fa-pause-circle-o",    cardDesc: "Pause Game"}));
+        jCardContainer.append(MarcoUtils.template(tplRconIconCmd, {rconCmd: "unpause",          fontAwesome: "fa fa-play-circle-o",     cardDesc: "Resume Game"}));
+        jCardContainer.append(MarcoUtils.template(tplRconIconCmd, {rconCmd: "exit",             fontAwesome: "fa fa-stop-circle-o",     cardDesc: "Stop the Server"}));
+        
+        jRconDiv.append(jCardContainer);
     }
 
     RconApi.changeMap = function(){

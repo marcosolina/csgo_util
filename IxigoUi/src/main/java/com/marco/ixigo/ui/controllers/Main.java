@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import com.marco.ixigo.ui.config.Urls;
 
 @Controller
-@CrossOrigin("*")
 public class Main {
 
     @Autowired

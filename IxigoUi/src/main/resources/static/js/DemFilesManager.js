@@ -55,7 +55,7 @@ var DemFilesManager = ((function(DemFilesManager){
     }
 
     DemFilesManager.getDemFiles = function(){
-        let url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/files/all";
+        let url = __URLS.DEM_MANAGER.GET_ALL_FILES;
         MarcoUtils.executeAjax({
                 type: "GET",
                 url: url
@@ -74,7 +74,7 @@ var DemFilesManager = ((function(DemFilesManager){
 
                 let ul = jCard.find("ul");
                 maps.forEach(el => {
-                    el.url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/files/" + el.name;
+                    el.url = __URLS.DEM_MANAGER.DOWNLOAD_FILE + "/" + el.name;
                     ul.append(MarcoUtils.template(tplMapItem, el))
                 });
                 $("#accordionExample").append(jCard);

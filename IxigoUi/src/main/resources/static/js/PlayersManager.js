@@ -41,7 +41,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.getAvailableGames = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/games/list",
+            url: __URLS.DEM_MANAGER.GET_ALL_FILES,
         }).then(PlayersManager.availableGamesRetrieved);
     }
 
@@ -51,7 +51,7 @@ var PlayersManager = ((function(PlayersManager){
             let strTmpl = '<option value="%count%">%count%</option>';
             let jSelect = $("#selectRoundToConsider");
             jSelect.empty();
-            for(let i = 1; i <= resp.availableGames.length; i++){
+            for(let i = 1; i <= resp.files.length; i++){
                 jSelect.append(MarcoUtils.template(strTmpl, {count: i}));
             }
 

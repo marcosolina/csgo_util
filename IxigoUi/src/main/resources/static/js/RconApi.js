@@ -1,23 +1,23 @@
-var Csgo = ((function(Csgo){
+var RconApi = ((function(RconApi){
 	"use strict";
 	
-	if(Csgo === undefined){
-		Csgo = {};
+	if(RconApi === undefined){
+		RconApi = {};
     }
     
-    Csgo.init = function(){
-        $(".rcon-map").click(Csgo.changeMap);
+    RconApi.init = function(){
+        $(".rcon-map").click(RconApi.changeMap);
         $("#sendRcon").click(function(){
-            Csgo.sendRconCmd($("#rconCmd").val());
+            RconApi.sendRconCmd($("#rconCmd").val());
         });
     }
 
-    Csgo.changeMap = function(){
-        Csgo.sendRconCmd($(this).data("rcon-cmd"));
+    RconApi.changeMap = function(){
+        RconApi.sendRconCmd($(this).data("rcon-cmd"));
     }
 
 
-    Csgo.sendRconCmd = function(rconCmd){
+    RconApi.sendRconCmd = function(rconCmd){
         var request = {
             rconCmd: rconCmd,
             rconHost: $("#rconHost").val(),
@@ -30,15 +30,15 @@ var Csgo = ((function(Csgo){
                 body: request,
                 url: __URLS.API_BASE + "/csgo-rest-api/rcon/cmd",
                 showLoading: true
-            }).then(Csgo.rconCmdSent);
+            }).then(RconApi.rconCmdSent);
     }
 
-    Csgo.rconCmdSent = function(resp){
+    RconApi.rconCmdSent = function(resp){
         if(resp.status && resp.rconResponse && resp.rconResponse != ""){
             $("#rconResp").val(resp.rconResponse);
             $('#modalWindow').modal("show");
         }
     }
 
-	return Csgo;
-})(Csgo));
+	return RconApi;
+})(RconApi));

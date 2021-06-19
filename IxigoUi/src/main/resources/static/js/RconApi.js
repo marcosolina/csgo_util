@@ -20,11 +20,6 @@ var RconApi = ((function(RconApi){
                             '<div class="rcon-card-body">%cardDesc%</div>' +
                          '</div>';
                          
-    let rconCardType = {
-        picture: "picture",
-        fontAws: "fontAwesome",
-    };
-    
     RconApi.init = function(){
         $(".rcon-map").click(RconApi.changeMap);
         $("#sendRcon").click(function(){

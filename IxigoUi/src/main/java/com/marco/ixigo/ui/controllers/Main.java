@@ -1,9 +1,13 @@
 package com.marco.ixigo.ui.controllers;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,10 +19,13 @@ public class Main {
 
     @Autowired
     private Urls urls;
+    @Value("classpath:static/pictures/maps/*")
+    private Resource[] resources;
 
     @RequestMapping
     public String landingPage(Model model) {
         model.addAttribute("URLS", capitaliseAllKeys());
+        model.addAttribute("MAPS", getMapNames());
         return "index";
     }
 
@@ -32,5 +39,13 @@ public class Main {
         });
 
         return map;
+    }
+    
+    private List<String> getMapNames(){
+        List<String> maps = new ArrayList<>();
+        for (final Resource res : resources) {
+            maps.add(res.getFilename());
+        }
+        return maps;
     }
 }

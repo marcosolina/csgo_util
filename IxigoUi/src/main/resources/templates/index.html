@@ -233,59 +233,6 @@
                             </div>
                         </div>
                     </div>
-                    <?php 
-                    /*
-                    *   Creating the section to issue "Bots" rcon Commands
-                    */
-                    $rconSection = new RconSection("Bots");
-                    $rconSection->addCard(new PictureRconCard("bot_add_t", "Add a Terrorist Bot", "./pictures/terrorist.jpg"));
-                    $rconSection->addCard(new PictureRconCard("bot_add_ct", "Add a C.T. Bot", "./pictures/counterterrorist.jpg"));
-                    $rconSection->addCard(new PictureRconCard("bot_kick", "Kick All the bots", "./pictures/kickbots.jpg"));
-                    $rconSection->printHtml();
-
-                    /*
-                    *   Creating the section to issue "Game" rcon Commands
-                    */
-                    $rconSection = new RconSection("Game");
-                    $rconSection->addCard(new IconRconCard("mp_restartgame 5", "Restart Game", "fa fa-refresh"));
-                    $rconSection->addCard(new IconRconCard("pause", "Pause Game", "fa fa-pause-circle-o"));
-                    $rconSection->addCard(new IconRconCard("unpause", "Resume Game", "fa fa-play-circle-o"));
-                    $rconSection->addCard(new IconRconCard("exit", "Stop the Server", "fa fa-stop-circle-o"));
-                    $rconSection->printHtml();
-                    
-                    /*
-                    *   Creating the section to change the map
-                    */
-                    $rconSection = new RconSection("Maps");
-
-                    // Scanning the folder
-                    //$filesRootFolder = "./rcon/maps";
-                    $files = scandir($filesRootFolder, 0);
-                    $maps = array();
-
-                    // Creating a key->value map, the key is the simple map name
-                    foreach ($files as $file) {
-                        if ($file == "." || $file == "..") {
-                            continue;
-                        }
-                        if (!is_dir($filesRootFolder . "/" . $file)) {
-                            $arr = explode("-", str_replace(".jpg", "", $file));
-                            $mapName = $arr[count($arr) - 1];
-                            $maps[$mapName] = $file;
-                        }
-                    }
-
-                    ksort($maps);
-
-                    // Creating the cards
-                    foreach ($maps as $map => $file) {
-                        $rconCmd = "map ".str_replace("-", "/", str_replace(".jpg", "", $file));
-                        $imgPath = $filesRootFolder . "/" . $file;
-                        $label = $map;
-                        $rconSection->addCard(new PictureRconCard($rconCmd, $label, $imgPath));
-                    }
-                    $rconSection->printHtml();
-                    ?>
                     <!-- END RCON -->
                 </div>
                 <div class="tab-pane fade" id="botDiv" role="tabpanel" aria-labelledby="bot-tab">

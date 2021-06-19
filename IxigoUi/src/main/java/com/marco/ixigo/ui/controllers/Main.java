@@ -52,6 +52,7 @@ public class Main {
             mapName = mapName.substring(0, mapName.lastIndexOf('.'));
             rm.setRconCmd(String.format("map %s", mapName.replaceAll("-", "/")));
             rm.setCardDesc(mapName.split("-")[0]);
+            maps.add(rm);
         }
         return maps;
     }

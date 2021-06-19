@@ -28,7 +28,7 @@ var RconApi = ((function(RconApi){
     }
     
     RconApi.addRconCmds = function(){
-        let jRconDiv = $(".rconDiv");
+        let jRconDiv = $("#rconDiv");
         
         // Bot Section
         jRconDiv.append(MarcoUtils.template(tplRconSectionTitle, {title: "Bots"}));

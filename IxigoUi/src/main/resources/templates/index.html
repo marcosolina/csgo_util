@@ -4,6 +4,11 @@
 <head>
     <div th:replace="fragments/commonHeadTags.html :: commonHead"></div>
     <div layout:fragment="custom-header"></div>
+    <script>
+	    function init(){
+	    	DemFilesManager.init();
+	    }
+    </script>
 </head>
 
 <body>

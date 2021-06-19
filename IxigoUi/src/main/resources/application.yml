@@ -20,7 +20,7 @@ com:
       ui:
         version: ^project.version^
         urls:
-          demparser: 
+          dem_parser: 
             one: "ciao"
             
 

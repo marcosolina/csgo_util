@@ -169,7 +169,12 @@ var PlayersManager = ((function(PlayersManager){
         let queryParam = "";
         steamIds.forEach(v => {queryParam += "," + v;});
         let gamesToConsider = $("#selectRoundToConsider").val()
-        let url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/2/using/last/" + gamesToConsider + "/games/scores?usersIDs=" + queryParam.substring(1);
+        
+        let url = __URLS.PLAYERS_MANAGER.GET_TEAMS;
+        url += "?";
+        url += "&teamsCounter=2";
+        url += "&gamesCounter=" + gamesToConsider;
+        url += "&usersIDs=" + queryParam.substring(1);
         url += "&partitionType=" + $('input[name=partitionType]:checked').val();
         url += "&penaltyWeigth=" + $('#penaltyWeigth').val();
         url += "&partitionScore=" + $("#selectScoreType").val();

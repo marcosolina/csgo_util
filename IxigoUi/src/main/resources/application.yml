@@ -23,7 +23,7 @@ com:
           dem_manager:
             protocol: "http://"
             host: "localhost:8763"
-            contextPath: "/ixigoproxy/ixigo-dem-manager/demmanger" 
+            contextPath: "/ixigoproxy/ixigo-dem-manager/demmanager" 
             get_all_files: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}/files/all"
             download_file: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}/files"
             

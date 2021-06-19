@@ -51,7 +51,7 @@ var PlayersManager = ((function(PlayersManager){
             let strTmpl = '<option value="%count%">%count%</option>';
             let jSelect = $("#selectRoundToConsider");
             jSelect.empty();
-            for(let i = 1; i <= resp.files.length; i++){
+            for(let i = 1; i <= Object.keys(resp.files).length; i++){
                 jSelect.append(MarcoUtils.template(strTmpl, {count: i}));
             }
 

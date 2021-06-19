@@ -19,5 +19,8 @@ com:
     ixigo:
       ui:
         version: ^project.version^
+        urls:
+          demparser: 
+            one: "ciao"
             
 

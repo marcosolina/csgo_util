@@ -51,14 +51,15 @@ var PlayersManager = ((function(PlayersManager){
             let strTmpl = '<option value="%count%">%count%</option>';
             let jSelect = $("#selectRoundToConsider");
             jSelect.empty();
-            for(let i = 1; i <= Object.keys(resp.files).length; i++){
+            let numberOfGames = Object.keys(resp.files).length;
+            for(let i = 1; i <= numberOfGames; i++){
                 jSelect.append(MarcoUtils.template(strTmpl, {count: i}));
             }
 
-            if(Object.keys(resp.files).length > 49){
+            if(numberOfGames > 49){
                 jSelect.val(50);
             }else{
-                jSelect.val(resp.availableGames.length);
+                jSelect.val(numberOfGames);
             }
         }
         

@@ -28,7 +28,7 @@ var RconApi = ((function(RconApi){
         MarcoUtils.executeAjax(
             {
                 body: request,
-                url: __URLS.API_BASE + "/csgo-rest-api/rcon/cmd",
+                url: __URLS.RCON_API.SEND_CMD,
                 showLoading: true
             }).then(RconApi.rconCmdSent);
     }

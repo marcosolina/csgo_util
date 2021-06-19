@@ -5,6 +5,21 @@ var RconApi = ((function(RconApi){
 		RconApi = {};
     }
     
+    let tplRconSectionTitle = '<div class="rcon-container-title">' +
+                                 '<h1>%title%</h1>' + 
+                              '</div>';
+    let tplRconCmdsContainer = '<div class="rcon-container"></div>';
+    let tplRconPictureCmd = '<div class="card rcon-map" data-rcon-cmd="%rconCmd%">' +
+                                '<img class="card-img-top" src="%imgSrc%" alt="Send RCON cmd">' +
+                                '<div class="rcon-card-body">%cardDesc%</div>' +
+                            '</div>';
+    let tplRconIconCmd = '<div class="card rcon-map" data-rcon-cmd="%rconCmd%">' +
+                            '<div class="rcon-icon-div">' +
+                                '<i class="%fontAwesome%" arai-hidden="true"></i>' +
+                            '</div>' +
+                            '<div class="rcon-card-body">%cardDesc%</div>' +
+                         '</div>';
+    
     RconApi.init = function(){
         $(".rcon-map").click(RconApi.changeMap);
         $("#sendRcon").click(function(){

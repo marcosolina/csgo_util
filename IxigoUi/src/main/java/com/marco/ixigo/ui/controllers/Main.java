@@ -13,6 +13,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import com.marco.ixigo.ui.config.Urls;
+import com.marco.ixigo.ui.model.rest.RconCard;
+import com.marco.ixigo.ui.model.rest.RconCardMap;
 
 @Controller
 public class Main {
@@ -41,10 +43,15 @@ public class Main {
         return map;
     }
     
-    private List<String> getMapNames(){
-        List<String> maps = new ArrayList<>();
+    private List<RconCard> getMapNames(){
+        List<RconCard> maps = new ArrayList<>();
         for (final Resource res : resources) {
-            maps.add(res.getFilename());
+            RconCardMap rm = new RconCardMap();
+            rm.setImgSrc("./pictures/maps/" + res.getFilename());
+            String mapName = res.getFilename();
+            mapName = mapName.substring(0, mapName.lastIndexOf('.'));
+            rm.setRconCmd(String.format("map %s", mapName.replaceAll("-", "/")));
+            rm.setCardDesc(mapName.split("-")[0]);
         }
         return maps;
     }

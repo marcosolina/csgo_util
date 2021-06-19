@@ -1,6 +1,9 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"lang="en">
 <head>
+    <div th:replace="fragments/commonHeadTags.html :: commonHead"></div>
+    <div layout:fragment="custom-header"></div>
 </head>
 
 <body>

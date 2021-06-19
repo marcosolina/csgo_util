@@ -20,7 +20,10 @@ com:
       ui:
         version: ^project.version^
         urls:
-          dem_parser: 
-            one: "ciao"
+          dem_manager:
+            protocol: "http://"
+            host: "localhost:8763"
+            contextPath: "/ixigoproxy/ixigo-dem-manager/demmanger" 
+            get_all_files: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}/files/all"
             
 

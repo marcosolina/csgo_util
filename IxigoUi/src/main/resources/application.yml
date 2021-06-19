@@ -33,5 +33,10 @@ com:
             host: "localhost:8763"
             contextPath: "/ixigoproxy/ixigo-players-manager/playersmanager"
             get_teams: "${com.marco.ixigo.ui.urls.players_manager.protocol}${com.marco.ixigo.ui.urls.players_manager.host}${com.marco.ixigo.ui.urls.players_manager.contextPath}/teams"
+          rcon_api:
+            protocol: "http://"
+            host: "localhost:8763"
+            contextPath: "/ixigoproxy/ixigo-rcon-api/rcon"
+            send_cmd: "${com.marco.ixigo.ui.urls.players_manager.protocol}${com.marco.ixigo.ui.urls.players_manager.host}${com.marco.ixigo.ui.urls.players_manager.contextPath}/cmd"
             
 

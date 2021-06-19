@@ -14,8 +14,6 @@ logging:
 server:
   servlet:
     context-path: /cstrike
-  port: 8080
-
 com:
   marco:
     ixigo:

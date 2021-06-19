@@ -31,6 +31,7 @@ com:
           players_manager:
             protocol: "http://"
             host: "localhost:8763"
-            contextPath: "/ixigoproxy/ixigo-players-manager/demmanager"
+            contextPath: "/ixigoproxy/ixigo-players-manager/playersmanager"
+            get_teams: "${com.marco.ixigo.ui.urls.players_manager.protocol}${com.marco.ixigo.ui.urls.players_manager.host}${com.marco.ixigo.ui.urls.players_manager.contextPath}/teams"
             
 

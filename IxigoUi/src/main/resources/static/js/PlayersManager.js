@@ -78,7 +78,7 @@ var PlayersManager = ((function(PlayersManager){
     PlayersManager.getScoreTypes = function(){
         MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/scorestype",
+            url: __URLS.DEM_MANAGER.GET_SCORES_TYPES,
         }).then(PlayersManager.scoreTypesRetrieved);
     }
 

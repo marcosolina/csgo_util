@@ -53,6 +53,16 @@ var RconApi = ((function(RconApi){
         jCardContainer.append(MarcoUtils.template(tplRconIconCmd, {rconCmd: "exit",             fontAwesome: "fa fa-stop-circle-o",     cardDesc: "Stop the Server"}));
         
         jRconDiv.append(jCardContainer);
+        
+        // Game Section
+        jRconDiv.append(MarcoUtils.template(tplRconSectionTitle, {title: "Maps"}));
+        jCardContainer = $(MarcoUtils.template(tplRconCmdsContainer, {}));
+        
+        __MAPS.forEach(m => {
+            jCardContainer.append(MarcoUtils.template(tplRconPictureCmd, m));
+        });
+        
+        jRconDiv.append(jCardContainer);
     }
 
     RconApi.changeMap = function(){

@@ -60,6 +60,10 @@ public class Main {
             }
             maps.add(rm);
         }
+        maps.sort((o1, o2) -> {
+            return o1.getCardDesc().compareTo(o2.getCardDesc());
+        });
+        
         return maps;
     }
 }

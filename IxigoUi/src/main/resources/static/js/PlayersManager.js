@@ -55,7 +55,7 @@ var PlayersManager = ((function(PlayersManager){
                 jSelect.append(MarcoUtils.template(strTmpl, {count: i}));
             }
 
-            if(resp.availableGames.length > 49){
+            if(Object.keys(resp.files).length > 49){
                 jSelect.val(50);
             }else{
                 jSelect.val(resp.availableGames.length);

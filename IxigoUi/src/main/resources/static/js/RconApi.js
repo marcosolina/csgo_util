@@ -21,6 +21,7 @@ var RconApi = ((function(RconApi){
                          '</div>';
                          
     RconApi.init = function(){
+        RconApi.addRconCmds();
         $(".rcon-map").click(RconApi.changeMap);
         $("#sendRcon").click(function(){
             RconApi.sendRconCmd($("#rconCmd").val());

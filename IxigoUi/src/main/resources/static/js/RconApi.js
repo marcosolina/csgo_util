@@ -19,12 +19,32 @@ var RconApi = ((function(RconApi){
                             '</div>' +
                             '<div class="rcon-card-body">%cardDesc%</div>' +
                          '</div>';
+                         
+    let rconCardType = {
+        picture: "picture",
+        fontAws: "fontAwesome",
+    };
     
     RconApi.init = function(){
         $(".rcon-map").click(RconApi.changeMap);
         $("#sendRcon").click(function(){
             RconApi.sendRconCmd($("#rconCmd").val());
         });
+    }
+    
+    RconApi.addRconCmds = function(){
+        let jRconDiv = $(".rconDiv");
+        
+        // Bot Section
+        jRconDiv.append(MarcoUtils.template(tplRconSectionTitle, {title: "Bots"}));
+        let jCardContainer = $(MarcoUtils.template(tplRconCmdsContainer, {}));
+        
+        jCardContainer.append(MarcoUtils.template(tplRconPictureCmd, {rconCmd: "bot_add_t",  imgSrc: "./pictures/rcon/terrorist.jpg",           cardDesc: "Add a Terrorist Bot"}));
+        jCardContainer.append(MarcoUtils.template(tplRconPictureCmd, {rconCmd: "bot_add_ct", imgSrc: "./pictures/rcon/counterterrorist.jpg",    cardDesc: "Add a C.T. Bot"}));
+        jCardContainer.append(MarcoUtils.template(tplRconPictureCmd, {rconCmd: "bot_kick",   imgSrc: "./pictures/rcon/kickbots.jpg",            cardDesc: "Kick All the bots"}));
+        
+        jRconDiv.append(jCardContainer);
+        
     }
 
     RconApi.changeMap = function(){

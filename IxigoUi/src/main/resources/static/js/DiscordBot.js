@@ -128,6 +128,11 @@ var DiscordBot = ((function(DiscordBot){
 
     DiscordBot.discordUsersWithMappingRetrieved = function(resp){
         if(resp.status){
+            
+            resp.players.sort((a, b) => {
+                return a.discordDetails.name.toUpperCase() < b.discordDetails.name.toUpperCase() ? -1 : 1;
+            });
+            
             let jWrapperD = $("#" + discordUsersWrapperId);
             let jWrapperS = $("#" + mappedSteamUsersWrapperId);
             jWrapperD.empty();

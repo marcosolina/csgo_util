@@ -21,7 +21,7 @@ com:
    ixigo:
      serverhelper:
        version: ^project.version^
-       demFilesFolderFullPath: "C:\\tmp\\demfiles"
+       demFilesFolderFullPath: "E:\\VmSharedFiles\\CsgoServer\\ixi_go\\CsgoServer\\csgo"
        services:
          demmanager:
            protocol: http

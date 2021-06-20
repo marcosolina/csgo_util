@@ -5,4 +5,4 @@ com:
   marco:
    ixigo:
      serverhelper:
-       demFilesFolderFullPath: "${$ENV_CSGO_INSTALL_FOLDER}/csgo"
+       demFilesFolderFullPath: "${ENV_CSGO_INSTALL_FOLDER}/csgo"

@@ -11,6 +11,14 @@ com:
       discordbot:
         bottoken: '{cipher}765eb413bb162db1951f6f3c40bc89179898b8d8c945e697dffc8c910cbf9e5b7da53d71de665a8dd383770d11f8dce6ba5076662b772cacdb3187f1a3a776b1445ed0311b4a738bce478bee9301b1b8'
         services:
+          discord:
+            serverId: 700738420686717000
+            textChannels:
+              general: 700738421131444234
+            voiceChannels:
+              terrorist: 706943323084161124
+              ct: 706942842173653094
+              general: 700738421131444236
           rconapi:
             host: 192.168.1.30
           players-manager:

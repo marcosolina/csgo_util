@@ -57,7 +57,7 @@ public class DemFilesServiceMarco implements DemFilesService {
     @Override
     public void sendLastDemFiles() throws MarcoException {
 
-        if (justMondayNight && LocalDate.now().getDayOfWeek() != DayOfWeek.MONDAY) {
+        if (false && justMondayNight && LocalDate.now().getDayOfWeek() != DayOfWeek.MONDAY) {
             _LOGGER.info("It is not the IxiGo night, no need to copy the dem files");
             return;
         }

@@ -1,8 +1,2 @@
 server:
   port: 8088
-
-com:
-  marco:
-   ixigo:
-     serverhelper:
-       justmondaynight: false

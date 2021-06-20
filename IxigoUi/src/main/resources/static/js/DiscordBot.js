@@ -141,6 +141,9 @@ var DiscordBot = ((function(DiscordBot){
                     jSteamSelectWrapper.find("select").append(MarcoUtils.template("<option value='%steamId%'>%userName%</option>", el));
                 });
                 jSteamSelectWrapper.find("select").val(element.steamDetails.steamId);
+                if(jSteamSelectWrapper.find("select").val() == null){
+                    jSteamSelectWrapper.find("select").val("");
+                }
                 jWrapperS.append(jSteamSelectWrapper);
             });
         }

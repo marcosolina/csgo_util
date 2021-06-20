@@ -4,6 +4,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import com.marco.ixigo.serverhelper.services.implementations.DemFilesServiceMarco;
+import com.marco.ixigo.serverhelper.services.interfaces.DemFilesService;
 import com.marco.utils.network.MarcoNetworkUtils;
 import com.marco.utils.network.MarcoNetworkUtilsWebFlux;
 
@@ -17,5 +19,10 @@ public class Beans {
     @Bean(name = "WsClientNotBalanced")
     public WebClient.Builder getWebClientBuilderNotBalanced() {
         return WebClient.builder();
+    }
+    
+    @Bean
+    public DemFilesService getDemFilesService() {
+        return new DemFilesServiceMarco();
     }
 }

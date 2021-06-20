@@ -41,7 +41,7 @@ public class SwaggerConfig {
     private ApiInfo apiEndPointsInfo() {
         // @formatter:off
         return new ApiInfoBuilder()
-                .title("Dem Manager")
+                .title("Players Manager")
                 .description("This service manages the players info/scores and generates the teams")
                 .contact(new Contact("Marco Solina", "marco.selfip.net", "marcosolina@gmail.com"))
                 .version(appVersion)

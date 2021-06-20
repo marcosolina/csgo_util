@@ -103,7 +103,7 @@ var DiscordBot = ((function(DiscordBot){
     }
 
     DiscordBot.getSteamUsers = function(){
-        let url = __URLS.API_BASE + "/csgo-round-parser-api/demparser/users";
+        let url = __URLS.DISCORD_BOT.GET_MAPPED_PLAYERS;
         MarcoUtils.executeAjax({type: "GET", url: url, showLoading: true})
             .then(DiscordBot.steamUsersRetrieved)
             .fail(function(){

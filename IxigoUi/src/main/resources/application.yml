@@ -38,5 +38,10 @@ com:
             host: "localhost:8763"
             contextPath: "/ixigoproxy/ixigo-rcon-api/rcon"
             send_cmd: "${com.marco.ixigo.ui.urls.rcon_api.protocol}${com.marco.ixigo.ui.urls.rcon_api.host}${com.marco.ixigo.ui.urls.rcon_api.contextPath}/cmd"
+          discord_bot:
+            protocol: "http://"
+            host: "localhost:8763"
+            contextPath: "/ixigoproxy/ixigo-discord-bot/discordbot"
+            get_mapped_players: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/mapped/players"
             
 

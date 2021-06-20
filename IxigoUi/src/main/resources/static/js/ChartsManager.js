@@ -53,7 +53,7 @@ var ChartsManager = ((function(ChartsManager){
 		let deferred = $.Deferred();
 		MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/scorestype",
+            url: __URLS.DEM_MANAGER.GET_SCORES_TYPES,
         }).then(function(resp){
 			ChartsManager.getScoreTypesRetrieved(resp);
 			deferred.resolve();
@@ -72,7 +72,7 @@ var ChartsManager = ((function(ChartsManager){
 		let deferred = $.Deferred();
 		MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/games/list",
+            url: __URLS.DEM_MANAGER.GET_ALL_FILES,
         }).then(function(resp){
 			ChartsManager.getAvailableGamesRetrieved(resp);
 			deferred.resolve();
@@ -83,7 +83,11 @@ var ChartsManager = ((function(ChartsManager){
 
 	ChartsManager.getAvailableGamesRetrieved = function(resp){
 		if(resp.status){
-			gamesList = resp.availableGames;
+            gamesList = [];
+            for (const day in resp.files) {
+              let gamesOfTheDay = resp.files[day];
+              gamesOfTheDay.forEach(element => gamesList.push(element.name));
+            }
 		}
 	}
 

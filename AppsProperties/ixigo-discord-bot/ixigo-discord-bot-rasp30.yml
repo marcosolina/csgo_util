@@ -21,5 +21,8 @@ com:
               general: 700738421131444236
           rconapi:
             host: 192.168.1.30
+            csgoServerPort: 27015
+            csgoServerHost: '{cipher}5441f9bc2bfcc583b8d1cd41954fffdc69162ffca8c706e44edfcc79af3e0579'
+            csgoServerPassw: '{cipher}92f488c08f3d7dc3c6696813d299ab808ec7db2e56b0202cd3efb5159b405bdf'
           players-manager:
             host: 192.168.1.30

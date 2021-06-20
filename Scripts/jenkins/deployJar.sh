@@ -1,0 +1,24 @@
+#!/bin/bash
+
+APP_NAME=$1
+RASP_IP=$2
+WORKSPACE_FOLDER=$3
+BASE_FOLDER=$4
+
+DEPLOY_APP_FOLDER=$BASE_FOLDER/$APP_NAME
+
+mvn clean package -f $WORKSPACE_FOLDER/$APP_NAME/pom.xml
+
+SSH_ADDRESS=pi@$RASP_IP
+
+ssh $SSH_ADDRESS mkdir -p $DEPLOY_APP_FOLDER
+
+scp $WORKSPACE_FOLDER/$APP_NAME/Scripts/startStop.sh $SSH_ADDRESS:$DEPLOY_APP_FOLDER
+ssh $SSH_ADDRESS chmod +x $DEPLOY_APP_FOLDER/startStop.sh
+ssh $SSH_ADDRESS $DEPLOY_APP_FOLDER/startStop.sh stop
+sleep 20
+
+scp $WORKSPACE_FOLDER/$APP_NAME/target/$APP_NAME*.jar $SSH_ADDRESS:$DEPLOY_APP_FOLDER/$APP_NAME.jar
+ssh -t -t $SSH_ADDRESS << EOF
+export BASH_ENV=/etc/bash.bashrc && echo "" > $DEPLOY_APP_FOLDER/$APP_NAME.log && $DEPLOY_APP_FOLDER/startStop.sh start && exit
+EOF

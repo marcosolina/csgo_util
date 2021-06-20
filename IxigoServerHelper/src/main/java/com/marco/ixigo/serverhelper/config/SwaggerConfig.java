@@ -24,7 +24,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 public class SwaggerConfig {
     
-    @Value("${com.marco.ixigo.discordbot.version}")
+    @Value("${com.marco.ixigo.serverhelper.version}")
     private String appVersion;
     
     @Bean

@@ -114,6 +114,7 @@ public class DemFilesServiceMarco implements DemFilesService {
     private void triggerParseNewDem() {
         try {
             URL url = new URL(demManagerProps.getProtocol(), demManagerProps.getHost(), demManagerProps.getPort(), demManagerProps.getParseFile());
+            _LOGGER.debug(String.format("Triggering the DEM parser at URL: %s", url.toString()));
             ClientResponse clientResp = mnu.performPostRequest(url, Optional.empty(), Optional.empty());
             if (clientResp.statusCode() != HttpStatus.OK) {
                 _LOGGER.error("Not able to trigger the dem parsers api");

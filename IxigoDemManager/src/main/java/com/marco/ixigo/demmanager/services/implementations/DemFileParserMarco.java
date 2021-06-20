@@ -1,7 +1,10 @@
 package com.marco.ixigo.demmanager.services.implementations;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,6 +46,8 @@ import com.marco.utils.enums.DateFormats;
 public class DemFileParserMarco implements DemFileParser {
     private static final Logger _LOGGER = LoggerFactory.getLogger(DemFileParserMarco.class);
 
+    @Value("${com.marco.ixigo.demmanager.demFileManager.rootFolder}")
+    private Path root;
     @Autowired
     private RepoProcessQueue repoQueue;
     @Autowired
@@ -101,6 +107,7 @@ public class DemFileParserMarco implements DemFileParser {
                 notificationService.sendParsingCompleteNotification("Dem Manager", message);
             }
         });
+        notificationService.sendParsingCompleteNotification("Dem Manager", String.format("Processed %d files", files.size()));
     }
     
     private void setFileProcessed(File f, DemProcessStatus status) {
@@ -300,6 +307,33 @@ public class DemFileParserMarco implements DemFileParser {
         ms.addUserMapStats(ums);
 
         return ms;
+    }
+
+    @Override
+    public boolean processAllFiles() throws MarcoException {
+        List<File> files = new ArrayList<>();
+        try (Stream<Path> walk = Files.walk(root)) {
+            walk.filter(p -> p.toFile().getName().endsWith(".dem")).map(Path::toFile).forEach(files::add);
+        } catch (IOException e) {
+            if (_LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
+            }
+            throw new MarcoException(e);
+        }
+        
+        files.stream().forEach(f -> {
+            EntityProcessQueue entity = repoQueue.findById(f.getAbsolutePath());
+            if(entity == null) {
+                entity = new EntityProcessQueue();
+                entity.setFileName(f.getAbsolutePath());
+                entity.setProcessStatus(DemProcessStatus.NOT_PROCESSED);
+                entity.setQueuedOn(LocalDateTime.now(ZoneOffset.UTC));
+                repoQueue.saveEntity(entity);
+            }
+        });
+        
+        
+        return processFiles();
     }
 
 }

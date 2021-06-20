@@ -18,6 +18,8 @@ public interface DemFileParser {
      */
     public boolean processFiles() throws MarcoException;
     
+    public boolean processAllFiles() throws MarcoException;
+    
     /**
      * It returns a map of available scores
      * 

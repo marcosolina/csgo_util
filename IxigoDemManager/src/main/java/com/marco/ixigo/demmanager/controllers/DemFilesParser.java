@@ -36,4 +36,18 @@ public class DemFilesParser {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
+    
+    @PostMapping("/all")
+    @ApiOperation(value = "It will trigger the scan process for all the new .dem files")
+    public ResponseEntity<Void> processAllNewFiles() {
+        _LOGGER.trace("Inside DemFilesProcessor.processNewFiles");
+        try {
+           parser.processFiles();
+        } catch (MarcoException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

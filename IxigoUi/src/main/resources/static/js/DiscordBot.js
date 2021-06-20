@@ -122,7 +122,7 @@ var DiscordBot = ((function(DiscordBot){
     }
 
     DiscordBot.getDiscordUsersWithMapping = function(){
-        let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/mapped/players";
+        let url = __URLS.DISCORD_BOT.GET_MAPPED_PLAYERS;
         MarcoUtils.executeAjax({type: "GET", url: url, showLoading: true}).then(DiscordBot.discordUsersWithMappingRetrieved);
     }
 

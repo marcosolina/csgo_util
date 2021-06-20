@@ -35,6 +35,6 @@ com:
            protocol: http
            host: 192.168.1.25
            port: 8763
-           contextPath: "/demmanager"
+           contextPath: "/ixigoproxy/ixigo-dem-manager/demmanager"
            dispatchEvent: "${com.marco.ixigo.serverhelper.services.eventdispatcher.contextPath}/event"
            sendEvents: false

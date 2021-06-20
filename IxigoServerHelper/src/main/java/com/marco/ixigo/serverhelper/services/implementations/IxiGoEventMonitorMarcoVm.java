@@ -51,7 +51,7 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
                 
                 ClientResponse clientResp = mnu.performPostRequest(url, Optional.empty(), Optional.of(body));
                 if(clientResp.statusCode() != HttpStatus.ACCEPTED && _LOGGER.isErrorEnabled()) {
-                    _LOGGER.error(String.format("Not able to send the event: %s ", oldValue));
+                    _LOGGER.error(String.format("Not able to send the event: %s status code: %s", oldValue, clientResp.statusCode().toString()));
                 }
             } catch (MalformedURLException e) {
                 e.printStackTrace();

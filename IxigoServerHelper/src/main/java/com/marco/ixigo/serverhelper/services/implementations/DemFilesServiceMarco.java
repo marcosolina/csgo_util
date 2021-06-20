@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
@@ -50,11 +51,13 @@ public class DemFilesServiceMarco implements DemFilesService {
     @Autowired
     private WebClient.Builder wb;
     private static Map<String, String> filesSent = new HashMap<>();
+    @Value("${com.marco.ixigo.serverhelper.justmondaynight:true}")
+    private boolean justMondayNight = true;
 
     @Override
     public void sendLastDemFiles() throws MarcoException {
 
-        if (LocalDate.now().getDayOfWeek() != DayOfWeek.MONDAY) {
+        if (justMondayNight && LocalDate.now().getDayOfWeek() != DayOfWeek.MONDAY) {
             _LOGGER.info("It is not the IxiGo night, no need to copy the dem files");
             return;
         }

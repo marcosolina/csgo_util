@@ -22,6 +22,7 @@ com:
      serverhelper:
        version: ^project.version^
        demFilesFolderFullPath: "E:\\VmSharedFiles\\CsgoServer\\ixi_go\\CsgoServer\\csgo"
+       justmondaynight: true
        services:
          demmanager:
            protocol: http

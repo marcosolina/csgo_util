@@ -13,7 +13,6 @@ logging:
 server:
   servlet:
     context-path: /discordbot
-  port: 8080
   
 spring:
   datasource:

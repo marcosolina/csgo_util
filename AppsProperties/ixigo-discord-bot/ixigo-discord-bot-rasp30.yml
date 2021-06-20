@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  datasource:
+    url: '{cipher}41ab7713ab2d701be701a7565fc0952c80225bcbbfadb793be4b73929cd789a037ff15373dc5297a3ac27d70cabf9bed926c2febaf11a7522dc218ea0986a758'
+    
+com:
+  marco:
+    ixigo:
+      discordbot:
+        bottoken: '{cipher}765eb413bb162db1951f6f3c40bc89179898b8d8c945e697dffc8c910cbf9e5b7da53d71de665a8dd383770d11f8dce6ba5076662b772cacdb3187f1a3a776b1445ed0311b4a738bce478bee9301b1b8'
+        services:
+          rconapi:
+            host: 192.168.1.30
+          players-manager:
+            host: 192.168.1.30

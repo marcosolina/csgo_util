@@ -1,0 +1,16 @@
+server:
+  port: 8089
+  
+com:
+  marco:
+    ixigo:
+      ui:
+        urls:
+          dem_manager:
+            host: "192.168.1.30:8763"
+          players_manager:
+            host: "192.168.1.30:8763"
+          rcon_api:
+            host: "192.168.1.30:8763"
+          discord_bot:
+            host: "192.168.1.30:8763"

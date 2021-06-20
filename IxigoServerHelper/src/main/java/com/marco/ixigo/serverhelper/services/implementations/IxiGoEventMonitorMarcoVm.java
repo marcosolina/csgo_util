@@ -38,7 +38,7 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
         if(!eventDispatcherProps.isSendEvents()) {
             return oldValue;
         }
-        _LOGGER.trace("Checking event file");
+        _LOGGER.debug("Checking event file");
         String currentValue = readFile();
         if(currentValue != null && !oldValue.equals(currentValue)) {
             oldValue = currentValue;

@@ -57,7 +57,7 @@ var PlayersManager = ((function(PlayersManager){
               gamesOfTheDay.forEach(element => gamesList.push(element.name));
             }
             
-            let numberOfGames = gameList.length;
+            let numberOfGames = gamesList.length;
             for(let i = 1; i <= numberOfGames; i++){
                 jSelect.append(MarcoUtils.template(strTmpl, {count: i}));
             }

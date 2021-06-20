@@ -1,0 +1,68 @@
+<div th:fragment="commonHead" th:remove="tag">
+<!--
+****************************************************************************
+  Begin Fragment: Common Head
+****************************************************************************
+-->
+<meta charset="UTF-8">
+<meta name='apple-mobile-web-app-capable'           content='yes' />
+<meta name='mobile-web-app-capable'                 content='yes' />
+<meta name='viewport'                               content='width=device-width, initial-scale=1' />
+<meta name='viewport' id='vp'                       content='initial-scale=1.0,user-scalable=no,maximum-scale=1' />
+<meta name='apple-mobile-web-app-status-bar-style'  content='black'/>
+
+<link rel="icon" sizes="196x196" th:attr="href=@{/pictures/ixigo-logo.png}">
+<link rel="apple-touch-icon" th:attr="href=@{/pictures/ixigo-logo.png}">
+
+<link rel='stylesheet'  th:href="@{/webjars/css/jquery-ui.min.css}"                type='text/css'/>
+<link rel='stylesheet'  th:href="@{/webjars/css/bootstrap.min.css}"                type='text/css'/>
+<link rel='stylesheet'  th:href="@{/webjars/css/pnotify.custom.min.css}"           type='text/css'/>
+<link rel='stylesheet'  th:href="@{/webjars/css/font-awesome.min.css}"             type='text/css'/>
+<link rel='stylesheet'  th:href="@{/webjars/css/animate.css}"                      type='text/css'/>
+<link rel='stylesheet'  th:href="@{/webjars/css/bootstrap-colorpicker.min.css}"    type='text/css'/>
+<link rel='stylesheet'  th:href="@{/webjars/css/marco.css}"                        type='text/css'/>
+<link rel='stylesheet'  th:href="@{/css/ixigo.css}"                         type='text/css'/>
+
+<script th:src="@{/webjars/js/jquery.min.js}"></script>
+<script th:src="@{/webjars/js/jquery-ui.min.js}"></script>
+<script th:src="@{/webjars/js/popper.min.js}"></script>
+<script th:src="@{/webjars/js/pnotify.custom.min.js}" ></script>
+<script th:src="@{/webjars/js/bootstrap.min.js}"></script>
+<script th:src="@{/webjars/js/bootstrap-colorpicker.min.js}"></script>
+<script th:src="@{/webjars/js/date.js}"></script>
+<script th:src="@{/webjars/js/MarcoUtils.js}"></script>
+<script th:src="@{/webjars/js/MarcoTemplates.js}"></script>
+<script th:src="@{/js/DemFilesManager.js}"></script>
+<script th:src="@{/js/PlayersManager.js}"></script>
+<script th:src="@{/js/RconApi.js}"></script>
+<script th:src="@{/js/DiscordBot.js}"></script>
+<script th:src="@{/js/Chart.min.js}"></script>
+<script th:src="@{/js/ChartsManager.js}"></script>
+<script th:src="@{/js/CsgoChart.js}"></script>
+<script th:src="@{/js/CsgoChartDataset.js}"></script>
+<script th:src="@{/js/MapsPlayedChart.js}"></script>
+<script th:src="@{/js/PlayerScoreChart.js}"></script>
+<script th:inline="javascript">
+/*<![CDATA[*/
+    
+/*
+ * These properties are retrieved from the java
+ */
+var __URLS = /*[[${URLS}]]*/ '{}';
+var __MAPS = /*[[${MAPS}]]*/ '[]';
+$(document).ready(function(){
+    if(typeof init === "function"){
+        init();
+    }
+    
+    MarcoUtils.initializeTooltips();
+});
+
+/*]]>*/
+</script>
+<!--
+****************************************************************************
+  End Fragment: Common Head
+****************************************************************************
+-->
+</div>

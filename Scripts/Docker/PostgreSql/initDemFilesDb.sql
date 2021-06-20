@@ -25,11 +25,13 @@ CREATE TABLE USERS (
 );
 
 /*
- * Table to store the errors sent via the notification system
+ * Queue of file to process
  */
-CREATE TABLE ERROR_MAP_SENT (
-    GAME_DATE               TIMESTAMP                       NOT NULL PRIMARY KEY,
-    SENT_ON                 TIMESTAMP                       NOT NULL
+CREATE TABLE DEM_PROCESS_QUEUE (
+    FILE_NAME               VARCHAR(1000)       DEFAULT ''  NOT NULL PRIMARY KEY,
+    QUEUED_ON               TIMESTAMP                       NOT NULL,
+    PROCESSED_ON            TIMESTAMP,
+    PROCESS_STATUS          VARCHAR(50)         DEFAULT ''  NOT NULL
 );
 
 /*
@@ -39,6 +41,7 @@ CREATE TABLE USERS_SCORES (
 	GAME_DATE				TIMESTAMP						NOT NULL,
 	MAP						VARCHAR(100) 		DEFAULT ''	NOT NULL,
 	STEAM_ID				VARCHAR(100) 		DEFAULT ''	NOT NULL,
+	FILE_NAME               VARCHAR(1000)       DEFAULT ''  NOT NULL,
 	RWS						NUMERIC(6, 2)		DEFAULT 0	NOT NULL, -- Round Win Share
 	KILLS					INTEGER				DEFAULT 0	NOT NULL,
 	ASSISTS					INTEGER				DEFAULT 0	NOT NULL,

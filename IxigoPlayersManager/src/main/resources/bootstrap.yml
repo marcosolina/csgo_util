@@ -1,0 +1,22 @@
+# I am telling at spring boot where is the eureka server
+eureka:
+  client:
+    serviceUrl:
+      #try the value from the system props, or get the fall back
+      defaultZone: ${IXIGO_EUREKA_SERVER:http://localhost:8765/ixigodiscovery/eureka}
+  instance:
+    preferIpAddress: true 
+
+spring:
+  profiles:
+    active:
+    - ${IXIGO_PROFILE:local}
+  application:
+    name: ixigo-players-manager
+  cloud:
+    inetutils:
+      preferred-networks: 192.168.1 # Workaround because I have multiple network interfaces
+    config:
+      uri: ${IXIGO_CONFIG_SERVER_URI:http://localhost:8888/config}
+      username: ${IXIGO_CONFIG_SERVER_USER:REPLACE_ME}
+      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}

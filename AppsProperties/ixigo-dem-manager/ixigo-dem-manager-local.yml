@@ -1,0 +1,8 @@
+server:
+  port: 8081
+com:
+  marco:
+    ixigo:
+      demmanager:
+        demFileManager:
+          rootFolder: "C:\\tmp\\demfiles"

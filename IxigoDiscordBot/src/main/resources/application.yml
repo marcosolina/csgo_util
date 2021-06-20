@@ -1,0 +1,53 @@
+logging:
+  file:
+    name: ./logs/discordbot.log
+  pattern:
+    console: "%d %-5level : %msg%n"
+    file: "%d %-5level : %msg%n"
+  level:
+    root: INFO
+    com:
+      marco:
+        discordbot: DEBUG
+
+server:
+  servlet:
+    context-path: /discordbot
+  
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/discordbot
+    username: ${IXIGO_POSTGRES_USER:REPLACE_ME} # Replace the value
+    password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME} # Replace the value
+
+com:
+  marco:
+    ixigo:
+      discordbot:
+        bottoken: ${DISCORD_BOT_TOKEN}
+        version: ^project.version^
+        services:
+          discord:
+            serverId: 838818767219195924
+            textChannels:
+              general: 838818767219195929
+            voiceChannels:
+              terrorist: 838818771136413777
+              ct: 839591293545611305
+              general: 838818767219195932
+          rconapi:
+            protocol: http
+            host: localhost
+            port: 8763
+            contextPath: "/ixigoproxy/ixigo-rcon-api/rcon"
+            sendcommand: "${com.marco.ixigo.discordbot.services.rconapi.contextPath}/cmd"
+            csgoServerPort: 27015
+            csgoServerHost: 192.168.1.10
+            csgoServerPassw: localtest
+          players-manager:
+            protocol: http
+            host: localhost
+            port: 8763
+            contextPath: "/ixigoproxy/ixigo-players-manager/playersmanager"
+            generateTeams: "${com.marco.ixigo.discordbot.services.players-manager.contextPath}/teams"
+            

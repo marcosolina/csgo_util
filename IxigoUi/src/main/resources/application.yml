@@ -1,0 +1,57 @@
+logging:
+  file:
+    name: ./logs/ixigo-ui.log
+  pattern:
+    console: "%d %-5level : %msg%n"
+    file: "%d %-5level : %msg%n"
+  level:
+    root: INFO
+    com:
+      marco:
+        ixigo:
+          ui: DEBUG
+
+server:
+  servlet:
+    context-path: /ixigoui
+com:
+  marco:
+    ixigo:
+      ui:
+        version: ^project.version^
+        urls:
+          dem_manager:
+            protocol: "http://"
+            host: "localhost:8763"
+            contextPath: "/ixigoproxy/ixigo-dem-manager/demmanager"
+            baseurl: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}"
+            get_all_files: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/files/all"
+            download_file: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/files"
+            get_scores_types: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/demdata/scorestype"
+            get_players: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/demdata/users"
+            get_players_scores: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/demdata/usersscores"
+            get_maps_played: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/demdata/mapsplayed"
+          players_manager:
+            protocol: "http://"
+            host: "localhost:8763"
+            contextPath: "/ixigoproxy/ixigo-players-manager/playersmanager"
+            baseurl: "${com.marco.ixigo.ui.urls.players_manager.protocol}${com.marco.ixigo.ui.urls.players_manager.host}${com.marco.ixigo.ui.urls.players_manager.contextPath}"
+            get_teams: "${com.marco.ixigo.ui.urls.players_manager.baseurl}/teams"
+          rcon_api:
+            protocol: "http://"
+            host: "localhost:8763"
+            contextPath: "/ixigoproxy/ixigo-rcon-api/rcon"
+            baseurl: "${com.marco.ixigo.ui.urls.rcon_api.protocol}${com.marco.ixigo.ui.urls.rcon_api.host}${com.marco.ixigo.ui.urls.rcon_api.contextPath}"
+            send_cmd: "${com.marco.ixigo.ui.urls.rcon_api.baseurl}/cmd"
+          discord_bot:
+            protocol: "http://"
+            host: "localhost:8763"
+            contextPath: "/ixigoproxy/ixigo-discord-bot/discordbot"
+            baseurl: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}"
+            get_mapped_players: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/mapped/players"
+            post_players_mapping: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/players/mapping"
+            get_config: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/config"
+            put_config: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/config"
+            start_bot: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/start"
+            stop_bot: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/stop"
+

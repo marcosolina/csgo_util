@@ -1,6 +1,6 @@
 logging:
   file:
-    name: ./logs/discordbot.log
+    name: ./logs/server-helper.log
   pattern:
     console: "%d %-5level : %msg%n"
     file: "%d %-5level : %msg%n"
@@ -8,27 +8,33 @@ logging:
     root: INFO
     com:
       marco:
-        ixigoserverhelper: DEBUG
+       ixigo:
+         serverhelper: DEBUG
 
 server:
   servlet:
     context-path: /ixigohelper
   port: 8083
   
-ixigohelper:
-  version: ^project.version^
-  demfilesserice: 
-    demFilesFolderFullPath: "C:\\tmp\\demfiles"
-    parserservice:
-      protocol: "https"
-      host: "marco.selfip.net"
-      commonPath: "/zuul/csgo-round-parser-api/demparser"
-      endpoint: "${ixigohelper.demfilesserice.parserservice.commonPath}/newdata"
-      demFilesUploaEndpoint: "${ixigohelper.demfilesserice.parserservice.commonPath}/files"
-  rconservice:
-      protocol: "https"
-      host: marco.selfip.net
-      commonPath: "/zuul/csgo-rest-api/rcon"
-      eventEndpoint: "${ixigohelper.rconservice.commonPath}/event"
-      sendEvents: false
-    
+com:
+  marco:
+   ixigo:
+     serverhelper:
+       version: ^project.version^
+       demFilesFolderFullPath: "E:\\VmSharedFiles\\CsgoServer\\ixi_go\\CsgoServer\\csgo"
+       justmondaynight: true
+       services:
+         demmanager:
+           protocol: http
+           host: 192.168.1.25
+           port: 8763
+           contextPath: "/ixigoproxy/ixigo-dem-manager/demmanager"
+           uploadFile: "${com.marco.ixigo.serverhelper.services.demmanager.contextPath}/files"
+           parseFile: "${com.marco.ixigo.serverhelper.services.demmanager.contextPath}/parse"
+         eventdispatcher:
+           protocol: http
+           host: 192.168.1.25
+           port: 8763
+           contextPath: "/ixigoproxy/ixigo-event-dispatcher/eventsdispatcher"
+           dispatchEvent: "${com.marco.ixigo.serverhelper.services.eventdispatcher.contextPath}/event"
+           sendEvents: false

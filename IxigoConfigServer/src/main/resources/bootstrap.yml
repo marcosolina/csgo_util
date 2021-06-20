@@ -1,0 +1,7 @@
+  
+# This is the encryption key that this service
+# will use to encode or decode the properties
+# If will try to use the key defined in the system, 
+# if not available it will use a default one  
+encrypt:
+  key: ${IXIGO_CONFIG_ENC_KEY:thisIsMySuperSecretKey}

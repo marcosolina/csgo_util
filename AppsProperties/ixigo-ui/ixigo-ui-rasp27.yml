@@ -1,0 +1,16 @@
+server:
+  port: 8089
+  
+com:
+  marco:
+    ixigo:
+      ui:
+        urls:
+          dem_manager:
+            host: "marco.selfip.net"
+          players_manager:
+            host: "marco.selfip.net"
+          rcon_api:
+            host: "marco.selfip.net"
+          discord_bot:
+            host: "marco.selfip.net"

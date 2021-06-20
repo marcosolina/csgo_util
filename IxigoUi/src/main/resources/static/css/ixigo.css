@@ -1,0 +1,125 @@
+*:disabled {
+    cursor: not-allowed !important;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    color: white;
+}
+
+body {
+    background-image: url(../pictures/background.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.card-header{
+    border-bottom: 1px solid #dee2e6;
+}
+
+.card,
+.list-group-item {
+    background-color: rgba(49, 49, 49, 0.3);
+    border: 1px solid #dee2e6;
+    color: #FFFFFF;
+    font-weight: bolder;
+}
+
+.btn-card {
+    color: #FFFFFF;
+    font-weight: bold;
+}
+
+.sticky-top {
+    position: absolute;
+    width: 100%;
+}
+
+.csgo-container {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.div-title {
+    color: white;
+    text-align: center;
+    padding-top: 40px;
+}
+
+.nav-link {
+    color: #385e7f !important;
+    font-weight: bolder !important;
+}
+
+.nav-link.active {
+    background-color: rgba(255, 255, 255, 0) !important;
+    color: #FFFFFF !important;
+    font-weight: bolder !important;
+}
+
+/*####################################################
+* START PLAYERS
+####################################################*/
+
+/*####################################################
+* START RCON
+####################################################*/
+.rcon-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.rcon-container-title{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+.rcon-map {
+    width: 200px;
+    margin: 5px;
+    cursor: pointer;
+    transition: 0.5s all;
+    display: flex;
+    flex-direction: column;
+}
+
+.rcon-map:hover {
+    width: 250px;
+    transition: 0.5s all;
+}
+
+.rcon-card-body {
+    background-color: #343a40;
+    border-radius: 0 0 5px 5px;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 50px;
+}
+
+.rcon-map img{
+    max-width: 100%;
+    max-width: 100%;
+}
+
+.alert-danger, .alert-success, .alert-info, .alert-warning {
+    color: #FFFFFF;
+    border: 0;
+}
+
+.rcon-icon-div{
+    text-align: center;
+    font-size: 75px;
+}

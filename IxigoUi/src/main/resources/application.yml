@@ -43,5 +43,6 @@ com:
             host: "localhost:8763"
             contextPath: "/ixigoproxy/ixigo-discord-bot/discordbot"
             get_mapped_players: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/mapped/players"
+            post_players_mapping: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/players/mapping"
             
 

@@ -98,7 +98,7 @@ var DiscordBot = ((function(DiscordBot){
             players.push(player);
         });
 
-        let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/players/mapping";
+        let url = __URLS.DISCORD_BOT.POST_PLAYERS_MAPPING;
         MarcoUtils.executeAjax({type: "POST", url: url, showLoading: true, body: {players: players}}).then(DiscordBot.receivedResponse);
     }
 

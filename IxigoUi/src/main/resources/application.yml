@@ -13,7 +13,7 @@ logging:
 
 server:
   servlet:
-    context-path: /cstrike
+    context-path: /ixigoui
 com:
   marco:
     ixigo:

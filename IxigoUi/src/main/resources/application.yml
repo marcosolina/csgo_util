@@ -44,5 +44,8 @@ com:
             contextPath: "/ixigoproxy/ixigo-discord-bot/discordbot"
             get_mapped_players: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/mapped/players"
             post_players_mapping: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/players/mapping"
-            
+            get_config: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/config"
+            put_config: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/config"
+            start_bot: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/start"
+            stop_bot: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}/stop"
 

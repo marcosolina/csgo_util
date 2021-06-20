@@ -30,7 +30,7 @@ var DiscordBot = ((function(DiscordBot){
     }
 
     DiscordBot.changeRoundsToConsider = function(){
-        let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/config";
+        let url = __URLS.DISCORD_BOT.PUT_CONFIG;
         MarcoUtils.executeAjax({
                 type: "PUT",
                 url: url,
@@ -47,7 +47,7 @@ var DiscordBot = ((function(DiscordBot){
     }
 
     DiscordBot.getRoundsToConsider = function(){
-        let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/config?config=ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION";
+        let url = __URLS.DISCORD_BOT.GET_CONFIG + "?config=ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION";
         MarcoUtils.executeAjax({
                 type: "GET",
                 url: url
@@ -60,7 +60,7 @@ var DiscordBot = ((function(DiscordBot){
 
     DiscordBot.startStopDiscordBot = function(boolStart){
         if(boolStart){
-            let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/start";
+            let url = __URLS.DISCORD_BOT.START_BOT;
             MarcoUtils.executeAjax({type: "POST", url: url, showLoading: true}).then(function(resp){
                 DiscordBot.receivedResponse(resp);
                 if(resp.status){
@@ -68,7 +68,7 @@ var DiscordBot = ((function(DiscordBot){
                 }
             });
         }else{
-            let url = __URLS.API_BASE + "/ixigo-discord-bot/discordbot/stop";
+            let url = __URLS.DISCORD_BOT.STOP_BOT;
             MarcoUtils.executeAjax({type: "DELETE", url: url, showLoading: true}).then(DiscordBot.receivedResponse);
         }
     }

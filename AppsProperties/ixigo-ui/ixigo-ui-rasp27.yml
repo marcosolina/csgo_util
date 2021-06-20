@@ -7,10 +7,14 @@ com:
       ui:
         urls:
           dem_manager:
+            protocol: "https://"
             host: "marco.selfip.net"
           players_manager:
+            protocol: "https://"
             host: "marco.selfip.net"
           rcon_api:
+            protocol: "https://"
             host: "marco.selfip.net"
           discord_bot:
+            protocol: "https://"
             host: "marco.selfip.net"

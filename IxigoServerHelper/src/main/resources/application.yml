@@ -29,12 +29,12 @@ com:
            host: 192.168.1.25
            port: 8763
            contextPath: "/ixigoproxy/ixigo-dem-manager/demmanager"
-           uploadFile: "${com.marco.ixigo.serverhelper.services.demmanager.commonPath}/files"
-           parseFile: "${com.marco.ixigo.serverhelper.services.demmanager.commonPath}/parse"
+           uploadFile: "${com.marco.ixigo.serverhelper.services.demmanager.contextPath}/files"
+           parseFile: "${com.marco.ixigo.serverhelper.services.demmanager.contextPath}/parse"
          eventdispatcher:
            protocol: http
            host: 192.168.1.25
            port: 8763
            contextPath: "/demmanager"
-           dispatchEvent: "${com.marco.ixigo.serverhelper.services.eventDispatcher.commonPath}/event"
+           dispatchEvent: "${com.marco.ixigo.serverhelper.services.eventdispatcher.contextPath}/event"
            sendEvents: false

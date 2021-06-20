@@ -49,5 +49,5 @@ com:
             host: localhost
             port: 8763
             contextPath: "/ixigoproxy/ixigo-players-manager/playersmanager"
-            generateTeams: "${com.marco.ixigo.discordbot.services.playersManager.contextPath}/teams"
+            generateTeams: "${com.marco.ixigo.discordbot.services.players-manager.contextPath}/teams"
             

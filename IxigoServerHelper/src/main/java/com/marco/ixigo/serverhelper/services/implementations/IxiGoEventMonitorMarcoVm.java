@@ -46,7 +46,7 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
                 SendEvent body = new SendEvent(oldValue);
                 URL url = new URL(eventDispatcherProps.getProtocol(), eventDispatcherProps.getHost(), eventDispatcherProps.getPort(), eventDispatcherProps.getDispatchEvent());
                 if(_LOGGER.isDebugEnabled()) {
-                    _LOGGER.debug(String.format("Sending event: %s ", oldValue));
+                    _LOGGER.debug(String.format("Sending event: %s to: %s", oldValue, url.toString()));
                 }
                 
                 ClientResponse clientResp = mnu.performPostRequest(url, Optional.empty(), Optional.of(body));

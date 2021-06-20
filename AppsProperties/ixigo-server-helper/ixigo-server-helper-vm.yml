@@ -6,3 +6,6 @@ com:
    ixigo:
      serverhelper:
        demFilesFolderFullPath: "${ENV_CSGO_INSTALL_FOLDER}/csgo"
+       services:
+         eventdispatcher:
+           sendEvents: true

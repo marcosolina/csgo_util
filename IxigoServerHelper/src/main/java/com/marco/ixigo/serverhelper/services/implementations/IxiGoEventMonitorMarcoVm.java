@@ -35,7 +35,7 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
     @Override
     @Scheduled(cron = "*/1 * * * * *")// Every second
     public String checkForNewEvent() {
-        _LOGGER.debug("Checking event file");
+        _LOGGER.trace("Checking event file");
         if(!eventDispatcherProps.isSendEvents()) {
             return oldValue;
         }

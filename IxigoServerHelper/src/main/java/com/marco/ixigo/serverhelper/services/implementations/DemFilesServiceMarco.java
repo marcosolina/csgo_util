@@ -127,6 +127,7 @@ public class DemFilesServiceMarco implements DemFilesService {
     private void postLastDemFile(String fileNameAbsolutePath){
         try {
             Path file = Paths.get(fileNameAbsolutePath);
+            _LOGGER.debug(String.format("Sending dem file: %s", file.toUri().toString()));
             Resource resource = new UrlResource(file.toUri());
 
             MultipartBodyBuilder builder = new MultipartBodyBuilder();

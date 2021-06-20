@@ -63,6 +63,7 @@ public class DemFilesServiceMarco implements DemFilesService {
         }
 
         // Get all the files in the Server Folder
+        _LOGGER.debug(String.format("Reading folder: %s", appProps.getDemFilesFolderFullPath()));
         File folder = new File(appProps.getDemFilesFolderFullPath());
         File[] files = folder.listFiles();
 

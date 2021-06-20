@@ -1,0 +1,16 @@
+server:
+  port: 8081
+com:
+  marco:
+    ixigo:
+      demmanager:
+        demFileManager:
+          rootFolder: '{cipher}d68d9c4a780db25ced241a5e861f836f058a994b089d072066acf58a59f1e3deb3d5400855b5355657a483d2872efa5b'
+        notifications:
+          telegram:
+            enabled: true
+            telegramToken: '{cipher}fb1e646375ad1db0be4506649b84738ddbda458b1c7752e40cac32a8092f48b0e2d7bffb93b40322acbaaee2bf54a155222a8bf2969591bb790eab647647b93b'
+            chatGroupId: '{cipher}-576599160'
+spring:
+  datasource:
+    url: '{cipher}a907b4154f3884b808b582bebb038fe95e6b449bdad868d5d0bf1f6a9ac88c788655cf4443835c3f826cebd5f330ff9dc179a3ce134c953a79e3733178c90a31'

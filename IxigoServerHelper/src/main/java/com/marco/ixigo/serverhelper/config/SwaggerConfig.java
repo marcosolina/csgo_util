@@ -41,7 +41,7 @@ public class SwaggerConfig {
     private ApiInfo apiEndPointsInfo() {
         // @formatter:off
         return new ApiInfoBuilder()
-                .title("Discord Bot")
+                .title("Ixigo Server Helper")
                 .description("This service adds couple of functionalities to the CSGO server")
                 .contact(new Contact("Marco Solina", "marco.selfip.net", "marcosolina@gmail.com"))
                 .version(appVersion)

@@ -42,7 +42,7 @@ public class DemFilesParser {
     public ResponseEntity<Void> processAllNewFiles() {
         _LOGGER.trace("Inside DemFilesProcessor.processNewFiles");
         try {
-           parser.processFiles();
+           parser.processAllFiles();
         } catch (MarcoException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

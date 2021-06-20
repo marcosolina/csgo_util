@@ -29,7 +29,7 @@ public class EventsController {
     private EventService service;
     
     
-    @PostMapping("")
+    @PostMapping("/event")
     @ApiOperation(value = "It receives the event from the CSGO server", code = 200)
     public ResponseEntity<Void> receiveServerEvent(@RequestBody IncomingEventHttpRequest request, HttpServletRequest httRequest) {
         if (LOGGER.isInfoEnabled()) {

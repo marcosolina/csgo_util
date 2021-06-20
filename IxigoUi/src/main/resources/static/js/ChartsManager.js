@@ -95,7 +95,7 @@ var ChartsManager = ((function(ChartsManager){
 		let deferred = $.Deferred();
 		MarcoUtils.executeAjax({
             type: "GET",
-            url: __URLS.API_BASE + "/csgo-round-parser-api/demparser/users",
+            url: __URLS.DEM_MANAGER.GET_PLAYERS,
         }).then(function(resp){
 			ChartsManager.playersRetrieved(resp);
 			deferred.resolve();

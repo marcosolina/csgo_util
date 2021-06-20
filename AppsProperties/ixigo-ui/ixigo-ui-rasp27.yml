@@ -7,10 +7,10 @@ com:
       ui:
         urls:
           dem_manager:
-            host: "192.168.1.30:8763"
+            host: "marco.selfip.net"
           players_manager:
-            host: "192.168.1.30:8763"
+            host: "marco.selfip.net"
           rcon_api:
-            host: "192.168.1.30:8763"
+            host: "marco.selfip.net"
           discord_bot:
-            host: "192.168.1.30:8763"
+            host: "marco.selfip.net"

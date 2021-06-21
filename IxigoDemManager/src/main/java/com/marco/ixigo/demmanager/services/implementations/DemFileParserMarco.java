@@ -84,7 +84,7 @@ public class DemFileParserMarco implements DemFileParser {
     }
 
     private void processFiles(List<File> files) {
-        AtomicInteger count = new AtomicInteger();
+        AtomicInteger count = new AtomicInteger(0);
         files.parallelStream().forEach(f -> {
             try {
 
@@ -111,6 +111,7 @@ public class DemFileParserMarco implements DemFileParser {
                     }
                 });
                 if(ok.get()) {
+                    count.incrementAndGet();
                     setFileProcessed(f, DemProcessStatus.PROCESSED);
                 }
             } catch (MarcoException e) {
@@ -121,7 +122,7 @@ public class DemFileParserMarco implements DemFileParser {
             }
         });
         notificationService.sendParsingCompleteNotification("Dem Manager",
-                String.format("Processed %d files", files.size()));
+                String.format("Processed %d files, %d were successfully processed", files.size(), count.get()));
     }
 
     private void setFileProcessed(File f, DemProcessStatus status) {

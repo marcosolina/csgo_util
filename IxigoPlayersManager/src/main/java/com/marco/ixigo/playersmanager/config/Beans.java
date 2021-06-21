@@ -37,11 +37,12 @@ public class Beans {
 
     @Bean(name = "WsClientNotBalanced")
     public WebClient.Builder getWebClientBuilderNotBalanced() {
+        // @formatter:off
         return WebClient.builder().exchangeStrategies(ExchangeStrategies.builder()
                 .codecs(configurer -> configurer
                           .defaultCodecs()
-                          .maxInMemorySize(16 * 1024 * 1024))
+                          .maxInMemorySize(50 * 1024 * 1024)) // 50 MB thanks: https://stackoverflow.com/questions/59735951/databufferlimitexception-exceeded-limit-on-max-bytes-to-buffer-webflux-error
                         .build());
-        //return WebClient.builder();
+        // @formatter:on
     }
 }

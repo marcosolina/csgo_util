@@ -58,7 +58,7 @@ public class DemFileParserMarco implements DemFileParser {
     private DemProcessor demProcessor;
     @Autowired
     private NotificationService notificationService;
-    
+
     @Value("${com.marco.ixigo.demmanager.demparser.executionType}")
     private ParserExecutionType execType;
 
@@ -66,10 +66,9 @@ public class DemFileParserMarco implements DemFileParser {
     public boolean processFiles() throws MarcoException {
         _LOGGER.debug("Processing all the new files files");
         List<EntityProcessQueue> filesEntities = repoQueue.getNotProcessedDemFiles();
-        List<File> filesToProcess = filesEntities.stream()
-                .map(e ->new File(e.getFileName()))
+        List<File> filesToProcess = filesEntities.stream().map(e -> new File(e.getFileName()))
                 .collect(Collectors.toList());
-        
+
         switch (execType) {
         case SYNC:
             processFiles(filesToProcess);
@@ -81,23 +80,30 @@ public class DemFileParserMarco implements DemFileParser {
 
         return true;
     }
-    
+
     private void processFiles(List<File> files) {
-        files.parallelStream()
-        .forEach(f -> {
+        files.parallelStream().forEach(f -> {
             try {
-                
+
                 MapStats m = generateMapStatFromFile(f);
                 m.getUsersStats().stream().forEach(u -> {
-                    EntityUser user = new EntityUser();
-                    user.setSteamId(u.getSteamID());
-                    user.setUserName(u.getUserName());
-                    repoUser.insertUpdateUser(user);
-                    
-                    EntityUserScore us = fromUserMapStatsToEntityUserScore(m, u);
-                    us.setFileName(f.getAbsolutePath());
-                    
-                    repoUserScore.insertUpdateUserScore(us);
+                    try {
+                        EntityUser user = new EntityUser();
+                        user.setSteamId(u.getSteamID());
+                        user.setUserName(u.getUserName());
+                        repoUser.insertUpdateUser(user);
+
+                        EntityUserScore us = fromUserMapStatsToEntityUserScore(m, u);
+                        us.setFileName(f.getAbsolutePath());
+
+                        repoUserScore.insertUpdateUserScore(us);
+                    } catch (Exception e) {
+                        setFileProcessed(f, DemProcessStatus.PROCESS_FAILED);
+                        String message = String.format("Problem while reading the values extracted from the file: %s",
+                                f.getAbsoluteFile());
+                        _LOGGER.error(message);
+                        notificationService.sendParsingCompleteNotification("Dem Manager", message);
+                    }
                 });
                 setFileProcessed(f, DemProcessStatus.PROCESSED);
             } catch (MarcoException e) {
@@ -107,22 +113,23 @@ public class DemFileParserMarco implements DemFileParser {
                 notificationService.sendParsingCompleteNotification("Dem Manager", message);
             }
         });
-        notificationService.sendParsingCompleteNotification("Dem Manager", String.format("Processed %d files", files.size()));
+        notificationService.sendParsingCompleteNotification("Dem Manager",
+                String.format("Processed %d files", files.size()));
     }
-    
+
     private void setFileProcessed(File f, DemProcessStatus status) {
         EntityProcessQueue entity = repoQueue.findById(f.getAbsolutePath());
         entity.setProcessedOn(LocalDateTime.now(ZoneOffset.UTC));
         entity.setProcessStatus(status);
         repoQueue.saveEntity(entity);
     }
-    
+
     public MapStats generateMapStatFromFile(File f) throws MarcoException {
         MapStats ms = setMapNameAndTime(f);
         ms.setUsersStats(demProcessor.processDemFile(f));
         return ms;
     }
-    
+
     /**
      * It will extract the high level dem file info from the file name
      * 
@@ -138,7 +145,7 @@ public class DemFileParserMarco implements DemFileParser {
         ms.setMapName(tmp[4]);
         return ms;
     }
-    
+
     private EntityUserScore fromUserMapStatsToEntityUserScore(MapStats ms, UserMapStats score) {
         EntityUserScore ums = new EntityUserScore();
 
@@ -190,7 +197,6 @@ public class DemFileParserMarco implements DemFileParser {
         ums.setMatchPlayed(RoundParserUtils.doubleToBigDecimal(score.getMatchPlayed(), 2));
         return ums;
     }
-    
 
     @Override
     public Map<String, String> mapOfAvailableScores() {
@@ -227,10 +233,10 @@ public class DemFileParserMarco implements DemFileParser {
         u.setUserName(entity.getUserName());
         return u;
     }
-    
+
     @Override
-    public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed)
-            throws MarcoException {
+    public Map<String, List<MapStats>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+            BigDecimal minPercPlayed) throws MarcoException {
         Map<String, List<MapStats>> map = new HashMap<>();
 
         for (String steamId : usersIDs) {
@@ -246,7 +252,7 @@ public class DemFileParserMarco implements DemFileParser {
 
         return map;
     }
-    
+
     /**
      * It uses the @{EntityUser} and @{EntityUserScore} to generate a @{MapStats}
      * 
@@ -320,10 +326,10 @@ public class DemFileParserMarco implements DemFileParser {
             }
             throw new MarcoException(e);
         }
-        
+
         files.stream().forEach(f -> {
             EntityProcessQueue entity = repoQueue.findById(f.getAbsolutePath());
-            if(entity == null) {
+            if (entity == null) {
                 entity = new EntityProcessQueue();
                 entity.setFileName(f.getAbsolutePath());
                 entity.setProcessStatus(DemProcessStatus.NOT_PROCESSED);
@@ -331,8 +337,7 @@ public class DemFileParserMarco implements DemFileParser {
                 repoQueue.saveEntity(entity);
             }
         });
-        
-        
+
         return processFiles();
     }
 

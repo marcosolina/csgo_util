@@ -89,7 +89,7 @@ public class DemFileParserMarco implements DemFileParser {
             try {
 
                 MapStats m = generateMapStatFromFile(f);
-                AtomicBoolean ok = new AtomicBoolean();
+                AtomicBoolean ok = new AtomicBoolean(true);
                 m.getUsersStats().stream().forEach(u -> {
                     try {
                         EntityUser user = new EntityUser();
@@ -101,8 +101,8 @@ public class DemFileParserMarco implements DemFileParser {
                         us.setFileName(f.getAbsolutePath());
 
                         repoUserScore.insertUpdateUserScore(us);
-                        ok.set(ok.get() && true);
                     } catch (Exception e) {
+                        ok.set(false);
                         setFileProcessed(f, DemProcessStatus.PROCESS_FAILED);
                         String message = String.format("Problem while reading the values extracted from the file: %s",
                                 f.getAbsoluteFile());

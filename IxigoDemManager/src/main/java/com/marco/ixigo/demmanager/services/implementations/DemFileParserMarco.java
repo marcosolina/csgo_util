@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -82,10 +84,12 @@ public class DemFileParserMarco implements DemFileParser {
     }
 
     private void processFiles(List<File> files) {
+        AtomicInteger count = new AtomicInteger();
         files.parallelStream().forEach(f -> {
             try {
 
                 MapStats m = generateMapStatFromFile(f);
+                AtomicBoolean ok = new AtomicBoolean();
                 m.getUsersStats().stream().forEach(u -> {
                     try {
                         EntityUser user = new EntityUser();
@@ -97,6 +101,7 @@ public class DemFileParserMarco implements DemFileParser {
                         us.setFileName(f.getAbsolutePath());
 
                         repoUserScore.insertUpdateUserScore(us);
+                        ok.set(ok.get() && true);
                     } catch (Exception e) {
                         setFileProcessed(f, DemProcessStatus.PROCESS_FAILED);
                         String message = String.format("Problem while reading the values extracted from the file: %s",
@@ -105,7 +110,9 @@ public class DemFileParserMarco implements DemFileParser {
                         notificationService.sendParsingCompleteNotification("Dem Manager", message);
                     }
                 });
-                setFileProcessed(f, DemProcessStatus.PROCESSED);
+                if(ok.get()) {
+                    setFileProcessed(f, DemProcessStatus.PROCESSED);
+                }
             } catch (MarcoException e) {
                 setFileProcessed(f, DemProcessStatus.PROCESS_FAILED);
                 String message = String.format("Could not process DEM file: %s", f.getAbsoluteFile());

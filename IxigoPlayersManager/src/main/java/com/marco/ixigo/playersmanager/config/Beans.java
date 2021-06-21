@@ -2,6 +2,7 @@ package com.marco.ixigo.playersmanager.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.marco.ixigo.playersmanager.services.implementations.PlayersManagerMarco;
@@ -36,6 +37,12 @@ public class Beans {
 
     @Bean(name = "WsClientNotBalanced")
     public WebClient.Builder getWebClientBuilderNotBalanced() {
-        return WebClient.builder();
+        // @formatter:off
+        return WebClient.builder().exchangeStrategies(ExchangeStrategies.builder()
+                .codecs(configurer -> configurer
+                          .defaultCodecs()
+                          .maxInMemorySize(50 * 1024 * 1024)) // 50 MB thanks: https://stackoverflow.com/questions/59735951/databufferlimitexception-exceeded-limit-on-max-bytes-to-buffer-webflux-error
+                        .build());
+        // @formatter:on
     }
 }

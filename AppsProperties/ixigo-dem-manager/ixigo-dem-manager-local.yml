@@ -5,4 +5,4 @@ com:
     ixigo:
       demmanager:
         demFileManager:
-          rootFolder: "C:\\tmp\\demfiles"
+          rootFolder: "E:\\demfiles"

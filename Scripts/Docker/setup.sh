@@ -2,7 +2,7 @@
 
 # Clone the repo in the folder specified by the user
 
-git clone https://github.com/marcosolina/ixi_go.git
+git clone https://github.com/marcosolina/csgo_util.git
 
 
 SCRIPTS_FOLDER=csgo_util/Scripts

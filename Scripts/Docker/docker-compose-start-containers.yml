@@ -5,7 +5,23 @@ networks:
     name: ixigo_network
 
 services:
-  app:
+  configService:
+    image: ixigo_config
+    environment:
+      IXIGO_CONFIG_REPO: "https://github.com/marcosolina/csgo_util.git"
+      IXIGO_CONFIG_SERVER_USER: __IXIGO_CONFIG_SERVER_USER__
+      IXIGO_CONFIG_SERVER_PASSW: __IXIGO_CONFIG_SERVER_PASSW__
+      IXIGO_GIT_REPO_BRANCH: main
+      IXIGO_CONFIG_ENC_KEY: __IXIGO_CONFIG_ENC_KEY__
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoConfigServer
+    ports:
+      - "8888:8888"
+    depends_on: 
+      - postgres
+  discoveryService:
     image: ixigo_discovery
     networks: 
       - ixigo

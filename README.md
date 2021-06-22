@@ -35,6 +35,12 @@ This is a personal project that I made to simplify few things that I do when pla
 - **Optional**:
   - Docker
 
+## Start With Docker Compose
+
+~~~~bash
+bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/refactoring/Scripts/Docker/setup.sh)
+~~~~
+
 ## Register a CSGO Event Listener
 
 The **Ixigo Event Dispatcher** service allows you to register you app and listen for some events which are fired by our CSGO dedicated server. [Here you can find](https://marco.selfip.net/ixigoproxy/ixigo-event-dispatcher/eventsdispatcher/swagger-ui.html) the APIs documentation to register / un-register your app

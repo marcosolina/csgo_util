@@ -1,0 +1,25 @@
+version: "3.7"
+
+networks:
+  ixigo:
+    name: ixigo_network
+
+services:
+  app:
+    image: ixigo_discovery
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoDiscovery
+    ports:
+      - "8765:8765"
+    depends_on: 
+      - postgres
+  postgres:
+    image: postgres_ixigo
+    networks: 
+      - ixigo
+    build:
+      context: ./PostgreSql
+    ports:
+      - "5432:5432"

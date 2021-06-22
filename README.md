@@ -2,7 +2,7 @@
 
 ![Rcon UI](./misc/pictures/ixigo-logo.png)
 
-This is a personal project that I made to simplify couple of things when playing with my friends at CSGO. We play on our CSGO [dedicated server](https://github.com/marcosolina/ixi_go) and I wanted an easier way to send RCON commands. I found [this nice library](https://github.com/Kronos666/rkon-core) which helps me to send the commands that I need. I decided then to create a simple REST API service and a simple PHP webpage to send RCON commands from the UI. In this way we just need to click on what I want to do :)
+This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use frequently and we wanted to enhance our gaming experience with the automation of few task, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
 
 ## Project Structure
 
@@ -15,22 +15,29 @@ This is a personal project that I made to simplify couple of things when playing
   - [IxigoConfigServer](./IxigoConfigServer/): This is the Spring Boot configuration service that is used to serve the Services Properties for the different environmnets
   - [IxigoDemManager](./IxigoDemManager): This Spring Boot service manages the "dem" files created by the CSGO server. For example it will store new files, use the DemParse app to process these files, expose REST API to retrieve the info or the files itself
   - [IxigoDiscordBot](./IxigoDiscordBot/): This Spring Boot service is used to automate some taks while we play on our CSGO dedicated server. For example it will listen for either CSGO events or messages in the chat and then it can move the players to the appropriate channel, retrieve the Players statistic to balance the teams
+  - [IxigoDiscovery](./IxigoDiscovery/): This Spring Boot service is used to register all the services and simplify the S2S calls. It can be usefull for load balancing, either client side or server side load balancing
+  - [IxigoEventDispatcher](./IxigoEventDispatcher/): This Spring Boot service receives the event fired by the Ixigo Server Helper and forwards these event to all the registered event listeners
+  - [IxigoPlayersManager](./IxigoPlayersManager/): This Spring Boot service uses the players stats to perform some calculation. For example, this service is used to generate balanced CSGO teams when we play on our CSGO dedicated server
+  - [IxigoProxy](./IxigoProxy/): This Spring Boot service is a proxy service that it is used to simplify the S2S calls. It is usesfull to perform the service side load balancing and to have a central point to call all the services
+  - [IxigoRconApiService](./IxigoRconApiService/): This Spring Boot service it is used to send RCON commands to our CSGO dedicated server via REST APIs
+  - [IxigoServerHelper](./IxigoServerHelper/): This Spring Boot service is deployed on the same machine where the CSGO server is running. It monitors some CSGO files, fires events to the Ixigo Event Dispatcher and uploads to the DEM manager the DEM files
+  - [IxigoUi](./IxigoUi/): This Spring Boot Service it is used to provide a simple UI that can be used to perform some tasks when we play on our CSGO dedicate server. For example it can be used to quickly change the map, add / remove bot and balance the teams
   - **Misc**: Extra files used for documentation or the UI (CSGO Font, logo, Screenshots...)
+  - **Scripts**: This folder contains the scripts that I use to automate some things
+    - **Docker**: Contains the scripts that I used to generate the required containers
+    - **jenkins**: Contains the script/s that are used by Jenkins in the CI/CD pipeline
 
 ## Requirements
 
-- Java 11
-- PHP >=5
+- Java >= 8
 - .NET Core
 - PostgreSQL
-- Spring Boot:
-  - Config Server
-  - Eureka Server
-  - Zuul Server
+- **Optional**:
+  - Docker
 
 ## Register a CSGO Event Listener
 
-The [CsgoRespApi](https://github.com/marcosolina/csgo_util/tree/main/CsgoRestApi) project exposes some [APIs](https://marco.selfip.net/zuul/csgo-rest-api/rcon/swagger-ui.html#/events) which allows you to register a CSGO event listener. One you have registered an event listener, that listener will receive a REST call every time one of the managed CSGO events is fired.
+The **Ixigo Event Dispatcher** service allows you to register you app and listen for some events which are fired by our CSGO dedicated server. [Here you can find](https://marco.selfip.net/ixigoproxy/ixigo-event-dispatcher/eventsdispatcher/swagger-ui.html) the APIs documentation to register / un-register your app
 
 Supported events:
 
@@ -39,6 +46,7 @@ Supported events:
 - **CS_WIN_PANEL_MATCH**: Triggered when the match is over and the "Vote Screen" is displayed
 - **WARMUP_START**: Triggered when the warmup starts
 - **WARMUP_END**: This is calculated by the service, it will be fired when CSGO distpaches the first "ROUND_START" after the "WARMUP_START"
+- **SHUT_DOWN**: The server will be turned off in a couple of minutes
 
 ### Register an event listener
 
@@ -60,10 +68,10 @@ To register your event listener you have to perform an HTTP POST request to the 
 Following is an example of registration of an event listener for the "CS_WIN_PANEL_MATCH" event
 
 ~~~~bash
-curl --location --request POST 'https://marco.selfip.net/zuul/csgo-rest-api/rcon/event/register' \
+curl --location --request POST 'https://marco.selfip.net/ixigoproxy/ixigo-event-dispatcher/eventsdispatcher/register' \
 --header 'Content-Type: application/json' \
 --data-raw '{
-    "url": "http://192.168.1.26:8080/demparser/events",
+    "url": "http://192.168.1.26:8080/myservicelistener/events",
     "eventType": "CS_WIN_PANEL_MATCH"
 }'
 ~~~~
@@ -73,7 +81,7 @@ curl --location --request POST 'https://marco.selfip.net/zuul/csgo-rest-api/rcon
 Following is an example of a dispatched event from the service to your event listener
 
 ~~~~bash
-curl --location --request POST 'http://192.168.1.26:8080/demparser/events' \
+curl --location --request POST 'http://192.168.1.26:8080/myservicelistener/events' \
 --header 'Content-Type: application/json' \
 --data-raw '{
   "eventTime": "2021-05-01T19:35:32.178Z",

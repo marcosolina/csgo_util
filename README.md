@@ -9,16 +9,12 @@ This is a personal project that I made to simplify couple of things when playing
 ![Rcon UI](./misc/pictures/Services_Diagram.png)
 
 - csgo_util
-  - [Csgo Plugins](https://github.com/marcosolina/csgo_util/tree/main/CsgoPlugins): This folder contains some custom "sourcemod" plugins written for our CSGO server
-  - [CsgoRestApi](https://github.com/marcosolina/csgo_util/tree/main/CsgoRestApi): SpringBoot microservice which exposes a REST API to send the RCON commands
-  - [Dem Parser](https://github.com/marcosolina/csgo_util/tree/main/DemParser): C# project created to extract information from the DEM files
-  - [Discord Bot](https://github.com/marcosolina/csgo_util/tree/main/DiscordBot): SpringBoot service used to automate some task on [Discord](https://discord.com/brand-new)
-  - [IxiGo Server Helper](https://github.com/marcosolina/csgo_util/tree/main/IxigoServerHelper): This Springboot app runs on the IxiGo server, it monitors the output of the custom CSGO plugins and fires the events accordingly
-  - [Round Parser](https://github.com/marcosolina/csgo_util/tree/main/RoundParser): SpringBoot Project used to process the information that we extract from the dem files, and also automate some RCON commands or queries to the custom Csgo Plugins
-  - **Scripts**: This folder contains scripts used to setup the project
-    - **Docker**: Docker files/scripts
-      - **PostgreSql**: Scripts used to setup the databases
-  - [cstrike](https://marco.selfip.net/cstrike/): This folder contains all the files used to generate teh UI (PHP, Javascript, CSS)
+  - **AppsProperties**: This folder contains the properties used by the different services in the different environments. These properties are retrieved using the "Ixigo Config Server"
+  - [CsgoPlugins](./CsgoPlugins/): This folder contains the source code of the CSGO plugins that we user
+  - [DemParser](./DemParser/): This folders contains the C# project that we use to parse the ".dem" files and extract the games stats
+  - [IxigoConfigServer](./IxigoConfigServer/): This is the Spring Boot configuration service that is used to serve the Services Properties for the different environmnets
+  - [IxigoDemManager](./IxigoDemManager): This Spring Boot service manages the "dem" files created by the CSGO server. For example it will store new files, use the DemParse app to process these files, expose REST API to retrieve the info or the files itself
+  - [IxigoDiscordBot](./IxigoDiscordBot/): This Spring Boot service is used to automate some taks while we play on our CSGO dedicated server. For example it will listen for either CSGO events or messages in the chat and then it can move the players to the appropriate channel, retrieve the Players statistic to balance the teams
   - **Misc**: Extra files used for documentation or the UI (CSGO Font, logo, Screenshots...)
 
 ## Requirements

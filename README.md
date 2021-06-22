@@ -6,7 +6,7 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ## Project Structure
 
-![Rcon UI](./misc/pictures/Services_Diagram.png)
+![Rcon UI](./misc/pictures/Services_Diagram2.png)
 
 - csgo_util
   - **AppsProperties**: This folder contains the properties used by the different services in the different environments. These properties are retrieved using the "Ixigo Config Server"

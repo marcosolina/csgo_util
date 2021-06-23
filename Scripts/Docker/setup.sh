@@ -10,12 +10,21 @@ YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
 
 echo "IxigoConfigServer Configuration"
 # Set the IxiGo Game server passowrd
-read -p "Choose the user name for the IxigoConfigServer: " IXIGO_CONFIG_SERVER_USER
-read -p "Choose the password for the IxigoConfigServer: " IXIGO_CONFIG_SERVER_PASSW
-read -p "Choose the encryption key for the IxigoConfigServer: " IXIGO_CONFIG_ENC_KEY
+read -p "Type the PostgreSQL user name: " POSTGRES_USER
+read -p "Type the PostgreSQL passw: " POSTGRES_PASSW
+read -p "Type the user name for the IxigoConfigServer: " CONFIG_SERVER_USER
+read -p "Type the password for the IxigoConfigServer: " CONFIG_SERVER_PASSW
+read -p "Type the encryption key for the IxigoConfigServer: " CONFIG_ENC_KEY
 
-sed -i -e "s/__IXIGO_CONFIG_SERVER_USER__/$IXIGO_CONFIG_SERVER_USER/g" $YML_FILE
-sed -i -e "s/__IXIGO_CONFIG_SERVER_PASSW__/$IXIGO_CONFIG_SERVER_PASSW/g" $YML_FILE
-sed -i -e "s/__IXIGO_CONFIG_ENC_KEY__/$IXIGO_CONFIG_ENC_KEY/g" $YML_FILE
+export IXIGO_POSTGRES_USER=$POSTGRES_USER
+export IXIGO_POSTGRES_PASSW=$POSTGRES_PASSW
+export IXIGO_CONFIG_SERVER_USER=$CONFIG_SERVER_USER
+export IXIGO_CONFIG_SERVER_PASSW=$CONFIG_SERVER_PASSW
+export IXIGO_CONFIG_ENC_KEY=$CONFIG_ENC_KEY
+
+
+#sed -i -e "s/__IXIGO_CONFIG_SERVER_USER__/$IXIGO_CONFIG_SERVER_USER/g" $YML_FILE
+#sed -i -e "s/__IXIGO_CONFIG_SERVER_PASSW__/$IXIGO_CONFIG_SERVER_PASSW/g" $YML_FILE
+#sed -i -e "s/__IXIGO_CONFIG_ENC_KEY__/$IXIGO_CONFIG_ENC_KEY/g" $YML_FILE
 
 echo "Run the following command: docker-compose -f $YML_FILE up"

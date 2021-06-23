@@ -9,10 +9,10 @@ services:
     image: ixigo_config
     environment:
       IXIGO_CONFIG_REPO: "https://github.com/marcosolina/csgo_util.git"
-      IXIGO_CONFIG_SERVER_USER: __IXIGO_CONFIG_SERVER_USER__
-      IXIGO_CONFIG_SERVER_PASSW: __IXIGO_CONFIG_SERVER_PASSW__
+      IXIGO_CONFIG_SERVER_USER: ${IXIGO_CONFIG_SERVER_USER}
+      IXIGO_CONFIG_SERVER_PASSW: ${IXIGO_CONFIG_SERVER_PASSW}
       IXIGO_GIT_REPO_BRANCH: main
-      IXIGO_CONFIG_ENC_KEY: __IXIGO_CONFIG_ENC_KEY__
+      IXIGO_CONFIG_ENC_KEY: ${IXIGO_CONFIG_ENC_KEY}
     networks: 
       - ixigo
     build:
@@ -33,6 +33,10 @@ services:
       - postgres
   postgres:
     image: postgres_ixigo
+    environment:
+      POSTGRES_PASSWORD: ${IXIGO_POSTGRES_PASSW}
+      POSTGRES_USER: ${IXIGO_POSTGRES_USER}
+      
     networks: 
       - ixigo
     build:

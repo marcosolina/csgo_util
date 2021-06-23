@@ -26,7 +26,7 @@ services:
       IXIGO_CONFIG_REPO: "https://github.com/marcosolina/csgo_util.git"
       IXIGO_CONFIG_SERVER_USER: ${IXIGO_CONFIG_SERVER_USER}
       IXIGO_CONFIG_SERVER_PASSW: ${IXIGO_CONFIG_SERVER_PASSW}
-      IXIGO_GIT_REPO_BRANCH: main
+      IXIGO_GIT_REPO_BRANCH: refactoring
       IXIGO_CONFIG_ENC_KEY: ${IXIGO_CONFIG_ENC_KEY}
     networks: 
       - ixigo

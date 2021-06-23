@@ -10,7 +10,7 @@ YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
 
 
 echo "Postgres Configuration"
-read -p "Type the PostgreSQL user name: " POSTGRES_USER
+read -p "Type the PostgreSQL user name: " POSTGRES_USErR
 read -p "Type the PostgreSQL passw: " POSTGRES_PASSW
 
 echo "IxigoConfigServer Configuration"
@@ -31,3 +31,4 @@ export IXIGO_CONFIG_ENC_KEY=$CONFIG_ENC_KEY
 #sed -i -e "s/__IXIGO_CONFIG_ENC_KEY__/$IXIGO_CONFIG_ENC_KEY/g" $YML_FILE
 
 echo "Run the following command: docker-compose -f $YML_FILE up"
+docker-compose -f $YML_FILE up

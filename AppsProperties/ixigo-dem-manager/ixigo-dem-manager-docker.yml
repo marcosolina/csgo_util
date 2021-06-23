@@ -19,4 +19,4 @@ com:
             
 spring:
   datasource:
-    url: '{cipher}a907b4154f3884b808b582bebb038fe95e6b449bdad868d5d0bf1f6a9ac88c788655cf4443835c3f826cebd5f330ff9dc179a3ce134c953a79e3733178c90a31'
+    url: jdbc:postgresql://postgres:5432/demfiles

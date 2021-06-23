@@ -5,6 +5,19 @@ networks:
     name: ixigo_network
 
 services:
+  demmanager:
+    image: ixigo_dem_manager
+    environment:
+      IXIGO_CONFIG_SERVER_USER: ${IXIGO_CONFIG_SERVER_USER}
+      IXIGO_CONFIG_SERVER_PASSW: ${IXIGO_CONFIG_SERVER_PASSW}
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoDemManager
+    ports:
+      - "8081:8081"
+    depends_on: 
+      - postgres
   configService:
     image: ixigo_config
     environment:

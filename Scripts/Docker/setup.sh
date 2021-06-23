@@ -8,10 +8,13 @@ git clone -b refactoring https://github.com/marcosolina/csgo_util.git
 SCRIPTS_FOLDER=csgo_util/Scripts
 YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
 
-echo "IxigoConfigServer Configuration"
-# Set the IxiGo Game server passowrd
+
+echo "Postgres Configuration"
 read -p "Type the PostgreSQL user name: " POSTGRES_USER
 read -p "Type the PostgreSQL passw: " POSTGRES_PASSW
+
+echo "IxigoConfigServer Configuration"
+# Set the IxiGo Game server passowrd
 read -p "Type the user name for the IxigoConfigServer: " CONFIG_SERVER_USER
 read -p "Type the password for the IxigoConfigServer: " CONFIG_SERVER_PASSW
 read -p "Type the encryption key for the IxigoConfigServer: " CONFIG_ENC_KEY

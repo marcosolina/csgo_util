@@ -2,7 +2,7 @@
 
 ![Rcon UI](./misc/pictures/ixigo-logo.png)
 
-This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use frequently and we wanted to enhance our gaming experience with the automation of few task, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
+This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use frequently and we wanted to enhance our gaming experience with the automation of few tasks, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
 
 ## Project Structure
 

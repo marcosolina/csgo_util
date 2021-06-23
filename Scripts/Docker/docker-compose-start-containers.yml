@@ -42,13 +42,11 @@ services:
       context: ./IxigoDiscovery
     ports:
       - "8765:8765"
-    depends_on:
   dbpostgres:
     image: postgres_ixigo
     environment:
       POSTGRES_PASSWORD: ${IXIGO_POSTGRES_PASSW}
       POSTGRES_USER: ${IXIGO_POSTGRES_USER}
-      
     networks: 
       - ixigo
     build:

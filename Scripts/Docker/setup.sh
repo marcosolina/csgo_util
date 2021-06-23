@@ -30,5 +30,5 @@ export IXIGO_CONFIG_ENC_KEY=$CONFIG_ENC_KEY
 #sed -i -e "s/__IXIGO_CONFIG_SERVER_PASSW__/$IXIGO_CONFIG_SERVER_PASSW/g" $YML_FILE
 #sed -i -e "s/__IXIGO_CONFIG_ENC_KEY__/$IXIGO_CONFIG_ENC_KEY/g" $YML_FILE
 
-echo "Run the following command: docker-compose -f $YML_FILE up"
 docker-compose -f $YML_FILE up
+echo "Run the following command: docker-compose -f $YML_FILE up"

@@ -4,9 +4,11 @@
 
 git clone -b refactoring https://github.com/marcosolina/csgo_util.git
 
-
 SCRIPTS_FOLDER=csgo_util/Scripts
 YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
+
+#sed -i -e 's/\r$//' $SCRIPTS_FOLDER/*
+sed -i -e 's/\r$//' $(find $SCRIPTS_FOLDER -type f -name "*.sh")
 
 
 echo "Postgres Configuration"

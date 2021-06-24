@@ -13,5 +13,6 @@ COPY ./start.sh start.sh
 RUN sed -i -e 's/\r$//' start.sh
 RUN chmod +x start.sh
 
-ENTRYPOINT ["/start.sh"]
+#ENTRYPOINT ["/start.sh"]
+ENTRYPOINT ["java","-jar","IxigoDemManager.jar"]
 

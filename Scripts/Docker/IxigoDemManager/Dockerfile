@@ -1,7 +1,7 @@
 FROM maven:3.8.1-jdk-8 AS MAVEN_IMAGE
 WORKDIR /tmp
 RUN git clone https://github.com/marcosolina/javautils.git
-RUN git clone https://github.com/marcosolina/csgo_util.git
+RUN git clone -b refactoring https://github.com/marcosolina/csgo_util.git
 
 RUN mvn clean install -f javautils/Utils
 RUN mvn clean install -f ./csgo_util/IxigoDemManager/pom.xml

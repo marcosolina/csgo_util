@@ -10,7 +10,7 @@ YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
 
 
 echo "Postgres Configuration"
-read -p "Type the PostgreSQL user name: " POSTGRES_USErR
+read -p "Type the PostgreSQL user name: " POSTGRES_USER
 read -p "Type the PostgreSQL passw: " POSTGRES_PASSW
 
 echo "IxigoConfigServer Configuration"

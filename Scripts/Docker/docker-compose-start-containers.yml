@@ -7,11 +7,8 @@ networks:
 services:
   demmanager:
     image: ixigo_dem_manager
-    environment:
-      IXIGO_CONFIG_SERVER_USER: __IXIGO_CONFIG_SERVER_USER__
-      IXIGO_CONFIG_SERVER_PASSW: __IXIGO_CONFIG_SERVER_PASSW__
-      IXIGO_POSTGRES_PASSW: __IXIGO_POSTGRES_PASSW__
-      IXIGO_POSTGRES_USER: __IXIGO_POSTGRES_USER__
+    env_file:
+      - ./decker-compose-env-file.properties
     networks: 
       - ixigo
     build:
@@ -22,12 +19,8 @@ services:
       - dbpostgres
   configService:
     image: ixigo_config
-    environment:
-      IXIGO_CONFIG_REPO: "https://github.com/marcosolina/csgo_util.git"
-      IXIGO_CONFIG_SERVER_USER: __IXIGO_CONFIG_SERVER_USER__
-      IXIGO_CONFIG_SERVER_PASSW: __IXIGO_CONFIG_SERVER_PASSW__
-      IXIGO_GIT_REPO_BRANCH: refactoring
-      IXIGO_CONFIG_ENC_KEY: __IXIGO_CONFIG_ENC_KEY__
+    env_file:
+      - ./decker-compose-env-file.properties
     networks: 
       - ixigo
     build:
@@ -44,9 +37,8 @@ services:
       - "8765:8765"
   dbpostgres:
     image: postgres_ixigo
-    environment:
-      POSTGRES_PASSWORD: __IXIGO_POSTGRES_PASSW__
-      POSTGRES_USER: __IXIGO_POSTGRES_USER__
+    env_file:
+      - ./decker-compose-env-file.properties
     networks: 
       - ixigo
     build:

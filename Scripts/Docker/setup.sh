@@ -6,6 +6,7 @@ git clone -b refactoring https://github.com/marcosolina/csgo_util.git
 
 SCRIPTS_FOLDER=csgo_util/Scripts
 YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
+ENV_FILE=$SCRIPTS_FOLDER/Docker/decker-compose-env-file.properties
 
 #sed -i -e 's/\r$//' $SCRIPTS_FOLDER/*
 sed -i -e 's/\r$//' $(find $SCRIPTS_FOLDER -type f -name "*.sh")
@@ -21,11 +22,11 @@ read -p "Type the user name for the IxigoConfigServer: " CONFIG_SERVER_USER
 read -p "Type the password for the IxigoConfigServer: " CONFIG_SERVER_PASSW
 read -p "Type the encryption key for the IxigoConfigServer: " CONFIG_ENC_KEY
 
-sed -i -e "s/__IXIGO_POSTGRES_USER__/$POSTGRES_USER/g" $YML_FILE
-sed -i -e "s/__IXIGO_POSTGRES_PASSW__/$POSTGRES_PASSW/g" $YML_FILE
-sed -i -e "s/__IXIGO_CONFIG_SERVER_USER__/$CONFIG_SERVER_USER/g" $YML_FILE
-sed -i -e "s/__IXIGO_CONFIG_SERVER_PASSW__/$CONFIG_SERVER_PASSW/g" $YML_FILE
-sed -i -e "s/__IXIGO_CONFIG_ENC_KEY__/$CONFIG_ENC_KEY/g" $YML_FILE
+sed -i -e "s/__IXIGO_POSTGRES_USER__/$POSTGRES_USER/g" $ENV_FILE
+sed -i -e "s/__IXIGO_POSTGRES_PASSW__/$POSTGRES_PASSW/g" $ENV_FILE
+sed -i -e "s/__IXIGO_CONFIG_SERVER_USER__/$CONFIG_SERVER_USER/g" $ENV_FILE
+sed -i -e "s/__IXIGO_CONFIG_SERVER_PASSW__/$CONFIG_SERVER_PASSW/g" $ENV_FILE
+sed -i -e "s/__IXIGO_CONFIG_ENC_KEY__/$CONFIG_ENC_KEY/g" $ENV_FILE
 
 docker-compose -f $YML_FILE up
 echo "Run the following command: docker-compose -f $YML_FILE up"

@@ -2,13 +2,6 @@
 
 sleep 30
 
-echo "###########################################"
-echo $IXIGO_POSTGRES_USER
-echo $IXIGO_POSTGRES_PASSW
-echo $IXIGO_CONFIG_SERVER_USER
-echo $IXIGO_CONFIG_SERVER_PASSW
-echo "###########################################"
-
 java -jar IxigoDemManager.jar \
 --spring.profiles.active=docker \
 --spring.cloud.config.uri=http://configService:8888/config \

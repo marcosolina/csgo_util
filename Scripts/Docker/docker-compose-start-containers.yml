@@ -11,6 +11,7 @@ services:
       - ./env-spring-config.properties
       - ./env-database.properties
       - ./env-eureka.properties
+      - ./env-spring-common.properties
     networks: 
       - ixigo
     build:

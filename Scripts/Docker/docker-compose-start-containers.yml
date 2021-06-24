@@ -8,7 +8,9 @@ services:
   demmanager:
     image: ixigo_dem_manager
     env_file:
-      - ./decker-compose-env-file.properties
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
     networks: 
       - ixigo
     build:
@@ -17,18 +19,20 @@ services:
       - "8081:8081"
     depends_on: 
       - dbpostgres
-  configService:
+  config-service:
     image: ixigo_config
     env_file:
-      - ./decker-compose-env-file.properties
+      - ./env-spring-config.properties
     networks: 
       - ixigo
     build:
       context: ./IxigoConfigServer
     ports:
       - "8888:8888"
-  discoveryService:
+  discovery-service:
     image: ixigo_discovery
+    env_file:
+      - ./env-eureka.properties
     networks: 
       - ixigo
     build:
@@ -38,7 +42,7 @@ services:
   dbpostgres:
     image: postgres_ixigo
     env_file:
-      - ./decker-compose-env-file.properties
+      - ./env-database.properties
     networks: 
       - ixigo
     build:

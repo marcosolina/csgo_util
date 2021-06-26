@@ -5,7 +5,7 @@ com:
     ixigo:
       demmanager:
         demFileManager:
-          rootFolder: '{cipher}d68d9c4a780db25ced241a5e861f836f058a994b089d072066acf58a59f1e3deb3d5400855b5355657a483d2872efa5b'
+          rootFolder: '/demFiles'
         notifications:
           telegram:
             enabled: true
@@ -14,7 +14,7 @@ com:
         demparser:
           environment: RASP # Enum: WINDOWS, RASP
           executionType: ASYNC # Enum: ASYNC, SYNC
-          demfolder: '/demFiles'
+          demfolder: '/demParser'
           dotnetexecutable: '{cipher}5186cba639d5054e66a7d036379aa37178cdad9810e117790882824ac0ef5f93fbdd7ba3241daceaa5d744ff0487cc37'
             
 spring:

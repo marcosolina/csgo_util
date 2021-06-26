@@ -27,7 +27,7 @@ read -p "Type the user name for the IxigoConfigServer: " CONFIG_SERVER_USER
 read -p "Type the password for the IxigoConfigServer: " CONFIG_SERVER_PASSW
 read -p "Type the encryption key for the IxigoConfigServer: " CONFIG_ENC_KEY
 
-sed -i -e "s/__DEM_FOLDER__/$DEM_FOLDER/g" $YML_FILE
+sed -i -e "s,__DEM_FOLDER__,$DEM_FOLDER,g" $YML_FILE
 
 sed -i -e "s/__IXIGO_POSTGRES_USER__/$POSTGRES_USER/g" $DB_ENV_FILE
 sed -i -e "s/__IXIGO_POSTGRES_PASSW__/$POSTGRES_PASSW/g" $DB_ENV_FILE

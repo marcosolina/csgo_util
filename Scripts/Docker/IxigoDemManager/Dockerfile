@@ -8,6 +8,7 @@ RUN mvn clean install -f ./csgo_util/IxigoDemManager/pom.xml
 
 FROM openjdk:11
 EXPOSE 8081:8081
+RUN mkdir /demFiles
 COPY --from=MAVEN_IMAGE /tmp/csgo_util/IxigoDemManager/target/IxigoDemManager*.jar IxigoDemManager.jar
 COPY ./start.sh start.sh
 RUN sed -i -e 's/\r$//' start.sh

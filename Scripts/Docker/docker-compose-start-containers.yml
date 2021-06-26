@@ -5,6 +5,12 @@ networks:
     name: ixigo_network
 
 services:
+  my_maven:
+    image: my_maven
+    networks: 
+      - ixigo
+    build:
+      context: ./Build
   discord-bot:
     image: ixigo_discord_bot
     env_file:
@@ -20,6 +26,7 @@ services:
       - "8082:8082"
     depends_on: 
       - dbpostgres
+      - my_maven
   dem-manager:
     image: ixigo_dem_manager
     env_file:
@@ -35,6 +42,7 @@ services:
       - "8081:8081"
     depends_on: 
       - dbpostgres
+      - my_maven
     volumes: 
       - "__DEM_FOLDER__:/demFiles"
   config-service:
@@ -47,6 +55,8 @@ services:
       context: ./IxigoConfigServer
     ports:
       - "8888:8888"
+    depends_on:
+      - my_maven
   discovery-service:
     image: ixigo_discovery
     env_file:
@@ -57,6 +67,8 @@ services:
       context: ./IxigoDiscovery
     ports:
       - "8765:8765"
+    depends_on:
+      - my_maven
   dbpostgres:
     image: postgres_ixigo
     env_file:

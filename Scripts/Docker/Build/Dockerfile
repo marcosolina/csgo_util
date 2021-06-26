@@ -8,17 +8,18 @@ RUN git clone https://github.com/marcosolina/javautils.git
 RUN git clone https://github.com/marcosolina/WebJar.git
 
 RUN mvn clean install -f javautils/Utils/pom.xml
+RUN mvn clean install -f javautils/Partitioning/pom.xml
 RUN mvn clean install -f WebJar/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoDiscovery/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoConfigServer/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoDemManager/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoDiscordBot/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoEventDispatcher/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoPlayersManager/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoProxy/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoRconApiService/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoServerHelper/pom.xml
-RUN mvn clean install -f ./csgo_util/IxigoUi/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoDiscovery/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoConfigServer/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoDemManager/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoDiscordBot/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoEventDispatcher/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoPlayersManager/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoProxy/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoRconApiService/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoServerHelper/pom.xml
+RUN mvn clean package -f ./csgo_util/IxigoUi/pom.xml
 
 
 COPY ./start.sh start.sh

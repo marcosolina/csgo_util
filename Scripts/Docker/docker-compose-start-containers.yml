@@ -27,6 +27,20 @@ services:
     depends_on: 
       - dbpostgres
       - my_maven
+  players-manager:
+    image: ixigo_players_manager
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoPlayersManager
+    ports:
+      - "8087:8087"
+    depends_on: 
+      - my_maven
   event-dispatcher:
     image: ixigo_event_dispatcher
     env_file:

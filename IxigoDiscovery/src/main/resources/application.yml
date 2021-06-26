@@ -8,11 +8,13 @@ server:
 # are preventing eureka to try to register it self
 # and generating errors on startup
 eureka:
+  instance:    hostname: marco
   server:
     renewal-percent-threshold: 0.49
   client:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      hostname: ${IXIGO_EUREKA_HOST_NAME:localhost}
-      default-zone: http://${eureka.client.service-url.hostname}:${server.port}${server.servlet.context-path}/eureka
+      #hostname: ${IXIGO_EUREKA_HOST_NAME:localhost}
+      #default-zone: http://${eureka.client.service-url.hostname}:${server.port}${server.servlet.context-path}/eureka
+      default-zone: http://marco:${server.port}${server.servlet.context-path}/eureka

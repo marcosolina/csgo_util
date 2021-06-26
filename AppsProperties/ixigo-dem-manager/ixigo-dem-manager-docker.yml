@@ -15,7 +15,7 @@ com:
           environment: RASP # Enum: WINDOWS, RASP
           executionType: ASYNC # Enum: ASYNC, SYNC
           demfolder: '/demParser'
-          dotnetexecutable: '{cipher}5186cba639d5054e66a7d036379aa37178cdad9810e117790882824ac0ef5f93fbdd7ba3241daceaa5d744ff0487cc37'
+          dotnetexecutable: '/demParser/DemParser'
             
 spring:
   datasource:

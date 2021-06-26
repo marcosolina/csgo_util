@@ -38,7 +38,7 @@ This is a personal project that I made to simplify few things that I do when pla
 ## Start With Docker Compose
 
 ~~~~bash
-bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/refactoring/Scripts/Docker/setup.sh)
+bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/refactoring/Scripts/Docker/setup.sh?$(date +%s))
 ~~~~
 
 ## Register a CSGO Event Listener

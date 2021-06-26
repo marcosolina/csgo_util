@@ -1,3 +1,5 @@
+# Building the Java "stuff"
+
 FROM maven:3.8.1-jdk-8 AS MAVEN_IMAGE
 WORKDIR /tmp
 RUN git clone -b refactoring https://github.com/marcosolina/csgo_util.git
@@ -19,7 +21,7 @@ RUN dotnet restore
 COPY --from=MAVEN_IMAGE /tmp/csgo_util/DemParser/* ./
 RUN dotnet publish -c Release -o out -r linux-x64
 
-
+# Putting all together
 FROM openjdk:11
 EXPOSE 8081:8081
 RUN mkdir /demFiles && mkdir /demParser

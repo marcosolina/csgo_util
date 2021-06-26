@@ -20,8 +20,8 @@ com:
               ct: 706942842173653094
               general: 700738421131444236
           rconapi:
-            host: rcon-api
+            host: ixgo-proxy
             csgoServerPort: 27015
             csgoServerHost: 'csgo'
           players-manager:
-            host: rcon-api
+            host: ixgo-proxy

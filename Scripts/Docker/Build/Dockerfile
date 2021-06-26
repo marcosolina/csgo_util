@@ -26,5 +26,5 @@ COPY ./start.sh start.sh
 RUN sed -i -e 's/\r$//' start.sh && \
 chmod +x start.sh
 
-ENTRYPOINT ["/start.sh"]
+ENTRYPOINT ["/ixigo/start.sh"]
 

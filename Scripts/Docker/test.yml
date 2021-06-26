@@ -1,0 +1,17 @@
+version: "3.7"
+
+networks:
+  ixigo:
+    name: ixigo_network
+
+services:
+  configservice:
+    image: ixigo_config
+    env_file:
+      - ./env-spring-config.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoConfigServer
+    ports:
+      - "8888:8888"

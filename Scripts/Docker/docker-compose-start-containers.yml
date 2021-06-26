@@ -20,7 +20,7 @@ services:
       - "8081:8081"
     depends_on: 
       - dbpostgres
-  config-service:
+  configservice:
     image: ixigo_config
     env_file:
       - ./env-spring-config.properties
@@ -30,7 +30,7 @@ services:
       context: ./IxigoConfigServer
     ports:
       - "8888:8888"
-  discovery-service:
+  discoveryservice:
     image: ixigo_discovery
     env_file:
       - ./env-eureka.properties

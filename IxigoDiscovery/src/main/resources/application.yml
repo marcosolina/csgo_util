@@ -8,7 +8,7 @@ server:
 # are preventing eureka to try to register it self
 # and generating errors on startup
 eureka:
-  instance:    hostname: marco
+  instance:    hostname: ${IXIGO_EUREKA_HOST_NAME:localhost}
   server:
     renewal-percent-threshold: 0.49
   client:

@@ -5,13 +5,20 @@ networks:
     name: ixigo_network
 
 services:
-  discovery-service:
-    image: ixigo_discovery
+  demmanager:
+    image: ixigo_dem_manager
     env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
       - ./env-eureka.properties
+      - ./env-spring-common.properties
     networks: 
       - ixigo
     build:
-      context: ./IxigoDiscovery
+      context: ./IxigoDemManager
     ports:
-      - "8765:8765"
+      - "8081:8081"
+    depends_on: 
+      - dbpostgres
+    volumes: 
+      - "/home/marco/Windows/test:/demFiles"

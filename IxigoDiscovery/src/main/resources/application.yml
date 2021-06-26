@@ -14,5 +14,5 @@ eureka:
     register-with-eureka: false
     fetch-registry: false
     service-url:
-      default-zone: http://${eureka.instance.hostname}:${server.port}${server.servlet.context-path}/eureka/
-      #hostname: ${IXIGO_EUREKA_HOST_NAME:localhost}
+      hostname: ${IXIGO_EUREKA_HOST_NAME:localhost}
+      default-zone: http://${eureka.client.service-url.hostname}:${server.port}${server.servlet.context-path}/eureka

@@ -5,13 +5,13 @@ networks:
     name: ixigo_network
 
 services:
-  configservice:
-    image: ixigo_config
+  discovery-service:
+    image: ixigo_discovery
     env_file:
-      - ./env-spring-config.properties
+      - ./env-eureka.properties
     networks: 
       - ixigo
     build:
-      context: ./IxigoConfigServer
+      context: ./IxigoDiscovery
     ports:
-      - "8888:8888"
+      - "8765:8765"

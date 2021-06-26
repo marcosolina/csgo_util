@@ -35,7 +35,7 @@ public class DemFilesManager {
 
     @PostMapping
     public ResponseEntity<Void> handleFileUpload(@RequestParam("file") MultipartFile file) {
-        _LOGGER.trace("Inside FilesController.handleFileUpload");
+        _LOGGER.debug("Inside FilesController.handleFileUpload");
         try {
             fileManagerService.store(file);
         } catch (MarcoException e) {
@@ -49,7 +49,7 @@ public class DemFilesManager {
     @GetMapping("/{filename:.+}")
     @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        _LOGGER.trace("Inside FilesController.getFile");
+        _LOGGER.debug("Inside FilesController.getFile");
         Resource file;
         try {
             file = fileManagerService.load(filename);
@@ -63,7 +63,7 @@ public class DemFilesManager {
 
     @GetMapping("/all")
     public ResponseEntity<GetFilesResponse> getListFiles() {
-        _LOGGER.trace("Inside FilesController.getListFiles");
+        _LOGGER.debug("Inside FilesController.getListFiles");
         GetFilesResponse resp = new GetFilesResponse();
         try {
 

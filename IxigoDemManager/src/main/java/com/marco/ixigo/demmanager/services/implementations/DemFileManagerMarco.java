@@ -49,7 +49,10 @@ public class DemFileManagerMarco implements DemFileManager {
             Path fileFolder = this.root.resolve(folderName);
             Files.createDirectories(fileFolder);
             Path fileDestination = fileFolder.resolve(file.getOriginalFilename());
+            
+            _LOGGER.debug(String.format("Saving file: %s", fileDestination.toString()));
             Files.copy(file.getInputStream(), fileDestination, StandardCopyOption.REPLACE_EXISTING);
+            _LOGGER.debug("File saved");
             
             EntityProcessQueue entity = new EntityProcessQueue();
             entity.setFileName(fileDestination.toFile().getAbsolutePath());
@@ -57,6 +60,7 @@ public class DemFileManagerMarco implements DemFileManager {
             entity.setQueuedOn(LocalDateTime.now(ZoneOffset.UTC));
             repoQueue.saveEntity(entity);
             
+            _LOGGER.debug("DB updates");
             return fileDestination;
         } catch (Exception e) {
             _LOGGER.error(e.getMessage());

@@ -43,7 +43,7 @@ com:
             sendcommand: "${com.marco.ixigo.discordbot.services.rconapi.contextPath}/cmd"
             csgoServerPort: 27015
             csgoServerHost: 192.168.1.10
-            csgoServerPassw: localtest
+            csgoServerPassw: ${CSGO_SERVER_PASSW:localtest}
           players-manager:
             protocol: http
             host: localhost

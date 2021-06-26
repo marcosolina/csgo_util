@@ -5,7 +5,22 @@ networks:
     name: ixigo_network
 
 services:
-  demmanager:
+  discord-bot:
+    image: ixigo_discord_bot
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoDiscordBot
+    ports:
+      - "8082:8082"
+    depends_on: 
+      - dbpostgres
+  dem-manager:
     image: ixigo_dem_manager
     env_file:
       - ./env-spring-config.properties
@@ -21,7 +36,7 @@ services:
     depends_on: 
       - dbpostgres
     volumes: 
-      - "/home/marco/Windows/test:/demFiles"
+      - "__DEM_FOLDER__:/demFiles"
   config-service:
     image: ixigo_config
     env_file:

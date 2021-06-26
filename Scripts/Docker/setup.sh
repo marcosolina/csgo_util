@@ -12,7 +12,11 @@ CONFIG_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-spring-config.properties
 #sed -i -e 's/\r$//' $SCRIPTS_FOLDER/*
 sed -i -e 's/\r$//' $(find $SCRIPTS_FOLDER -type f -name "*.sh")
 
-
+echo ""
+echo "Host Machine Configuration"
+# Set the IxiGo Game server passowrd
+read -p "Type the full path of the folder on the host machine where you want to store the DEM files: " DEM_FOLDER
+echo ""
 echo "Postgres Configuration"
 read -p "Type the PostgreSQL user name: " POSTGRES_USER
 read -p "Type the PostgreSQL passw: " POSTGRES_PASSW
@@ -22,6 +26,8 @@ echo "IxigoConfigServer Configuration"
 read -p "Type the user name for the IxigoConfigServer: " CONFIG_SERVER_USER
 read -p "Type the password for the IxigoConfigServer: " CONFIG_SERVER_PASSW
 read -p "Type the encryption key for the IxigoConfigServer: " CONFIG_ENC_KEY
+
+sed -i -e "s/__DEM_FOLDER__/$DEM_FOLDER/g" $YML_FILE
 
 sed -i -e "s/__IXIGO_POSTGRES_USER__/$POSTGRES_USER/g" $DB_ENV_FILE
 sed -i -e "s/__IXIGO_POSTGRES_PASSW__/$POSTGRES_PASSW/g" $DB_ENV_FILE

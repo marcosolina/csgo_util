@@ -3,11 +3,11 @@ FROM mcr.microsoft.com/dotnet/sdk:5.0 AS DEM_PARSER
 WORKDIR /app
 
 # Copy csproj and restore as distinct layers
-COPY --from=MAVEN_IMAGE /ixigo/csgo_util/DemParser/*.csproj ./
+COPY --from=my_maven /ixigo/csgo_util/DemParser/*.csproj ./
 RUN dotnet restore
 
 # Copy everything else and build
-COPY --from=MAVEN_IMAGE /ixigo/csgo_util/DemParser/* ./
+COPY --from=my_maven /ixigo/csgo_util/DemParser/* ./
 RUN dotnet publish -c Release -o out -r linux-x64
 
 # Putting all together

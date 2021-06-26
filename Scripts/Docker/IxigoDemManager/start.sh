@@ -8,7 +8,7 @@ echo $IXIGO_CONFIG_SERVER_PASSW
 echo $IXIGO_EUREKA_SERVER
 echo $IXIGO_POSTGRES_USER
 echo $IXIGO_POSTGRES_PASSW
-ping -c 4 configservice
+ping -c 4 config-service
 echo "####################"
 
 java -jar IxigoDemManager.jar \
@@ -16,4 +16,4 @@ java -jar IxigoDemManager.jar \
 --spring.cloud.config.username=$IXIGO_CONFIG_SERVER_USER \
 --spring.cloud.config.password=$IXIGO_CONFIG_SERVER_PASSW \
 --spring.datasource.username=$IXIGO_POSTGRES_USER \
---spring.datasource.username=$IXIGO_POSTGRES_PASSW 
+--spring.datasource.password=$IXIGO_POSTGRES_PASSW 

@@ -20,6 +20,8 @@ services:
       - "8081:8081"
     depends_on: 
       - dbpostgres
+    volumes: 
+      - "/home/marco/Windows/test:/demFiles"
   config-service:
     image: ixigo_config
     env_file:

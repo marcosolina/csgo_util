@@ -17,4 +17,4 @@ eureka:
     service-url:
       #hostname: ${IXIGO_EUREKA_HOST_NAME:localhost}
       #default-zone: http://${eureka.client.service-url.hostname}:${server.port}${server.servlet.context-path}/eureka
-      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+      defaultZone: http://${eureka.instance.hostname}:${server.port}${server.servlet.context-path}/eureka

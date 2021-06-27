@@ -14,6 +14,10 @@ apt-get install -y --no-install-recommends \
 RUN mkdir -p /csgoserver/ixi_go && chown steam:steam -R /csgoserver
 WORKDIR /csgoserver
 RUN apt update && apt-get install git-core -y
+RUN git clone -b refactoring https://github.com/marcosolina/csgo_util.git && \
+    ./csgo_util/IxigoServerHelper/mvnw -f ./csgo_util/IxigoServerHelper/pom.xml && \
+    mv ./csgo_util/IxicoServerHelper/target/IxicoServerHelper*.jar IxicoServerHelper.jar && \
+    rm -rf csgo_util
 
 # Expose ports
 EXPOSE 27015/tcp \

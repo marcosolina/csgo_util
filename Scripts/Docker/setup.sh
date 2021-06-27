@@ -8,9 +8,14 @@ SCRIPTS_FOLDER=csgo_util/Scripts
 YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
 DB_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-database.properties
 CONFIG_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-spring-config.properties
+COMMON_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-spring-common.properties
 
 #sed -i -e 's/\r$//' $SCRIPTS_FOLDER/*
 sed -i -e 's/\r$//' $(find $SCRIPTS_FOLDER -type f -name "*.sh")
+
+echo ""
+echo "Build Configuration"
+read -p "Which profile properties whould you like to use? " PROFILE_PROP
 
 echo ""
 echo "Host Machine Configuration"
@@ -18,7 +23,8 @@ echo "Host Machine Configuration"
 read -p "Type the full path of the folder on the host machine where you want to store the DEM files: " DEM_FOLDER
 echo ""
 echo "Postgres Configuration"
-read -p "Type the PostgreSQL user name: " POSTGRES_USER
+#read -p "Type the PostgreSQL user name: " POSTGRES_USER
+POSTGRES_USER=postgres
 read -p "Type the PostgreSQL passw: " POSTGRES_PASSW
 echo ""
 echo "IxigoConfigServer Configuration"
@@ -31,6 +37,8 @@ sed -i -e "s,__DEM_FOLDER__,$DEM_FOLDER,g" $YML_FILE
 
 sed -i -e "s/__IXIGO_POSTGRES_USER__/$POSTGRES_USER/g" $DB_ENV_FILE
 sed -i -e "s/__IXIGO_POSTGRES_PASSW__/$POSTGRES_PASSW/g" $DB_ENV_FILE
+
+sed -i -e "s/__PROFILE_PROP__/$PROFILE_PROP/g" $COMMON_ENV_FILE
 
 sed -i -e "s/__IXIGO_CONFIG_SERVER_USER__/$CONFIG_SERVER_USER/g" $CONFIG_ENV_FILE
 sed -i -e "s/__IXIGO_CONFIG_SERVER_PASSW__/$CONFIG_SERVER_PASSW/g" $CONFIG_ENV_FILE

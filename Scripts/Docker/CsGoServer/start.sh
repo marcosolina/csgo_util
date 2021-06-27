@@ -7,6 +7,10 @@ REPO_DIRECTORY=$BASE_DIR/ixi_go
 CSGO_SERVER_DIR=$REPO_DIRECTORY/CsgoServer
 
 if [ ! -d "$CSGO_SERVER_DIR" ]; then
+    git clone -b refactoring https://github.com/marcosolina/csgo_util.git
+    ./csgo_util/IxigoServerHelper/mvnw -f ./csgo_util/IxigoServerHelper/pom.xml
+    mv ./csgo_util/IxicoServerHelper/target/IxicoServerHelper*.jar IxicoServerHelper.jar
+    rm -rf csgo_util
     chown steam:steam -R $BASE_DIR
     su - steam -c "mkdir -p $REPO_DIRECTORY"
     su - steam -c "git clone https://github.com/marcosolina/ixi_go.git $REPO_DIRECTORY"

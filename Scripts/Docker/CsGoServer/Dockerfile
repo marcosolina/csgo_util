@@ -13,7 +13,6 @@ apt-get install -y --no-install-recommends \
 # Installing our custom CSGO
 RUN mkdir -p /csgoserver/ixi_go && chown steam:steam -R /csgoserver
 WORKDIR /csgoserver
-COPY --from=my_maven /ixigo/csgo_util/IxicoServerHelper/target/IxicoServerHelper*.jar IxicoServerHelper.jar
 RUN apt update && apt-get install git-core -y
 
 # Expose ports

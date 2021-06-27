@@ -5,8 +5,8 @@ networks:
     name: ixigo_network
 
 services:
-  demmanager:
-    image: ixigo_dem_manager
+  csgo:
+    image: ixigo_csgo
     env_file:
       - ./env-spring-config.properties
       - ./env-database.properties
@@ -15,10 +15,8 @@ services:
     networks: 
       - ixigo
     build:
-      context: ./IxigoDemManager
+      context: ./CsGoServer
     ports:
-      - "8081:8081"
-    depends_on: 
-      - dbpostgres
+      - "27000-28000"
     volumes: 
-      - "/home/marco/Windows/test:/demFiles"
+      - "/home/marco/Windows/test/csgoproject:/csgoserver/ixi_go"

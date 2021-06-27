@@ -9,6 +9,7 @@ YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
 DB_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-database.properties
 CONFIG_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-spring-config.properties
 COMMON_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-spring-common.properties
+CSGO_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-csgo-server.properties
 
 #sed -i -e 's/\r$//' $SCRIPTS_FOLDER/*
 sed -i -e 's/\r$//' $(find $SCRIPTS_FOLDER -type f -name "*.sh")
@@ -21,6 +22,10 @@ echo ""
 echo "Host Machine Configuration"
 # Set the IxiGo Game server passowrd
 read -p "Type the full path of the folder on the host machine where you want to store the DEM files: " DEM_FOLDER
+read -p "Type the full path of the folder on the host machine where you want to store the CSGO Dedicated Server: " CSGO_FOLDER
+read -p "Type the Steam Key: " STEAM_CSGO_KEY
+read -p "Type the Steam API Key: " STEAM_API_KEY
+
 echo ""
 echo "Postgres Configuration"
 #read -p "Type the PostgreSQL user name: " POSTGRES_USER
@@ -34,6 +39,10 @@ read -p "Type the password for the IxigoConfigServer: " CONFIG_SERVER_PASSW
 read -p "Type the encryption key for the IxigoConfigServer: " CONFIG_ENC_KEY
 
 sed -i -e "s,__DEM_FOLDER__,$DEM_FOLDER,g" $YML_FILE
+sed -i -e "s,__CSGO_FOLDER__,$CSGO_FOLDER,g" $YML_FILE
+
+sed -i -e "s/__STEAM_CSGO_KEY__/$STEAM_CSGO_KEY/g" $CSGO_ENV_FILE
+sed -i -e "s/__STEAM_API_KEY__/$STEAM_API_KEY/g" $CSGO_ENV_FILE
 
 sed -i -e "s/__IXIGO_POSTGRES_USER__/$POSTGRES_USER/g" $DB_ENV_FILE
 sed -i -e "s/__IXIGO_POSTGRES_PASSW__/$POSTGRES_PASSW/g" $DB_ENV_FILE

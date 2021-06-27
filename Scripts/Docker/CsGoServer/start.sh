@@ -5,8 +5,10 @@ sleep 90
 BASE_DIR=/csgoserver
 REPO_DIRECTORY=$BASE_DIR/ixi_go
 CSGO_SERVER_DIR=$REPO_DIRECTORY/CsgoServer
+JAR_SERVICE=$BASE_DIR/IxicoServerHelper.jar
 
 chown steam:steam -R $BASE_DIR
+chmod +x $JAR_SERVICE
 ls -l $BASE_DIR
 
 if [ ! -d "$CSGO_SERVER_DIR" ]; then
@@ -14,7 +16,7 @@ if [ ! -d "$CSGO_SERVER_DIR" ]; then
     su - steam -c "git clone https://github.com/marcosolina/ixi_go.git $REPO_DIRECTORY"
 fi
 
-su - steam -c "nohup java -jar $BASE_DIR/IxicoServerHelper.jar &"
+su - steam -c "nohup java -jar $JAR_SERVICE &"
 
 rm -rf $CSGO_SERVER_DIR/csgo/*.dem
 rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt

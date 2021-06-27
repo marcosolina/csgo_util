@@ -3,6 +3,10 @@
 ###########################################################
 FROM cm2network/steamcmd:root
 
+RUN mkdir -p /csgoserver/ixi_go && chown steam:steam -R /csgoserver
+WORKDIR /csgoserver
+COPY --from=my_maven /ixigo/csgo_util/IxicoServerHelper/target/IxicoServerHelper*.jar IxicoServerHelper.jar
+
 # Installing Java https://stackoverflow.com/questions/61815233/install-java-runtime-in-debian-based-docker-image
 ENV DEBIAN_FRONTEND=noninteractive
 RUN mkdir -p /usr/share/man/man1 /usr/share/man/man2
@@ -10,11 +14,8 @@ RUN apt-get update && \
 apt-get install -y --no-install-recommends \
         openjdk-11-jre
 
-# Installing our custom CSGO
+# Installing Git
 RUN apt update && apt-get install git-core -y
-RUN mkdir -p /csgoserver/ixi_go && chown steam:steam -R /csgoserver
-WORKDIR /csgoserver
-COPY --from=my_maven /ixigo/csgo_util/IxicoServerHelper/target/IxicoServerHelper*.jar IxicoServerHelper.jar
 
 # Expose ports
 EXPOSE 27015/tcp \

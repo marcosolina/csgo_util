@@ -109,3 +109,44 @@ services:
       context: ./PostgreSql
     ports:
       - "5432:5432"
+  ixigo-proxy:
+    image: ixigo_proxy
+    env_file:
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoProxy
+    ports:
+      - "8763:8763"
+    depends_on: 
+      - my_maven
+  rcon-api:
+    image: rcon_api
+    env_file:
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+      - ./env-spring-config.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoRconApiService
+    ports:
+      - "8084:8084"
+    depends_on: 
+      - my_maven
+  ixigo-ui:
+    image: ixigo_ui
+    env_file:
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+      - ./env-spring-config.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoUi
+    ports:
+      - "8089:8089"
+    depends_on: 
+      - my_maven

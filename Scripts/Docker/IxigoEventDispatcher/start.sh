@@ -2,7 +2,7 @@
 
 sleep 50
 
-java -jar IxigoEventDispathcer.jar \
+java -jar IxigoEventDispatcher.jar \
 --spring.cloud.config.uri=$IXIGO_CONFIG_SERVER_URI \
 --spring.cloud.config.username=$IXIGO_CONFIG_SERVER_USER \
 --spring.cloud.config.password=$IXIGO_CONFIG_SERVER_PASSW \

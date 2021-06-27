@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sleep 90
+
 BASE_DIR=/csgoserver
 REPO_DIRECTORY=$BASE_DIR/ixi_go
 CSGO_SERVER_DIR=$REPO_DIRECTORY/CsgoServer
@@ -9,6 +11,8 @@ if [ ! -d "$CSGO_SERVER_DIR" ]; then
     su - steam -c "mkdir -p $REPO_DIRECTORY"
     su - steam -c "git clone https://github.com/marcosolina/ixi_go.git $REPO_DIRECTORY"
 fi
+
+nohup java -jar ./IxicoServerHelper.jar &
 
 rm -rf $CSGO_SERVER_DIR/csgo/*.dem
 rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt

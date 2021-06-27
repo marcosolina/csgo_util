@@ -12,7 +12,7 @@ if [ ! -d "$CSGO_SERVER_DIR" ]; then
     su - steam -c "git clone https://github.com/marcosolina/ixi_go.git $REPO_DIRECTORY"
 fi
 
-nohup java -jar ./IxicoServerHelper.jar &
+su - steam -c "nohup java -jar $BASE_DIR/IxicoServerHelper.jar &"
 
 rm -rf $CSGO_SERVER_DIR/csgo/*.dem
 rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt

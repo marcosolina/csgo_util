@@ -22,9 +22,6 @@ EXPOSE 27015/tcp \
 	27020/udp
 
 COPY ./start.sh start.sh
-RUN sed -i -e 's/\r$//' start.sh
-RUN chmod +x start.sh && chown steam:steam -R /csgoserver
-RUN ls -l /
-RUN ls -l
+RUN sed -i -e 's/\r$//' start.sh && chmod +x start.sh && chown steam:steam -R /csgoserver
 
 ENTRYPOINT ["/csgoserver/start.sh"]

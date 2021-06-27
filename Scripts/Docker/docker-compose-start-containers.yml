@@ -5,6 +5,23 @@ networks:
     name: ixigo_network
 
 services:
+  csgo:
+    image: ixigo_csgo
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+      - ./env-csgo-server.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./CsGoServer
+    ports:
+      - "27000-28000"
+    volumes: 
+      - "__CSGO_FOLDER__:/csgoserver/ixi_go"
+    depends_on: 
+      - my_maven
   my_maven:
     image: my_maven
     networks: 
@@ -134,23 +151,6 @@ services:
       context: ./IxigoRconApiService
     ports:
       - "8084:8084"
-    depends_on: 
-      - my_maven
-  csgo:
-    image: ixigo_csgo
-    env_file:
-      - ./env-spring-config.properties
-      - ./env-eureka.properties
-      - ./env-spring-common.properties
-      - ./env-csgo-server.properties
-    networks: 
-      - ixigo
-    build:
-      context: ./CsGoServer
-    ports:
-      - "27000-28000"
-    volumes: 
-      - "__CSGO_FOLDER__:/csgoserver/ixi_go"
     depends_on: 
       - my_maven
   ixigo-ui:

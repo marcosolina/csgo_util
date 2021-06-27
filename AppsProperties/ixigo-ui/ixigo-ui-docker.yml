@@ -8,13 +8,13 @@ com:
         urls:
           dem_manager:
             protocol: "http://"
-            host: "192.168.1.8"
+            host: "192.168.1.8:8763"
           players_manager:
             protocol: "http://"
-            host: "192.168.1.8"
+            host: "192.168.1.8:8763"
           rcon_api:
             protocol: "http://"
-            host: "192.168.1.8"
+            host: "192.168.1.8:8763"
           discord_bot:
             protocol: "http://"
-            host: "192.168.1.8"
+            host: "192.168.1.8:8763"

@@ -20,8 +20,6 @@ services:
       - "27000-28000"
     volumes: 
       - "__CSGO_FOLDER__:/csgoserver/ixi_go"
-    depends_on: 
-      - my_maven
   my_maven:
     image: my_maven
     networks: 

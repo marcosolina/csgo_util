@@ -10,6 +10,9 @@ if [ ! -d "$CSGO_SERVER_DIR" ]; then
     su - steam -c "git clone https://github.com/marcosolina/ixi_go.git $REPO_DIRECTORY"
 fi
 
+rm -rf $CSGO_SERVER_DIR/csgo/*.dem
+rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt
+
 HOST_IP=$(hostname -I | awk '{print $1}')
 
 su - steam -c "/home/steam/steamcmd/steamcmd.sh +login anonymous +force_install_dir $CSGO_SERVER_DIR +app_update 740 +quit"

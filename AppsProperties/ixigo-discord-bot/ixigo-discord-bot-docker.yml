@@ -23,5 +23,6 @@ com:
             host: ixgo-proxy
             csgoServerPort: 27015
             csgoServerHost: 'csgo'
+            csgoServerPassw: 'test'
           players-manager:
             host: ixgo-proxy

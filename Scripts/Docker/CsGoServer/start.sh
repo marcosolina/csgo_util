@@ -6,8 +6,8 @@ BASE_DIR=/csgoserver
 REPO_DIRECTORY=$BASE_DIR/ixi_go
 CSGO_SERVER_DIR=$REPO_DIRECTORY/CsgoServer
 
+chown steam:steam -R $BASE_DIR
 if [ ! -d "$CSGO_SERVER_DIR" ]; then
-    chown steam:steam -R $BASE_DIR
     su - steam -c "mkdir -p $REPO_DIRECTORY"
     su - steam -c "git clone https://github.com/marcosolina/ixi_go.git $REPO_DIRECTORY"
 fi

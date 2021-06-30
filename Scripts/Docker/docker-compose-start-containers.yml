@@ -17,7 +17,11 @@ services:
     build:
       context: ./CsGoServer
     ports:
-      - "27000-28000"
+      - "27015:27015/tcp"
+      - "27015:27015/udp"
+      - "27020:27020/udp"
+      - "27005:27005/udp"
+      - "51840:51840/udp"
     volumes: 
       - "__CSGO_FOLDER__:/csgoserver/ixi_go"
     depends_on: 

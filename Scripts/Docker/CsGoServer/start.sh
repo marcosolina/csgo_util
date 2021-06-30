@@ -5,7 +5,7 @@ sleep 90
 BASE_DIR=/csgoserver
 REPO_DIRECTORY=$BASE_DIR/ixi_go
 CSGO_SERVER_DIR=$REPO_DIRECTORY/CsgoServer
-JAR_SERVICE=$BASE_DIR/IxicoServerHelper.jar
+JAR_SERVICE=$BASE_DIR/IxigoServerHelper.jar
 
 chown steam:steam -R $BASE_DIR
 chmod +x $JAR_SERVICE

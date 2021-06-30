@@ -5,6 +5,12 @@ networks:
     name: ixigo_network
 
 services:
+  my_maven:
+    image: my_maven
+    networks: 
+      - ixigo
+    build:
+      context: ./Build
   csgo:
     image: ixigo_csgo
     env_file:
@@ -20,3 +26,5 @@ services:
       - "27000-28000"
     volumes: 
       - "/home/marco/Windows/test/csgoproject:/csgoserver/ixi_go"
+    depends_on: 
+      - my_maven

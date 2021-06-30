@@ -2,7 +2,7 @@
 
 ![Rcon UI](./misc/pictures/ixigo-logo.png)
 
-This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use frequently and we wanted to enhance our gaming experience with the automation of few task, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
+This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use frequently and we wanted to enhance our gaming experience with the automation of few tasks, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
 
 ## Project Structure
 
@@ -10,20 +10,20 @@ This is a personal project that I made to simplify few things that I do when pla
 
 - csgo_util
   - **AppsProperties**: This folder contains the properties used by the different services in the different environments. These properties are retrieved using the "Ixigo Config Server"
-  - [CsgoPlugins](./CsgoPlugins/): This folder contains the source code of the CSGO plugins that we user
+  - [CsgoPlugins](./CsgoPlugins/): This folder contains the source code of the CSGO plugins that we use
   - [DemParser](./DemParser/): This folders contains the C# project that we use to parse the ".dem" files and extract the games stats
   - [IxigoConfigServer](./IxigoConfigServer/): This is the Spring Boot configuration service that is used to serve the Services Properties for the different environmnets
   - [IxigoDemManager](./IxigoDemManager): This Spring Boot service manages the "dem" files created by the CSGO server. For example it will store new files, use the DemParse app to process these files, expose REST API to retrieve the info or the files itself
-  - [IxigoDiscordBot](./IxigoDiscordBot/): This Spring Boot service is used to automate some taks while we play on our CSGO dedicated server. For example it will listen for either CSGO events or messages in the chat and then it can move the players to the appropriate channel, retrieve the Players statistic to balance the teams
+  - [IxigoDiscordBot](./IxigoDiscordBot/): This Spring Boot service is used to automate some taks while we play on our CSGO dedicated server. For example it will listen for either CSGO events or messages in the chat and then it can move the players to the appropriate channel, retrieve the Players statistic to balance the teams. Type "!help" in the discord chat to see a full list of tasks that you can trigger
   - [IxigoDiscovery](./IxigoDiscovery/): This Spring Boot service is used to register all the services and simplify the S2S calls. It can be usefull for load balancing, either client side or server side load balancing
-  - [IxigoEventDispatcher](./IxigoEventDispatcher/): This Spring Boot service receives the event fired by the Ixigo Server Helper and forwards these event to all the registered event listeners
+  - [IxigoEventDispatcher](./IxigoEventDispatcher/): This Spring Boot service receives the event fired by the Ixigo Server Helper and forwards these events to all the registered event listeners
   - [IxigoPlayersManager](./IxigoPlayersManager/): This Spring Boot service uses the players stats to perform some calculation. For example, this service is used to generate balanced CSGO teams when we play on our CSGO dedicated server
-  - [IxigoProxy](./IxigoProxy/): This Spring Boot service is a proxy service that it is used to simplify the S2S calls. It is usesfull to perform the service side load balancing and to have a central point to call all the services
+  - [IxigoProxy](./IxigoProxy/): This Spring Boot service is a proxy service that it is used to simplify the S2S calls. It is usesfull to perform the service side load balancing and to have a central point to call all the services. It can also help when you have CORS issues
   - [IxigoRconApiService](./IxigoRconApiService/): This Spring Boot service it is used to send RCON commands to our CSGO dedicated server via REST APIs
-  - [IxigoServerHelper](./IxigoServerHelper/): This Spring Boot service is deployed on the same machine where the CSGO server is running. It monitors some CSGO files, fires events to the Ixigo Event Dispatcher and uploads to the DEM manager the DEM files
+  - [IxigoServerHelper](./IxigoServerHelper/): This Spring Boot service is deployed on the same machine where the CSGO server is running. It monitors some CSGO files, fires events to the Ixigo Event Dispatcher and uploads the DEM files to the DEM manager service
   - [IxigoUi](./IxigoUi/): This Spring Boot Service it is used to provide a simple UI that can be used to perform some tasks when we play on our CSGO dedicate server. For example it can be used to quickly change the map, add / remove bot and balance the teams
-  - **Misc**: Extra files used for documentation or the UI (CSGO Font, logo, Screenshots...)
-  - **Scripts**: This folder contains the scripts that I use to automate some things
+  - **Misc**: Extra files used for example for the documentation or the UI (CSGO Font, logo, Screenshots etc...)
+  - **Scripts**: This folder contains the scripts that I use to automate few things
     - **Docker**: Contains the scripts that I used to generate the required containers
     - **jenkins**: Contains the script/s that are used by Jenkins in the CI/CD pipeline
 
@@ -34,6 +34,21 @@ This is a personal project that I made to simplify few things that I do when pla
 - PostgreSQL
 - **Optional**:
   - Docker
+
+## Start With Docker Compose
+
+![Docker Compose](./misc/pictures/docker_logo200.png)
+
+### Requirements
+
+- Docker running on a Linux machine
+- [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
+- [Steam API Key](http://steamcommunity.com/dev/apikey)
+
+Simply copy and paste the follwing command in your terminal and follow the instruction on the screen
+~~~~bash
+bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/refactoring/Scripts/Docker/setup.sh?$(date +%s))
+~~~~
 
 ## Register a CSGO Event Listener
 

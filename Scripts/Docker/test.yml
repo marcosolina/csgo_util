@@ -1,0 +1,30 @@
+version: "3.7"
+
+networks:
+  ixigo:
+    name: ixigo_network
+
+services:
+  my_maven:
+    image: my_maven
+    networks: 
+      - ixigo
+    build:
+      context: ./Build
+  csgo:
+    image: ixigo_csgo
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./CsGoServer
+    ports:
+      - "27000-28000"
+    volumes: 
+      - "/home/marco/Windows/test/csgoproject:/csgoserver/ixi_go"
+    depends_on: 
+      - my_maven

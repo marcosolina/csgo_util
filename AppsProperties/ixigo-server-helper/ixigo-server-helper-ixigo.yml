@@ -5,10 +5,10 @@ com:
   marco:
    ixigo:
      serverhelper:
-       demFilesFolderFullPath: "${ENV_CSGO_INSTALL_FOLDER}/csgo"
+       demFilesFolderFullPath: "/csgoserver/ixi_go/CsgoServer/csgo"
        services:
          demmanager:
-           host: 192.168.1.30
+           host: ixigo-proxy
          eventdispatcher:
-           host: 192.168.1.30
+           host: ixigo-proxy
            sendEvents: true

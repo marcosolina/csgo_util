@@ -10,6 +10,9 @@ JAR_SERVICE=$BASE_DIR/IxigoServerHelper.jar
 chown steam:steam -R $BASE_DIR
 chmod +x $JAR_SERVICE
 ls -l $BASE_DIR
+sleep 10
+env
+sleep 20
 
 if [ ! -d "$CSGO_SERVER_DIR" ]; then
     su - steam -c "mkdir -p $REPO_DIRECTORY"

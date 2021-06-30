@@ -37,6 +37,15 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ## Start With Docker Compose
 
+![Docker Compose](./misc/pictures/docker_logo200.png)
+
+### Requirements
+
+- Docker running on a Linux machine
+- [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
+- [Steam API Key](http://steamcommunity.com/dev/apikey)
+
+Simply copy and paste the follwing command in your terminal and follow the instruction on the screen
 ~~~~bash
 bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/refactoring/Scripts/Docker/setup.sh?$(date +%s))
 ~~~~

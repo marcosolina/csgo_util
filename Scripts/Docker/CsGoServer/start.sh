@@ -19,7 +19,12 @@ if [ ! -d "$CSGO_SERVER_DIR" ]; then
     su - steam -c "git clone https://github.com/marcosolina/ixi_go.git $REPO_DIRECTORY"
 fi
 
-su - steam -c "nohup java -jar $JAR_SERVICE &"
+su - steam -c "nohup java -jar $JAR_SERVICE \
+--spring.cloud.config.uri=$IXIGO_CONFIG_SERVER_URI \
+--spring.cloud.config.username=$IXIGO_CONFIG_SERVER_USER \
+--spring.cloud.config.password=$IXIGO_CONFIG_SERVER_PASSW \
+--eureka.client.serviceUrl.defaultZone=$IXIGO_EUREKA_SERVER \
+--spring.profiles.active=$IXIGO_PROFILE &"
 
 rm -rf $CSGO_SERVER_DIR/csgo/*.dem
 rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt

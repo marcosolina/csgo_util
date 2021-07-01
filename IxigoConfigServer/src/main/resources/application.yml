@@ -10,7 +10,7 @@ spring:
       server:
         git:
           uri: "https://github.com/marcosolina/csgo_util.git" #Repository that hosts the properties
-          default-label: ${IXIGO_GIT_REPO_BRANCH:refactoring}
+          default-label: ${IXIGO_GIT_REPO_BRANCH:main}
           #password: ${GIT_PASSWORD}
           #username: ${GIT_USERNAME}
           search-paths: #list of folders to use when retrieving the properties

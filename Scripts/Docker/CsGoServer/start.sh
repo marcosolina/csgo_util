@@ -2,16 +2,13 @@
 
 sleep 90
 
-BASE_DIR=/csgoserver
-REPO_DIRECTORY=$BASE_DIR/ixi_go
-CSGO_SERVER_DIR=$REPO_DIRECTORY/CsgoServer
-JAR_SERVICE=$BASE_DIR/IxigoServerHelper.jar
-
-chmod +x $JAR_SERVICE
+REPO_DIRECTORY=$TOP_FOLDER/ixi_go
+CSGO_SERVER_DIR=$SERVER_FOLDER/CsgoServer
+JAR_SERVICE=$TOP_FOLDER/IxigoServerHelper.jar
 
 if [ ! -d "$CSGO_SERVER_DIR" ]; then
-    mkdir -p $REPO_DIRECTORY
-    git clone https://github.com/marcosolina/ixi_go.git $REPO_DIRECTORY
+    mkdir -p $SERVER_FOLDER
+    git clone https://github.com/marcosolina/ixi_go.git $SERVER_FOLDER
 fi
 
 nohup java -jar $JAR_SERVICE \
@@ -26,5 +23,5 @@ rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt
 
 HOST_IP=$(hostname -I | awk '{print $1}')
 
-/csgoserver/steam/steamcmd.sh +login anonymous +force_install_dir $CSGO_SERVER_DIR +app_update 740 +quit
+$STEAM_FOLDER/steamcmd.sh +login anonymous +force_install_dir $CSGO_SERVER_DIR +app_update 740 +quit
 $CSGO_SERVER_DIR/srcds_run -game csgo -console -usercon -port 27015 +ip $HOST_IP +game_type 0 +game_mode 1 +mapgroup mg_ixico_maps +map ar_dizzy -authkey $ENV_STEAM_API_KEY +sv_setsteamaccount $ENV_STEAM_CSGO_KEY -net_port_try 1

@@ -3,7 +3,7 @@
 FROM maven:3.8.1-jdk-8 AS MAVEN_IMAGE
 RUN mkdir /ixigo
 WORKDIR /ixigo
-RUN git clone -b refactoring https://github.com/marcosolina/csgo_util.git && \
+RUN git clone https://github.com/marcosolina/csgo_util.git && \
 git clone https://github.com/marcosolina/javautils.git && \
 git clone https://github.com/marcosolina/WebJar.git
 

@@ -2,7 +2,7 @@
 
 # Clone the repo in the folder specified by the user
 
-git clone -b refactoring https://github.com/marcosolina/csgo_util.git
+git clone https://github.com/marcosolina/csgo_util.git
 
 SCRIPTS_FOLDER=csgo_util/Scripts
 YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml

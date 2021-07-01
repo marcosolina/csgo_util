@@ -47,7 +47,7 @@ This is a personal project that I made to simplify few things that I do when pla
 
 Simply copy and paste the follwing command in your terminal and follow the instruction on the screen
 ~~~~bash
-bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/refactoring/Scripts/Docker/setup.sh?$(date +%s))
+bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/main/Scripts/Docker/setup.sh?$(date +%s))
 ~~~~
 
 ## Register a CSGO Event Listener

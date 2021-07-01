@@ -9,7 +9,7 @@ spring:
     config:
       server:
         git:
-          uri: "https://github.com/marcosolina/csgo_util.git" #Repository that hosts the properties
+          uri: ${IXIGO_CONFIG_REPO:file://E:\\Workspaces\\Git\\csgo_util} #Repository that hosts the properties
           default-label: ${IXIGO_GIT_REPO_BRANCH:main}
           #password: ${GIT_PASSWORD}
           #username: ${GIT_USERNAME}

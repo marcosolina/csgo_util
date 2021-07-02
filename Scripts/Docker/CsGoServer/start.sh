@@ -10,8 +10,12 @@ export ENV_CSGO_INSTALL_FOLDER=$CSGO_SERVER_DIR # property used by the java serv
 if [ ! -d "$CSGO_SERVER_DIR" ]; then
     mkdir -p $SERVER_FOLDER
     git clone https://github.com/marcosolina/ixi_go.git $SERVER_FOLDER
+    
+    tail -100 $CSGO_SERVER_DIR/csgo/csg/server.cfg
     sed -i -e "s/RCON_PASSWORD/$IXIGO_CSGO_PASSW/g" $CSGO_SERVER_DIR/csgo/csg/server.cfg
     sed -i -e "s/SERVER_PASSWORD/$IXIGO_CSGO_PASSW/g" $CSGO_SERVER_DIR/csgo/csg/server.cfg
+    tail -100 $CSGO_SERVER_DIR/csgo/csg/server.cfg
+    sleep 30
 fi
 
 nohup java -jar $JAR_SERVICE \

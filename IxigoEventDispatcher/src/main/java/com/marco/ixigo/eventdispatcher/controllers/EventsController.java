@@ -88,15 +88,15 @@ public class EventsController {
             return ipAddress;
         }
         ipAddress = request.getHeader("X-Forwarded-For");
-        if(ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(ipAddress != null && (ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress))) {
             ipAddress = request.getHeader("Proxy-Client-IP");
         }
         
-        if(ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(ipAddress != null && (ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress))) {
             ipAddress = request.getHeader("WL-Proxy-Client-IP");
         }
         
-        if(ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+        if(ipAddress != null && (ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress))) {
             ipAddress = request.getRemoteAddr();
             if(LOCALHOST_IPV4.equals(ipAddress) || LOCALHOST_IPV6.equals(ipAddress)) {
                 try {
@@ -108,7 +108,7 @@ public class EventsController {
             }
         }
         
-        if(!ipAddress.isEmpty() 
+        if(ipAddress != null && !ipAddress.isEmpty() 
                 && ipAddress.length() > 15
                 && ipAddress.indexOf(",") > 0) {
             ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));

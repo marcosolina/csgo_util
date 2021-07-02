@@ -14,7 +14,6 @@ com:
         demparser:
           environment: RASP # Enum: WINDOWS, RASP
           executionType: ASYNC # Enum: ASYNC, SYNC
-          demfolder: '{cipher}12dbeded31bd7cd777966f8c5e958e8f4759340b82bbbe6d45a3682e91b16549256657ebc489dc7adf9394f42c3e2e92'
           dotnetexecutable: '{cipher}5186cba639d5054e66a7d036379aa37178cdad9810e117790882824ac0ef5f93fbdd7ba3241daceaa5d744ff0487cc37'
             
 spring:

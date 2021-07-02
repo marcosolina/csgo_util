@@ -5,6 +5,7 @@ sleep 90
 REPO_DIRECTORY=$TOP_FOLDER/ixi_go
 CSGO_SERVER_DIR=$SERVER_FOLDER/CsgoServer
 JAR_SERVICE=$TOP_FOLDER/IxigoServerHelper.jar
+export ENV_CSGO_INSTALL_FOLDER=$CSGO_SERVER_DIR # property used by the java service
 
 if [ ! -d "$CSGO_SERVER_DIR" ]; then
     mkdir -p $SERVER_FOLDER

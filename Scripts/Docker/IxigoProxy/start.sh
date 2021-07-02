@@ -1,5 +1,5 @@
 #!/bin/bash
 
-sleep 80
+sleep 10
 
 java -jar IxigoProxy.jar

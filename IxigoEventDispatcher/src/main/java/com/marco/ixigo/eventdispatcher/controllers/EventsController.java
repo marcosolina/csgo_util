@@ -1,5 +1,8 @@
 package com.marco.ixigo.eventdispatcher.controllers;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
@@ -27,7 +30,8 @@ public class EventsController {
 
     @Autowired
     private EventService service;
-    
+    private final String LOCALHOST_IPV4 = "127.0.0.1";
+    private final String LOCALHOST_IPV6 = "0:0:0:0:0:0:0:1";
     
     @PostMapping("/event")
     @ApiOperation(value = "It receives the event from the CSGO server", code = 200)
@@ -37,7 +41,7 @@ public class EventsController {
         }
 
         if (EventType.fromString(request.getEventName()) != null) {
-            new Thread(() -> service.newIncomingEventFromServer(EventType.fromString(request.getEventName()), httRequest.getRemoteAddr())).start();
+            new Thread(() -> service.newIncomingEventFromServer(EventType.fromString(request.getEventName()), getClientIp(httRequest))).start();
             LOGGER.trace("Leaving Events.receiveServerEvent");
             return new ResponseEntity<>(HttpStatus.ACCEPTED);
         }
@@ -75,5 +79,41 @@ public class EventsController {
         }
 
         return new ResponseEntity<>(resp, HttpStatus.BAD_REQUEST);
+    }
+    
+    private String getClientIp(HttpServletRequest request) {
+        
+        String ipAddress = request.getRemoteAddr();
+        if(ipAddress != null) {
+            return ipAddress;
+        }
+        ipAddress = request.getHeader("X-Forwarded-For");
+        if(ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        
+        if(ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        
+        if(ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+            if(LOCALHOST_IPV4.equals(ipAddress) || LOCALHOST_IPV6.equals(ipAddress)) {
+                try {
+                    InetAddress inetAddress = InetAddress.getLocalHost();
+                    ipAddress = inetAddress.getHostAddress();
+                } catch (UnknownHostException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        
+        if(!ipAddress.isEmpty() 
+                && ipAddress.length() > 15
+                && ipAddress.indexOf(",") > 0) {
+            ipAddress = ipAddress.substring(0, ipAddress.indexOf(","));
+        }
+        
+        return ipAddress;
     }
 }

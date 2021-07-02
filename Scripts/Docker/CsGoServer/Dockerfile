@@ -14,7 +14,18 @@ ENV SERVER_FOLDER "${TOP_FOLDER}/ixi_go"
 RUN apt-get update && apt-get install software-properties-common -y && add-apt-repository multiverse
 RUN dpkg --add-architecture i386
 RUN apt-get update \
-    && apt-get install -y lib32gcc1 openjdk-11-jre git wget tar
+    && apt-get install -y \
+	lib32gcc1 \
+	openjdk-11-jre \
+	git \
+	wget \
+	tar \
+	ca-certificates \
+    net-tools \
+    lib32stdc++6 \
+    lib32z1 \
+    lib32z1-dev \
+	curl
 
 RUN mkdir -p "${SERVER_FOLDER}" \
 && mkdir -p "${STEAM_FOLDER}" \

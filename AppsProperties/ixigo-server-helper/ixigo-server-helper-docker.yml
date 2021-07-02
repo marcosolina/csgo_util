@@ -1,6 +1,12 @@
 server:
   port: 8088
 
+logging:
+  level:
+    com:
+      marco:
+       ixigo:
+         serverhelper: DEBUG
 com:
   marco:
    ixigo:

@@ -50,6 +50,20 @@ Simply copy and paste the follwing command in your terminal and follow the instr
 bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/main/Scripts/Docker/setup.sh?$(date +%s))
 ~~~~
 
+## URLs
+
+Replace the IP with your machine/s IP/s
+
+- [UI](http://192.168.1.8:8089/ixigoui/)
+- [Discovery](http://192.168.1.8:8765/ixigodiscovery/)
+- [Config](http://192.168.1.8:8888/config/ixigo-server-helper/docker)
+- [Proxy Routes](http://192.168.1.8:8763/ixigoproxy/actuator/routes)
+- [Dem Manager](http://192.168.1.8:8081/demmanager/swagger-ui.html)
+- [Players Manager](http://192.168.1.8:8087/playersmanager/swagger-ui.html)
+- [RCON APIs](http://192.168.1.8:8084/rcon/swagger-ui.html)
+- [Discord Bot](http://192.168.1.8:8082/discordbot/swagger-ui.html)
+- [Event Dispatcher](http://192.168.1.8:8086/eventsdispatcher/swagger-ui.html)
+
 ## Register a CSGO Event Listener
 
 The **Ixigo Event Dispatcher** service allows you to register you app and listen for some events which are fired by our CSGO dedicated server. [Here you can find](https://marco.selfip.net/ixigoproxy/ixigo-event-dispatcher/eventsdispatcher/swagger-ui.html) the APIs documentation to register / un-register your app

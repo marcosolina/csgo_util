@@ -2,8 +2,6 @@
 
 sleep 35
 
-env
-
 java -jar IxigoDiscordBot.jar \
 --spring.cloud.config.uri=$IXIGO_CONFIG_SERVER_URI \
 --spring.cloud.config.username=$IXIGO_CONFIG_SERVER_USER \

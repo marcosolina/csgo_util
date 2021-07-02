@@ -40,6 +40,7 @@ public class IxiGoEventMonitorMarcoVm implements IxiGoEventMonitor {
             return oldValue;
         }
         String currentValue = readFile();
+        _LOGGER.trace("Current read value: " + currentValue);
         if(currentValue != null && !oldValue.equals(currentValue)) {
             oldValue = currentValue;
             try {

@@ -25,4 +25,4 @@ com:
             csgoServerHost: 'csgo'
             csgoServerPassw: '{cipher}10fb700c8654bb68aaabf128d525c457d6073487958add53aa6bc19f0f2aec7a'
           players-manager:
-            host: ixgo-proxy
+            host: ixigo-proxy

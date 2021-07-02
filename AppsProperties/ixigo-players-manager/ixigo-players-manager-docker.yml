@@ -7,6 +7,6 @@ com:
       playersmanager:
         services:
           demmanager:
-            dns: ixgo-proxy
+            dns: ixigo-proxy
             port: 8763
             contextpath: "/ixigoproxy/ixigo-dem-manager/demmanager"

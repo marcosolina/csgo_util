@@ -25,6 +25,7 @@ read -p "Type the full path of the folder on the host machine where you want to 
 read -p "Type the full path of the folder on the host machine where you want to store the CSGO Dedicated Server: " CSGO_FOLDER
 read -p "Type the Steam Key: " STEAM_CSGO_KEY
 read -p "Type the Steam API Key: " STEAM_API_KEY
+read -p "Type the CSGO server password: " IXIGO_CSGO_PASSW
 
 echo ""
 echo "Postgres Configuration"
@@ -43,6 +44,7 @@ sed -i -e "s,__CSGO_FOLDER__,$CSGO_FOLDER,g" $YML_FILE
 
 sed -i -e "s/__STEAM_CSGO_KEY__/$STEAM_CSGO_KEY/g" $CSGO_ENV_FILE
 sed -i -e "s/__STEAM_API_KEY__/$STEAM_API_KEY/g" $CSGO_ENV_FILE
+sed -i -e "s/__IXIGO_CSGO_PASSW__/$IXIGO_CSGO_PASSW/g" $CSGO_ENV_FILE
 
 sed -i -e "s/__IXIGO_POSTGRES_USER__/$POSTGRES_USER/g" $DB_ENV_FILE
 sed -i -e "s/__IXIGO_POSTGRES_PASSW__/$POSTGRES_PASSW/g" $DB_ENV_FILE

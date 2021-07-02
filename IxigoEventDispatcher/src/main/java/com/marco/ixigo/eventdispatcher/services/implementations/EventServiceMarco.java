@@ -49,8 +49,13 @@ public class EventServiceMarco implements EventService {
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug(String.format("Processing event: %s from ip: %s", event.name(), clientIp));
         }
+        
+        if(clientIp == null) {
+            LOGGER.error("The request IP is null");
+            return;
+        }
 
-        if (previousEvent.containsKey(clientIp) && previousEvent.get(clientIp) == EventType.WARMUP_START && event == EventType.ROUND_START) {
+        if (previousEvent.get(clientIp) == EventType.WARMUP_START && event == EventType.ROUND_START) {
             dispatchEvent(EventType.WARMUP_END);
         }
 

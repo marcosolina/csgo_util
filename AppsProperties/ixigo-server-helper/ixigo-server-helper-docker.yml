@@ -12,6 +12,7 @@ com:
    ixigo:
      serverhelper:
        demFilesFolderFullPath: "/csgoserver/ixi_go/CsgoServer/csgo"
+       justmondaynight: false
        services:
          demmanager:
            host: ixigo-proxy

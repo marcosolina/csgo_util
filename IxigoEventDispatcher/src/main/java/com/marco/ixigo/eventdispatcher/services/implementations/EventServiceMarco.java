@@ -47,10 +47,10 @@ public class EventServiceMarco implements EventService {
     @Override
     public void newIncomingEventFromServer(EventType event, String clientIp) {
         if (LOGGER.isDebugEnabled()) {
-            LOGGER.debug(String.format("Processing event: %s", event.name()));
+            LOGGER.debug(String.format("Processing event: %s from ip: %s", event.name(), clientIp));
         }
 
-        if (previousEvent.get(clientIp) == EventType.WARMUP_START && event == EventType.ROUND_START) {
+        if (previousEvent.containsKey(clientIp) && previousEvent.get(clientIp) == EventType.WARMUP_START && event == EventType.ROUND_START) {
             dispatchEvent(EventType.WARMUP_END);
         }
 

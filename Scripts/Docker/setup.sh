@@ -4,6 +4,13 @@
 
 git clone https://github.com/marcosolina/csgo_util.git
 
+rm -rf csgo_util/Ixigo*
+rm -rf csgo_util/Apps*
+rm -rf csgo_util/Csgo*
+rm -rf csgo_util/Dem*
+rm -rf csgo_util/misc
+rm -rf csgo_util/README*
+
 SCRIPTS_FOLDER=csgo_util/Scripts
 YML_FILE=$SCRIPTS_FOLDER/Docker/docker-compose-start-containers.yml
 DB_ENV_FILE=$SCRIPTS_FOLDER/Docker/env-database.properties

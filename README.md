@@ -32,6 +32,9 @@ This is a personal project that I made to simplify few things that I do when pla
 - Java >= 8
 - .NET Core
 - PostgreSQL
+- [Discord Bot Token](./IxigoDiscordBot/)
+- [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
+- [Steam API Key](http://steamcommunity.com/dev/apikey)
 - **Optional**:
   - Docker
 
@@ -39,13 +42,8 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ![Docker Compose](./misc/pictures/docker_logo200.png)
 
-### Requirements
-
-- Docker running on a Linux machine
-- [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
-- [Steam API Key](http://steamcommunity.com/dev/apikey)
-
 Simply copy and paste the follwing command in your terminal and follow the instruction on the screen
+
 ~~~~bash
 bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/main/Scripts/Docker/setup.sh?$(date +%s))
 ~~~~
@@ -58,11 +56,11 @@ Replace the IP with your machine/s IP/s
 - [Discovery](http://192.168.1.8:8765/ixigodiscovery/)
 - [Config](http://192.168.1.8:8888/config/ixigo-server-helper/docker)
 - [Proxy Routes](http://192.168.1.8:8763/ixigoproxy/actuator/routes)
-- [Dem Manager](http://192.168.1.8:8081/demmanager/swagger-ui.html)
-- [Players Manager](http://192.168.1.8:8087/playersmanager/swagger-ui.html)
-- [RCON APIs](http://192.168.1.8:8084/rcon/swagger-ui.html)
-- [Discord Bot](http://192.168.1.8:8082/discordbot/swagger-ui.html)
-- [Event Dispatcher](http://192.168.1.8:8086/eventsdispatcher/swagger-ui.html)
+- [Open API Sepcs - Dem Manager](http://192.168.1.8:8081/demmanager/swagger-ui.html)
+- [Open API Sepcs - Players Manager](http://192.168.1.8:8087/playersmanager/swagger-ui.html)
+- [Open API Sepcs - RCON APIs](http://192.168.1.8:8084/rcon/swagger-ui.html)
+- [Open API Sepcs - Discord Bot](http://192.168.1.8:8082/discordbot/swagger-ui.html)
+- [Open API Sepcs - Event Dispatcher](http://192.168.1.8:8086/eventsdispatcher/swagger-ui.html)
 
 ## Register a CSGO Event Listener
 

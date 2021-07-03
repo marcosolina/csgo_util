@@ -23,7 +23,7 @@ sed -i -e 's/\r$//' $(find $SCRIPTS_FOLDER -type f -name "*.sh")
 
 echo ""
 echo "Build Configuration"
-read -p "Which profile properties whould you like to use? " PROFILE_PROP
+read -p "Which spring boot profile whould you like to use? (Example: docker)" PROFILE_PROP
 
 echo ""
 echo "Host Machine Configuration"

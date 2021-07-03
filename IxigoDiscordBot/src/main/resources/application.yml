@@ -24,6 +24,7 @@ com:
   marco:
     ixigo:
       discordbot:
+        startBotOnStartup: false                                                                                  # Automatically start the bot on boot true/false
         bottoken: ${DISCORD_BOT_TOKEN}
         version: ^project.version^
         services:

@@ -4,6 +4,17 @@
 
 This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use frequently and we wanted to enhance our gaming experience with the automation of few tasks, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
 
+## Requirements
+
+- Java >= 8
+- .NET Core
+- PostgreSQL
+- [Discord Bot Token](./IxigoDiscordBot/)
+- [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
+- [Steam API Key](http://steamcommunity.com/dev/apikey)
+- **Optional**:
+  - Docker
+
 ## Project Structure
 
 ![Rcon UI](./misc/pictures/Services_Diagram2.png)
@@ -27,22 +38,13 @@ This is a personal project that I made to simplify few things that I do when pla
     - **Docker**: Contains the scripts that I used to generate the required containers
     - **jenkins**: Contains the script/s that are used by Jenkins in the CI/CD pipeline
 
-## Requirements
-
-- Java >= 8
-- .NET Core
-- PostgreSQL
-- [Discord Bot Token](./IxigoDiscordBot/)
-- [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
-- [Steam API Key](http://steamcommunity.com/dev/apikey)
-- **Optional**:
-  - Docker
-
 ## Start With Docker Compose
 
 ![Docker Compose](./misc/pictures/docker_logo200.png)
 
-Simply copy and paste the follwing command in your terminal and follow the instruction on the screen
+The script it will use a [Docker Compose](https://docs.docker.com/compose/) yml file to create the network, images, containers exposing the ports. It il also create one container for the CSGO dedicated server. I will basically start all you need to run our CSGO server, plugins and micro services.
+
+**Simply copy and paste the follwing command in your terminal and follow the instruction on the screen.**
 
 ~~~~bash
 bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/main/Scripts/Docker/setup.sh?$(date +%s))

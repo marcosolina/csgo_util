@@ -62,5 +62,10 @@ sed -i -e "s/__IXIGO_CONFIG_SERVER_USER__/$CONFIG_SERVER_USER/g" $CONFIG_ENV_FIL
 sed -i -e "s/__IXIGO_CONFIG_SERVER_PASSW__/$CONFIG_SERVER_PASSW/g" $CONFIG_ENV_FILE
 sed -i -e "s/__IXIGO_CONFIG_ENC_KEY__/$CONFIG_ENC_KEY/g" $CONFIG_ENV_FILE
 
-docker-compose -f $YML_FILE up
-echo "Run the following command: docker-compose -f $YML_FILE up"
+docker-compose -f $YML_FILE up --build
+
+echo ""
+echo ""
+echo ""
+
+echo "If you want to start everything again simply run the following command: docker-compose -f $YML_FILE up"

@@ -4,4 +4,4 @@
 # If will try to use the key defined in the system, 
 # if not available it will use a default one  
 encrypt:
-  key: ${IXIGO_CONFIG_ENC_KEY:thisIsMySuperSecretKey}
+  key: ${IXIGO_CONFIG_ENC_KEY:thisIsMySuperSecretKey}             # Password / Key used to decrypt the properties

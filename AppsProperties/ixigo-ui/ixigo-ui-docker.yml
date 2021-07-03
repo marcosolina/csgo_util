@@ -8,13 +8,13 @@ com:
         urls:
           dem_manager:
             protocol: "http://"
-            host: "192.168.1.8:8763"
+            host: "192.168.1.8:8763"            # Server where is running my docker
           players_manager:
             protocol: "http://"
-            host: "192.168.1.8:8763"
+            host: "192.168.1.8:8763"            # Server where is running my docker
           rcon_api:
             protocol: "http://"
-            host: "192.168.1.8:8763"
+            host: "192.168.1.8:8763"            # Server where is running my docker
           discord_bot:
             protocol: "http://"
-            host: "192.168.1.8:8763"
+            host: "192.168.1.8:8763"            # Server where is running my docker

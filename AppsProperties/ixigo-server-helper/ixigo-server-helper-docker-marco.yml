@@ -1,0 +1,21 @@
+server:
+  port: 8088
+
+logging:
+  level:
+    com:
+      marco:
+       ixigo:
+         serverhelper: DEBUG
+com:
+  marco:
+   ixigo:
+     serverhelper:
+       demFilesFolderFullPath: "/csgoserver/ixi_go/CsgoServer/csgo"
+       justmondaynight: false
+       services:
+         demmanager:
+           host: ixigo-proxy
+         eventdispatcher:
+           host: ixigo-proxy
+           sendEvents: true

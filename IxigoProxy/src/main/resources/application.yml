@@ -1,15 +1,15 @@
 server:
   port: 8763
   servlet:
-    context-path: /ixigoproxy
+    context-path: /ixigoproxy                                                                 # Do not change this
 
 spring:
   application:
-    name: ixigo-proxy
+    name: ixigo-proxy                                                                         # Do not change this
   servlet:
     multipart:
-      max-file-size: 100MB # To be able to recevie HTTP request with big files
-      max-request-size: 100MB # To be able to recevie HTTP request with big files
+      max-file-size: 100MB                                                                    # To be able to recevie HTTP request with big files
+      max-request-size: 100MB                                                                 # To be able to recevie HTTP request with big files
 
 management:
   endpoints:
@@ -18,8 +18,8 @@ management:
         include: '*'
 
 ribbon:
-  ReadTimeout: 120000 # processing request time
-  ConnectTimeout: 30000 # connection request time
+  ReadTimeout: 120000                                                                         # processing request time
+  ConnectTimeout: 30000                                                                       # connection request time
 
 eureka:
   instance:
@@ -28,4 +28,4 @@ eureka:
     registerWithEureka: true
     fetchRegistry: true
     serviceUrl:
-      defaultZone: ${IXIGO_EUREKA_SERVER:http://localhost:8765/ixigodiscovery/eureka}
+      defaultZone: ${IXIGO_EUREKA_SERVER:http://localhost:8765/ixigodiscovery/eureka}         # URL of the discovery service

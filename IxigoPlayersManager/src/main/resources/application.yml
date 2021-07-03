@@ -10,12 +10,12 @@ com:
         version: ^project.version^
         services:
           demmanager:
-            protocol: "http"
-            dns: "localhost"
-            port: 8080
-            contextpath: "/demmanager"
-            getUsersScores: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/usersscores"
-            getUsers: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/users"
+            protocol: "http"                                                                                            # HTTP or HTTPs     
+            dns: "localhost"                                                                                            # Host name of the Ixigo Proxy service
+            port: 8763                                                                                                  # Port on which the Ixigo Proxy Service is listening
+            contextpath: "/ixigoproxy/ixigo-dem-manager/demmanager"                                                     # Do not change this
+            getUsersScores: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/usersscores"     # Do not change this
+            getUsers: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/users"                 # Do not change this
             
 
 logging:

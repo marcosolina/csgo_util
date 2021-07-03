@@ -1,23 +1,23 @@
 spring:
   security:
     user:
-      name: ${IXIGO_CONFIG_SERVER_USER:REPLACE_ME}
-      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}
+      name: ${IXIGO_CONFIG_SERVER_USER:REPLACE_ME}                          # User name that the springboot service has to provide in order to read the config files
+      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}                     # Password that the springboot service has to provide in order to read the config files
   application:
-    name: config-service
+    name: config-service                                                    # Service name (Do not change)
   cloud:
     config:
       server:
         git:
-          uri: ${IXIGO_CONFIG_REPO:file://E:\\Workspaces\\Git\\csgo_util} #Repository that hosts the properties
+          uri: ${IXIGO_CONFIG_REPO:file://E:\\Workspaces\\Git\\csgo_util}   # Git repo where to get the properties from
           default-label: ${IXIGO_GIT_REPO_BRANCH:main}
-          #password: ${GIT_PASSWORD}
-          #username: ${GIT_USERNAME}
-          search-paths: #list of folders to use when retrieving the properties
+          #password: ${GIT_PASSWORD}                                        # Git user name (for private repositories)
+          #username: ${GIT_USERNAME}                                        # Git password (for private repositories)
+          search-paths:                                                     # List of folders that will be queried by this config service
           - 'AppsProperties/**'
           
 
 server:
-  port: 8888 #Port to use when running this service
+  port: 8888                                                                # Port to use when running this service
   servlet:
-    context-path: /config
+    context-path: /config                                                   # Application context path (Do not change)

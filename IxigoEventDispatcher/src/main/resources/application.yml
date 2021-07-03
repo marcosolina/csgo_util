@@ -1,7 +1,7 @@
 
 server:
   servlet:
-    context-path: /eventsdispatcher
+    context-path: /eventsdispatcher                                                                     # Do not change this
   port: 8080
     
 com:
@@ -18,9 +18,9 @@ com:
 
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/event_dispatcher
-    username: ${IXIGO_POSTGRES_USER:REPLACE_ME} # Replace the value
-    password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME} # Replace the value
+    url: jdbc:postgresql://localhost:5432/event_dispatcher                                              # You can change this, but do not change the DB name.
+    username: ${IXIGO_POSTGRES_USER:REPLACE_ME}
+    password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME}
 
 logging:
   file:

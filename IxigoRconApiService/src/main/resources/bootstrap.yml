@@ -3,7 +3,7 @@ eureka:
   client:
     serviceUrl:
       #try the value from the system props, or get the fall back
-      defaultZone: ${IXIGO_EUREKA_SERVER:http://localhost:8765/ixigodiscovery/eureka}
+      defaultZone: ${IXIGO_EUREKA_SERVER:http://localhost:8765/ixigodiscovery/eureka}                               # URL of the discovery service
   instance:
     preferIpAddress: true 
 
@@ -12,11 +12,11 @@ spring:
     active:
     - ${IXIGO_PROFILE:local}
   application:
-    name: ixigo-rcon-api
+    name: ixigo-rcon-api                                                                                            # Do not change this
   cloud:
     inetutils:
-      preferred-networks: 192.168.1 # Workaround because I have multiple network interfaces
+      preferred-networks: 192.168.1                                                                                 # Workaround because I have multiple network interfaces
     config:
-      uri: ${IXIGO_CONFIG_SERVER_URI:http://localhost:8888/config}
-      username: ${IXIGO_CONFIG_SERVER_USER:REPLACE_ME}
-      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}
+      uri: ${IXIGO_CONFIG_SERVER_URI:http://localhost:8888/config}                                                  # URL of the config server
+      username: ${IXIGO_CONFIG_SERVER_USER:REPLACE_ME}                                                              # User name to access the config server
+      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}                                                             # Password to access the config server

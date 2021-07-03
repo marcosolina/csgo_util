@@ -1,6 +1,6 @@
 server:
   servlet:
-    context-path: /rcon
+    context-path: /rcon                                                                   # Do not change this
   port: 8080
     
 com:

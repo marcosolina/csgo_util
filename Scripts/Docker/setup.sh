@@ -69,3 +69,7 @@ echo ""
 echo ""
 
 echo "If you want to start everything again simply run the following command: docker-compose -f $YML_FILE up"
+
+echo ""
+echo ""
+echo ""

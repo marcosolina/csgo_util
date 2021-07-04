@@ -1,5 +1,5 @@
 var DiscordBot = ((function(DiscordBot){
-	"use strict";
+    "use strict";
 
     let discordUsersWrapperId = "discordUsers";
     let mappedSteamUsersWrapperId = "mappedSteamUsers";
@@ -10,16 +10,18 @@ var DiscordBot = ((function(DiscordBot){
     let tplDiscord = '<div class="col-12" data-discord-id="%id%" data-discord-name=%name%>' +
                         '<input class="form-control form-control-sm" type="text" value="%name%" readonly></div>';
     let tplSteam = '<div class="col-12"><select class="form-control form-control-sm" id="steam-discord-select-%discordId%"><option value=""></option></select></div>';
-	
-	if(DiscordBot === undefined){
-		DiscordBot = {};
+    
+    if(DiscordBot === undefined){
+        DiscordBot = {};
     }
     
     DiscordBot.init = function(){
         DiscordBot.getSteamUsers();
+        DiscordBot.getAutoBalance();
         $("#saveMapDiscordUsers").click(DiscordBot.saveMapping);
         $("#startDiscordBot").click(function(){DiscordBot.startStopDiscordBot(true);});
         $("#stopDiscordBot").click(function(){DiscordBot.startStopDiscordBot(false);});
+        $("#discorAutoBalance").click(DiscordBot.setAutoBalance);
 
         let jSelectRoundsToConsider = $("#" + dpRoundToConsiderId);
         for(let i = 1; i < 100; i++){
@@ -27,6 +29,26 @@ var DiscordBot = ((function(DiscordBot){
         }
         DiscordBot.getRoundsToConsider();
         jSelectRoundsToConsider.change(DiscordBot.changeRoundsToConsider);
+    }
+    
+    DiscordBot.setAutoBalance = function(){
+        let url = __URLS.DISCORD_BOT.AUTO_BALANCE;
+        MarcoUtils.executeAjax({type: "PUT", url: url, autoBalanaceActive: $(this).prop( "checked" )})
+            .then(function(resp){
+                if(resp.status){
+                    MarcoUtils.showNotification({type: "success", title: "Ok", message: "Done"});
+                }
+            });
+    }
+    
+    DiscordBot.getAutoBalance = function(){
+        let url = __URLS.DISCORD_BOT.AUTO_BALANCE;
+        MarcoUtils.executeAjax({type: "GET", url: url})
+            .then(function(resp){
+                if(resp.status){
+                    $("#discorAutoBalance").prop("checked", resp.autoBalanceActive);
+                }
+            });
     }
 
     DiscordBot.changeRoundsToConsider = function(){
@@ -154,5 +176,5 @@ var DiscordBot = ((function(DiscordBot){
         }
     }
 
-	return DiscordBot;
+    return DiscordBot;
 })(DiscordBot));

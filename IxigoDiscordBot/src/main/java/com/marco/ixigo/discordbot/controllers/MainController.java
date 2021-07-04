@@ -17,10 +17,12 @@ import com.marco.ixigo.discordbot.enums.BotConfigKey;
 import com.marco.ixigo.discordbot.misc.DiscordBotUtils;
 import com.marco.ixigo.discordbot.model.GenericResponse;
 import com.marco.ixigo.discordbot.model.discord.BotConfig;
+import com.marco.ixigo.discordbot.model.discord.GetAutoBalance;
 import com.marco.ixigo.discordbot.model.discord.GetConfigValue;
 import com.marco.ixigo.discordbot.model.discord.GetMembersResponse;
 import com.marco.ixigo.discordbot.model.discord.GetPlayersResponse;
 import com.marco.ixigo.discordbot.model.discord.SavePlayersMapping;
+import com.marco.ixigo.discordbot.model.discord.SetAutoBalance;
 import com.marco.ixigo.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
 
@@ -141,13 +143,28 @@ public class MainController {
     }
     
     @PutMapping(DiscordBotUtils.MAPPING_POST_AUTO_BALANCE)
-    public ResponseEntity<GenericResponse> setAutoBalance() {
+    public ResponseEntity<GenericResponse> setAutoBalance(@RequestBody SetAutoBalance request) {
         GenericResponse resp = new GenericResponse();
         try {
-            ixiGoBot.setAutoBalance(!ixiGoBot.isAutobalance());
+            ixiGoBot.setAutoBalance(request.isAutoBalanaceActive());
             if(LOGGER.isDebugEnabled()) {
                 LOGGER.debug(String.format("Autobalance set to: %s", ixiGoBot.isAutobalance()));
             }
+            resp.setStatus(true);
+        } catch (Exception e) {
+            if(LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
+            }
+            resp.addError(new MarcoException(e));
+        }
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+    
+    @GetMapping(DiscordBotUtils.MAPPING_POST_AUTO_BALANCE)
+    public ResponseEntity<GetAutoBalance> getAutoBalance() {
+        GetAutoBalance resp = new GetAutoBalance();
+        try {
+            resp.setAutoBalanceActive(ixiGoBot.isAutobalance());
             resp.setStatus(true);
         } catch (Exception e) {
             if(LOGGER.isTraceEnabled()) {

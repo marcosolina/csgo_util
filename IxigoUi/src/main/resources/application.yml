@@ -54,4 +54,5 @@ com:
             put_config: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/config"                           # Do not change this
             start_bot: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/start"                             # Do not change this
             stop_bot: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/stop"                               # Do not change this
+            auto_balance: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/autoBalance"                    # Do not change this
 

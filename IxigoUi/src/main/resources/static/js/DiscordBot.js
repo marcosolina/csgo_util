@@ -33,7 +33,14 @@ var DiscordBot = ((function(DiscordBot){
     
     DiscordBot.setAutoBalance = function(){
         let url = __URLS.DISCORD_BOT.AUTO_BALANCE;
-        MarcoUtils.executeAjax({type: "PUT", url: url, autoBalanaceActive: $(this).prop( "checked" )})
+        MarcoUtils.executeAjax({
+                type: "PUT",
+                url: url,
+                showLoading: true,
+                body: {
+                    autoBalanaceActive: $(this).prop( "checked" )
+                }
+             })
             .then(function(resp){
                 if(resp.status){
                     MarcoUtils.showNotification({type: "success", title: "Ok", message: "Done"});

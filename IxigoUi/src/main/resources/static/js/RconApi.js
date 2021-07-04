@@ -26,6 +26,7 @@ var RconApi = ((function(RconApi){
         $("#sendRcon").click(function(){
             RconApi.sendRconCmd($("#rconCmd").val());
         });
+        $("#rconHost").val(__RCON_PROPS.host);
     }
     
     RconApi.addRconCmds = function(){

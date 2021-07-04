@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.marco.ixigo.ui.config.RconProperties;
 import com.marco.ixigo.ui.config.Urls;
 import com.marco.ixigo.ui.model.rest.RconCard;
 import com.marco.ixigo.ui.model.rest.RconCardMap;
@@ -21,6 +22,9 @@ public class Main {
 
     @Autowired
     private Urls urls;
+    @Autowired
+    private RconProperties rconProps;
+    
     @Value("classpath:static/pictures/maps/*")
     private Resource[] resources;
 
@@ -28,6 +32,7 @@ public class Main {
     public String landingPage(Model model) {
         model.addAttribute("URLS", capitaliseAllKeys());
         model.addAttribute("MAPS", getMapNames());
+        model.addAttribute("RCON_PROPS", rconProps);
         return "index";
     }
 

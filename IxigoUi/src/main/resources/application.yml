@@ -19,6 +19,8 @@ com:
     ixigo:
       ui:
         version: ^project.version^
+        rconapi:
+          host: localhost
         urls:
           dem_manager:
             protocol: "http://"                                                                           # http:// or https://

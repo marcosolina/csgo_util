@@ -5,6 +5,8 @@ com:
   marco:
     ixigo:
       ui:
+        rconapi:
+          host: csgo
         urls:
           dem_manager:
             protocol: "http://"

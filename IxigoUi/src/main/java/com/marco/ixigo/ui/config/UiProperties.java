@@ -7,8 +7,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ConfigurationProperties(prefix = "com.marco.ixigo.ui")
-public class Urls {
+public class UiProperties {
     private Map<String, Map<String, String>> urls;
+    private Map<String, String> rconapi;
 
     public Map<String, Map<String, String>> getUrls() {
         return urls;
@@ -18,4 +19,11 @@ public class Urls {
         this.urls = urls;
     }
 
+    public Map<String, String> getRconapi() {
+        return rconapi;
+    }
+
+    public void setRconapi(Map<String, String> rconapi) {
+        this.rconapi = rconapi;
+    }
 }

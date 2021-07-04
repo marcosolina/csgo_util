@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 @Component
-@ConfigurationProperties(prefix = "com.marco.ixigo.rconapi")
+@ConfigurationProperties(prefix = "com.marco.ixigo.ui.rconapi")
 public class RconProperties {
     private Map<String, String> props;
 

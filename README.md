@@ -9,6 +9,7 @@ This is a personal project that I made to simplify few things that I do when pla
 - Java >= 8
 - .NET Core
 - PostgreSQL
+- [IxiGo Dedicated Server](https://github.com/marcosolina/ixi_go)
 - [Discord Bot Token](./IxigoDiscordBot/)
 - [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
 - [Steam API Key](http://steamcommunity.com/dev/apikey)
@@ -17,7 +18,7 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ## Project Structure
 
-![Rcon UI](./misc/pictures/Services_Diagram2.png)
+![Rcon UI](./misc/pictures/Services_Diagram.png)
 
 - csgo_util
   - **AppsProperties**: This folder contains the properties used by the different services in the different environments. These properties are retrieved using the "Ixigo Config Server"
@@ -42,7 +43,7 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ![Docker Compose](./misc/pictures/docker_logo200.png)
 
-The script it will use a [Docker Compose](https://docs.docker.com/compose/) yml file to create the network, images, containers exposing the ports. It il also create one container for the CSGO dedicated server. I will basically start all you need to run our CSGO server, plugins and micro services.
+The script it will use a [Docker Compose](https://docs.docker.com/compose/) yml file to create the network, images, containers exposing the ports. It will also create one container for the CSGO dedicated server. I will basically start all you need to run our CSGO server, plugins and micro services.
 
 **Simply copy and paste the follwing command in your terminal and follow the instruction on the screen.**
 
@@ -50,7 +51,7 @@ The script it will use a [Docker Compose](https://docs.docker.com/compose/) yml 
 bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/main/Scripts/Docker/setup.sh?$(date +%s))
 ~~~~
 
-## URLs
+## Open API Documentation
 
 Replace the IP with your machine/s IP/s
 

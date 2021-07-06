@@ -27,6 +27,11 @@ var RconApi = ((function(RconApi){
             RconApi.sendRconCmd($("#rconCmd").val());
         });
         $("#rconHost").val(__RCON_PROPS.host);
+        $("#rconMapGroup").change(RconApi.setMapGroup);
+    }
+    
+    RconApi.setMapGroup = function(){
+        RconApi.sendRconCmd($(this).val());
     }
     
     RconApi.addRconCmds = function(){
@@ -89,6 +94,7 @@ var RconApi = ((function(RconApi){
 
     RconApi.rconCmdSent = function(resp){
         if(resp.status && resp.rconResponse && resp.rconResponse != ""){
+            MarcoUtils.showNotification({type: "success", title: "Ok", message: "Done"});
             $("#rconResp").val(resp.rconResponse);
             $('#modalWindow').modal("show");
         }

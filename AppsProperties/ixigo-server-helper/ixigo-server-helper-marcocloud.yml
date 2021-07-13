@@ -1,0 +1,25 @@
+server:
+  port: 8088
+
+logging:
+  level:
+    com:
+      marco:
+       ixigo:
+         serverhelper: DEBUG
+com:
+  marco:
+   ixigo:
+     serverhelper:
+       demFilesFolderFullPath: "${ENV_CSGO_INSTALL_FOLDER}/csgo"
+       justmondaynight: false
+       services:
+         demmanager:
+           protocol: https                                                                                         # HTTP or HTTPs
+           host: marco.selfip.net                                                                                     # Host name of the Ixigo Proxy service
+           port: 443                                                                                             # Port on which the Ixigo Proxy Service is listening
+         eventdispatcher:
+           protocol: https                                                                                         # HTTP or HTTPs
+           host: marco.selfip.net                                                                                     # Host name of the Ixigo Proxy service
+           port: 443                                                                                             # Port on which the Ixigo Proxy Service is listening
+           sendEvents: true

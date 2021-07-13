@@ -1,5 +1,10 @@
 server:
   port: 8088
+  
+eureka:
+  instance:
+    prefer-ip-address : true
+    ip-address : ${HOST_IP}
 
 logging:
   level:

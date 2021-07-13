@@ -17,7 +17,7 @@ com:
    ixigo:
      serverhelper:
        demFilesFolderFullPath: "${ENV_CSGO_INSTALL_FOLDER}/csgo"
-       justmondaynight: false
+       justmondaynight: true
        services:
          demmanager:
            protocol: https                                                                                         # HTTP or HTTPs

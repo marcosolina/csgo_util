@@ -1,6 +1,11 @@
 server:
   port: 8082
 
+eureka:
+  instance:
+    prefer-ip-address : true
+    ip-address : ${HOST_IP}
+
 spring:
   datasource:
     url: '{cipher}08e9a32662e0b3e88bcca81da7138c1315e5f2f99095a27a5aa824c0ba6957786bf182545ba8390bb2e8d5305547612349552e881bb9836989ec1cb16b39a95329ebcd661ec4f41004032ff68cc51fcb'

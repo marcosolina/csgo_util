@@ -105,6 +105,17 @@ public class DemFilesServiceMarco implements DemFilesService {
             }).forEach(this::postLastDemFile);
         // @formatter:on
 
+        filesSent.keySet().stream().forEach(k -> {
+            if(filesSent.get(k).equals("Y")) {
+                if(new File(k).delete()) {
+                    filesSent.remove(k);
+                    _LOGGER.debug(String.format("File deleted: %s", k));
+                }else {
+                    _LOGGER.error(String.format("Not able to delete the file: %s", k));
+                }
+            }
+        });
+        
         /*
          * Notify the DEM service that new dem files are available for processing
          */
@@ -156,8 +167,7 @@ public class DemFilesServiceMarco implements DemFilesService {
                 _LOGGER.debug(resp.statusCode().toString());
             }
             if (resp.statusCode() == HttpStatus.OK) {
-                filesSent.remove(fileNameAbsolutePath);
-                //filesSent.put(fileNameAbsolutePath, "Y");
+                filesSent.put(fileNameAbsolutePath, "Y");
             }
         } catch (IOException e) {
             _LOGGER.error(e.getMessage());

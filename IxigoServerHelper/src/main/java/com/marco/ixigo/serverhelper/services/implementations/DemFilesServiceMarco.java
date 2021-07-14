@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -105,16 +106,20 @@ public class DemFilesServiceMarco implements DemFilesService {
             }).forEach(this::postLastDemFile);
         // @formatter:on
 
+        List<String> keysToRemove = new ArrayList<>();
         filesSent.keySet().stream().forEach(k -> {
             if(filesSent.get(k).equals("Y")) {
                 if(new File(k).delete()) {
-                    filesSent.remove(k);
+                    keysToRemove.add(k);
                     _LOGGER.debug(String.format("File deleted: %s", k));
                 }else {
                     _LOGGER.error(String.format("Not able to delete the file: %s", k));
                 }
             }
         });
+        
+        // I have to do it separately to avoid the Concurrent Modification Exception
+        keysToRemove.stream().forEach(k -> filesSent.remove(k));
         
         /*
          * Notify the DEM service that new dem files are available for processing

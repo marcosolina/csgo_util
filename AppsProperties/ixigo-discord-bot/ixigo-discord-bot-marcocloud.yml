@@ -27,4 +27,6 @@ com:
             csgoServerHost: "ixigo.selfip.net"
             csgoServerPassw: '{cipher}92f488c08f3d7dc3c6696813d299ab808ec7db2e56b0202cd3efb5159b405bdf'
           players-manager:
-            host: 192.168.1.30
+            protocol: https                                                                                        # HTTP or HTTPs
+            host: '{cipher}0410d3e17fda0892ba6534b31007e1600623fe96a0fc2f625b41e2739ccac25df7f2c7dcd9084cb3f1fa3479a3873292'                                                                               # Host name of the Ixigo Proxy service
+            port: 443

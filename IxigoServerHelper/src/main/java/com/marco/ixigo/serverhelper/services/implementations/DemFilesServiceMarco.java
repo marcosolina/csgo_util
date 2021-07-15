@@ -61,11 +61,6 @@ public class DemFilesServiceMarco implements DemFilesService {
     @Override
     public void sendLastDemFiles() throws MarcoException {
 
-        if (justMondayNight && LocalDate.now().getDayOfWeek() != DayOfWeek.MONDAY) {
-            _LOGGER.info("It is not the IxiGo night, no need to copy the dem files");
-            return;
-        }
-
         // Get all the files in the Server Folder
         _LOGGER.debug(String.format("Reading folder: %s", appProps.getDemFilesFolderFullPath()));
         File folder = new File(appProps.getDemFilesFolderFullPath());
@@ -89,6 +84,7 @@ public class DemFilesServiceMarco implements DemFilesService {
                     File f = new File(k);
                     LocalDate fileDate = DateUtils.fromStringToLocalDate(f.getName().split("-")[1], DateFormats.FILE_NAME_JUST_DATE);
                     if(fileDate.getDayOfWeek() != DayOfWeek.MONDAY) {
+                        _LOGGER.info("It is not the IxiGo night, no need to copy the dem files");
                         return SENT;
                     }
                 }
@@ -127,7 +123,7 @@ public class DemFilesServiceMarco implements DemFilesService {
             if(filesSent.get(k).equals(SENT)) {
                 if(new File(k).delete()) {
                     keysToRemove.add(k);
-                    _LOGGER.debug(String.format("File deleted: %s", k));
+                    _LOGGER.info(String.format("File deleted: %s", k));
                 }else {
                     _LOGGER.error(String.format("Not able to delete the file: %s", k));
                 }

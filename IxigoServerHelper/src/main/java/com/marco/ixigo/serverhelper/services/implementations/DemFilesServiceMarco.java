@@ -54,6 +54,9 @@ public class DemFilesServiceMarco implements DemFilesService {
     private static Map<String, String> filesSent = new HashMap<>();
     @Value("${com.marco.ixigo.serverhelper.justmondaynight:true}")
     private boolean justMondayNight = true;
+    
+    private static final String NOT_SENT = "N";
+    private static final String SENT = "Y";
 
     @Override
     public void sendLastDemFiles() throws MarcoException {
@@ -78,7 +81,20 @@ public class DemFilesServiceMarco implements DemFilesService {
             return mb > 2;
         })
         .filter(f -> !filesSent.containsKey(f.getAbsolutePath())) // Skip if the files is already managed
-        .forEach(f -> filesSent.put(f.getAbsolutePath(), "N")); // Mark it to be sent
+        .forEach(f -> filesSent.put(f.getAbsolutePath(), NOT_SENT)); // Mark it to be sent
+        
+        if(justMondayNight) {
+            filesSent.replaceAll((k, v) -> {
+                if(v.equals(NOT_SENT)) {
+                    File f = new File(k);
+                    LocalDate fileDate = DateUtils.fromStringToLocalDate(f.getName().split("-")[1], DateFormats.FILE_NAME_JUST_DATE);
+                    if(fileDate.getDayOfWeek() != DayOfWeek.MONDAY) {
+                        return SENT;
+                    }
+                }
+                return v;
+            });
+        }
 
         List<String> fileNameList = filesSent.keySet().stream().collect(Collectors.toList());
         
@@ -102,13 +118,13 @@ public class DemFilesServiceMarco implements DemFilesService {
          */
         fileNameList.stream().filter(ldt -> {
             String tmp = filesSent.get(ldt);
-            return !"Y".equals(tmp);
-            }).forEach(this::postLastDemFile);
+            return !SENT.equals(tmp);
+            }).forEach(this::postDemFile);
         // @formatter:on
 
         List<String> keysToRemove = new ArrayList<>();
         filesSent.keySet().stream().forEach(k -> {
-            if(filesSent.get(k).equals("Y")) {
+            if(filesSent.get(k).equals(SENT)) {
                 if(new File(k).delete()) {
                     keysToRemove.add(k);
                     _LOGGER.debug(String.format("File deleted: %s", k));
@@ -141,7 +157,7 @@ public class DemFilesServiceMarco implements DemFilesService {
     }
     
 
-    private void postLastDemFile(String fileNameAbsolutePath){
+    private void postDemFile(String fileNameAbsolutePath){
         try {
             Path file = Paths.get(fileNameAbsolutePath);
             _LOGGER.debug(String.format("Sending dem file: %s", file.toUri().toString()));
@@ -172,7 +188,7 @@ public class DemFilesServiceMarco implements DemFilesService {
                 _LOGGER.debug(resp.statusCode().toString());
             }
             if (resp.statusCode() == HttpStatus.OK) {
-                filesSent.put(fileNameAbsolutePath, "Y");
+                filesSent.put(fileNameAbsolutePath, SENT);
             }
         } catch (IOException e) {
             _LOGGER.error(e.getMessage());

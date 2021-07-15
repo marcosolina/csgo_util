@@ -29,13 +29,13 @@ com:
         version: ^project.version^
         services:
           discord:                                                                                                # These are the discors IDs that I use on my test server.
-            serverId: 838818767219195924                                                                          # You can get these IDs from Discord,
+            serverId: 700738420686717000                                                                          # You can get these IDs from Discord,
             textChannels:                                                                                         # right click on the specific item and copy the ID
-              general: 838818767219195929 
+              general: 700738421131444234 
             voiceChannels:
-              terrorist: 838818771136413777
-              ct: 839591293545611305
-              general: 838818767219195932
+              terrorist: 706943323084161124
+              ct: 706942842173653094
+              general: 700738421131444236
           rconapi:
             protocol: http                                                                                        # HTTP or HTTPs
             host: localhost                                                                                       # Host name of the Ixigo Proxy service

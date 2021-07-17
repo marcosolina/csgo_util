@@ -32,9 +32,9 @@ public class CmdExecuter {
 
             String line = null;
             String err = null;
-            boolean healtyDem = false;
+            boolean dataAvailableInTheFile = false;
             boolean headingLine = true;
-
+            
             while ((line = stdInput.readLine()) != null) {
                 if (headingLine) {
                     // The first line is the csv heading
@@ -88,7 +88,7 @@ public class CmdExecuter {
                 ums.setMatchPlayed(parseDouble(tmp[RoundParserUtils.DEM_COL_MATCH_PLAYED]));
 
                 usersStats.add(ums);
-                healtyDem = true;
+                dataAvailableInTheFile = true;
             }
 
             StringBuilder sb = new StringBuilder();
@@ -96,8 +96,11 @@ public class CmdExecuter {
                 sb.append(err);
             }
 
-            if (sb.length() > 0 || !healtyDem) {
+            if (sb.length() > 0) {
                 throw new MarcoException(sb.toString());
+            }
+            if(!dataAvailableInTheFile) {
+            	return null;
             }
 
         } catch (IOException | InterruptedException | NumberFormatException e) {

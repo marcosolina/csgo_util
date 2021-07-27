@@ -69,12 +69,6 @@ public class DemFilesServiceMarco implements DemFilesService {
         // @formatter:off
         Arrays.stream(files)
         .filter(f -> f.getName().endsWith(".dem")) // Look for the "dem files"
-        .filter(f -> { // Skip the small one (when nobody is playing)
-            long bytes = f.length();
-            long kb = bytes / 1024;
-            long mb = kb / 1024;
-            return mb > 2;
-        })
         .filter(f -> !filesSent.containsKey(f.getAbsolutePath())) // Skip if the files is already managed
         .forEach(f -> filesSent.put(f.getAbsolutePath(), NOT_SENT)); // Mark it to be sent
         
@@ -108,11 +102,25 @@ public class DemFilesServiceMarco implements DemFilesService {
             LocalDateTime ldt2 = DateUtils.fromStringToLocalDateTime(String.format("%s %s", tmp2[1], tmp2[2]), DateFormats.FILE_NAME_WITH_SPACE);
             return ldt.compareTo(ldt2) * -1;
         });
+        
+        /*
+         * The top one, which is the latest one, is the one which is locked
+         * by the server. I cannot send it
+         */
+        fileNameList.remove(0);
 
         /*
          * Scp the files which are not sent yet
          */
-        fileNameList.stream().filter(ldt -> {
+        fileNameList.stream()
+        .filter(ldt -> {
+        	// Skip the small one (when nobody is playing)
+        	if(getFileSizeInMegabyte(new File(ldt)) < 2) {
+        		filesSent.put(ldt, SENT);
+        	}
+        	return true;
+        })
+        .filter(ldt -> {
             String tmp = filesSent.get(ldt);
             return !SENT.equals(tmp);
             }).forEach(this::postDemFile);
@@ -137,6 +145,13 @@ public class DemFilesServiceMarco implements DemFilesService {
          * Notify the DEM service that new dem files are available for processing
          */
         triggerParseNewDem();
+    }
+    
+    private long getFileSizeInMegabyte(File f) {
+    	long bytes = f.length();
+        long kb = bytes / 1024;
+        long mb = kb / 1024;
+        return mb;
     }
 
     private void triggerParseNewDem() {

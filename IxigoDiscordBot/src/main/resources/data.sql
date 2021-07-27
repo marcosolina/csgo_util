@@ -1,16 +1,6 @@
 
-
-DROP DATABASE IF EXISTS DISCORDBOT;
-
-/*
- * Create the Database
- */
-CREATE DATABASE DISCORDBOT;
-
-/*
- * Select the database
- */
-\c discordbot;
+DROP TABLE IF EXISTS USERS_MAP;
+DROP TABLE IF EXISTS BOT_CONFIG;
 
 /*
  * Create the users table

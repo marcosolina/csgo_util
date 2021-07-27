@@ -1,20 +1,6 @@
-/*
- * Terminating all the connections
- */
 
-SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'discordbot';
-
-DROP DATABASE IF EXISTS DISCORDBOT;
-
-/*
- * Create the Database
- */
-CREATE DATABASE DISCORDBOT;
-
-/*
- * Select the database
- */
-\c discordbot;
+DROP TABLE IF EXISTS USERS_MAP;
+DROP TABLE IF EXISTS BOT_CONFIG;
 
 /*
  * Create the users table

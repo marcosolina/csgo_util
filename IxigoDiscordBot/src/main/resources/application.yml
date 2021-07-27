@@ -15,12 +15,10 @@ server:
     context-path: /discordbot
   
 spring:
-  jpa:    database-platform: org.hibernate.dialect.H2Dialect
   datasource:
-    url: jdbc:h2:mem:discordbot
-    driverClassName: org.h2.Driver                                                              # You can change this, but do not change the DB name.
-    username: sa
-    password: 
+    url: jdbc:postgresql://localhost:5432/discordbot                                                              # You can change this, but do not change the DB name.
+    username: ${IXIGO_POSTGRES_USER:REPLACE_ME}
+    password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME}
 
 com:
   marco:

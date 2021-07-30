@@ -1,9 +1,12 @@
 # DEM Parser
 
-I have created this project to parse the ".dem" files that are created by the CS:GO server that I use with my friends. It uses an external library to extract the information from the files.
+This project is used to parse the ".dem" files that are created by the CS:GO server. It is based on the [CSGO Demos Manager](https://csgo-demo-manager.com/) tool.
 
 ## Dependencies
 
-- [Library 1](https://github.com/StatsHelix/demoinfo): Library used to read the dem files
+- [CSGO Demos Manager Source Code](https://github.com/StatsHelix/demoinfo): Library used to read the dem files
+
+## Misc
+
 - [Library 2](https://github.com/akiver/csgo-demos-manager)
 - [Rasp Deployment](https://docs.microsoft.com/en-gb/dotnet/iot/deployment#deploying-a-self-contained-app): I followed these instruction to build the project and run it on my Raspberry Pi

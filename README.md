@@ -2,7 +2,16 @@
 
 ![Rcon UI](./misc/pictures/ixigo-logo.png)
 
-This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use frequently and we wanted to enhance our gaming experience with the automation of few tasks, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
+This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use every week and we wanted to enhance our gaming experience with the automation of few tasks, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
+
+## Technologies Utilised
+
+| | | |
+|---|---|---|
+| [Java](https://www.oracle.com/java/) | [Spring Boot](https://spring.io/projects/spring-boot) | [Spring Cloud](https://spring.io/projects/spring-cloud) |
+| [Thymeleaf](https://www.thymeleaf.org/) | [HTML](https://en.wikipedia.org/wiki/HTML) | [Javascript](https://en.wikipedia.org/wiki/JavaScript) |
+| [jQuery](https://jquery.com/) | [Bootstrap](https://getbootstrap.com/) | [Docker](https://www.docker.com/) |
+| [PostgreSQL](https://www.postgresql.org/) |[JPA](https://en.wikipedia.org/wiki/Jakarta_Persistence) | [C#](https://en.wikipedia.org/wiki/C_Sharp_(programming_language)) |
 
 ## Requirements
 
@@ -55,16 +64,12 @@ bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/main/Scri
 
 Replace the IP with your machine/s IP/s
 
-- [UI](http://192.168.1.8:8089/ixigoui/)
-- [Discovery](http://192.168.1.8:8765/ixigodiscovery/)
-- [Config](http://192.168.1.8:8888/config/ixigo-server-helper/docker)
-- [Proxy Routes](http://192.168.1.8:8763/ixigoproxy/actuator/routes)
-- [Open API Sepcs - Dem Manager](http://192.168.1.8:8081/demmanager/swagger-ui.html)
-- [Open API Sepcs - Players Manager](http://192.168.1.8:8087/playersmanager/swagger-ui.html)
-- [Open API Sepcs - RCON APIs](http://192.168.1.8:8084/rcon/swagger-ui.html)
-- [Open API Sepcs - Discord Bot](http://192.168.1.8:8082/discordbot/swagger-ui.html)
-- [Open API Sepcs - Event Dispatcher](http://192.168.1.8:8086/eventsdispatcher/swagger-ui.html)
-
-## Misc
-
-- [Run Chrome and allow CORS calls](https://stackoverflow.com/questions/3102819/disable-same-origin-policy-in-chrome)
+- [UI](http://MACHINE_IP:8089/ixigoui/)
+- [Discovery](http://MACHINE_IP:8765/ixigodiscovery/)
+- [Config](http://MACHINE_IP:8888/config/ixigo-server-helper/docker)
+- [Proxy Routes](http://MACHINE_IP:8763/ixigoproxy/actuator/routes)
+- [Open API Sepcs - Dem Manager](http://MACHINE_IP:8081/demmanager/swagger-ui.html)
+- [Open API Sepcs - Players Manager](http://MACHINE_IP:8087/playersmanager/swagger-ui.html)
+- [Open API Sepcs - RCON APIs](http://MACHINE_IP:8084/rcon/swagger-ui.html)
+- [Open API Sepcs - Discord Bot](http://MACHINE_IP:8082/discordbot/swagger-ui.html)
+- [Open API Sepcs - Event Dispatcher](http://MACHINE_IP:8086/eventsdispatcher/swagger-ui.html)

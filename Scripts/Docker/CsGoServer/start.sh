@@ -51,8 +51,8 @@ maps=(
 "workshop/523638720/fy_simpsons"
 )
 
-$arrSize=${#arr[@]}-1
-$randomMapIndex=$(($RANDOM % $arrSize))
+arrSize=$((${#maps[@]} - 1))
+randomMapIndex=$(($RANDOM % $arrSize))
 startMap=$randomMapIndex
 MAP_START=${maps[$startMap]}
 

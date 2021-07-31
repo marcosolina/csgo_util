@@ -30,6 +30,8 @@ rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt
 
 HOST_IP=$(hostname -I | awk '{print $1}')
 
+# Some small maps to be used as "starting map".
+# Use a small map while we wait for everybody to join
 maps=(
 "ar_dizzy"
 "de_pitstop"

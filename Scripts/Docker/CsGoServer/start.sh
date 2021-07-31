@@ -25,10 +25,34 @@ nohup java -jar $JAR_SERVICE \
 --eureka.client.serviceUrl.defaultZone=$IXIGO_EUREKA_SERVER \
 --spring.profiles.active=$IXIGO_PROFILE &
 
-rm -rf $CSGO_SERVER_DIR/csgo/*.dem
+#rm -rf $CSGO_SERVER_DIR/csgo/*.dem
 rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt
 
 HOST_IP=$(hostname -I | awk '{print $1}')
 
+maps=(
+"ar_dizzy"
+"de_pitstop"
+"de_calavera"
+"cs_militia"
+"de_bank"
+"de_guard"
+"de_lake"
+"de_safehouse"
+"de_stmarc"
+"workshop/135827566/cs_estate"
+"workshop/127012360/cs_museum"
+"workshop/1561348377/de_aztec"
+"workshop/1302060184/de_beerhouse"
+"workshop/1387732091/de_dst"
+"workshop/862889198/de_westwood2"
+"workshop/523638720/fy_simpsons"
+)
+
+$arrSize=${#arr[@]}-1
+$randomMapIndex=$(($RANDOM % $arrSize))
+startMap=$randomMapIndex
+MAP_START=${maps[$startMap]}
+
 $STEAM_FOLDER/steamcmd.sh +login anonymous +force_install_dir $CSGO_SERVER_DIR +app_update 740 +quit
-$CSGO_SERVER_DIR/srcds_run -game csgo -console -usercon -port 27015 +ip $HOST_IP +game_type 0 +game_mode 1 +mapgroup mg_ixico_maps +map ar_dizzy -authkey $ENV_STEAM_API_KEY +sv_setsteamaccount $ENV_STEAM_CSGO_KEY -net_port_try 1
+$CSGO_SERVER_DIR/srcds_run -game csgo -console -usercon -port 27015 +ip $HOST_IP +game_type 0 +game_mode 1 +mapgroup mg_ixico_maps +map $MAP_START -authkey $ENV_STEAM_API_KEY +sv_setsteamaccount $ENV_STEAM_CSGO_KEY -net_port_try 1

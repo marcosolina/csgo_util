@@ -15,5 +15,5 @@ public interface DemFilesService {
      * 
      * @throws MarcoException
      */
-    public void sendLastDemFiles() throws MarcoException;
+    public void sendLastDemFiles(boolean isShutDown) throws MarcoException;
 }

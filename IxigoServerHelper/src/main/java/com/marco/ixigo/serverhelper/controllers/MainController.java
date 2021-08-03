@@ -40,7 +40,7 @@ public class MainController {
              */
             new Thread(() -> {
                 try {
-                    demService.sendLastDemFiles();
+                    demService.sendLastDemFiles(request.getEventType() == EventType.SHUT_DOWN);
                 } catch (MarcoException e) {
                     _LOGGER.error(e.getMessage());
                     e.printStackTrace();

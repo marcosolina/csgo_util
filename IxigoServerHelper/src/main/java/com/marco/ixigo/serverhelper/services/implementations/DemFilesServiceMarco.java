@@ -59,7 +59,7 @@ public class DemFilesServiceMarco implements DemFilesService {
     private static final String SENT = "Y";
 
     @Override
-    public void sendLastDemFiles() throws MarcoException {
+    public void sendLastDemFiles(boolean isShutDown) throws MarcoException {
 
         // Get all the files in the Server Folder
         _LOGGER.debug(String.format("Reading folder: %s", appProps.getDemFilesFolderFullPath()));
@@ -107,7 +107,9 @@ public class DemFilesServiceMarco implements DemFilesService {
          * The top one, which is the latest one, is the one which is locked
          * by the server. I cannot send it
          */
-        fileNameList.remove(0);
+        if(!isShutDown) {
+        	fileNameList.remove(0);
+        }
 
         /*
          * Scp the files which are not sent yet

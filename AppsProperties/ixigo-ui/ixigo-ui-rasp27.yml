@@ -6,7 +6,7 @@ com:
     ixigo:
       ui:
         rconapi:
-          host: ixigo.selfip.net
+          host: 192.168.1.24
         urls:
           dem_manager:
             protocol: "https://"

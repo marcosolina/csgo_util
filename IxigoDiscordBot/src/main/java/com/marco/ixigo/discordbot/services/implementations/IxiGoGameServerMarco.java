@@ -124,7 +124,7 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
                 if (config != null) {
                     queryParameters.put("gamesCounter", config.getConfigVal());
                 }
-
+                // TODO check here
                 ClientResponse resp = mnu.performGetRequest(url, Optional.empty(), Optional.of(queryParameters));
                 if (resp.statusCode() != HttpStatus.OK) {
                     throw new MarcoException(

@@ -190,4 +190,20 @@ public class IxiGoGameServerMarco implements IxiGoGameServer {
         return request;
     }
 
+    @Override
+    public boolean kickTheBots() throws MarcoException {
+        RconHttpRequest request = getDefaultRconHttpRequest();
+        request.setRconCmd("bot_kick");
+        try {
+            URL url = new URL(rconApiProps.getProtocol(), rconApiProps.getHost(), rconApiProps.getPort(),
+                    rconApiProps.getSendcommand());
+            ClientResponse resp = mnu.performPostRequest(url, Optional.empty(), Optional.of(request));
+            return resp.statusCode() != HttpStatus.OK;
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            LOGGER.error(e.getMessage());
+            throw new MarcoException(e);
+        }
+    }
+
 }

@@ -19,10 +19,12 @@ import com.marco.ixigo.discordbot.model.GenericResponse;
 import com.marco.ixigo.discordbot.model.discord.BotConfig;
 import com.marco.ixigo.discordbot.model.discord.GetAutoBalance;
 import com.marco.ixigo.discordbot.model.discord.GetConfigValue;
+import com.marco.ixigo.discordbot.model.discord.GetKickBots;
 import com.marco.ixigo.discordbot.model.discord.GetMembersResponse;
 import com.marco.ixigo.discordbot.model.discord.GetPlayersResponse;
 import com.marco.ixigo.discordbot.model.discord.SavePlayersMapping;
 import com.marco.ixigo.discordbot.model.discord.SetAutoBalance;
+import com.marco.ixigo.discordbot.model.discord.SetKickBots;
 import com.marco.ixigo.discordbot.services.interfaces.IxiGoBot;
 import com.marco.utils.MarcoException;
 
@@ -165,6 +167,39 @@ public class MainController {
         GetAutoBalance resp = new GetAutoBalance();
         try {
             resp.setAutoBalanceActive(ixiGoBot.isAutobalance());
+            resp.setStatus(true);
+        } catch (Exception e) {
+            if(LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
+            }
+            resp.addError(new MarcoException(e));
+        }
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+    
+    @GetMapping(DiscordBotUtils.MAPPING_KICK_BOTS)
+    public ResponseEntity<GetKickBots> getKickBots() {
+        GetKickBots resp = new GetKickBots();
+        try {
+            resp.setKickBotsActive(ixiGoBot.isKickBots());
+            resp.setStatus(true);
+        } catch (Exception e) {
+            if(LOGGER.isTraceEnabled()) {
+                e.printStackTrace();
+            }
+            resp.addError(new MarcoException(e));
+        }
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+    
+    @PutMapping(DiscordBotUtils.MAPPING_KICK_BOTS)
+    public ResponseEntity<GenericResponse> setKickBots(@RequestBody SetKickBots request) {
+        GenericResponse resp = new GenericResponse();
+        try {
+            ixiGoBot.setKickBots(request.isKickBotsActive());
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug(String.format("Kick bots set to: %s", ixiGoBot.isAutobalance()));
+            }
             resp.setStatus(true);
         } catch (Exception e) {
             if(LOGGER.isTraceEnabled()) {

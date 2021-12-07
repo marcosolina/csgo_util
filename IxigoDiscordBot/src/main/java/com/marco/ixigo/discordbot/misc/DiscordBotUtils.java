@@ -10,6 +10,7 @@ public class DiscordBotUtils {
     public static final String MAPPING_STORE_MAPPED_PLAYERS = "/players/mapping";
     public static final String MAPPING_GET_DISCORD_USERS = "/members";
     public static final String MAPPING_POST_AUTO_BALANCE = "/autoBalance";
+    public static final String MAPPING_KICK_BOTS = "/kickBots";
     public static final String MAPPING_PUT_CONFIG = "/config";
     public static final String MAPPING_GET_CONFIG = "/config";
 }

@@ -33,6 +33,14 @@ public interface IxiGoGameServer {
     public boolean movePlayersToAppropriateTeam(Teams teams) throws MarcoException;
 
     /**
+     * It will kick all the bots from the game
+     * 
+     * @return
+     * @throws MarcoException
+     */
+    public boolean kickTheBots() throws MarcoException;
+
+    /**
      * It will restart the server round
      * 
      * @return

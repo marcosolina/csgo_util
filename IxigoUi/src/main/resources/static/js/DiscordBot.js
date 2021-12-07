@@ -4,6 +4,8 @@ var DiscordBot = ((function(DiscordBot){
     let discordUsersWrapperId = "discordUsers";
     let mappedSteamUsersWrapperId = "mappedSteamUsers";
     let dpRoundToConsiderId = "botRoundToConsider";
+	let discorAutoBalanceId = "discorAutoBalance";
+	let kickBotsId = "kickBotsChk";
 
     let steamUsers = [];
 
@@ -21,13 +23,15 @@ var DiscordBot = ((function(DiscordBot){
         $("#saveMapDiscordUsers").click(DiscordBot.saveMapping);
         $("#startDiscordBot").click(function(){DiscordBot.startStopDiscordBot(true);});
         $("#stopDiscordBot").click(function(){DiscordBot.startStopDiscordBot(false);});
-        $("#discorAutoBalance").click(DiscordBot.setAutoBalance);
+        $("#" + discorAutoBalanceId).click(DiscordBot.setAutoBalance);
+		$("#" + kickBotsId).click(DiscordBot.setKickBots);
 
         let jSelectRoundsToConsider = $("#" + dpRoundToConsiderId);
         for(let i = 1; i < 100; i++){
             jSelectRoundsToConsider.append(MarcoUtils.template("<option value='%number%'>%number%</option>", {number: i}));
         }
         DiscordBot.getRoundsToConsider();
+		DiscordBot.getKickBots();
         jSelectRoundsToConsider.change(DiscordBot.changeRoundsToConsider);
     }
     
@@ -47,13 +51,40 @@ var DiscordBot = ((function(DiscordBot){
                 }
             });
     }
+
+	DiscordBot.setKickBots = function(){
+        let url = __URLS.DISCORD_BOT.KICK_BOTS;
+        MarcoUtils.executeAjax({
+                type: "PUT",
+                url: url,
+                showLoading: true,
+                body: {
+                    kickBotsActive: $(this).prop( "checked" )
+                }
+             })
+            .then(function(resp){
+                if(resp.status){
+                    MarcoUtils.showNotification({type: "success", title: "Ok", message: "Done"});
+                }
+            });
+    }
     
     DiscordBot.getAutoBalance = function(){
         let url = __URLS.DISCORD_BOT.AUTO_BALANCE;
         MarcoUtils.executeAjax({type: "GET", url: url})
             .then(function(resp){
                 if(resp.status){
-                    $("#discorAutoBalance").prop("checked", resp.autoBalanceActive);
+                    $("#" + discorAutoBalanceId).prop("checked", resp.autoBalanceActive);
+                }
+            });
+    }
+
+	DiscordBot.getKickBots = function(){
+        let url = __URLS.DISCORD_BOT.KICK_BOTS;
+        MarcoUtils.executeAjax({type: "GET", url: url})
+            .then(function(resp){
+                if(resp.status){
+                    $("#" + kickBotsId).prop("checked", resp.kickBotsActive);
                 }
             });
     }

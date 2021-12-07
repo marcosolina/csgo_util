@@ -57,4 +57,5 @@ com:
             start_bot: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/start"                             # Do not change this
             stop_bot: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/stop"                               # Do not change this
             auto_balance: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/autoBalance"                    # Do not change this
+            kick_bots: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/kickBots"                          # Do not change this
 

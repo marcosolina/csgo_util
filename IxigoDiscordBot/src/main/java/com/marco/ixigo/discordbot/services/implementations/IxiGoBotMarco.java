@@ -48,6 +48,7 @@ public class IxiGoBotMarco implements IxiGoBot {
     private static JDA jda;
     private boolean botOnline = false;
     private boolean autoBalance = true;
+    private boolean kickBots = true;
     @Value("${com.marco.ixigo.discordbot.bottoken}")
     private String botToken;
     @Autowired
@@ -311,5 +312,23 @@ public class IxiGoBotMarco implements IxiGoBot {
         } catch (Exception e) {
             LOGGER.error(e.getMessage());
         }
+    }
+
+    @Override
+    public boolean isKickBots() {
+        return this.kickBots;
+    }
+
+    @Override
+    public void setKickBots(boolean active) {
+        this.kickBots = active;
+    }
+
+    @Override
+    public boolean kickTheBots() throws MarcoException {
+        if(this.kickBots) {
+            return csgoService.kickTheBots();
+        }
+        return false;
     }
 }

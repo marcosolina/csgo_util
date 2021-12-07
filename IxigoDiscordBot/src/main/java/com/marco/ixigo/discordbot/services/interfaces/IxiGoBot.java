@@ -65,6 +65,13 @@ public interface IxiGoBot {
      * @throws MarcoException
      */
     public boolean balanceTheTeams() throws MarcoException;
+    
+    /**
+     * It will kick all the bots from the game
+     * @return
+     * @throws MarcoException
+     */
+    public boolean kickTheBots() throws MarcoException;
 
     /**
      * It will restart the IxiGo Round
@@ -96,6 +103,20 @@ public interface IxiGoBot {
      * @return
      */
     public boolean isAutobalance();
+    
+    /**
+     * It tells you if the option is acitve
+     * 
+     * @return
+     */
+    public boolean isKickBots();
+    
+    /**
+     * It enables / disable the auto kick bots
+     * 
+     * @param active
+     */
+    public void setKickBots(boolean active);
 
     /**
      * It returns the list of discord users mapped to the Steam user

@@ -42,6 +42,7 @@ public class EventsController {
             case WARMUP_END:
                 r = () -> {
                         try {
+                            service.kickTheBots();
                             service.balanceTheTeams();
                             Thread.sleep(1000);
                             service.moveDiscordUsersInTheAppropirateChannel();

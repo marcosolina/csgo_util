@@ -46,6 +46,9 @@
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="bot-tab" data-toggle="tab" href="#botDiv" role="tab" aria-controls="bot" aria-selected="false">Discord Bot</a>
                 </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="guide-tab" data-toggle="tab" href="#guideDiv" role="tab" aria-controls="guide" aria-selected="false">Join The Server</a>
+                </li>
             </ul>
             <div class="tab-content" id="myTabContent">
                 <div th:replace="fragments/tabDem.html::tabDem"></div>
@@ -53,6 +56,7 @@
                 <div th:replace="fragments/tabCharts.html::tabCharts"></div>
                 <div th:replace="fragments/tabRcon.html::tabRcon"></div>
                 <div th:replace="fragments/tabDiscord.html::tabDiscord"></div>
+                <div th:replace="fragments/tabGuide.html::tabGuide"></div>
             </div>
         </div>
     </div>

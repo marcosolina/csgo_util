@@ -84,7 +84,8 @@ public class DemFileParserMarco implements DemFileParser {
 
 	private void processFiles(List<File> files) {
 		AtomicInteger count = new AtomicInteger(0);
-		files.parallelStream().forEach(f -> {
+		//files.parallelStream().forEach(f -> {
+		files.stream().forEach(f -> {
 			try {
 
 				MapStats m = generateMapStatFromFile(f);

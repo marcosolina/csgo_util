@@ -15,29 +15,11 @@ spring:
     multipart:
       max-file-size: 100MB                                                                                              # To be able to recevie HTTP request with big files
       max-request-size: 100MB                                                                                           # To be able to recevie HTTP request with big files
-  datasource:
-    url: jdbc:postgresql://localhost:5432/demfiles                                                                      # You can change this, but do not change the DB name.
-    username: ${IXIGO_POSTGRES_USER:REPLACE_ME}
-    password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME}
     
 server:
   servlet:
     context-path: /demmanager                                                                                           # Do not change this
 com:
-  marco:
-    ixigo:
-      demmanager:
-        version: ^project.version^
-        notifications:
-          telegram:
-            enabled: false
-            telegramToken: ${TELEGRAM_BOT_TOKEN:xxxxxx}
-            chatGroupId: ${TELEGRAM_CHAT_GROUP_ID:xxxxxx}
-            # Bot Name: IxiGo
-            # Bot user: @ixigo_bot
-        demFileManager:
-          rootFolder: "C:\\tmp\\demfiles"                                                                               # This is full path to the folder where the received DEM files will be stored
-        demparser:
-          environment: WINDOWS                                                                                          # Enum: WINDOWS, RASP
-          executionType: SYNC                                                                                           # Enum: ASYNC, SYNC
-          dotnetexecutable: "E:\\Workspaces\\Git\\csgo_util\\DemParser\\bin\\Debug\\netcoreapp3.1\\DemParser.dll"       # This is the full path to the DemParser executable
+  ixigo:
+    demmanager:
+      version: ^project.version^

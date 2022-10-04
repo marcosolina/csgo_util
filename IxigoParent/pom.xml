@@ -52,19 +52,6 @@
 			<artifactId>spring-cloud-starter-config</artifactId>
 		</dependency>
 
-		<!-- I need this to implement and use the Oauth2 protocol -->
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-oauth2</artifactId>
-			<version>${oauth2.version}</version>
-		</dependency>
-
-		<!-- I need this is to be able to perform calls to other WS using oauth2 -->
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-oauth2-client</artifactId>
-		</dependency>
-
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

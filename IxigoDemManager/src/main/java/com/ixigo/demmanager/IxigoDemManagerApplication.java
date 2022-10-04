@@ -1,4 +1,4 @@
-package com.marco.ixigo.demmanager;
+package com.ixigo.demmanager;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

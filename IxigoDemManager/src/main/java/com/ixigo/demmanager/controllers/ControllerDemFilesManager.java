@@ -14,9 +14,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.ixigo.demmanager.models.entities.EntityProcessQueue;
 import com.ixigo.demmanager.models.rest.RestGetFilesResponse;
+import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @RestController
@@ -26,6 +29,8 @@ public class ControllerDemFilesManager {
 
 	@Autowired
 	private WebMediator mediator;
+	@Autowired
+	private RepoProcessQueue repo;
 
 	@PostMapping
 	public Mono<ResponseEntity<Void>> handleFileUpload(@RequestParam("file") MultipartFile file) {
@@ -43,5 +48,11 @@ public class ControllerDemFilesManager {
 	public Mono<ResponseEntity<RestGetFilesResponse>> getListFiles() {
 		_LOGGER.trace("Inside DemFilesManager.getListFiles");
 		return mediator.send(null);
+	}
+	
+	@GetMapping("/test")
+	public Flux<EntityProcessQueue> getTest() {
+		_LOGGER.trace("Inside DemFilesManager.getListFiles");
+		return repo.getNotProcessedDemFiles();
 	}
 }

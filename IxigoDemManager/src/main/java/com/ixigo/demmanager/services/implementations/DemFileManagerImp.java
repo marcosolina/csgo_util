@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
  * @author Marco
  *
  */
-public class DemFileManagerImp implements DemFileManager{
+public class DemFileManagerImp implements DemFileManager {
 
 	@Override
 	public Mono<Path> store(MultipartFile file) throws IxigoException {

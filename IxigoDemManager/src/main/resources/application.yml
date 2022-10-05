@@ -15,7 +15,10 @@ spring:
     multipart:
       max-file-size: 100MB                                                                                              # To be able to recevie HTTP request with big files
       max-request-size: 100MB                                                                                           # To be able to recevie HTTP request with big files
-    
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher   
+
 server:
   servlet:
     context-path: /demmanager                                                                                           # Do not change this

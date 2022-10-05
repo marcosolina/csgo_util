@@ -19,6 +19,7 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import br.com.fluentvalidator.exception.ValidationException;
+import reactor.core.publisher.Mono;
 /**
  * Default implementation of the {@link WebMediatior} interface
  * 
@@ -40,7 +41,7 @@ public class WebMediatorImpl implements WebMediator {
     }
 
     @Override
-    public <T> ResponseEntity<T> send(WebCommandRequest<T> request) {
+    public <T> Mono<ResponseEntity<T>> send(WebCommandRequest<T> request) {
         try {
             MediatorPlanRequest<T> plan = new MediatorPlanRequest<>(WebCommandHandler.class, "handle", request.getClass(),
                     ctx);
@@ -92,9 +93,9 @@ public class WebMediatorImpl implements WebMediator {
         }
 
         @SuppressWarnings("unchecked")
-        public ResponseEntity<T> invoke(WebCommandRequest<T> request)
+        public Mono<ResponseEntity<T>> invoke(WebCommandRequest<T> request)
                 throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-            return (ResponseEntity<T>) handleMethod.invoke(handlerInstanceBuilder, request);
+            return (Mono<ResponseEntity<T>>) handleMethod.invoke(handlerInstanceBuilder, request);
         }
     }
 

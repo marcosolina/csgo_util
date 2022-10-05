@@ -2,6 +2,8 @@ package com.ixigo.library.mediators.web.interfaces;
 
 import org.springframework.http.ResponseEntity;
 
+import reactor.core.publisher.Mono;
+
 /**
  * Defines Mediator to encapsulate the web layer requests/responses.
  * 
@@ -16,5 +18,5 @@ public interface WebMediator {
      * @param <T>     the expected return type
      * @return Response object
      */
-    public <T> ResponseEntity<T> send(WebCommandRequest<T> request);
+    public <T> Mono<ResponseEntity<T>> send(WebCommandRequest<T> request);
 }

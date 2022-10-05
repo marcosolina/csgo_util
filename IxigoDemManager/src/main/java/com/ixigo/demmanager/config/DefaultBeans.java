@@ -1,4 +1,4 @@
-package com.ixigo.config;
+package com.ixigo.demmanager.config;
 
 import org.springframework.context.annotation.Configuration;
 

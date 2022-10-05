@@ -21,8 +21,8 @@ import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/files")
-public class DemFilesManager {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(DemFilesManager.class);
+public class ControllerDemFilesManager {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(ControllerDemFilesManager.class);
 
 	@Autowired
 	private WebMediator mediator;

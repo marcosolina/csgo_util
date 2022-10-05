@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.config;
+package com.ixigo.demmanager.config.beans;
 
 import org.springframework.context.annotation.Configuration;
 

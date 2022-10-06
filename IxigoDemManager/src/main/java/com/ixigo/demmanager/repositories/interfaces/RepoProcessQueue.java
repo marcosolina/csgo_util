@@ -1,6 +1,6 @@
 package com.ixigo.demmanager.repositories.interfaces;
 
-import com.ixigo.demmanager.models.entities.EntityProcessQueue;
+import com.ixigo.demmanager.models.entities.DemProcessQueueDto;
 
 import reactor.core.publisher.Flux;
 
@@ -10,5 +10,5 @@ public interface RepoProcessQueue {
      * 
      * @return
      */
-    public Flux<EntityProcessQueue> getNotProcessedDemFiles();
+    public Flux<DemProcessQueueDto> getNotProcessedDemFiles();
 }

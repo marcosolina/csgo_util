@@ -5,7 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.r2dbc.core.DatabaseClient;
 
 import com.ixigo.demmanager.enums.DemProcessStatus;
-import com.ixigo.demmanager.repositories.implementations.RepoProcessQueueImpl;
+import com.ixigo.demmanager.repositories.implementations.RepoProcessQueuePostgres;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
@@ -62,6 +62,6 @@ public class Repositories {
 	
 	@Bean
 	public RepoProcessQueue getRepoProcessQueue() {
-		return new RepoProcessQueueImpl();
+		return new RepoProcessQueuePostgres();
 	}
 }

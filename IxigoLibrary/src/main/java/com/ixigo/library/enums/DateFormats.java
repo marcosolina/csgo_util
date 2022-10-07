@@ -4,7 +4,7 @@ public enum DateFormats {
 	/**
 	 * yyyy-MM-dd HH:mm:ss
 	 */
-	DB_TIME_STAMP("yyyy-MM-dd HH:mm:ss"),
+	DB_TIME_STAMP("yyyy-MM-dd'T'HH:mm:ss"),
 	/**
 	 * yyyy-MM-dd
 	 */

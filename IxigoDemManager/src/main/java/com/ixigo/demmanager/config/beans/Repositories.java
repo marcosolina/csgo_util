@@ -44,11 +44,12 @@ public class Repositories {
 	                .database("demfiles")
 	                .username("REPLACE_ME")
 	                .password("REPLACE_ME")
-	                .codecRegistrar(
-                		EnumCodec.builder()
-	                		.withEnum("PROCESS_STATUS", DemProcessStatus.class)
-	                		.build()
-            		).build()
+	                //.codecRegistrar(
+                	//	EnumCodec.builder()
+	                //		.withEnum("PROCESS_STATUS", DemProcessStatus.class)
+	                //		.build()
+            		//)
+	                .build()
 			// @formatter:on
 		);
 	}

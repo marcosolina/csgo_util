@@ -15,18 +15,25 @@ public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 
 	public Dem_process_queueDao() {
 		this.setSqlViewName("dem_process_queue");
-		this.setSqlKeys(new String[] { "file_name" });
-		this.setSqlFields(new String[] { "queued_on", "file_name", "process_status", "processed_on" });
+		this.setSqlKeys(new String[] { Dem_process_queueDto.Fields.file_name });
+		// @formatter:off
+		this.setSqlFields(new String[] { 
+			Dem_process_queueDto.Fields.queued_on,
+			Dem_process_queueDto.Fields.file_name,
+			Dem_process_queueDto.Fields.process_status,
+			Dem_process_queueDto.Fields.processed_on 
+		});
+		// @formatter:on
 		this.dto = new Dem_process_queueDto();
 	}
-	
+
 	@Override
 	public Dem_process_queueDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		Dem_process_queueDto dto = new Dem_process_queueDto();
-		dto.setFile_name(row.get("FILE_NAME", String.class));
-		dto.setProcessed_on(row.get("PROCESSED_ON", LocalDateTime.class));
-		dto.setProcess_status(DemProcessStatus.valueOf(row.get("PROCESS_STATUS", String.class)));
-		dto.setQueued_on(row.get("QUEUED_ON", LocalDateTime.class));
+		dto.setFile_name(row.get(Dem_process_queueDto.Fields.file_name, String.class));
+		dto.setProcessed_on(row.get(Dem_process_queueDto.Fields.processed_on, LocalDateTime.class));
+		dto.setProcess_status(DemProcessStatus.valueOf(row.get(Dem_process_queueDto.Fields.process_status, String.class)));
+		dto.setQueued_on(row.get(Dem_process_queueDto.Fields.queued_on, LocalDateTime.class));
 		return dto;
 	}
 
@@ -69,6 +76,5 @@ public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 	public void setDto(Dem_process_queueDto dto) {
 		this.dto = dto;
 	}
-
 
 }

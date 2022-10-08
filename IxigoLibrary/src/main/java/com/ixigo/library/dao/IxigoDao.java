@@ -190,7 +190,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 			if(value == null) {
 				ges = ges.bindNull(sqlFields[i], getDataType(dto, sqlFields[i]));
 			}else {
-				ges = ges.bind(sqlFields[i], value);
+				ges = ges.bind(sqlFields[i], value.getClass().isEnum() ? value.toString() : value);
 			}
 		}
 		return ges;
@@ -302,17 +302,17 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		return res;
 	}
 
-	private StringBuffer getSqlUpdatePS() throws IxigoException {
+	public GenericExecuteSpec prepareSqlUpdate(DatabaseClient client)  throws IxigoException {
 		if (sqlKeys == null) {
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, "Can not update table without keys");
 		}
 		StringBuffer fields = new StringBuffer();
 		for (int i = 0; i < sqlFields.length; i++) {
-			fields.append(", " + sqlFields[i] + " = ?");
+			fields.append(", " + sqlFields[i] + " =:" + sqlFields[i]);
 		}
 		StringBuffer keys = new StringBuffer();
 		for (int i = 0; i < sqlKeys.length; i++) {
-			keys.append(" and " + sqlKeys[i] + " = ?");
+			keys.append(" and " + sqlKeys[i] + " =:" + sqlKeys[i]);
 		}
 		StringBuffer res = new StringBuffer("update ");
 		res.append(sqlViewName);
@@ -322,7 +322,19 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 			res.append(" where ");
 			res.append(keys.substring(5));
 		}
-		return res;
+		
+		var ges = client.sql(res.toString());
+		var dto = this.getDtoInstance();
+		for (int i = 0; i < sqlFields.length; i++) {
+			Object value = getValue(dto, sqlFields[i]);
+			if(value == null) {
+				ges = ges.bindNull(sqlFields[i], getDataType(dto, sqlFields[i]));
+			}else {
+				ges = ges.bind(sqlFields[i], value.getClass().isEnum() ? value.toString() : value);
+			}
+		}
+		
+		return ges;
 	}
 
 	/**

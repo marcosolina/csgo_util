@@ -7,18 +7,26 @@ import org.springframework.r2dbc.core.DatabaseClient;
 
 import com.ixigo.demmanager.config.properties.PostgresProps;
 import com.ixigo.demmanager.repositories.implementations.RepoProcessQueuePostgres;
+import com.ixigo.demmanager.repositories.implementations.RepoUserPostgres;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
+import com.ixigo.demmanager.repositories.interfaces.RepoUser;
 
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
 
+/**
+ * Repositories configuration class
+ * 
+ * @author Marco
+ *
+ */
 @Configuration
 public class Repositories {
-	
+
 	@Autowired
 	private PostgresProps postrgresProps;
-	
+
 	@Bean
 	public ConnectionFactory connectionFactory() {
 
@@ -41,12 +49,16 @@ public class Repositories {
 
 	@Bean
 	public DatabaseClient databaseClient(ConnectionFactory connectionFactory) {
-		return DatabaseClient.builder().connectionFactory(connectionFactory)
-		        .namedParameters(true).build();
+		return DatabaseClient.builder().connectionFactory(connectionFactory).namedParameters(true).build();
 	}
-	
+
 	@Bean
 	public RepoProcessQueue getRepoProcessQueue() {
 		return new RepoProcessQueuePostgres();
+	}
+
+	@Bean
+	public RepoUser getRepoUserPostgres() {
+		return new RepoUserPostgres();
 	}
 }

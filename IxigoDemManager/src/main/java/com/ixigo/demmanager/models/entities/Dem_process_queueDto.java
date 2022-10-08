@@ -5,6 +5,9 @@ import java.time.LocalDateTime;
 import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.library.dto.IxigoDto;
 
+import lombok.experimental.FieldNameConstants;
+
+@FieldNameConstants
 public class Dem_process_queueDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;

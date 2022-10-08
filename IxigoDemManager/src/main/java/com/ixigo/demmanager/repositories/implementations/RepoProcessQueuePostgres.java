@@ -33,9 +33,10 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 
 	@Override
 	public Flux<Dem_process_queueDto> getNotProcessedDemFiles() {
-		_LOGGER.trace("Inside RepoProcessQueueImpl.getNotProcessedDemFiles");
+		_LOGGER.trace("Inside RepoProcessQueuePostgres.getNotProcessedDemFiles");
+		
 		Dem_process_queueDao dao = new Dem_process_queueDao();
-		dao.addSqlWhereAndClauses("PROCESS_STATUS");
+		dao.addSqlWhereAndClauses(Dem_process_queueDto.Fields.process_status);
 		dao.addSqlParams(DemProcessStatus.NOT_PROCESSED);
 
 		return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
@@ -43,6 +44,8 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 
 	@Override
 	public Mono<Boolean> saveDto(Dem_process_queueDto entity) {
+		_LOGGER.trace("Inside RepoProcessQueuePostgres.saveDto");
+		
 		Dem_process_queueDao dao = new Dem_process_queueDao();
 		dao.setDto(entity);
 
@@ -56,13 +59,14 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 				return dao.prepareSqlInsert(client).then().thenReturn(true);
 			});
 		// @formatter:on
-
 	}
 
 	@Override
 	public Mono<Dem_process_queueDto> findById(String absoluteFileName) {
+		_LOGGER.trace("Inside RepoProcessQueuePostgres.findById");
+		
 		Dem_process_queueDao dao = new Dem_process_queueDao();
-		dao.addSqlWhereAndClauses("file_name");
+		dao.addSqlWhereAndClauses(Dem_process_queueDto.Fields.file_name);
 		dao.addSqlParams(absoluteFileName);
 
 		return dao.prepareSqlSelect(client).map(dao::mappingFunction).one();

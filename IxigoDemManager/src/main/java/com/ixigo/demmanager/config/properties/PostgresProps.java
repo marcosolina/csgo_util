@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "com.ixigo.postgres")
+@ConfigurationProperties(prefix = "ixigo.postgres")
 public class PostgresProps {
 	private String host;
 	private String user;

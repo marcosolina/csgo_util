@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
 import com.ixigo.demmanager.commands.CmdGetDemFile;
 import com.ixigo.demmanager.commands.CmdGetDemFilesList;
@@ -45,6 +46,22 @@ public class ControllerDemFilesManager {
 	@GetMapping()
 	public Mono<ResponseEntity<RestGetFilesResponse>> getListFiles() {
 		_LOGGER.trace("Inside DemFilesManager.getListFiles");
-		return mediator.send(new CmdGetDemFilesList());
+		String url = MvcUriComponentsBuilder
+				.fromMethodName(ControllerDemFilesManager.class, "getListFiles")
+				.build()
+				.toString();
+		return mediator.send(new CmdGetDemFilesList()).map(resp -> {
+			resp.getBody().getFiles().forEach((k, v) ->
+			{
+				v.parallelStream().forEach(fileInfo -> {
+					if(url.endsWith("/")) {
+						fileInfo.setUrl(url + fileInfo.getName());
+					}else {
+						fileInfo.setUrl(url + "/"+ fileInfo.getName());
+					}
+				});
+			});
+			return resp;
+		});
 	}
 }

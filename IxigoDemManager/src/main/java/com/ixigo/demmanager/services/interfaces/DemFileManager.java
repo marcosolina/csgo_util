@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.core.io.Resource;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ixigo.demmanager.models.svc.FileInfo;
+import com.ixigo.demmanager.models.svc.SvcFileInfo;
 import com.ixigo.library.errors.IxigoException;
 
 import reactor.core.publisher.Mono;
@@ -36,5 +36,5 @@ public interface DemFileManager {
      * @return
      * @throws MarcoException
      */
-    public Mono<Map<String, List<FileInfo>>> loadAllFileNames() throws IxigoException;
+    public Mono<Map<String, List<SvcFileInfo>>> loadAllFileNames() throws IxigoException;
 }

@@ -2,12 +2,21 @@ package com.ixigo.library.utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
 import com.ixigo.library.enums.DateFormats;
 
 public class DateUtils {
 	private DateUtils() {}
+	
+	public static LocalDateTime getCurrentUtcDateTime() {
+		return LocalDateTime.now(ZoneOffset.UTC);
+	}
+	
+	public static LocalDate getCurrentUtcDate() {
+		return LocalDate.now(ZoneOffset.UTC);
+	}
 	
 	/**
 	 * It parse the string into a LocalDate object

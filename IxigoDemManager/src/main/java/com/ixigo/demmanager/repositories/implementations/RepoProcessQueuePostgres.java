@@ -1,22 +1,19 @@
 package com.ixigo.demmanager.repositories.implementations;
 
-import java.time.LocalDateTime;
-import java.util.function.BiFunction;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.r2dbc.core.DatabaseClient;
 
+import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.demmanager.models.entities.Dem_process_queueDao;
 import com.ixigo.demmanager.models.entities.Dem_process_queueDto;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.library.errors.IxigoException;
+import com.ixigo.library.messages.IxigoMessageResource;
 
-import io.r2dbc.spi.Row;
-import io.r2dbc.spi.RowMetadata;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -29,42 +26,36 @@ import reactor.core.publisher.Mono;
 public class RepoProcessQueuePostgres implements RepoProcessQueue {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(RepoProcessQueuePostgres.class);
 
-	public static final BiFunction<Row, RowMetadata, Dem_process_queueDto> MAPPING_FUNCTION = (row, rowMetaData) -> {
-		Dem_process_queueDto entity = new Dem_process_queueDto();
-		entity.setFile_name(row.get("FILE_NAME", String.class));
-		entity.setProcessed_on(row.get("PROCESSED_ON", LocalDateTime.class));
-		entity.setProcess_status(DemProcessStatus.valueOf(row.get("PROCESS_STATUS", String.class)));
-		entity.setQueued_on(row.get("QUEUED_ON", LocalDateTime.class));
-		return entity;
-	};
-
 	@Autowired
 	private DatabaseClient client;
+	@Autowired
+	private IxigoMessageResource msgSource;
 
 	@Override
 	public Flux<Dem_process_queueDto> getNotProcessedDemFiles() {
 		_LOGGER.trace("Inside RepoProcessQueueImpl.getNotProcessedDemFiles");
 		Dem_process_queueDao dao = new Dem_process_queueDao();
 		dao.addSqlWhereAndClauses("PROCESS_STATUS");
+		dao.addSqlParams(DemProcessStatus.NOT_PROCESSED);
 
-		// @formatter:off
-		return client.sql(dao.getSqlSelect().toString())
-				.bind("PROCESS_STATUS", "NOT_PROCESSED")
-				.map(MAPPING_FUNCTION).all();
-		// @formatter:on
+		return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
 	}
 
 	@Override
-	public Mono<Void> saveEntity(Dem_process_queueDto entity) {
+	public Mono<Boolean> saveDto(Dem_process_queueDto entity) {
 		Dem_process_queueDao dao = new Dem_process_queueDao();
 		dao.setDto(entity);
 
-		return findById(entity.getFile_name()).switchIfEmpty(Mono.just(new Dem_process_queueDto())).flatMap(dto -> {
-			if (!"".equals(dto.getFile_name())) {
-				throw new IxigoException(HttpStatus.CONFLICT, "Duplicated");
-			}
-			return dao.prepareInsert(client).then();
-		});
+		// @formatter:off
+		return findById(entity.getFile_name())
+			.switchIfEmpty(Mono.just(new Dem_process_queueDto()))
+			.flatMap(dto -> {
+				if (!"".equals(dto.getFile_name())) {
+					throw new IxigoException(HttpStatus.CONFLICT, msgSource.getMessage(ErrorCodes.DUPLICATE_VALUE));
+				}
+				return dao.prepareSqlInsert(client).then().thenReturn(true);
+			});
+		// @formatter:on
 
 	}
 
@@ -72,12 +63,9 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 	public Mono<Dem_process_queueDto> findById(String absoluteFileName) {
 		Dem_process_queueDao dao = new Dem_process_queueDao();
 		dao.addSqlWhereAndClauses("file_name");
+		dao.addSqlParams(absoluteFileName);
 
-		// @formatter:off
-		return client.sql(dao.getSqlSelect().toString())
-				.bind("file_name", absoluteFileName)
-				.map(MAPPING_FUNCTION).one();
-		// @formatter:on
+		return dao.prepareSqlSelect(client).map(dao::mappingFunction).one();
 	}
 
 }

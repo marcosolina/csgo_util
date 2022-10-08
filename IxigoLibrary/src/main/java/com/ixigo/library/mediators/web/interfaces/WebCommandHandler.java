@@ -2,6 +2,8 @@ package com.ixigo.library.mediators.web.interfaces;
 
 import org.springframework.http.ResponseEntity;
 
+import reactor.core.publisher.Mono;
+
 /**
  * Defines a handler for a web request
  * 
@@ -18,5 +20,5 @@ public interface WebCommandHandler<T, R> {
 	 * @param request Request parameter
 	 * @return Result type
 	 */
-	public ResponseEntity<R> handle(T request);
+	public Mono<ResponseEntity<R>> handle(T request);
 }

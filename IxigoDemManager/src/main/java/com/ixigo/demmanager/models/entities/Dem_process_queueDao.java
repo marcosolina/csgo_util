@@ -5,7 +5,10 @@ import java.time.LocalDateTime;
 import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.library.dao.IxigoDao;
 
-public class Dem_process_queueDao extends IxigoDao {
+import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
+
+public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 
 	private static final long serialVersionUID = 1L;
 	private Dem_process_queueDto dto = null;
@@ -15,6 +18,16 @@ public class Dem_process_queueDao extends IxigoDao {
 		this.setSqlKeys(new String[] { "file_name" });
 		this.setSqlFields(new String[] { "queued_on", "file_name", "process_status", "processed_on" });
 		this.dto = new Dem_process_queueDto();
+	}
+	
+	@Override
+	public Dem_process_queueDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		Dem_process_queueDto dto = new Dem_process_queueDto();
+		dto.setFile_name(row.get("FILE_NAME", String.class));
+		dto.setProcessed_on(row.get("PROCESSED_ON", LocalDateTime.class));
+		dto.setProcess_status(DemProcessStatus.valueOf(row.get("PROCESS_STATUS", String.class)));
+		dto.setQueued_on(row.get("QUEUED_ON", LocalDateTime.class));
+		return dto;
 	}
 
 	public LocalDateTime getQueued_on() {
@@ -56,5 +69,6 @@ public class Dem_process_queueDao extends IxigoDao {
 	public void setDto(Dem_process_queueDto dto) {
 		this.dto = dto;
 	}
+
 
 }

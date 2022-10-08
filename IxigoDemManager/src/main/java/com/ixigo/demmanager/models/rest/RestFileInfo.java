@@ -9,7 +9,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Marco
  *
  */
-public class FileInfo implements Serializable {
+public class RestFileInfo implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@JsonProperty("name")
 	private String name;

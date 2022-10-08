@@ -7,9 +7,8 @@ logging:
   level:
     root: INFO
     com:
-      marco:
-        ixigo:
-          demmanager: DEBUG
+      ixigo:
+        demmanager: DEBUG
 spring:
   servlet:
     multipart:
@@ -26,3 +25,7 @@ com:
   ixigo:
     demmanager:
       version: ^project.version^
+      services:
+        demfilemanager:
+          root-folder: "C:\\Temp\\demfiles"
+      

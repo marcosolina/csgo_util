@@ -2,6 +2,10 @@ package com.ixigo.library.enums;
 
 public enum DateFormats {
 	/**
+	 * yyyyMMdd
+	 */
+	FOLDER_NAME("yyyyMMdd"),
+	/**
 	 * yyyy-MM-dd HH:mm:ss
 	 */
 	DB_TIME_STAMP("yyyy-MM-dd'T'HH:mm:ss"),

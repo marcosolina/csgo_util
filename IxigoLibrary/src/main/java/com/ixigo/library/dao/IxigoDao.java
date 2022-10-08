@@ -3,9 +3,6 @@ package com.ixigo.library.dao;
 import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,20 +13,23 @@ import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.DatabaseClient.GenericExecuteSpec;
 
 import com.ixigo.library.dto.IxigoDto;
-import com.ixigo.library.enums.DateFormats;
 import com.ixigo.library.errors.IxigoException;
-import com.ixigo.library.utils.DateUtils;
-import com.ixigo.library.utils.UtilsConstants;
+
+import io.r2dbc.spi.Row;
+import io.r2dbc.spi.RowMetadata;
 
 /**
  * Data Access Object (DAO) used to access the data in the database
  * 
+ * @see https://medium.com/swlh/working-with-relational-database-using-r2dbc-databaseclient-d61a60ebc67f
+ * @see https://github.com/hantsy/spring-r2dbc-sample/blob/master/docs/database-client.md
+ * @see https://medium.com/zero-equals-false/dealing-with-postgres-specific-json-enum-type-and-notifier-listener-with-r2dbc-f15cc104aa10
  * @see https://www.baeldung.com/spring-data-r2dbc
  * @see https://www.baeldung.com/r2dbc
  * @author Marco
  *
  */
-public class IxigoDao implements Serializable, Cloneable {
+public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Cloneable {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(IxigoDao.class);
 	private static final long serialVersionUID = 1L;
 
@@ -38,64 +38,18 @@ public class IxigoDao implements Serializable, Cloneable {
 	private String[] sqlFields = null;
 	private String[] sqlKeys = null;
 
-	/*
-	 * field defined as key, but is calculated by the DB. For example
-	 * autoincremental ID
-	 */
-	private String[] sqlAutoKeys = null;
-
 	private List<String> sqlOrderFields = null;
 	private List<String> sqlWhereAndClauses = null;
-
-	public boolean setSqlOrderFields(List<String> o) {
-		sqlOrderFields = o;
-		return true;
-	}
-
-	public boolean addSqlOrderFields(String o) {
-		if (sqlOrderFields == null) {
-			sqlOrderFields = new ArrayList<>();
-		}
-		return sqlOrderFields.add(o);
-	}
+	private List<Object> sqlParams = null;
 
 	/**
-	 * adds the string to the list of the "and" fields of the where clauses
+	 * Mapping function to map a single DB row into a Dto
 	 * 
-	 * where field1 = '' and field2 = '' and ...
-	 * 
-	 * @param element
+	 * @param row
+	 * @param rowMetaData
+	 * @return
 	 */
-	public void addSqlWhereAndClauses(String element) {
-		if (sqlWhereAndClauses == null) {
-			sqlWhereAndClauses = new ArrayList<>();
-		}
-		sqlWhereAndClauses.add(element);
-	}
-
-	/**
-	 * It clears the list of the "and" fields of the where clauses
-	 */
-	public void clearSqlOrderFields() {
-		if (sqlOrderFields == null) {
-			sqlOrderFields = new ArrayList<>();
-		} else {
-			sqlOrderFields.clear();
-		}
-	}
-
-	
-
-	/**
-	 * It clears the sql where and clauses list
-	 */
-	public void clearSqlWhereAndClauses() {
-		if (sqlWhereAndClauses == null) {
-			sqlWhereAndClauses = new ArrayList<>();
-		} else {
-			sqlWhereAndClauses.clear();
-		}
-	}
+	public abstract T mappingFunction(Row row, RowMetadata rowMetaData);
 
 	/**
 	 * It returns a deep copy of the DTO
@@ -124,139 +78,126 @@ public class IxigoDao implements Serializable, Cloneable {
 		return null;
 	}
 
-	public StringBuffer getSqlSelect() {
-		StringBuffer sqlSt = new StringBuffer();
-		StringBuffer f = new StringBuffer();
-		sqlSt.append("select ");
+	/**
+	 * It prepares the {@link GenericExecuteSpec} for the "SELECT" statement
+	 * 
+	 * SELECT FIELD_1, ..., FIELD_N FROM TABLE [WHERE FIELD_1 = :VAL_1 AND ...
+	 * FIELD_N = :VAL_N] [ORDER BY FIELD_1, ..., FIELD_N]
+	 * 
+	 * @param client
+	 * @return
+	 */
+	public GenericExecuteSpec prepareSqlSelect(DatabaseClient client) {
+		StringBuffer sqlInsert = new StringBuffer();
+		StringBuffer fields = new StringBuffer();
+		sqlInsert.append("select ");
 
 		if (sqlFields != null && sqlFields.length > 0) {
 			for (int i = 0; i < sqlFields.length; i++) {
-				f.append(", " + sqlFields[i]);
+				fields.append(", " + sqlFields[i]);
 			}
 		} else {
-			f.append(", *");
+			fields.append(", *");
 		}
-		sqlSt.append(f.substring(2));
+		sqlInsert.append(fields.substring(2));
 
-		sqlSt.append(" from ");
-		sqlSt.append(sqlViewName);
-
+		sqlInsert.append(" from ");
+		sqlInsert.append(sqlViewName);
 		if (sizeSqlWhereAndClauses() > 0) {
-			sqlSt.append(" where ");
-			f = new StringBuffer();
+			sqlInsert.append(" where ");
+			fields = new StringBuffer();
 			for (int i = 0; i < sizeSqlWhereAndClauses(); i++) {
-				var field = getSqlWhereAndClauses(i);
-				f.append(" and " + field + "=:" + field);
+				var fieldName = getSqlWhereAndClauses(i);
+				fields.append(" and " + fieldName + "=:" + fieldName);
 			}
-			sqlSt.append(f.substring(4));
+			sqlInsert.append(fields.substring(4));
 		}
 
 		if (sizeSqlOrderFields() > 0) {
-			sqlSt.append(" order by ");
-			f = new StringBuffer();
+			sqlInsert.append(" order by ");
+			fields = new StringBuffer();
 			for (int i = 0; i < sizeSqlOrderFields(); i++) {
-				f.append(", " + getSqlOrderFields(i));
+				fields.append(", " + getSqlOrderFields(i));
 			}
-			sqlSt.append(f.substring(2));
+			sqlInsert.append(fields.substring(2));
 		} else if (getSqlKeys() != null && getSqlKeys().length > 0) {
-			sqlSt.append(" order by ");
-			f = new StringBuffer();
+			sqlInsert.append(" order by ");
+			fields = new StringBuffer();
 			for (int i = 0; i < getSqlKeys().length; i++) {
-				f.append(", " + getSqlKeys()[i]);
+				fields.append(", " + getSqlKeys()[i]);
 			}
-			sqlSt.append(f.substring(2));
+			sqlInsert.append(fields.substring(2));
 		}
 
-		return sqlSt;
-	}
+		GenericExecuteSpec ges = client.sql(sqlInsert.toString());
+		for (int i = 0; i < sizeSqlParams(); i++) {
+			var paramValue = getSqlParams(i);
+			ges = ges.bind(i, paramValue.getClass().isEnum() ? paramValue.toString() : paramValue);
+		}
 
-	public String[] getSqlKeys() {
-		return sqlKeys;
-	}
-
-	public String getSqlOrderFields(int index) {
-		return sqlOrderFields == null ? null : sqlOrderFields.get(index);
-	}
-
-	public List<String> getSqlOrderFields() {
-		return sqlOrderFields;
-	}
-
-	public Object getSqlWhereAndClauses(int index) {
-		return sqlWhereAndClauses == null ? null : sqlWhereAndClauses.get(index);
-	}
-
-	public int sizeSqlOrderFields() {
-		return sqlOrderFields == null ? 0 : sqlOrderFields.size();
+		return ges;
 	}
 
 	/**
-	 * It creates the delete statement
+	 * It prepares the {@link GenericExecuteSpec} for the "DELETE" statement by
+	 * table key
 	 * 
 	 * @return
 	 */
-	public StringBuffer getSqlDelete() {
-		StringBuffer k = new StringBuffer();
-		StringBuffer res = new StringBuffer("delete from ");
-		res.append(sqlViewName);
+	public GenericExecuteSpec prepareSqlDeleteByKey(DatabaseClient client) {
+		StringBuffer keyFields = new StringBuffer();
+		StringBuffer sqlDelete = new StringBuffer("delete from ");
+		sqlDelete.append(sqlViewName);
 
 		if (sqlKeys != null) {
 			for (int i = 0; i < sqlKeys.length; i++) {
-				k.append(" and " + sqlKeys[i] + " = ?");
+				keyFields.append(" and " + sqlKeys[i] + " = :" + sqlKeys[i]);
 			}
 			if (sqlKeys.length > 0) {
-				res.append(" where ");
-				res.append(k.substring(5));
+				sqlDelete.append(" where ");
+				sqlDelete.append(keyFields.substring(5));
 			}
 		}
-		return res;
+
+		GenericExecuteSpec ges = client.sql(sqlDelete.toString());
+		if (sqlKeys != null && sqlKeys.length > 0) {
+			var dto = this.getDtoInstance();
+			for (int i = 0; i < sqlKeys.length; i++) {
+				var paramValue = getValue(dto, sqlKeys[i]);
+				ges = ges.bind(i, paramValue.getClass().isEnum() ? paramValue.toString() : paramValue);
+			}
+		}
+
+		return ges;
 	}
 
 	/**
-	 * It creates the INSERT SQL statement
+	 * It prepares the {@link GenericExecuteSpec} for the "INSERT" statement into
+	 * the table
 	 * 
 	 * @param dto
 	 * @return
 	 * @throws MarcoException
 	 */
-	public GenericExecuteSpec prepareInsert(DatabaseClient client) {
+	public GenericExecuteSpec prepareSqlInsert(DatabaseClient client) {
 		var insert = getSqlInsert().toString();
 		_LOGGER.debug(insert);
-		
+
 		var ges = client.sql(insert);
 		var dto = this.getDtoInstance();
 		for (int i = 0; i < sqlFields.length; i++) {
-			ges = ges.bind(sqlFields[i], getValue(dto, sqlFields[i]));
+			Object value = getValue(dto, sqlFields[i]);
+			if(value == null) {
+				ges = ges.bindNull(sqlFields[i], getDataType(dto, sqlFields[i]));
+			}else {
+				ges = ges.bind(sqlFields[i], value);
+			}
 		}
 		return ges;
 	}
 
-	/*
-	public StringBuffer getSqlUpdate() throws IxigoException {
-		IxigoDto dto = getDtoInstance();
-		StringBuffer res = getSqlUpdatePS();
-		int index = 0;
-		for (int i = 0; i < sqlFields.length; i++) {
-			if (isAutoGeneratedField(sqlFields[i])) {
-				continue;
-			}
-			index = res.indexOf("?");
-			String valore = getValueAsString(dto, sqlFields[i]);
-			res.replace(index, index + 1, valore);
-			index += valore.length();
-		}
-		for (int i = 0; i < sqlKeys.length; i++) {
-			index = res.indexOf("?");
-			String valore = getValueAsString(dto, sqlKeys[i]);
-			res.replace(index, index + 1, valore);
-			index += valore.length();
-		}
-		return resetString(res);
-	}
-	*/
-
 	/**
-	 * Sets the values of the keys inside th DTO the input array must have the
+	 * Sets the values of the keys inside the DTO. The input array must have the
 	 * values in the same order of the fields defined as key fields
 	 * 
 	 * @param keyValues
@@ -274,6 +215,29 @@ public class IxigoDao implements Serializable, Cloneable {
 		}
 	}
 
+	/**
+	 * Adds the parameter to the list of parameters that are going to be used with
+	 * the prepared statement. You should use this combined with the add where and
+	 * clauses method
+	 * 
+	 * For example: dao.addSqlWhereAndClauses("field1 = ?");
+	 * dao.addSqlWhereAndClauses("field2 = ?");
+	 * 
+	 * dao.addSqlParams("value1"); dao.addSqlParams("value2");
+	 * 
+	 * dao.doSelect(cn);
+	 * 
+	 * 
+	 * @param o
+	 * @return
+	 */
+	public boolean addSqlParams(Object o) {
+		if (sqlParams == null) {
+			sqlParams = new ArrayList<Object>();
+		}
+		return sqlParams.add(o);
+	}
+
 	public String getterName(String nc) {
 		return "get" + fieldName(nc);
 	}
@@ -286,10 +250,6 @@ public class IxigoDao implements Serializable, Cloneable {
 		return nc.toUpperCase().charAt(0) + nc.substring(1);
 	}
 
-	private StringBuffer resetString(StringBuffer res) {
-		return new StringBuffer(res.toString().replace(UtilsConstants.DUMMY_CHAR, '?'));
-	}
-
 	public int sizeSqlWhereAndClauses() {
 		return sqlWhereAndClauses == null ? 0 : sqlWhereAndClauses.size();
 	}
@@ -298,13 +258,23 @@ public class IxigoDao implements Serializable, Cloneable {
 		try {
 			Method m = dto.getClass().getMethod(getterName(field));
 			Object value = m.invoke(dto);
-			if(value == null) {
+			if (value == null) {
 				return null;
 			}
-			if(m.getReturnType().isEnum()) {
+			if (m.getReturnType().isEnum()) {
 				return value.toString();
 			}
 			return value;
+		} catch (Exception e) {
+			_LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+		}
+	}
+	
+	private Class<?> getDataType(IxigoDto dto, String field) {
+		try {
+			return dto.getClass().getMethod(getterName(field)).getReturnType(); 
 		} catch (Exception e) {
 			_LOGGER.error(e.getMessage());
 			e.printStackTrace();
@@ -355,16 +325,6 @@ public class IxigoDao implements Serializable, Cloneable {
 		return res;
 	}
 
-	private boolean isAutoGeneratedField(String fieldName) {
-		boolean founded = false;
-		for (int i = 0; sqlAutoKeys != null && i < sqlAutoKeys.length && !founded; i++) {
-			if (sqlAutoKeys[i].equals(fieldName)) {
-				founded = true;
-			}
-		}
-		return founded;
-	}
-
 	/**
 	 * It returns the DTO instance of the current DAO
 	 * 
@@ -384,14 +344,6 @@ public class IxigoDao implements Serializable, Cloneable {
 		return dto;
 	}
 
-	public String[] getSqlAutoKeys() {
-		return sqlAutoKeys;
-	}
-
-	public void setSqlAutoKeys(String[] sqlAutoKeys) {
-		this.sqlAutoKeys = sqlAutoKeys;
-	}
-
 	public void setSqlViewName(String sqlViewName) {
 		this.sqlViewName = sqlViewName;
 	}
@@ -402,5 +354,81 @@ public class IxigoDao implements Serializable, Cloneable {
 
 	public void setSqlFields(String[] sqlFields) {
 		this.sqlFields = sqlFields;
+	}
+
+	public boolean setSqlOrderFields(List<String> o) {
+		sqlOrderFields = o;
+		return true;
+	}
+
+	public boolean addSqlOrderFields(String o) {
+		if (sqlOrderFields == null) {
+			sqlOrderFields = new ArrayList<>();
+		}
+		return sqlOrderFields.add(o);
+	}
+
+	/**
+	 * adds the string to the list of the "and" fields of the where clauses
+	 * 
+	 * where field1 = '' and field2 = '' and ...
+	 * 
+	 * @param element
+	 */
+	public void addSqlWhereAndClauses(String element) {
+		if (sqlWhereAndClauses == null) {
+			sqlWhereAndClauses = new ArrayList<>();
+		}
+		sqlWhereAndClauses.add(element);
+	}
+
+	/**
+	 * It clears the list of the "and" fields of the where clauses
+	 */
+	public void clearSqlOrderFields() {
+		if (sqlOrderFields == null) {
+			sqlOrderFields = new ArrayList<>();
+		} else {
+			sqlOrderFields.clear();
+		}
+	}
+
+	/**
+	 * It clears the sql where and clauses list
+	 */
+	public void clearSqlWhereAndClauses() {
+		if (sqlWhereAndClauses == null) {
+			sqlWhereAndClauses = new ArrayList<>();
+		} else {
+			sqlWhereAndClauses.clear();
+		}
+	}
+
+	public int sizeSqlParams() {
+		return sqlParams == null ? 0 : sqlParams.size();
+	}
+
+	public Object getSqlParams(int index) {
+		return sqlParams == null ? null : sqlParams.get(index);
+	}
+
+	public String[] getSqlKeys() {
+		return sqlKeys;
+	}
+
+	public String getSqlOrderFields(int index) {
+		return sqlOrderFields == null ? null : sqlOrderFields.get(index);
+	}
+
+	public List<String> getSqlOrderFields() {
+		return sqlOrderFields;
+	}
+
+	public Object getSqlWhereAndClauses(int index) {
+		return sqlWhereAndClauses == null ? null : sqlWhereAndClauses.get(index);
+	}
+
+	public int sizeSqlOrderFields() {
+		return sqlOrderFields == null ? 0 : sqlOrderFields.size();
 	}
 }

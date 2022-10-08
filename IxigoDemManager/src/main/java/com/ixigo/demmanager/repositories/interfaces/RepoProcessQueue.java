@@ -14,12 +14,12 @@ public interface RepoProcessQueue {
 	public Flux<Dem_process_queueDto> getNotProcessedDemFiles();
 
 	/**
-	 * It saves the entity into the DB
+	 * It saves the DTO into the DB
 	 * 
 	 * @param entity
 	 * @return
 	 */
-	public Mono<Void> saveEntity(Dem_process_queueDto entity);
+	public Mono<Boolean> saveDto(Dem_process_queueDto dto);
 
 	/**
 	 * It returns the entity associated to the ID

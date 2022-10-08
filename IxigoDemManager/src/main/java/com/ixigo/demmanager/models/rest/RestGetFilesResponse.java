@@ -14,13 +14,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class RestGetFilesResponse implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@JsonProperty("files")
-	private Map<String, List<FileInfo>> files;
+	private Map<String, List<RestFileInfo>> files;
 
-	public Map<String, List<FileInfo>> getFiles() {
+	public Map<String, List<RestFileInfo>> getFiles() {
 		return files;
 	}
 
-	public void setFiles(Map<String, List<FileInfo>> files) {
+	public void setFiles(Map<String, List<RestFileInfo>> files) {
 		this.files = files;
 	}
 }

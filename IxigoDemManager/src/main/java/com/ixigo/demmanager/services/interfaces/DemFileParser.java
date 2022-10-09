@@ -1,0 +1,58 @@
+package com.ixigo.demmanager.services.interfaces;
+
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
+import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
+import com.ixigo.demmanager.models.svc.demdata.SvcUser;
+import com.ixigo.library.errors.IxigoException;
+
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+
+public interface DemFileParser {
+	/**
+     * In checks in the queue if there are new files to be processed
+     * 
+     * @return
+     * @throws MarcoException
+     */
+    public Mono<Boolean> processFiles() throws IxigoException;
+    
+    public Mono<Boolean> processAllFiles() throws IxigoException;
+    
+    /**
+     * It returns a map of available scores
+     * 
+     * @return
+     */
+    public Mono<Map<String, String>> mapOfAvailableScores();
+
+    /**
+     * It returns the number of time we played the different maps
+     * 
+     * @return
+     */
+    public Flux<SvcMapPlayedCounter> countGamesOnAMap();
+
+    /**
+     * It will return a list of all the known users
+     * 
+     * @return
+     * @throws MarcoException
+     */
+    public Flux<SvcUser> getListOfUsers() throws IxigoException;
+    
+    /**
+     * It will return all the Users scores for the most recent "gamesCounter" games
+     * 
+     * @param gamesCounter
+     * @param usersIDs
+     * @return
+     * @throws MarcoException
+     */
+    public Mono<Map<String, List<SvcMapStats>>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+            BigDecimal minPercPlayed) throws IxigoException;
+}

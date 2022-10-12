@@ -3,16 +3,12 @@ package com.ixigo.demmanager.repositories.implementations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.r2dbc.core.DatabaseClient;
 
-import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.demmanager.models.entities.Dem_process_queueDao;
 import com.ixigo.demmanager.models.entities.Dem_process_queueDto;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
-import com.ixigo.library.errors.IxigoException;
-import com.ixigo.library.messages.IxigoMessageResource;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,8 +24,6 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 
 	@Autowired
 	private DatabaseClient client;
-	@Autowired
-	private IxigoMessageResource msgSource;
 
 	@Override
 	public Flux<Dem_process_queueDto> getNotProcessedDemFiles() {
@@ -43,8 +37,8 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 	}
 
 	@Override
-	public Mono<Boolean> saveDto(Dem_process_queueDto entity) {
-		_LOGGER.trace("Inside RepoProcessQueuePostgres.saveDto");
+	public Mono<Boolean> insertOrUpdate(Dem_process_queueDto entity) {
+		_LOGGER.trace("Inside RepoProcessQueuePostgres.insertOrUpdate");
 		
 		Dem_process_queueDao dao = new Dem_process_queueDao();
 		dao.setDto(entity);
@@ -53,12 +47,14 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 		return findById(entity.getFile_name())
 			.switchIfEmpty(Mono.just(new Dem_process_queueDto()))
 			.flatMap(dto -> {
+				// Update
 				if (!"".equals(dto.getFile_name())) {
-					throw new IxigoException(HttpStatus.CONFLICT, msgSource.getMessage(ErrorCodes.DUPLICATE_VALUE));
+					return dao.prepareSqlUpdate(client).then().thenReturn(true);
 				}
 				return dao.prepareSqlInsert(client).then().thenReturn(true);
 			});
 		// @formatter:on
+
 	}
 
 	@Override

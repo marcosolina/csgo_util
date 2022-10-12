@@ -19,7 +19,7 @@ public interface RepoProcessQueue {
 	 * @param entity
 	 * @return
 	 */
-	public Mono<Boolean> saveDto(Dem_process_queueDto dto);
+	public Mono<Boolean> insertOrUpdate(Dem_process_queueDto dto);
 
 	/**
 	 * It returns the entity associated to the ID

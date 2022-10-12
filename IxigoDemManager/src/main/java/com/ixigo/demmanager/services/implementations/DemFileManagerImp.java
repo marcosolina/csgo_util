@@ -63,7 +63,7 @@ public class DemFileManagerImp implements DemFileManager {
 					dto.setProcess_status(DemProcessStatus.NOT_PROCESSED);
 					dto.setQueued_on(DateUtils.getCurrentUtcDateTime());
 					
-					return repo.saveDto(dto).map(v -> path);
+					return repo.insertOrUpdate(dto).map(v -> path);
 				});
 		// @formatter:on
 	}

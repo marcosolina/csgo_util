@@ -6,6 +6,10 @@ public enum DateFormats {
 	 */
 	FOLDER_NAME("yyyyMMdd"),
 	/**
+	 * yyyyMMdd_HHmmss
+	 */
+	FILE_NAME("yyyyMMdd_HHmmss"),
+	/**
 	 * yyyy-MM-dd HH:mm:ss
 	 */
 	DB_TIME_STAMP("yyyy-MM-dd'T'HH:mm:ss"),

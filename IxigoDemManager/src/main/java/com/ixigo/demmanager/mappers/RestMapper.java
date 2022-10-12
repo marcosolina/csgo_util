@@ -1,4 +1,4 @@
-package com.ixigo.demmanager;
+package com.ixigo.demmanager.mappers;
 
 import java.util.List;
 import java.util.Map;

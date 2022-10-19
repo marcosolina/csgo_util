@@ -1,5 +1,8 @@
 package com.ixigo.demmanager.models.svc.demdata;
 
+import lombok.experimental.FieldNameConstants;
+
+@FieldNameConstants
 public class SvcUser {
 	private String steamId;
 	private String userName;

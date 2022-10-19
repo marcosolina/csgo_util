@@ -53,6 +53,6 @@ public interface DemFileParser {
      * @return
      * @throws MarcoException
      */
-    public Mono<Map<String, List<SvcMapStats>>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+    public Mono<Map<String, Flux<SvcMapStats>>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
             BigDecimal minPercPlayed) throws IxigoException;
 }

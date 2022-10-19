@@ -24,8 +24,9 @@ public class UsersDto implements IxigoDto{
 		return this.steam_id;
 	}
 
-	public void setSteam_id(String steam_id){
+	public UsersDto setSteam_id(String steam_id){
 		this.steam_id = steam_id;
+		return this;
 	}
 
 

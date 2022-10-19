@@ -1,8 +1,12 @@
 package com.ixigo.demmanager.services.implementations;
 
 import java.io.File;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -12,10 +16,16 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
+import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.constants.RoundParserUtils;
 import com.ixigo.demmanager.enums.DemProcessStatus;
+import com.ixigo.demmanager.enums.ScoreType;
+import com.ixigo.demmanager.mappers.SvcMapper;
+import com.ixigo.demmanager.models.entities.Dem_process_queueDto;
+import com.ixigo.demmanager.models.entities.DtoMapPlayedCounter;
 import com.ixigo.demmanager.models.entities.UsersDto;
 import com.ixigo.demmanager.models.entities.Users_scoresDto;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
@@ -30,10 +40,12 @@ import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.demmanager.services.interfaces.NotificationService;
 import com.ixigo.library.enums.DateFormats;
 import com.ixigo.library.errors.IxigoException;
+import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.utils.DateUtils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuples;
 
 public class DemFileParserImp implements DemFileParser {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemFileParserImp.class);
@@ -50,6 +62,10 @@ public class DemFileParserImp implements DemFileParser {
 	private DemProcessor svcDemProcessor;
 	@Autowired
 	private NotificationService notificationService;
+	@Autowired
+	private SvcMapper mapper;
+	@Autowired
+	private IxigoMessageResource msgSource;
 
 	@Override
 	public Mono<Boolean> processFiles() throws IxigoException {
@@ -71,33 +87,103 @@ public class DemFileParserImp implements DemFileParser {
 
 	@Override
 	public Mono<Boolean> processAllFiles() throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		try {	
+			// @formatter:off
+			return Flux.fromStream(Files.walk(props.getRootFolder()))
+					.filter(path -> path.toFile().getName().endsWith(".dem"))
+					.flatMap(path ->
+					{
+						String absPath = path.toFile().getAbsolutePath();
+						return repoQueue.findById(absPath)
+								.defaultIfEmpty(new Dem_process_queueDto().setFile_name(absPath));
+					})
+					.filter(dto -> dto.getProcessed_on() == null)
+					.flatMap(dto -> {
+						dto.setQueued_on(DateUtils.getCurrentUtcDateTime());
+						dto.setProcess_status(DemProcessStatus.NOT_PROCESSED);
+						return repoQueue.insertOrUpdate(dto);
+					}).then(processFiles());
+			// @formatter:on
+		}catch(IOException e) {
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE));
+		}
 	}
 
 	@Override
 	public Mono<Map<String, String>> mapOfAvailableScores() {
-		// TODO Auto-generated method stub
-		return null;
+		Map<String, String> map = new HashMap<>();
+		Arrays.stream(ScoreType.values()).forEach(s -> map.put(s.name(), s.getDesc()));
+		return Mono.just(map);
 	}
 
 	@Override
 	public Flux<SvcMapPlayedCounter> countGamesOnAMap() {
-		// TODO Auto-generated method stub
-		return null;
+		Flux<DtoMapPlayedCounter> maps = repoUserScore.getMapsPlayed();
+		return maps.map(dto -> {
+			SvcMapPlayedCounter mp = new SvcMapPlayedCounter();
+			mp.setCount(dto.getCount());
+			mp.setMapName(dto.getMapName());
+			return mp;
+		});
 	}
 
 	@Override
 	public Flux<SvcUser> getListOfUsers() throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		return repoUser.getUsers().map(mapper::fromDtoToSvc);
 	}
 
 	@Override
-	public Mono<Map<String, List<SvcMapStats>>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+	public Mono<Map<String, Flux<SvcMapStats>>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
+		// @formatter:off
+		/*
+		List<Mono<Tuple2<String, List<SvcMapStats>>>> tuples= new ArrayList<>();
+		for (String steamId : usersIDs) {
+			var monoUser = repoUser.findById(steamId);
+			
+			Mono<List<SvcMapStats>> userScores = monoUser.map(dto -> repoUserScore.getLastXUserScores(gamesCounter, dto.getSteam_id(), minPercPlayed))
+			.flatMap(scores -> 
+				scores.map(score -> fromUsersScoreDtoToSvcMapStata(score)).collectList()
+			);
+			
+			tuples.add(userScores.map(list -> {
+				return Tuples.of(steamId, list);
+			}));
+		}
+		
+		return Flux.fromIterable(tuples)
+				.flatMapSequential(Function.identity())
+				.collectList()
+				.map(list -> {
+					Map<String, List<SvcMapStats>> map = new HashMap<>();
+					list.forEach(t -> {
+						map.put(t.getT1(), t.getT2());
+					});
+					return map;
+				})
+				;
+				*/
+		
+		return Flux.fromIterable(usersIDs)
+		.map(steamId -> {
+			Flux<SvcMapStats> scores = repoUser.findById(steamId).flatMapMany(userDto -> {
+				return repoUserScore.getLastXUserScores(gamesCounter, userDto.getSteam_id(), minPercPlayed)
+						.map(scoreDto -> fromUsersScoreDtoToSvcMapStata(userDto, scoreDto));
+			});
+			return Tuples.of(steamId, scores);
+		})
+		.collectList()
+		.map(tupleList -> {
+			Map<String, Flux<SvcMapStats>> map = new HashMap<>();
+			tupleList.forEach(tuple -> {
+				map.put(tuple.getT1(), tuple.getT2());
+			});
+			return map;
+		});
+		// @formatter:on
 	}
+	
+	
 
 	public Mono<SvcMapStats> generateMapStatFromFile(File f) throws IxigoException {
 		return svcDemProcessor.processDemFile(f).collectList().map(list -> {
@@ -234,5 +320,59 @@ public class DemFileParserImp implements DemFileParser {
 		ums.setAdr(RoundParserUtils.doubleToBigDecimal(userScore.getAverageDamagePerRound(), 2));
 		ums.setMp(RoundParserUtils.doubleToBigDecimal(userScore.getMatchPlayed(), 2));
 		return ums;
+	}
+	
+	private SvcMapStats fromUsersScoreDtoToSvcMapStata(UsersDto userDto, Users_scoresDto userScore) {
+		SvcMapStats mapStats = new SvcMapStats();
+		mapStats.setMapName(userScore.getMap());
+		mapStats.setPlayedOn(userScore.getGame_date());
+		
+		SvcUserGotvScore gotvScore = new SvcUserGotvScore();
+		
+		gotvScore.setUserName(userDto.getUser_name());
+		gotvScore.setSteamID(userDto.getSteam_id());
+		gotvScore.setKills(userScore.getKills());
+		gotvScore.setAssists(userScore.getAssists());
+		gotvScore.setDeaths(userScore.getDeaths());
+		gotvScore.setTotalDamageHealth(userScore.getTdh());
+		gotvScore.setTotalDamageArmor(userScore.getTda());
+		gotvScore.setOneVersusOne(userScore.get_1v1());
+		gotvScore.setOneVersusTwo(userScore.get_1v2());
+		gotvScore.setOneVersusThree(userScore.get_1v3());
+		gotvScore.setOneVersusFour(userScore.get_1v4());
+		gotvScore.setOneVersusFive(userScore.get_1v5());
+		gotvScore.setGrenadesThrownCount(userScore.getGrenades());
+		gotvScore.setFlashesThrownCount(userScore.getFlashes());
+		gotvScore.setSmokesThrownCount(userScore.getSmokes());
+		gotvScore.setFireThrownCount(userScore.getFire());
+		gotvScore.setHighExplosiveDamage(userScore.getHed());
+		gotvScore.setFireDamage(userScore.getFd());
+		gotvScore.setFiveKills(userScore.get_5k());
+		gotvScore.setFourKills(userScore.get_4k());
+		gotvScore.setThreeKills(userScore.get_3k());
+		gotvScore.setTwoKills(userScore.get_2k());
+		gotvScore.setOneKill(userScore.get_1k());
+		gotvScore.setTradeKill(userScore.getTk());
+		gotvScore.setTradeDeath(userScore.getTd());
+		gotvScore.setTeamKillFriendlyFire(userScore.getFf());
+		gotvScore.setEntryKill(userScore.getEk());
+		gotvScore.setBombPLanted(userScore.getBp());
+		gotvScore.setBombDefused(userScore.getBd());
+		gotvScore.setMostValuablePlayer(userScore.getMvp());
+		gotvScore.setScore(userScore.getScore());
+		gotvScore.setHeadShots(userScore.getHs());
+
+		gotvScore.setRoundWinShare(RoundParserUtils.bigDecimalToDouble(userScore.getRws(), 2));
+		gotvScore.setKillDeathRation(RoundParserUtils.bigDecimalToDouble(userScore.getKdr(), 2));
+		gotvScore.setHeadShotsPercentage(RoundParserUtils.bigDecimalToDouble(userScore.getHsp(), 2));
+		gotvScore.setHalfLifeTelevisionRating(RoundParserUtils.bigDecimalToDouble(userScore.getHltv(), 3));
+		gotvScore.setKillPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getKpr(), 2));
+		gotvScore.setAssistsPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getApr(), 2));
+		gotvScore.setDeathPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getDpr(), 2));
+		gotvScore.setAverageDamagePerRound(RoundParserUtils.bigDecimalToDouble(userScore.getAdr(), 2));
+		gotvScore.setMatchPlayed(RoundParserUtils.bigDecimalToDouble(userScore.getMp(), 2));
+		
+		mapStats.addUserMapStats(gotvScore);
+		return mapStats;
 	}
 }

@@ -28,8 +28,9 @@ public class Dem_process_queueDto implements IxigoDto {
 		return this.file_name;
 	}
 
-	public void setFile_name(String file_name) {
+	public Dem_process_queueDto setFile_name(String file_name) {
 		this.file_name = file_name;
+		return this;
 	}
 
 	public DemProcessStatus getProcess_status() {

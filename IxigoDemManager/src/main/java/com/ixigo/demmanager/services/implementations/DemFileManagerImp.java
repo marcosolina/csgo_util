@@ -26,7 +26,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.enums.DemProcessStatus;
-import com.ixigo.demmanager.models.entities.Dem_process_queueDto;
+import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 import com.ixigo.demmanager.models.svc.SvcFileInfo;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.services.interfaces.DemFileManager;

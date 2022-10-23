@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.models.rest;
+package com.ixigo.demmanager.models.rest.demfilesmanager;
 
 import java.io.Serializable;
 import java.util.List;

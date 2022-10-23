@@ -3,8 +3,8 @@ package com.ixigo.demmanager.repositories.interfaces;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.ixigo.demmanager.models.entities.DtoMapPlayedCounter;
-import com.ixigo.demmanager.models.entities.Users_scoresDto;
+import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
+import com.ixigo.demmanager.models.database.Users_scoresDto;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -21,7 +21,7 @@ public interface RepoUserScore {
      * 
      * @param us
      */
-    public Mono<Boolean> insertUpdateUserScore(Users_scoresDto us);
+    public Mono<Boolean> insertUpdateUserScore(Users_scoresDto userScore);
 
     /**
      * It will return a list of the played games/maps (List of LocalDateTime)

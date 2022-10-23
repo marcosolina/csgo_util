@@ -1,6 +1,5 @@
 package com.ixigo.demmanager.controllers;
 
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,10 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
-import com.ixigo.demmanager.commands.CmdGetDemFile;
-import com.ixigo.demmanager.commands.CmdGetDemFilesList;
-import com.ixigo.demmanager.commands.CmdStoreDemFile;
-import com.ixigo.demmanager.models.rest.RestGetFilesResponse;
+import com.ixigo.demmanager.commands.demfilesmanager.CmdGetDemFile;
+import com.ixigo.demmanager.commands.demfilesmanager.CmdGetDemFilesList;
+import com.ixigo.demmanager.commands.demfilesmanager.CmdStoreDemFile;
+import com.ixigo.demmanager.models.rest.demfilesmanager.RestGetFilesResponse;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import reactor.core.publisher.Mono;
@@ -36,28 +35,24 @@ public class ControllerDemFilesManager {
 		_LOGGER.trace("Inside DemFilesManager.handleFileUpload");
 		return mediator.send(new CmdStoreDemFile(file));
 	}
-	
+
 	@GetMapping("/{filename:.+}")
 	public Mono<ResponseEntity<Resource>> getFile(@PathVariable String filename) {
 		_LOGGER.trace("Inside DemFilesManager.getFile");
 		return mediator.send(new CmdGetDemFile(filename));
 	}
-	
+
 	@GetMapping()
 	public Mono<ResponseEntity<RestGetFilesResponse>> getListFiles() {
 		_LOGGER.trace("Inside DemFilesManager.getListFiles");
-		String url = MvcUriComponentsBuilder
-				.fromMethodName(ControllerDemFilesManager.class, "getListFiles")
-				.build()
-				.toString();
+		String url = MvcUriComponentsBuilder.fromMethodName(ControllerDemFilesManager.class, "getListFiles").build().toString();
 		return mediator.send(new CmdGetDemFilesList()).map(resp -> {
-			resp.getBody().getFiles().forEach((k, v) ->
-			{
+			resp.getBody().getFiles().forEach((k, v) -> {
 				v.parallelStream().forEach(fileInfo -> {
-					if(url.endsWith("/")) {
+					if (url.endsWith("/")) {
 						fileInfo.setUrl(url + fileInfo.getName());
-					}else {
-						fileInfo.setUrl(url + "/"+ fileInfo.getName());
+					} else {
+						fileInfo.setUrl(url + "/" + fileInfo.getName());
 					}
 				});
 			});

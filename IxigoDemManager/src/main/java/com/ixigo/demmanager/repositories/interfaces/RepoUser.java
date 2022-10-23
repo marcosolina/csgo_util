@@ -1,6 +1,6 @@
 package com.ixigo.demmanager.repositories.interfaces;
 
-import com.ixigo.demmanager.models.entities.UsersDto;
+import com.ixigo.demmanager.models.database.UsersDto;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

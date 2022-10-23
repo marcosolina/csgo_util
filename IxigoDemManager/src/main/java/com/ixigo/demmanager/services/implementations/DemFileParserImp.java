@@ -24,14 +24,15 @@ import com.ixigo.demmanager.constants.RoundParserUtils;
 import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.mappers.SvcMapper;
-import com.ixigo.demmanager.models.entities.Dem_process_queueDto;
-import com.ixigo.demmanager.models.entities.DtoMapPlayedCounter;
-import com.ixigo.demmanager.models.entities.UsersDto;
-import com.ixigo.demmanager.models.entities.Users_scoresDto;
+import com.ixigo.demmanager.models.database.Dem_process_queueDto;
+import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
+import com.ixigo.demmanager.models.database.UsersDto;
+import com.ixigo.demmanager.models.database.Users_scoresDto;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
+import com.ixigo.demmanager.models.svc.demdata.SvcUserStatsForLastXGames;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
 import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
@@ -45,7 +46,6 @@ import com.ixigo.library.utils.DateUtils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuples;
 
 public class DemFileParserImp implements DemFileParser {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemFileParserImp.class);
@@ -68,7 +68,7 @@ public class DemFileParserImp implements DemFileParser {
 	private IxigoMessageResource msgSource;
 
 	@Override
-	public Mono<Boolean> processFiles() throws IxigoException {
+	public Mono<HttpStatus> processNonProcessedFiles() throws IxigoException {
 		_LOGGER.debug("Processing all the new files files");
 		return repoQueue.getNotProcessedDemFiles().collectList().map(list -> {
 			List<File> filesToProcess = list.stream().map(e -> new File(e.getFile_name())).collect(Collectors.toList());
@@ -76,17 +76,16 @@ public class DemFileParserImp implements DemFileParser {
 			switch (props.getParserExecutionType()) {
 			case SYNC:
 				processFiles(filesToProcess);
-				break;
+				return HttpStatus.OK;
 			default:
 				new Thread(() -> processFiles(filesToProcess)).start();
-				break;
+				return HttpStatus.ACCEPTED;
 			}
-			return true;
 		});
 	}
 
 	@Override
-	public Mono<Boolean> processAllFiles() throws IxigoException {
+	public Mono<HttpStatus> processAllFiles() throws IxigoException {
 		
 		try {	
 			// @formatter:off
@@ -103,7 +102,7 @@ public class DemFileParserImp implements DemFileParser {
 						dto.setQueued_on(DateUtils.getCurrentUtcDateTime());
 						dto.setProcess_status(DemProcessStatus.NOT_PROCESSED);
 						return repoQueue.insertOrUpdate(dto);
-					}).then(processFiles());
+					}).then(processNonProcessedFiles());
 			// @formatter:on
 		}catch(IOException e) {
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE));
@@ -134,52 +133,27 @@ public class DemFileParserImp implements DemFileParser {
 	}
 
 	@Override
-	public Mono<Map<String, Flux<SvcMapStats>>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
+	public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
 		// @formatter:off
-		/*
-		List<Mono<Tuple2<String, List<SvcMapStats>>>> tuples= new ArrayList<>();
-		for (String steamId : usersIDs) {
-			var monoUser = repoUser.findById(steamId);
-			
-			Mono<List<SvcMapStats>> userScores = monoUser.map(dto -> repoUserScore.getLastXUserScores(gamesCounter, dto.getSteam_id(), minPercPlayed))
-			.flatMap(scores -> 
-				scores.map(score -> fromUsersScoreDtoToSvcMapStata(score)).collectList()
-			);
-			
-			tuples.add(userScores.map(list -> {
-				return Tuples.of(steamId, list);
-			}));
-		}
 		
-		return Flux.fromIterable(tuples)
-				.flatMapSequential(Function.identity())
-				.collectList()
-				.map(list -> {
-					Map<String, List<SvcMapStats>> map = new HashMap<>();
-					list.forEach(t -> {
-						map.put(t.getT1(), t.getT2());
-					});
-					return map;
-				})
-				;
-				*/
-		
+		// https://stackoverflow.com/questions/70704314/how-to-return-a-reactive-flux-that-contains-a-reactive-mono-and-flux
 		return Flux.fromIterable(usersIDs)
-		.map(steamId -> {
-			Flux<SvcMapStats> scores = repoUser.findById(steamId).flatMapMany(userDto -> {
-				return repoUserScore.getLastXUserScores(gamesCounter, userDto.getSteam_id(), minPercPlayed)
-						.map(scoreDto -> fromUsersScoreDtoToSvcMapStata(userDto, scoreDto));
-			});
-			return Tuples.of(steamId, scores);
-		})
-		.collectList()
-		.map(tupleList -> {
-			Map<String, Flux<SvcMapStats>> map = new HashMap<>();
-			tupleList.forEach(tuple -> {
-				map.put(tuple.getT1(), tuple.getT2());
-			});
-			return map;
-		});
+				.flatMap(steamId -> {
+					Flux<SvcMapStats> scores = repoUser.findById(steamId).flatMapMany(userDto -> {
+						return repoUserScore.getLastXUserScores(gamesCounter, userDto.getSteam_id(), minPercPlayed)
+								.map(scoreDto -> fromUsersScoreDtoToSvcMapStata(userDto, scoreDto));
+					});
+					
+					return scores.collectList()
+						.zipWith(Mono.just(steamId))
+						.map(zip -> {
+							var stats = new SvcUserStatsForLastXGames();
+							stats.setSteamId(zip.getT2());
+							stats.setStats(zip.getT1());
+							return stats;
+						});
+				});
+		
 		// @formatter:on
 	}
 	

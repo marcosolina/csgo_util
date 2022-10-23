@@ -1,6 +1,6 @@
 package com.ixigo.demmanager.repositories.interfaces;
 
-import com.ixigo.demmanager.models.entities.Dem_process_queueDto;
+import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;

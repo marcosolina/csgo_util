@@ -4,9 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.http.HttpStatus;
+
 import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
-import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
+import com.ixigo.demmanager.models.svc.demdata.SvcUserStatsForLastXGames;
 import com.ixigo.library.errors.IxigoException;
 
 import reactor.core.publisher.Flux;
@@ -19,9 +21,9 @@ public interface DemFileParser {
      * @return
      * @throws MarcoException
      */
-    public Mono<Boolean> processFiles() throws IxigoException;
+    public Mono<HttpStatus> processNonProcessedFiles() throws IxigoException;
     
-    public Mono<Boolean> processAllFiles() throws IxigoException;
+    public Mono<HttpStatus> processAllFiles() throws IxigoException;
     
     /**
      * It returns a map of available scores
@@ -53,6 +55,6 @@ public interface DemFileParser {
      * @return
      * @throws MarcoException
      */
-    public Mono<Map<String, Flux<SvcMapStats>>> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+    public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
             BigDecimal minPercPlayed) throws IxigoException;
 }

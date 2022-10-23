@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.models.entities;
+package com.ixigo.demmanager.models.database;
 
 import java.time.LocalDateTime;
 

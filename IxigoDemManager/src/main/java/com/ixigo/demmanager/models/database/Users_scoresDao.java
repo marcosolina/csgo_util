@@ -1,7 +1,14 @@
-package com.ixigo.demmanager.models.entities;
+package com.ixigo.demmanager.models.database;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 import com.ixigo.library.dao.IxigoDao;
 
@@ -9,12 +16,14 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
 public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Users_scoresDao.class);
 
 	private static final long serialVersionUID = 1L;
+	public static final String tableName="users_scores";
 	private Users_scoresDto dto = null;
 
 	public Users_scoresDao() {
-		this.setSqlViewName("users_scores");
+		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {
 			Users_scoresDto.Fields.map,
@@ -71,8 +80,29 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 	}
 	@Override
 	public Users_scoresDto mappingFunction(Row row, RowMetadata rowMetaData) {
-		// TODO Auto-generated method stub
-		return null;
+		Users_scoresDto dto = new Users_scoresDto();
+		
+		Arrays.asList(this.getSqlFields()).forEach(field -> {
+			try {
+				Method[] m = dto.getClass().getMethods();
+				for (int j = 0; j < m.length; j++) {
+					String setterName = "set" + StringUtils.capitalize(field);
+					if (m[j].getName().equals(setterName) && m[j].getParameterTypes().length == 1) {
+						Object value = row.get(field, m[j].getParameterTypes()[0]);
+						m[j].invoke(dto, new Object[] { value });
+					}
+				}
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+				_LOGGER.error(e.getMessage());
+				if (_LOGGER.isTraceEnabled()) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
+		//dto.setFile_name(row.get(Dem_process_queueDto.Fields.file_name, String.class));
+		
+		return dto;
 	}
 
 	public Long getKills(){

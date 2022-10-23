@@ -6,8 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.r2dbc.core.DatabaseClient;
 
 import com.ixigo.demmanager.enums.DemProcessStatus;
-import com.ixigo.demmanager.models.entities.Dem_process_queueDao;
-import com.ixigo.demmanager.models.entities.Dem_process_queueDto;
+import com.ixigo.demmanager.models.database.Dem_process_queueDao;
+import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 
 import reactor.core.publisher.Flux;

@@ -1,8 +1,14 @@
-package com.ixigo.demmanager.models.entities;
+package com.ixigo.demmanager.models.database;
 
 public class DtoMapPlayedCounter {
 	private String mapName;
 	private Long count;
+
+	public DtoMapPlayedCounter(String mapName, Long count) {
+		super();
+		this.mapName = mapName;
+		this.count = count;
+	}
 
 	public String getMapName() {
 		return mapName;

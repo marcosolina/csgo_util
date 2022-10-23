@@ -25,7 +25,7 @@ import io.r2dbc.spi.RowMetadata;
  * @see https://github.com/hantsy/spring-r2dbc-sample/blob/master/docs/database-client.md
  * @see https://medium.com/zero-equals-false/dealing-with-postgres-specific-json-enum-type-and-notifier-listener-with-r2dbc-f15cc104aa10
  * @see https://www.baeldung.com/spring-data-r2dbc
- * @see https://www.baeldung.com/r2dbc
+ * @see https://www.baeldung.com/r2dbc 
  * @author Marco
  *
  */
@@ -88,9 +88,9 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 	 * @return
 	 */
 	public GenericExecuteSpec prepareSqlSelect(DatabaseClient client) {
-		StringBuffer sqlInsert = new StringBuffer();
+		StringBuffer sqlSelect = new StringBuffer();
 		StringBuffer fields = new StringBuffer();
-		sqlInsert.append("select ");
+		sqlSelect.append("select ");
 
 		if (sqlFields != null && sqlFields.length > 0) {
 			for (int i = 0; i < sqlFields.length; i++) {
@@ -99,37 +99,37 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		} else {
 			fields.append(", *");
 		}
-		sqlInsert.append(fields.substring(2));
+		sqlSelect.append(fields.substring(2));
 
-		sqlInsert.append(" from ");
-		sqlInsert.append(sqlViewName);
+		sqlSelect.append(" from ");
+		sqlSelect.append(sqlViewName);
 		if (sizeSqlWhereAndClauses() > 0) {
-			sqlInsert.append(" where ");
+			sqlSelect.append(" where ");
 			fields = new StringBuffer();
 			for (int i = 0; i < sizeSqlWhereAndClauses(); i++) {
 				var fieldName = getSqlWhereAndClauses(i);
 				fields.append(" and " + fieldName + "=:" + fieldName);
 			}
-			sqlInsert.append(fields.substring(4));
+			sqlSelect.append(fields.substring(4));
 		}
 
 		if (sizeSqlOrderFields() > 0) {
-			sqlInsert.append(" order by ");
+			sqlSelect.append(" order by ");
 			fields = new StringBuffer();
 			for (int i = 0; i < sizeSqlOrderFields(); i++) {
 				fields.append(", " + getSqlOrderFields(i));
 			}
-			sqlInsert.append(fields.substring(2));
+			sqlSelect.append(fields.substring(2));
 		} else if (getSqlKeys() != null && getSqlKeys().length > 0) {
-			sqlInsert.append(" order by ");
+			sqlSelect.append(" order by ");
 			fields = new StringBuffer();
 			for (int i = 0; i < getSqlKeys().length; i++) {
 				fields.append(", " + getSqlKeys()[i]);
 			}
-			sqlInsert.append(fields.substring(2));
+			sqlSelect.append(fields.substring(2));
 		}
 
-		GenericExecuteSpec ges = client.sql(sqlInsert.toString());
+		GenericExecuteSpec ges = client.sql(sqlSelect.toString());
 		for (int i = 0; i < sizeSqlParams(); i++) {
 			var paramValue = getSqlParams(i);
 			ges = ges.bind(i, paramValue.getClass().isEnum() ? paramValue.toString() : paramValue);
@@ -160,6 +160,39 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		}
 
 		GenericExecuteSpec ges = client.sql(sqlDelete.toString());
+		if (sqlKeys != null && sqlKeys.length > 0) {
+			var dto = this.getDtoInstance();
+			for (int i = 0; i < sqlKeys.length; i++) {
+				var paramValue = getValue(dto, sqlKeys[i]);
+				ges = ges.bind(i, paramValue.getClass().isEnum() ? paramValue.toString() : paramValue);
+			}
+		}
+
+		return ges;
+	}
+	
+	/**
+	 * It prepares the {@link GenericExecuteSpec} for the "SELECT" statement by
+	 * table key
+	 * 
+	 * @return
+	 */
+	public GenericExecuteSpec prepareSqlSelectByKey(DatabaseClient client) {
+		StringBuffer keyFields = new StringBuffer();
+		StringBuffer sqlSelect = new StringBuffer("select * from ");
+		sqlSelect.append(sqlViewName);
+
+		if (sqlKeys != null) {
+			for (int i = 0; i < sqlKeys.length; i++) {
+				keyFields.append(" and " + sqlKeys[i] + " = :" + sqlKeys[i]);
+			}
+			if (sqlKeys.length > 0) {
+				sqlSelect.append(" where ");
+				sqlSelect.append(keyFields.substring(5));
+			}
+		}
+
+		GenericExecuteSpec ges = client.sql(sqlSelect.toString());
 		if (sqlKeys != null && sqlKeys.length > 0) {
 			var dto = this.getDtoInstance();
 			for (int i = 0; i < sqlKeys.length; i++) {
@@ -364,8 +397,12 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		this.sqlKeys = sqlKeys;
 	}
 
-	public void setSqlFields(String[] sqlFields) {
+	protected void setSqlFields(String[] sqlFields) {
 		this.sqlFields = sqlFields;
+	}
+	
+	protected String[] getSqlFields() {
+		return this.sqlFields;
 	}
 
 	public boolean setSqlOrderFields(List<String> o) {

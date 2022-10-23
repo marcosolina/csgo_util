@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.ixigo.demmanager.commands.CmdStoreDemFile;
+import com.ixigo.demmanager.commands.demfilesmanager.CmdStoreDemFile;
 import com.ixigo.demmanager.services.interfaces.DemFileManager;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 

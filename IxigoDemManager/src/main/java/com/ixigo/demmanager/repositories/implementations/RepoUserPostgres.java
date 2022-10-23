@@ -5,8 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.r2dbc.core.DatabaseClient;
 
-import com.ixigo.demmanager.models.entities.UsersDao;
-import com.ixigo.demmanager.models.entities.UsersDto;
+import com.ixigo.demmanager.models.database.UsersDao;
+import com.ixigo.demmanager.models.database.UsersDto;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
 
 import reactor.core.publisher.Flux;

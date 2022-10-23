@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.commands;
+package com.ixigo.demmanager.commands.demfilesmanager;
 
 import org.springframework.core.io.Resource;
 

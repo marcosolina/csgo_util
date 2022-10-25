@@ -12,6 +12,8 @@
 	<name>IxigoIntegrationTests</name>
 	<version>2.0.0</version>
 	<description>Integration tests</description>
+	<packaging>jar</packaging>
+	
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

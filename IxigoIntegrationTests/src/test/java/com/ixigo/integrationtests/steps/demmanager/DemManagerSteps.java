@@ -2,7 +2,7 @@ package com.ixigo.integrationtests.steps.demmanager;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ixigo.integrationtests.MarcoComponent;
+import com.ixigo.integrationtests.components.MarcoComponent;
 
 import io.cucumber.java.en.Given;
 

@@ -1,13 +1,11 @@
-package com.ixigo.integrationtests.cucumberglue;
+package com.ixigo.integrationtests.configuration;
 
 import org.springframework.boot.test.context.SpringBootTest;
-
-import com.ixigo.integrationtests.SpringTestConfig;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 
 @CucumberContextConfiguration
-@SpringBootTest(classes = { SpringTestConfig.class }) 
+@SpringBootTest(classes = { BeansConfig.class }) 
 public class CucumberSpringConfiguration {
 
 }

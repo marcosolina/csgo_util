@@ -1,6 +1,4 @@
-package com.ixigo.integrationtests;
-
-import org.springframework.stereotype.Component;
+package com.ixigo.integrationtests.components;
 
 public class MarcoComponent {
 	public String hello() {

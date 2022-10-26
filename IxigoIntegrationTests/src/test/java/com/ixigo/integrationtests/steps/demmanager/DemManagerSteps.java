@@ -10,8 +10,8 @@ public class DemManagerSteps {
 	@Autowired
 	private MarcoComponent component;
 	
-	@Given("I have the url")
-	public void i_have_the_url() {
+	@Given("I have a new DEM file")
+	public void i_have_a_new_dem_file() {
 	    System.out.println(component.hello());
 	}
 }

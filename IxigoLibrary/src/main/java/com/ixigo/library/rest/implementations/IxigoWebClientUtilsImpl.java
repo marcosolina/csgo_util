@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClient.Builder;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.util.UriBuilder;
@@ -145,5 +146,10 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
 	@Override
 	public <T> Mono<ResponseEntity<T>> performGetRequestNoExceptions(Class<T> responseBodyClass, URL url, Optional<Map<String, String>> headers, Optional<Map<String, String>> queryParameters) {
 		return performRequestNoExceptions(responseBodyClass, HttpMethod.GET, url, headers, queryParameters, Optional.of(MediaType.APPLICATION_JSON), Optional.empty());
+	}
+
+	@Override
+	public Builder getWebBuilder() {
+		return this.builder;
 	}
 }

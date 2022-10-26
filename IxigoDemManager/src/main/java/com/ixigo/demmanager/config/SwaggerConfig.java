@@ -22,7 +22,7 @@ public class SwaggerConfig {
     public Docket swaggerConfiguration() {
         // @formatter:off
         return new Docket(DocumentationType.SWAGGER_2).select()
-                .apis(RequestHandlerSelectors.basePackage("com.marco.ixigo.demmanager.controllers"))
+                .apis(RequestHandlerSelectors.basePackage("com.ixigo.demmanager.controllers"))
                 .paths(PathSelectors.any())
                 .build()
                 .apiInfo(apiEndPointsInfo());

@@ -1,6 +1,5 @@
 package com.ixigo.integrationtests.steps.demmanager;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -16,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.MultipartBodyBuilder;
 import org.springframework.util.MultiValueMap;
@@ -28,21 +26,18 @@ import com.ixigo.integrationtests.components.SharedClientResponse;
 import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 
-import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import reactor.core.publisher.Mono;
 
 public class DemManagerSteps {
-	
+	private static String fileName = "auto0-20221024-194632-1820591623-de_inferno-IXI-GO__Monday_Nights.dem";
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemManagerSteps.class);
 	
 	@Autowired
 	private SharedClientResponse sharedCr;
 	@Autowired
 	private DemManagersEndPoints endPoints;
-	
-	private static String fileName = "auto0-20221024-194632-1820591623-de_inferno-IXI-GO__Monday_Nights.dem";
 	
 	
 	@Autowired
@@ -93,10 +88,5 @@ public class DemManagerSteps {
             e.printStackTrace();
             fail(e.getMessage());
         }
-	}
-
-	@And("I should receive a {int} status in the response")
-	public void i_should_receive_a_status_in_the_response(Integer int1) {
-		assertEquals(HttpStatus.valueOf(int1), sharedCr.getSharedResp().statusCode());
 	}
 }

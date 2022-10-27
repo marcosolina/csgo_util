@@ -14,7 +14,8 @@ import io.cucumber.core.options.Constants;
 @ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME,
 // @formatter:off
 value = "com.ixigo.integrationtests.configuration.cucumber,"
-		+ "com.ixigo.integrationtests.steps.demmanager")
+		+ "com.ixigo.integrationtests.steps.demmanager,"
+		+ "com.ixigo.integrationtests.steps.common")
 // @formatter:on
 public class CucumberConfigurationTest {
 // Keep the suffic "Test" in the class name otherwise it will not picked up by maven test

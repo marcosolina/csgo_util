@@ -1,4 +1,4 @@
-package com.ixigo.integrationtests.configuration;
+package com.ixigo.integrationtests.configuration.cucumber;
 
 import org.junit.platform.suite.api.ConfigurationParameter;
 import org.junit.platform.suite.api.SelectClasspathResource;
@@ -13,7 +13,7 @@ import io.cucumber.core.options.Constants;
 
 @ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME,
 // @formatter:off
-value = "com.ixigo.integrationtests.configuration,"
+value = "com.ixigo.integrationtests.configuration.cucumber,"
 		+ "com.ixigo.integrationtests.steps.demmanager")
 // @formatter:on
 public class CucumberConfigurationTest {

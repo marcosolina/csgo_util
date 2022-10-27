@@ -10,6 +10,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -23,6 +25,7 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.util.UriBuilder;
 
 import com.ixigo.integrationtests.components.MarcoComponent;
+import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 
 import io.cucumber.java.en.And;
@@ -30,8 +33,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 
 public class DemManagerSteps {
+	
+	private static final Logger _LOGGER = LoggerFactory.getLogger(DemManagerSteps.class);
+	
 	@Autowired
 	private MarcoComponent component;
+	@Autowired
+	private DemManagersEndPoints endPoints;
 	
 	private static String fileName = "auto0-20221024-194632-1820591623-de_inferno-IXI-GO__Monday_Nights.dem";
 	private ClientResponse sharedResp;
@@ -61,7 +69,9 @@ public class DemManagerSteps {
 
             MultiValueMap<String, HttpEntity<?>> parts = builder.build();
 
-            URL url = new URL("http://localhost:8080/demmanager/files");
+            URL url = new URL(endPoints.getPostDemFile());
+            _LOGGER.debug(url.toString());
+            
             // @formatter:off
             sharedResp = webClient.getWebBuilder().build().post().uri(uriBuilder -> {
                     UriBuilder ub = uriBuilder

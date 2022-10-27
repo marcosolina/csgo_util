@@ -24,25 +24,26 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.util.UriBuilder;
 
-import com.ixigo.integrationtests.components.MarcoComponent;
+import com.ixigo.integrationtests.components.SharedClientResponse;
 import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import reactor.core.publisher.Mono;
 
 public class DemManagerSteps {
 	
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemManagerSteps.class);
 	
 	@Autowired
-	private MarcoComponent component;
+	private SharedClientResponse sharedCr;
 	@Autowired
 	private DemManagersEndPoints endPoints;
 	
 	private static String fileName = "auto0-20221024-194632-1820591623-de_inferno-IXI-GO__Monday_Nights.dem";
-	private ClientResponse sharedResp;
+	
 	
 	@Autowired
 	private IxigoWebClientUtils webClient;
@@ -73,7 +74,7 @@ public class DemManagerSteps {
             _LOGGER.debug(url.toString());
             
             // @formatter:off
-            sharedResp = webClient.getWebBuilder().build().post().uri(uriBuilder -> {
+            Mono<ClientResponse> response = webClient.getWebBuilder().build().post().uri(uriBuilder -> {
                     UriBuilder ub = uriBuilder
                             .scheme(url.getProtocol())
                             .host(url.getHost())
@@ -84,10 +85,10 @@ public class DemManagerSteps {
                 })
                 .contentType(MediaType.MULTIPART_FORM_DATA)
                 .bodyValue(parts)
-                .exchange()
-                .block();
+                .exchangeToMono(Mono::just);
             // @formatter:on
-            assertNotNull(sharedResp);
+            sharedCr.setSharedResp(response);
+            assertNotNull(sharedCr.getSharedResp());
         } catch (IOException e) {
             e.printStackTrace();
             fail(e.getMessage());
@@ -96,6 +97,6 @@ public class DemManagerSteps {
 
 	@And("I should receive a {int} status in the response")
 	public void i_should_receive_a_status_in_the_response(Integer int1) {
-		assertEquals(HttpStatus.valueOf(int1), sharedResp.statusCode());
+		assertEquals(HttpStatus.valueOf(int1), sharedCr.getSharedResp().statusCode());
 	}
 }

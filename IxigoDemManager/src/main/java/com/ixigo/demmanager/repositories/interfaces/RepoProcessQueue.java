@@ -28,4 +28,12 @@ public interface RepoProcessQueue {
 	 * @return
 	 */
 	public Mono<Dem_process_queueDto> findById(String absoluteFileName);
+	
+	/**
+	 * It removes the file from the queue
+	 * 
+	 * @param absoluteFileName
+	 * @return
+	 */
+	public Mono<Boolean> removeFromQueueById(String absoluteFileName);
 }

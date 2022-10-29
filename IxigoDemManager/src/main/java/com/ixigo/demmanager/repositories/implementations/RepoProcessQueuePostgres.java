@@ -54,7 +54,6 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 				return dao.prepareSqlInsert(client).then().thenReturn(true);
 			});
 		// @formatter:on
-
 	}
 
 	@Override
@@ -66,6 +65,26 @@ public class RepoProcessQueuePostgres implements RepoProcessQueue {
 		dao.addSqlParams(absoluteFileName);
 
 		return dao.prepareSqlSelect(client).map(dao::mappingFunction).one();
+	}
+
+	@Override
+	public Mono<Boolean> removeFromQueueById(String absoluteFileName) {
+		_LOGGER.trace("Inside RepoProcessQueuePostgres.removeFromQueueById");
+		
+		Dem_process_queueDao dao = new Dem_process_queueDao();
+		dao.setFile_name(absoluteFileName);
+
+		// @formatter:off
+		return findById(absoluteFileName)
+			.switchIfEmpty(Mono.just(new Dem_process_queueDto()))
+			.flatMap(dto -> {
+				// Delete
+				if (!"".equals(dto.getFile_name())) {
+					return dao.prepareSqlDeleteByKey(client).then().thenReturn(true);
+				}
+				return Mono.just(false);
+			});
+		// @formatter:on
 	}
 
 }

@@ -159,6 +159,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 			}
 		}
 
+		_LOGGER.debug(sqlDelete.toString());
 		GenericExecuteSpec ges = client.sql(sqlDelete.toString());
 		if (sqlKeys != null && sqlKeys.length > 0) {
 			var dto = this.getDtoInstance();

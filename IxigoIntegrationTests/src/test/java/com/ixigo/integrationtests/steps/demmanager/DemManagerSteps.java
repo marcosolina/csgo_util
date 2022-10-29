@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.MultipartBodyBuilder;
@@ -146,11 +147,11 @@ public class DemManagerSteps {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@When("That I perform a GET to the dem files manager")
 	public void that_i_perform_a_get_to_the_dem_files_manager() {
 		try {
-			URL url = new URL(endPoints.getGetAllDemFile());
+			URL url = new URL(endPoints.getGetAllDemFiles());
 			_LOGGER.debug(url.toString());
 			var resp = webClient.performGetRequestNoExceptions(RestGetFilesResponse.class, url, Optional.empty(), Optional.empty()).block();
 			assertNotNull(resp);
@@ -160,11 +161,27 @@ public class DemManagerSteps {
 			fail(e.getMessage());
 		}
 	}
+
 	@Then("I should have multiple files in the payload")
 	public void i_should_have_multiple_files_in_the_payload() {
 		var resp = sharedCr.getSharedResp(RestGetFilesResponse.class);
 		assertNotNull(resp.getBody());
 		assertNotNull(resp.getBody().getFiles());
 		assertNotEquals(0, resp.getBody().getFiles().size());
+	}
+
+	@When("I perform a DELETE to the dem files manager")
+	@Then("I perform another DELETE to the dem files manager")
+	public void i_perform_a_delete_to_the_dem_files_manager() {
+		try {
+			URL url = new URL(endPoints.getDeleteDemFileFromQueue(fileName));
+			_LOGGER.debug(url.toString());
+			var resp = webClient.performRequestNoExceptions(Void.class, HttpMethod.DELETE, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()).block();
+			assertNotNull(resp);
+			sharedCr.setSharedResp(resp);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
 	}
 }

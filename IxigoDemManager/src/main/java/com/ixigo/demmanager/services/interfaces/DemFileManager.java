@@ -14,27 +14,36 @@ import reactor.core.publisher.Mono;
 
 public interface DemFileManager {
 	/**
-     * It saves the file and return the path of the saved file
-     * 
-     * @param file
-     * @return
-     * @throws MarcoException
-     */
-    public Mono<Path> store(MultipartFile file) throws IxigoException;
+	 * It saves the file and return the path of the saved file
+	 * 
+	 * @param file
+	 * @return
+	 * @throws MarcoException
+	 */
+	public Mono<Path> store(MultipartFile file) throws IxigoException;
 
-    /**
-     * It returns the file
-     * 
-     * @param filename
-     * @return
-     */
-    public Mono<Resource> load(String filename) throws IxigoException;
+	/**
+	 * It returns the file
+	 * 
+	 * @param filename
+	 * @return
+	 */
+	public Mono<Resource> load(String filename) throws IxigoException;
 
-    /**
-     * It returns a list of available Paths
-     * 
-     * @return
-     * @throws MarcoException
-     */
-    public Mono<Map<String, List<SvcFileInfo>>> loadAllFileNames() throws IxigoException;
+	/**
+	 * It removes the file from the queue
+	 * 
+	 * @param filename
+	 * @return
+	 * @throws IxigoException
+	 */
+	public Mono<Boolean> removeFromQueue(String filename) throws IxigoException;
+
+	/**
+	 * It returns a list of available Paths
+	 * 
+	 * @return
+	 * @throws MarcoException
+	 */
+	public Mono<Map<String, List<SvcFileInfo>>> loadAllFileNames() throws IxigoException;
 }

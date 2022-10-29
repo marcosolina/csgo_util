@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 
+import com.ixigo.demmanager.commands.demfilesmanager.CmdRemoveDemFileFromQueue;
 import com.ixigo.demmanager.commands.demfilesmanager.CmdGetDemFile;
 import com.ixigo.demmanager.commands.demfilesmanager.CmdGetDemFilesList;
 import com.ixigo.demmanager.commands.demfilesmanager.CmdStoreDemFile;
@@ -40,6 +42,12 @@ public class ControllerDemFilesManager {
 	public Mono<ResponseEntity<Resource>> getFile(@PathVariable String filename) {
 		_LOGGER.trace("Inside DemFilesManager.getFile");
 		return mediator.send(new CmdGetDemFile(filename));
+	}
+	
+	@DeleteMapping("/{filename:.+}")
+	public Mono<ResponseEntity<Void>> removeFileFromQueue(@PathVariable String filename) {
+		_LOGGER.trace("Inside DemFilesManager.removeFileFromQueue");
+		return mediator.send(new CmdRemoveDemFileFromQueue(filename));
 	}
 
 	@GetMapping()

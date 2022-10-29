@@ -8,7 +8,10 @@ import org.springframework.context.annotation.Configuration;
 public class DemManagersEndPoints {
 	private String postDemFile;
 	private String getDemFile;
-	private String getAllDemFile;
+	private String getAllDemFiles;
+	private String deleteDemFileFromQueue;
+	private String postParseQueuedFiles;
+	private String postParseAllFiles;
 
 	public String getPostDemFile() {
 		return postDemFile;
@@ -26,11 +29,37 @@ public class DemManagersEndPoints {
 		this.getDemFile = getDemFile;
 	}
 
-	public String getGetAllDemFile() {
-		return getAllDemFile;
+	public String getGetAllDemFiles() {
+		return getAllDemFiles;
 	}
 
-	public void setGetAllDemFile(String getAllDemFile) {
-		this.getAllDemFile = getAllDemFile;
+	public void setGetAllDemFiles(String getAllDemFiles) {
+		this.getAllDemFiles = getAllDemFiles;
 	}
+
+	public String getDeleteDemFileFromQueue(String fileName) {
+		return String.format(deleteDemFileFromQueue, fileName);
+	}
+
+	public void setDeleteDemFileFromQueue(String deleteDemFileFromQueue) {
+		this.deleteDemFileFromQueue = deleteDemFileFromQueue;
+	}
+
+	public String getPostParseQueuedFiles() {
+		return postParseQueuedFiles;
+	}
+
+	public void setPostParseQueuedFiles(String postParseQueuedFiles) {
+		this.postParseQueuedFiles = postParseQueuedFiles;
+	}
+
+	public String getPostParseAllFiles() {
+		return postParseAllFiles;
+	}
+
+	public void setPostParseAllFiles(String postParseAllFiles) {
+		this.postParseAllFiles = postParseAllFiles;
+	}
+
+	
 }

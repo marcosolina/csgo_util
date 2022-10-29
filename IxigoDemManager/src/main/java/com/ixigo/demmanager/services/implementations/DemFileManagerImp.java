@@ -161,4 +161,11 @@ public class DemFileManagerImp implements DemFileManager {
 		}).subscribeOn(Schedulers.boundedElastic());
 	}
 
+	@Override
+	public Mono<Boolean> removeFromQueue(String filename) throws IxigoException {
+		String folderName = getFolderFromFileName(filename);
+		Path file = props.getRootFolder().resolve(folderName).resolve(filename);
+		return repo.removeFromQueueById(file.toFile().getAbsolutePath());
+	}
+
 }

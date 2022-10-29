@@ -68,7 +68,7 @@ public class DemFileParserImp implements DemFileParser {
 	private IxigoMessageResource msgSource;
 
 	@Override
-	public Mono<HttpStatus> processNonProcessedFiles() throws IxigoException {
+	public Mono<HttpStatus> processQueuedFiles() throws IxigoException {
 		_LOGGER.debug("Processing all the new files files");
 		return repoQueue.getNotProcessedDemFiles().collectList().map(list -> {
 			List<File> filesToProcess = list.stream().map(e -> new File(e.getFile_name())).collect(Collectors.toList());
@@ -85,7 +85,7 @@ public class DemFileParserImp implements DemFileParser {
 	}
 
 	@Override
-	public Mono<HttpStatus> processAllFiles() throws IxigoException {
+	public Mono<HttpStatus> queueAndProcessNewFiles() throws IxigoException {
 		
 		try {	
 			// @formatter:off
@@ -102,7 +102,7 @@ public class DemFileParserImp implements DemFileParser {
 						dto.setQueued_on(DateUtils.getCurrentUtcDateTime());
 						dto.setProcess_status(DemProcessStatus.NOT_PROCESSED);
 						return repoQueue.insertOrUpdate(dto);
-					}).then(processNonProcessedFiles());
+					}).then(processQueuedFiles());
 			// @formatter:on
 		}catch(IOException e) {
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE));

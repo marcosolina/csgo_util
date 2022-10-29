@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.demmanager.commands.demfilesparser.CmdProcessAllNewFiles;
-import com.ixigo.demmanager.commands.demfilesparser.CmdProcessNonProcessedFiles;
+import com.ixigo.demmanager.commands.demfilesparser.CmdQueueAndProcessFiles;
+import com.ixigo.demmanager.commands.demfilesparser.CmdProcessQueuedFiles;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import io.swagger.annotations.ApiOperation;
@@ -23,17 +23,17 @@ public class ControllerDemFilesParser {
 	@Autowired
 	private WebMediator mediator;
 
-	@PostMapping
-	@ApiOperation(value = "It will trigger the scan process for new .dem files")
-	public Mono<ResponseEntity<Void>> processNonProcessedFiles() {
+	@PostMapping("/queued")
+	@ApiOperation(value = "It will trigger the scan process for the already queued .dem files")
+	public Mono<ResponseEntity<Void>> processQueuedFiles() {
 		_LOGGER.trace("Inside ControllerDemFilesParser.processNewFiles");
-		return mediator.send(new CmdProcessNonProcessedFiles());
+		return mediator.send(new CmdProcessQueuedFiles());
 	}
 
 	@PostMapping("/all")
-	@ApiOperation(value = "It will trigger the scan process for all the new .dem files")
+	@ApiOperation(value = "It will queue new dem files and process the queue")
 	public Mono<ResponseEntity<Void>> processAllNewFiles() {
 		_LOGGER.trace("Inside ControllerDemFilesParser.processAllNewFiles");
-		return mediator.send(new CmdProcessAllNewFiles());
+		return mediator.send(new CmdQueueAndProcessFiles());
 	}
 }

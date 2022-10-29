@@ -6,24 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.ixigo.demmanager.commands.demfilesparser.CmdProcessAllNewFiles;
+import com.ixigo.demmanager.commands.demfilesparser.CmdProcessQueuedFiles;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
 @Component
-public class CmdProcessAllNewFilesHandler implements WebCommandHandler<CmdProcessAllNewFiles, Void> {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(CmdProcessAllNewFilesHandler.class);
+public class CmdProcessQueuedFilesHandler implements WebCommandHandler<CmdProcessQueuedFiles, Void> {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(CmdProcessQueuedFilesHandler.class);
 
 	@Autowired
 	private DemFileParser service;
 
 	@Override
-	public Mono<ResponseEntity<Void>> handle(CmdProcessAllNewFiles request) {
-		_LOGGER.trace("Inside CmdProcessAllNewFilesHandler.handle");
+	public Mono<ResponseEntity<Void>> handle(CmdProcessQueuedFiles request) {
+		_LOGGER.trace("Inside CmdProcessNewFilesHandler.handle");
 
-		return service.processAllFiles().map(status -> new ResponseEntity<>(status));
+		return service.processQueuedFiles().map(status -> new ResponseEntity<>(status));
 	}
 
 }

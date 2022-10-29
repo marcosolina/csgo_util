@@ -21,9 +21,9 @@ public interface DemFileParser {
      * @return
      * @throws MarcoException
      */
-    public Mono<HttpStatus> processNonProcessedFiles() throws IxigoException;
+    public Mono<HttpStatus> processQueuedFiles() throws IxigoException;
     
-    public Mono<HttpStatus> processAllFiles() throws IxigoException;
+    public Mono<HttpStatus> queueAndProcessNewFiles() throws IxigoException;
     
     /**
      * It returns a map of available scores

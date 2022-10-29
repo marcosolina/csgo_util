@@ -1,6 +1,7 @@
 package com.ixigo.integrationtests.steps.demmanager;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -8,8 +9,10 @@ import static org.junit.jupiter.api.Assertions.fail;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,12 +28,14 @@ import org.springframework.util.ResourceUtils;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.util.UriBuilder;
 
+import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestGetFilesResponse;
 import com.ixigo.integrationtests.components.SharedResponseEntity;
 import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
+import io.cucumber.java.en.When;
 
 public class DemManagerSteps {
 	private static String fileName = "auto0-20221024-194632-1820591623-de_inferno-IXI-GO__Monday_Nights.dem";
@@ -94,7 +99,7 @@ public class DemManagerSteps {
 		}
 	}
 
-	@Then("That I perform a GET with the filename")
+	@When("I perform a GET with the filename")
 	public void i_perform_a_get_with_the_filename() {
 		try {
 			URL url = new URL(endPoints.getGetDemFile(fileName));
@@ -133,13 +138,33 @@ public class DemManagerSteps {
 	@Then("I should have the file in the payload")
 	public void i_should_have_the_file_in_the_payload() {
 		try {
-			@SuppressWarnings("unchecked")
-			ResponseEntity<byte[]> response = (ResponseEntity<byte[]>) sharedCr.getSharedResp();
+			ResponseEntity<byte[]> response = sharedCr.getSharedResp(byte[].class);
 			byte[] bytes = response.getBody();
 			assertEquals(Files.readAllBytes(ResourceUtils.getFile(demFileFolder + fileName).toPath()).length, bytes.length);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
 		}
+	}
+	
+	@When("That I perform a GET to the dem files manager")
+	public void that_i_perform_a_get_to_the_dem_files_manager() {
+		try {
+			URL url = new URL(endPoints.getGetAllDemFile());
+			_LOGGER.debug(url.toString());
+			var resp = webClient.performGetRequestNoExceptions(RestGetFilesResponse.class, url, Optional.empty(), Optional.empty()).block();
+			assertNotNull(resp);
+			sharedCr.setSharedResp(resp);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	@Then("I should have multiple files in the payload")
+	public void i_should_have_multiple_files_in_the_payload() {
+		var resp = sharedCr.getSharedResp(RestGetFilesResponse.class);
+		assertNotNull(resp.getBody());
+		assertNotNull(resp.getBody().getFiles());
+		assertNotEquals(0, resp.getBody().getFiles().size());
 	}
 }

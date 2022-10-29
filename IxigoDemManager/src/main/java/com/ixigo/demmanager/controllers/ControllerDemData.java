@@ -16,10 +16,10 @@ import com.ixigo.demmanager.commands.demdata.CmdGetMapPlayedCount;
 import com.ixigo.demmanager.commands.demdata.CmdGetScoreType;
 import com.ixigo.demmanager.commands.demdata.CmdGetUsers;
 import com.ixigo.demmanager.commands.demdata.CmdGetUsersLastScores;
-import com.ixigo.demmanager.models.rest.demdata.RestMapsPlayed;
-import com.ixigo.demmanager.models.rest.demdata.RestScoreTypes;
-import com.ixigo.demmanager.models.rest.demdata.RestUsers;
-import com.ixigo.demmanager.models.rest.demdata.RestUsersScores;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestMapsPlayed;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import io.swagger.annotations.ApiOperation;

@@ -17,7 +17,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import com.ixigo.demmanager.commands.demfilesmanager.CmdGetDemFile;
 import com.ixigo.demmanager.commands.demfilesmanager.CmdGetDemFilesList;
 import com.ixigo.demmanager.commands.demfilesmanager.CmdStoreDemFile;
-import com.ixigo.demmanager.models.rest.demfilesmanager.RestGetFilesResponse;
+import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestGetFilesResponse;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import reactor.core.publisher.Mono;

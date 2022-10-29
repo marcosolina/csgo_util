@@ -15,6 +15,12 @@ Feature: DEM files
 
   @getdemfile
   Scenario: Getting a DEM file
-    Given That I perform a GET with the filename
+    When I perform a GET with the filename
     And I should receive a 200 status in the response
     And I should have the file in the payload
+
+  @getalldemfiles
+  Scenario: Getting all DEM files
+    When That I perform a GET to the dem files manager
+    Then I should receive a 200 status in the response
+    And I should have multiple files in the payload

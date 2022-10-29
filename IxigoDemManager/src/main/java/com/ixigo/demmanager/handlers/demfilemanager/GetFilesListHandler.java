@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 
 import com.ixigo.demmanager.commands.demfilesmanager.CmdGetDemFilesList;
 import com.ixigo.demmanager.mappers.RestMapper;
-import com.ixigo.demmanager.models.rest.demfilesmanager.RestGetFilesResponse;
 import com.ixigo.demmanager.services.interfaces.DemFileManager;
+import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestGetFilesResponse;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;

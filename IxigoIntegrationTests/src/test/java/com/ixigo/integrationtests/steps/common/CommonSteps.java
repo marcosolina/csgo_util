@@ -16,7 +16,7 @@ public class CommonSteps {
 	
 	@And("I should receive a {int} status in the response")
 	public void i_should_receive_a_status_in_the_response(Integer int1) {
-		assertNotNull(sharedCr.getSharedResp());
-		assertEquals(HttpStatus.valueOf(int1), sharedCr.getSharedResp().getStatusCode());
+		assertNotNull(sharedCr.getSharedResp(Object.class));
+		assertEquals(HttpStatus.valueOf(int1), sharedCr.getSharedResp(Object.class).getStatusCode());
 	}
 }

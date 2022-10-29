@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class DemManagersEndPoints {
 	private String postDemFile;
 	private String getDemFile;
+	private String getAllDemFile;
 
 	public String getPostDemFile() {
 		return postDemFile;
@@ -25,4 +26,11 @@ public class DemManagersEndPoints {
 		this.getDemFile = getDemFile;
 	}
 
+	public String getGetAllDemFile() {
+		return getAllDemFile;
+	}
+
+	public void setGetAllDemFile(String getAllDemFile) {
+		this.getAllDemFile = getAllDemFile;
+	}
 }

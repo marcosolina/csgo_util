@@ -3,7 +3,7 @@ package com.ixigo.demmanager.commands.demdata;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.ixigo.demmanager.models.rest.demdata.RestUsersScores;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 
 public class CmdGetUsersLastScores implements WebCommandRequest<RestUsersScores> {

@@ -5,14 +5,14 @@ import java.util.Map;
 
 import org.mapstruct.Mapper;
 
-import com.ixigo.demmanager.models.rest.demdata.RestMapPlayed;
-import com.ixigo.demmanager.models.rest.demdata.RestMapStats;
-import com.ixigo.demmanager.models.rest.demdata.RestUser;
-import com.ixigo.demmanager.models.rest.demfilesmanager.RestFileInfo;
 import com.ixigo.demmanager.models.svc.SvcFileInfo;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestMapPlayed;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
+import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestFileInfo;
 
 @Mapper(componentModel = "spring")
 public interface RestMapper {

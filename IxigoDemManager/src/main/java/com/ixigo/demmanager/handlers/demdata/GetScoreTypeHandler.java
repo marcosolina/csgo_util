@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.ixigo.demmanager.commands.demdata.CmdGetScoreType;
-import com.ixigo.demmanager.models.rest.demdata.RestScoreTypes;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;

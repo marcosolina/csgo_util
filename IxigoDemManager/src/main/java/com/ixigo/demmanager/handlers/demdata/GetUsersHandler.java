@@ -9,8 +9,8 @@ import org.springframework.stereotype.Component;
 
 import com.ixigo.demmanager.commands.demdata.CmdGetUsers;
 import com.ixigo.demmanager.mappers.RestMapper;
-import com.ixigo.demmanager.models.rest.demdata.RestUsers;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;

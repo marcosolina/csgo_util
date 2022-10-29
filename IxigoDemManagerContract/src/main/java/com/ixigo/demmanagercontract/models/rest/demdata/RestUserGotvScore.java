@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.models.rest.demdata;
+package com.ixigo.demmanagercontract.models.rest.demdata;
 
 public class RestUserGotvScore {
 	private String userName;

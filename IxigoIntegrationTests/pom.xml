@@ -15,6 +15,7 @@
 	
 	<properties>
 		<cucumber.version>7.5.0</cucumber.version>
+		<contract.demmanager>2.0.0</contract.demmanager>
 	</properties>
 	
 	<dependencies>
@@ -48,6 +49,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
+		</dependency>
+		
+		<!-- Contracts -->
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoDemManagerContract</artifactId>
+			<version>${contract.demmanager}</version>
 		</dependency>
 	</dependencies>
 

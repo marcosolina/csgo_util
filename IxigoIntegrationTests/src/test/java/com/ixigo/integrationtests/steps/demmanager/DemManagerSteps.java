@@ -32,6 +32,7 @@ import org.springframework.web.util.UriBuilder;
 import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestGetFilesResponse;
 import com.ixigo.integrationtests.components.SharedResponseEntity;
 import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
+import com.ixigo.integrationtests.constants.DemFiles;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 
 import io.cucumber.java.en.Given;
@@ -39,8 +40,6 @@ import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
 public class DemManagerSteps {
-	private static String fileName = "auto0-20221024-194632-1820591623-de_inferno-IXI-GO__Monday_Nights.dem";
-	private static String demFileFolder = "classpath:dem/";
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemManagerSteps.class);
 
 	@Autowired
@@ -54,7 +53,7 @@ public class DemManagerSteps {
 	@Given("I have a new DEM file")
 	public void i_have_a_new_dem_file() {
 		try {
-			assertTrue(ResourceUtils.getFile(demFileFolder + fileName).exists());
+			assertTrue(ResourceUtils.getFile(DemFiles.FOLDER + "/" + DemFiles.FILE_1).exists());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			fail("No dem file");
@@ -65,7 +64,7 @@ public class DemManagerSteps {
 	public void i_post_the_file_to_the_service() {
 
 		try {
-			File file = ResourceUtils.getFile(demFileFolder + fileName);
+			File file = ResourceUtils.getFile(DemFiles.FOLDER + "/" + DemFiles.FILE_1);
 			Resource resource = new UrlResource(file.toURI());
 
 			MultipartBodyBuilder builder = new MultipartBodyBuilder();
@@ -103,7 +102,7 @@ public class DemManagerSteps {
 	@When("I perform a GET with the filename")
 	public void i_perform_a_get_with_the_filename() {
 		try {
-			URL url = new URL(endPoints.getGetDemFile(fileName));
+			URL url = new URL(endPoints.getGetDemFile(DemFiles.FILE_1));
 			_LOGGER.debug(url.toString());
 
 			final int size = 16 * 1024 * 1024 * 100;
@@ -141,7 +140,7 @@ public class DemManagerSteps {
 		try {
 			ResponseEntity<byte[]> response = sharedCr.getSharedResp(byte[].class);
 			byte[] bytes = response.getBody();
-			assertEquals(Files.readAllBytes(ResourceUtils.getFile(demFileFolder + fileName).toPath()).length, bytes.length);
+			assertEquals(Files.readAllBytes(ResourceUtils.getFile(DemFiles.FOLDER + "/" + DemFiles.FILE_1).toPath()).length, bytes.length);
 		} catch (IOException e) {
 			e.printStackTrace();
 			fail(e.getMessage());
@@ -174,7 +173,7 @@ public class DemManagerSteps {
 	@Then("I perform another DELETE to the dem files manager")
 	public void i_perform_a_delete_to_the_dem_files_manager() {
 		try {
-			URL url = new URL(endPoints.getDeleteDemFileFromQueue(fileName));
+			URL url = new URL(endPoints.getDeleteDemFileFromQueue(DemFiles.FILE_1));
 			_LOGGER.debug(url.toString());
 			var resp = webClient.performRequestNoExceptions(Void.class, HttpMethod.DELETE, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty()).block();
 			assertNotNull(resp);

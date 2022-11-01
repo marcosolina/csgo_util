@@ -5,11 +5,11 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -46,6 +46,8 @@ import com.ixigo.library.utils.DateUtils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuples;
 
 public class DemFileParserImp implements DemFileParser {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemFileParserImp.class);
@@ -69,25 +71,28 @@ public class DemFileParserImp implements DemFileParser {
 
 	@Override
 	public Mono<HttpStatus> processQueuedFiles() throws IxigoException {
-		_LOGGER.debug("Processing all the new files files");
-		return repoQueue.getNotProcessedDemFiles().collectList().map(list -> {
+		_LOGGER.trace("Inside DemFileParserImp.processQueuedFiles");
+		return repoQueue.getNotProcessedDemFiles().collectList().flatMap(list -> {
 			List<File> filesToProcess = list.stream().map(e -> new File(e.getFile_name())).collect(Collectors.toList());
-
+			
 			switch (props.getParserExecutionType()) {
 			case SYNC:
-				processFiles(filesToProcess);
-				return HttpStatus.OK;
+				return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
+			case ASYNC:
+				new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
+					_LOGGER.debug("Async queue process completed");
+				})).start();
+				return Mono.just(HttpStatus.ACCEPTED);
 			default:
-				new Thread(() -> processFiles(filesToProcess)).start();
-				return HttpStatus.ACCEPTED;
+				return Mono.just(HttpStatus.ACCEPTED);
 			}
 		});
 	}
 
 	@Override
 	public Mono<HttpStatus> queueAndProcessNewFiles() throws IxigoException {
-		
-		try {	
+
+		try {
 			// @formatter:off
 			return Flux.fromStream(Files.walk(props.getRootFolder()))
 					.filter(path -> path.toFile().getName().endsWith(".dem"))
@@ -104,7 +109,7 @@ public class DemFileParserImp implements DemFileParser {
 						return repoQueue.insertOrUpdate(dto);
 					}).then(processQueuedFiles());
 			// @formatter:on
-		}catch(IOException e) {
+		} catch (IOException e) {
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE));
 		}
 	}
@@ -156,13 +161,13 @@ public class DemFileParserImp implements DemFileParser {
 		
 		// @formatter:on
 	}
-	
-	
 
-	public Mono<SvcMapStats> generateMapStatFromFile(File f) throws IxigoException {
+	private Mono<SvcMapStats> generateMapStatFromFile(File f) throws IxigoException {
 		return svcDemProcessor.processDemFile(f).collectList().map(list -> {
 			SvcMapStats ms = setMapNameAndTime(f);
-			ms.setUsersStats(list);
+			if(list != null && !list.isEmpty()) {
+				ms.setUsersStats(list);
+			}
 			return ms;
 		});
 	}
@@ -182,60 +187,108 @@ public class DemFileParserImp implements DemFileParser {
 		return ms;
 	}
 
-	private void processFiles(List<File> files) {
-		AtomicInteger count = new AtomicInteger(0);
-		files.parallelStream().forEach(f -> {
-			// files.stream().forEach(f -> {
-			try {
-				Mono<SvcMapStats> monoStats = generateMapStatFromFile(f);
-
-				monoStats.flatMap(stats -> {
-					if (stats.getUsersStats() != null) {
-						AtomicBoolean ok = new AtomicBoolean(true);
-						stats.getUsersStats().stream().forEach(u -> {
-							try {
-								UsersDto user = new UsersDto();
-								user.setSteam_id(u.getSteamID());
-								user.setUser_name(u.getUserName());
-
-								Users_scoresDto userScore = fromUserMapStatsToEntityUserScore(stats, u);
-								userScore.setFile_name(f.getAbsolutePath());
-
-								var m1 = repoUser.insertUpdateUser(user);
-								var m2 = repoUserScore.insertUpdateUserScore(userScore);
-								Mono.zip(m1, m2).then();
-							} catch (Exception e) {
-								ok.set(false);
-								String message = String.format("Problem while reading the values extracted from the file: %s", f.getAbsoluteFile());
-								_LOGGER.error(message);
-
-								var m1 = setFileProcessed(f, DemProcessStatus.PROCESS_FAILED);
-								var m2 = notificationService.sendParsingCompleteNotification("Dem Manager", message);
-								Mono.zip(m1, m2).then();
-							}
-						});
-						if (ok.get()) {
-							count.incrementAndGet();
-							setFileProcessed(f, DemProcessStatus.PROCESSED).then();
-						}
-					} else {
-						count.incrementAndGet();
-						f.delete();
-						setFileProcessed(f, DemProcessStatus.DELETED).then();
-					}
-					return null;
+	private Mono<Void> processFiles(List<File> files) {
+		AtomicInteger countProcessedFiles = new AtomicInteger(0);
+		// @formatter:off
+		return Flux.fromIterable(files)
+			.parallel()
+			.runOn(Schedulers.boundedElastic())
+			.flatMap(f -> { // Extracting info from DEM file 
+				return generateMapStatFromFile(f).map(stats -> {
+					return Tuples.of(f.getAbsolutePath(), stats);
+				})
+				.onErrorResume(error -> {
+					_LOGGER.error(String.format("Error while processing %s, msg: %s", f.getAbsolutePath(), error.getMessage()));
+					return Mono.just(Tuples.of(f.getAbsolutePath(), setMapNameAndTime(f)));
 				});
-
-			} catch (IxigoException e) {
-				String message = String.format("Could not process DEM file: %s", f.getAbsoluteFile());
-				_LOGGER.error(message);
-
-				var m2 = notificationService.sendParsingCompleteNotification("Dem Manager", message);
-				var m1 = setFileProcessed(f, DemProcessStatus.PROCESS_FAILED);
-				Mono.zip(m1, m2).then();
-			}
-		});
-		notificationService.sendParsingCompleteNotification("Dem Manager", String.format("Processed %d files, %d were successfully processed", files.size(), count.get())).then();
+			})
+			.sequential()// Avoiding running out of DB connections
+			.map(tuple -> { // Checking if the DEM file had info in it
+				String fileName = tuple.getT1();
+				SvcMapStats stats = tuple.getT2();
+				boolean canProcessTheFile = stats.getUsersStats() != null; 
+				return Tuples.of(canProcessTheFile, fileName, stats);
+			})
+			.map(tuple -> { // Map the DEM file info into appropriate objects
+				boolean canProcess = tuple.getT1();
+				String fileName = tuple.getT2();
+				List<Users_scoresDto> scoreList = new ArrayList<Users_scoresDto>();
+				List<UsersDto> usersList = new ArrayList<UsersDto>();
+				
+				if(canProcess) {
+					SvcMapStats stats = tuple.getT3();
+					stats.getUsersStats().forEach(score -> {
+						UsersDto user = new UsersDto();
+						user.setSteam_id(score.getSteamID());
+						user.setUser_name(score.getUserName());
+						
+						Users_scoresDto userScore = fromUserMapStatsToEntityUserScore(stats, score);
+						userScore.setFile_name(fileName);
+						
+						scoreList.add(userScore);
+						usersList.add(user);
+					});
+				}
+				
+				return Tuples.of(canProcess, fileName, usersList, scoreList);
+			})
+			.flatMap(tuple -> { // Saving the objects into the DB
+				boolean canProcess = tuple.getT1();
+				String fileName = tuple.getT2();
+				if(canProcess) {
+					List<Mono<?>> monos = new ArrayList<>();
+					tuple.getT3().forEach(user ->{
+						monos.add(repoUser.insertUpdateUser(user));
+					});
+					tuple.getT4().forEach(score -> {
+						monos.add(repoUserScore.insertUpdateUserScore(score));
+					});
+					
+					/*
+					 * I was running out of DB connections, I did not manage
+					 * to understand how to re-use the connections / close them
+					 * properly... Hence I run them in separate groups...
+					 * TODO investigate further when I have time
+					 */
+					Mono<?> mono = monos.get(0);
+					for(int i = 1; i < monos.size(); i++) {
+						mono = mono.then(monos.get(i));
+					}
+					return mono.thenReturn(Tuples.of(fileName, true));
+					
+					/*
+					return Mono.zip(monos, arr -> {
+						return true;
+					}).thenReturn(Tuples.of(fileName, true));
+					*/
+				}
+				
+				return Mono.just(Tuples.of(fileName, false));
+			})
+			.flatMap(tuple -> { // Updating the queue
+				boolean statusOk = tuple.getT2();
+				String fileName = tuple.getT1();
+				File f = new File(fileName);
+				
+				if(statusOk) {
+					countProcessedFiles.incrementAndGet();
+				}else {
+					f.delete();
+				}
+				return setFileProcessed(f, statusOk ? DemProcessStatus.PROCESSED : DemProcessStatus.DELETED).thenReturn(fileName);
+			}).map(fileName ->{ // Simple info
+				_LOGGER.debug(String.format("Processed file %s", fileName));
+				return fileName;
+			})
+			.collectList()
+			.flatMap(list -> {
+				return notificationService.sendParsingCompleteNotification(
+						"Dem Manager",
+						String.format("Processed %d files, %d were successfully processed",
+						files.size(),
+						countProcessedFiles.get()));
+			}).then();
+		// @formatter:on
 	}
 
 	private Mono<Boolean> setFileProcessed(File f, DemProcessStatus status) {
@@ -295,14 +348,14 @@ public class DemFileParserImp implements DemFileParser {
 		ums.setMp(RoundParserUtils.doubleToBigDecimal(userScore.getMatchPlayed(), 2));
 		return ums;
 	}
-	
+
 	private SvcMapStats fromUsersScoreDtoToSvcMapStata(UsersDto userDto, Users_scoresDto userScore) {
 		SvcMapStats mapStats = new SvcMapStats();
 		mapStats.setMapName(userScore.getMap());
 		mapStats.setPlayedOn(userScore.getGame_date());
-		
+
 		SvcUserGotvScore gotvScore = new SvcUserGotvScore();
-		
+
 		gotvScore.setUserName(userDto.getUser_name());
 		gotvScore.setSteamID(userDto.getSteam_id());
 		gotvScore.setKills(userScore.getKills());
@@ -345,7 +398,7 @@ public class DemFileParserImp implements DemFileParser {
 		gotvScore.setDeathPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getDpr(), 2));
 		gotvScore.setAverageDamagePerRound(RoundParserUtils.bigDecimalToDouble(userScore.getAdr(), 2));
 		gotvScore.setMatchPlayed(RoundParserUtils.bigDecimalToDouble(userScore.getMp(), 2));
-		
+
 		mapStats.addUserMapStats(gotvScore);
 		return mapStats;
 	}

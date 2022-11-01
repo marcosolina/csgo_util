@@ -13,6 +13,8 @@ import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
 import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
 
+import io.r2dbc.pool.ConnectionPool;
+import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
@@ -31,27 +33,32 @@ public class Repositories {
 
 	@Bean
 	public ConnectionFactory connectionFactory() {
-
+		
 		return new PostgresqlConnectionFactory(
-		// @formatter:off
-	        PostgresqlConnectionConfiguration.builder()
-	                .host(postrgresProps.getHost())
-	                .database("demfiles")
-	                .username(postrgresProps.getUser())
-	                .password(postrgresProps.getPassword())
-//	                .codecRegistrar(
-//                		EnumCodec.builder()
-//	                		.withEnum("process_status", DemProcessStatus.class)
-//	                		.build()
-//            		)
-	                .build()
-			// @formatter:on
-		);
+				// @formatter:off
+			        PostgresqlConnectionConfiguration.builder()
+			                .host(postrgresProps.getHost())
+			                .database("demfiles")
+			                .username(postrgresProps.getUser())
+			                .password(postrgresProps.getPassword())
+//			                .codecRegistrar(
+//		                		EnumCodec.builder()
+//			                		.withEnum("process_status", DemProcessStatus.class)
+//			                		.build()
+//		            		)
+			                .build()
+					// @formatter:on
+				);
 	}
-
+	
 	@Bean
 	public DatabaseClient databaseClient(ConnectionFactory connectionFactory) {
-		return DatabaseClient.builder().connectionFactory(connectionFactory).namedParameters(true).build();
+		var cp = ConnectionPoolConfiguration.builder(connectionFactory)
+	            .initialSize(2)
+	            .maxSize(20)
+	            .build();
+		ConnectionPool pool = new ConnectionPool(cp);
+		return DatabaseClient.builder().connectionFactory(pool).build();
 	}
 
 	@Bean

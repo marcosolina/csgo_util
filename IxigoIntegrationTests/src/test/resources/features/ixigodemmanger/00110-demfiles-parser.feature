@@ -1,4 +1,4 @@
-@feature2 @demFilesParser
+@feature2 @demFilesParser @demfiles
 Feature: DEM files parser
   
   The DEM files parser enpoints allows me to trigger the

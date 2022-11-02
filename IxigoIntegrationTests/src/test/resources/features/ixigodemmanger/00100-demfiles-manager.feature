@@ -1,4 +1,4 @@
-@feature1 @demFilesManager
+@feature1 @demFilesManager @demfiles
 Feature: DEM files manager
   
   The DEM manger enpoints allows me to upload and retrieve the

@@ -12,6 +12,43 @@ public class DemManagersEndPoints {
 	private String deleteDemFileFromQueue;
 	private String postParseQueuedFiles;
 	private String postParseAllFiles;
+	
+	private String getDemDataScoresType; 
+	private String getDemDataMapsPlayed;
+	private String getDemDataUsers;
+	private String getDemDataUsersScores;
+
+	public String getGetDemDataScoresType() {
+		return getDemDataScoresType;
+	}
+
+	public void setGetDemDataScoresType(String getDemDataScoresType) {
+		this.getDemDataScoresType = getDemDataScoresType;
+	}
+
+	public String getGetDemDataMapsPlayed() {
+		return getDemDataMapsPlayed;
+	}
+
+	public void setGetDemDataMapsPlayed(String getDemDataMapsPlayed) {
+		this.getDemDataMapsPlayed = getDemDataMapsPlayed;
+	}
+
+	public String getGetDemDataUsers() {
+		return getDemDataUsers;
+	}
+
+	public void setGetDemDataUsers(String getDemDataUsers) {
+		this.getDemDataUsers = getDemDataUsers;
+	}
+
+	public String getGetDemDataUsersScores() {
+		return getDemDataUsersScores;
+	}
+
+	public void setGetDemDataUsersScores(String getDemDataUsersScores) {
+		this.getDemDataUsersScores = getDemDataUsersScores;
+	}
 
 	public String getPostDemFile() {
 		return postDemFile;

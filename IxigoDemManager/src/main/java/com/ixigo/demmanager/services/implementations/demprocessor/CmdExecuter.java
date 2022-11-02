@@ -26,7 +26,7 @@ public class CmdExecuter {
 			List<SvcUserGotvScore> usersStats = new ArrayList<>();
 
 			try {
-				_LOGGER.debug(String.format("Executing command: %s", cmd.toString()));
+				_LOGGER.trace(String.format("Executing command: %s", cmd.toString()));
 
 				Process p = Runtime.getRuntime().exec(cmd.toArray(new String[cmd.size()]));
 				p.waitFor();
@@ -47,7 +47,7 @@ public class CmdExecuter {
 					}
 					
 					if(line.contains("NaN")) {
-						_LOGGER.debug(String.format("Line read: %s", line));
+						_LOGGER.error(String.format("Line read: %s", line));
 						continue;
 					}
 					

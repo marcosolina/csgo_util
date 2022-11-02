@@ -1,14 +1,11 @@
 logging:
   file:
     name: ./logs/ixigo-dem-manager.log
-  pattern:
-    console: "%d %-5level : %msg%n"
-    file: "%d %-5level : %msg%n"
   level:
-    root: INFO
     com:
       ixigo:
         demmanager: DEBUG
+
 spring:
   servlet:
     multipart:

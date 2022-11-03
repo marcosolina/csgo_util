@@ -143,22 +143,25 @@ public class DemFileParserImp implements DemFileParser {
 		
 		// https://stackoverflow.com/questions/70704314/how-to-return-a-reactive-flux-that-contains-a-reactive-mono-and-flux
 		return Flux.fromIterable(usersIDs)
-				.flatMap(steamId -> {
-					Flux<SvcMapStats> scores = repoUser.findById(steamId).flatMapMany(userDto -> {
-						return repoUserScore.getLastXUserScores(gamesCounter, userDto.getSteam_id(), minPercPlayed)
-								.map(scoreDto -> fromUsersScoreDtoToSvcMapStata(userDto, scoreDto));
-					});
-					
-					return scores.collectList()
-						.zipWith(Mono.just(steamId))
-						.map(zip -> {
-							var stats = new SvcUserStatsForLastXGames();
-							stats.setSteamId(zip.getT2());
-							stats.setStats(zip.getT1());
-							return stats;
-						});
+			.flatMap(steamId -> repoUser.findById(steamId).defaultIfEmpty(new UsersDto().setSteam_id(steamId)))
+			.map(dto -> {
+				var list = repoUserScore.getLastXUserScores(gamesCounter, dto.getSteam_id(), minPercPlayed)
+						.map(dtoScore -> fromUsersScoreDtoToSvcMapStata(dto, dtoScore))
+						.collectList();
+				return Tuples.of(dto.getSteam_id(), list);
+			})
+			.flatMap(data -> {
+				String steamId = data.getT1();
+				Mono<List<SvcMapStats>> monoUserScores = data.getT2();
+				
+				return monoUserScores.map(list -> {
+					var stats = new SvcUserStatsForLastXGames();
+					stats.setSteamId(steamId);
+					stats.setStats(list);
+					return stats;
 				});
-		
+			})
+		;
 		// @formatter:on
 	}
 
@@ -187,7 +190,7 @@ public class DemFileParserImp implements DemFileParser {
 		return ms;
 	}
 
-	private Mono<Void> processFiles(List<File> files) {
+	private synchronized Mono<Void>  processFiles(List<File> files) {
 		AtomicInteger countProcessedFiles = new AtomicInteger(0);
 		// @formatter:off
 		return Flux.fromIterable(files)

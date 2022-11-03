@@ -13,16 +13,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import com.ixigo.demmanagercontract.models.rest.demdata.RestMapsPlayed;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
 import com.ixigo.integrationtests.components.SharedResponseEntity;
 import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 
-public class DemData {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(DemData.class);
+public class DemDataSteps {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(DemDataSteps.class);
 
 	@Autowired
 	private SharedResponseEntity sharedCr;
@@ -53,6 +55,37 @@ public class DemData {
 		assertNotNull(resp.getBody());
 		assertNotNull(resp.getBody().getTypes());
 		assertEquals(count, resp.getBody().getTypes().size());
+	}
+	
+	@When("I perform a GET request to retrieve maps played counters")
+	public void i_perform_a_get_request_to_retrieve_maps_played_counters() {
+		try {
+			URL url = new URL(endPoints.getGetDemDataMapsPlayed());
+			_LOGGER.debug(url.toString());
+			var resp = webClient.performGetRequestNoExceptions(RestMapsPlayed.class, url, Optional.empty(), Optional.empty()).block();
+			assertNotNull(resp);
+			sharedCr.setSharedResp(resp);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	@Then("I should receive {int} maps in the response")
+	public void i_should_receive_maps_in_the_response(Integer count) {
+		ResponseEntity<RestMapsPlayed> resp = sharedCr.getSharedResp(RestMapsPlayed.class);
+		assertNotNull(resp);
+		assertNotNull(resp.getBody());
+		assertNotNull(resp.getBody().getMaps());
+		assertEquals(count, resp.getBody().getMaps().size());
+	}
+	
+	@Then("the map list should contain the following maps:")
+	public void the_map_list_should_contain_the_following_maps(DataTable dataTable) {
+		ResponseEntity<RestMapsPlayed> resp = sharedCr.getSharedResp(RestMapsPlayed.class);
+		RestMapsPlayed mapsPlayed = resp.getBody();
+		dataTable.asList().forEach(mapName -> {
+			assertEquals(1, mapsPlayed.getMaps().stream().filter(m -> m.getMapName().equals(mapName)).count());
+		});
 	}
 }
 

@@ -71,7 +71,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		sql.append(" FROM ");
 		sql.append(" (");
 		sql.append("     SELECT " + Users_scoresDto.Fields.game_date + ", " + Users_scoresDto.Fields.map);
-		sql.append("     FROM");
+		sql.append("     FROM ");
 		sql.append(Users_scoresDao.tableName);
 		sql.append("     GROUP BY");
 		sql.append("     " + Users_scoresDto.Fields.game_date + ", " + Users_scoresDto.Fields.map);

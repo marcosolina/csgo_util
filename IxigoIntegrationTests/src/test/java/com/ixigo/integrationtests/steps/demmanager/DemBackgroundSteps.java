@@ -32,8 +32,8 @@ import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 
 import io.cucumber.java.en.Given;
 
-public class DemBackgrounds {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(DemBackgrounds.class);
+public class DemBackgroundSteps {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(DemBackgroundSteps.class);
 	@Autowired
 	private SharedResponseEntity sharedCr;
 	@Autowired

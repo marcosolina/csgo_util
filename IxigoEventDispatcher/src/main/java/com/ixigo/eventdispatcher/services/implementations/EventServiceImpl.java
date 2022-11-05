@@ -3,22 +3,30 @@ package com.ixigo.eventdispatcher.services.implementations;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 
 import com.ixigo.eventdispatcher.enums.EventType;
 import com.ixigo.eventdispatcher.models.database.Event_listenersDto;
+import com.ixigo.eventdispatcher.models.rest.DispatchedEventMessage;
 import com.ixigo.eventdispatcher.repositories.interfaces.RepoEntityEventListener;
 import com.ixigo.eventdispatcher.services.interfaces.EventService;
 import com.ixigo.eventdispatcher.services.interfaces.NotificationService;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.messages.IxigoMessageResource;
+import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
+import com.ixigo.library.utils.DateUtils;
 
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuples;
 
 public class EventServiceImpl implements EventService {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(EventServiceImpl.class);
@@ -31,6 +39,8 @@ public class EventServiceImpl implements EventService {
 	private RepoEntityEventListener repo;
 	@Autowired
 	private NotificationService notiService;
+	@Autowired
+	private IxigoWebClientUtils webClient;
 
 	@Override
 	public Mono<Void> newIncomingEventFromServer(EventType event, String clientIp) {
@@ -80,12 +90,80 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public Mono<Boolean> deleteListener(String listenerUrl, EventType event) throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		return repo.deleteListener(listenerUrl, event).flatMap(bool -> {
+			StringBuilder sb = new StringBuilder();
+			sb.append(String.format("%s- URL: %s", NEW_LINE_CHAR, listenerUrl));
+			sb.append(String.format("%s- Event: %s", NEW_LINE_CHAR, event.name()));
+			
+			return notiService.sendEventServiceError("Deleted event listener", sb.toString());
+		});
 	}
 
 	private Mono<Void> dispatchEvent(EventType event) {
-		return null;
+		DispatchedEventMessage message = new DispatchedEventMessage();
+		message.setEventTime(DateUtils.getCurrentUtcDateTime());
+		message.setEventType(event);
+		
+		// @formatter:off
+		new Thread(() -> {
+			repo.getListernersOfEvent(event)
+			.parallel()
+			.runOn(Schedulers.boundedElastic())
+			.flatMap(dto -> {
+				Mono<ResponseEntity<String>> mono = null;
+				
+				try {
+					URL url = new URL(dto.getUrl_listener());
+					mono = webClient.performRequestNoExceptions(String.class, HttpMethod.POST, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(message));
+				} catch (MalformedURLException e) {
+					e.printStackTrace();
+					mono = Mono.just(new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
+				}
+				
+				return mono.map(resp -> {
+					return Tuples.of(dto, resp);
+				});
+			}).flatMap(tuple -> {
+				var dto = tuple.getT1();
+				var resp = tuple.getT2();
+				// if successful rest otherwise set error
+				if(resp.getStatusCode().is2xxSuccessful()) {
+					dto.setLast_successful(DateUtils.getCurrentUtcDateTime());
+					dto.setConsecutive_failure(0L);
+				}else {
+					dto.setLast_failure(DateUtils.getCurrentUtcDateTime());
+					dto.setConsecutive_failure(dto.getConsecutive_failure() + 1);
+					if(dto.getConsecutive_failure() > 2) {
+						dto.setActive("N");
+					}
+				}
+				
+				return repo.updateEntity(dto)
+				.map(bool -> {
+					return Tuples.of(resp, dto);
+				});
+			}).filter(tuple -> !tuple.getT1().getStatusCode().is2xxSuccessful())
+			.flatMap(tuple -> {
+				var resp = tuple.getT1();
+				var dto = tuple.getT2();
+				StringBuilder sb = new StringBuilder();
+	            sb.append(String.format("%s- URL: %s", NEW_LINE_CHAR, dto.getUrl_listener()));
+	            sb.append(String.format("%s- Event: %s", NEW_LINE_CHAR, dto.getEvent_type().name()));
+	            sb.append(String.format("%s- Attempt: %d", NEW_LINE_CHAR, dto.getConsecutive_failure()));
+	            sb.append(String.format("%s- Reason: %s", NEW_LINE_CHAR, resp.getBody()));
+	            
+	            return notiService.sendEventServiceError("Not able to dispatch the event", sb.toString())
+	            		.map(b -> dto);
+			})
+			.subscribe(dto -> {
+				_LOGGER.error(String.format("Failed to send envent: %s to: %s", dto.getEvent_type().name(), dto.getUrl_listener()));
+			});
+			;
+		}).start();
+		// @formatter:on
+		
+		return Mono.just("").then();
 	}
 
 	private void checkListenerKey(String listenerUrl, EventType event) throws IxigoException {

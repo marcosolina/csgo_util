@@ -11,10 +11,11 @@ import io.r2dbc.spi.RowMetadata;
 public class Event_listenersDao extends IxigoDao<Event_listenersDto> {
 
 	private static final long serialVersionUID = 1L;
+	public static final String tableName="event_listeners";
 	private Event_listenersDto dto = null;
 
 	public Event_listenersDao() {
-		this.setSqlViewName("event_listeners");
+		this.setSqlViewName(tableName);
 		this.setSqlKeys(new String[] { Event_listenersDto.Fields.url_listener, Event_listenersDto.Fields.event_type });
 		// @formatter:off
 		this.setSqlFields(new String[] {

@@ -13,7 +13,7 @@ public interface RepoEntityEventListener {
 	 * @param entity
 	 * @return
 	 */
-	public Mono<Boolean> registerNewListener(Event_listenersDto dro);
+	public Mono<Boolean> registerNewListener(Event_listenersDto dto);
 
 	/**
 	 * It updates the entity
@@ -21,7 +21,7 @@ public interface RepoEntityEventListener {
 	 * @param entity
 	 * @return
 	 */
-	public Mono<Boolean> updateEntity(Event_listenersDto entity);
+	public Mono<Boolean> updateEntity(Event_listenersDto dto);
 
 	/**
 	 * It returns a list of event listeners of the specific event. The list contains

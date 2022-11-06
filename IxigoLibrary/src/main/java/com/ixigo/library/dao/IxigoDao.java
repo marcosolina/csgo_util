@@ -302,7 +302,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		} catch (Exception e) {
 			_LOGGER.error(e.getMessage());
 			e.printStackTrace();
-			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), "IXIGO0000");
 		}
 	}
 	
@@ -312,7 +312,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		} catch (Exception e) {
 			_LOGGER.error(e.getMessage());
 			e.printStackTrace();
-			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), "IXIGO0000");
 		}
 	}
 
@@ -320,7 +320,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		StringBuffer fields = new StringBuffer();
 		StringBuffer values = new StringBuffer();
 		if (sqlFields == null) {
-			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, "Fields not defined");
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, "Fields not defined", "IXIGO0000");
 		}
 		for (int i = 0; i < sqlFields.length; i++) {
 			fields.append(", " + sqlFields[i]);
@@ -338,7 +338,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 
 	public GenericExecuteSpec prepareSqlUpdate(DatabaseClient client)  throws IxigoException {
 		if (sqlKeys == null) {
-			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, "Can not update table without keys");
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, "Can not update table without keys", "IXIGO0000");
 		}
 		StringBuffer fields = new StringBuffer();
 		for (int i = 0; i < sqlFields.length; i++) {

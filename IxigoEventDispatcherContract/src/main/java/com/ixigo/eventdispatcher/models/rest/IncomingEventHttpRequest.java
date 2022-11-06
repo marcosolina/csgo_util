@@ -1,5 +1,7 @@
 package com.ixigo.eventdispatcher.models.rest;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * This represents the model of the request sent by the CSGO server when an
  * event is fired
@@ -8,6 +10,7 @@ package com.ixigo.eventdispatcher.models.rest;
  *
  */
 public class IncomingEventHttpRequest {
+	@JsonProperty("event_name")
     private String eventName;
 
     public String getEventName() {

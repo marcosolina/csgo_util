@@ -24,7 +24,7 @@ public class DeleteListenerCmdHandler implements WebCommandHandler<DeleteListene
 		_LOGGER.trace("Inside DeleteListenerCmdHandler.handle");
 		
 		return service.deleteListener(cmd.getListenerUrl(), cmd.getListenForEventType())
-			.map(b -> b ? new ResponseEntity<Void>(HttpStatus.CREATED) : new ResponseEntity<Void>(HttpStatus.BAD_REQUEST))
+			.map(b -> b ? new ResponseEntity<Void>(HttpStatus.OK) : new ResponseEntity<Void>(HttpStatus.BAD_REQUEST))
 			.defaultIfEmpty(new ResponseEntity<Void>(HttpStatus.BAD_REQUEST));
 	}
 

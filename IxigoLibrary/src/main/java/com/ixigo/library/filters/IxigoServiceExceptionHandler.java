@@ -34,12 +34,12 @@ public abstract class IxigoServiceExceptionHandler extends ResponseEntityExcepti
     }
 
     @ExceptionHandler(value = { IxigoException.class })
-    public ResponseEntity<String> hadleWeException(IxigoException ex, WebRequest request) {
+    public ResponseEntity<IxigoException> hadleWeException(IxigoException ex, WebRequest request) {
         if (_LOGGER.isDebugEnabled()) {
             ex.printStackTrace();
         }
 
-        return new ResponseEntity<>(ex.getMessage(), ex.getStatus());
+        return new ResponseEntity<>(ex, ex.getStatus());
     }
 
     @ExceptionHandler(value = { ValidationException.class })

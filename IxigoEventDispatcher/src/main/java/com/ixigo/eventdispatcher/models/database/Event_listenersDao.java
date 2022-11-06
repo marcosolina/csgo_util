@@ -35,7 +35,7 @@ public class Event_listenersDao extends IxigoDao<Event_listenersDto> {
 		Event_listenersDto dto = new Event_listenersDto();
 		dto.setEvent_type(EventType.valueOf(row.get(Event_listenersDto.Fields.event_type, String.class)));
 		dto.setActive(row.get(Event_listenersDto.Fields.active, String.class));
-		dto.setConsecutive_failure(row.get(Event_listenersDto.Fields.consecutive_failure, Long.class));
+		dto.setConsecutive_failure(row.get(Event_listenersDto.Fields.consecutive_failure, Integer.class));
 		dto.setLast_failure(row.get(Event_listenersDto.Fields.last_failure, LocalDateTime.class));
 		dto.setLast_successful(row.get(Event_listenersDto.Fields.last_successful, LocalDateTime.class));
 		dto.setUrl_listener(row.get(Event_listenersDto.Fields.url_listener, String.class));
@@ -66,11 +66,11 @@ public class Event_listenersDao extends IxigoDao<Event_listenersDto> {
 		this.dto.setLast_failure(last_failure);
 	}
 
-	public Long getConsecutive_failure() {
+	public Integer getConsecutive_failure() {
 		return dto.getConsecutive_failure();
 	}
 
-	public void setConsecutive_failure(Long consecutive_failure) {
+	public void setConsecutive_failure(Integer consecutive_failure) {
 		this.dto.setConsecutive_failure(consecutive_failure);
 	}
 

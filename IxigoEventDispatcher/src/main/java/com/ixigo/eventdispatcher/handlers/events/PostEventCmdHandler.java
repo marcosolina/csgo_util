@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.ixigo.eventdispatcher.commands.events.PostEventCmd;
+import com.ixigo.eventdispatcher.constants.ErrorCodes;
 import com.ixigo.eventdispatcher.enums.EventType;
 import com.ixigo.eventdispatcher.services.interfaces.EventService;
 import com.ixigo.library.errors.IxigoException;
@@ -29,7 +30,7 @@ public class PostEventCmdHandler implements WebCommandHandler<PostEventCmd, Void
 		_LOGGER.trace("Inside PostEventCmdHandler.handle");
 		EventType et = EventType.fromString(request.getCsgoServerEventType());
 		if (et == null) {
-			return Mono.error(new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage("DISP00004")));
+			return Mono.error(new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.WRONG_EVENT_TYPE), ErrorCodes.MISSING_EVENT_TYPE));
 		}
 
 		new Thread(() -> {

@@ -8,8 +8,10 @@ import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.services.implementations.DemFileManagerImp;
 import com.ixigo.demmanager.services.implementations.DemFileParserImp;
 import com.ixigo.demmanager.services.implementations.TelegramNotificationService;
+import com.ixigo.demmanager.services.implementations.demprocessor.CmdExecuterImpl;
 import com.ixigo.demmanager.services.implementations.demprocessor.DemProcessorRasp;
 import com.ixigo.demmanager.services.implementations.demprocessor.DemProcessorWindows;
+import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.demmanager.services.interfaces.DemFileManager;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
@@ -40,6 +42,11 @@ public class Services {
     public NotificationService getNotificationService() {
         return new TelegramNotificationService();
     }
+	
+	@Bean
+	public CmdExecuter getCmdExecuter() {
+		return new CmdExecuterImpl();
+	}
 	
 	@Bean
     public DemProcessor getDemProcessor() {

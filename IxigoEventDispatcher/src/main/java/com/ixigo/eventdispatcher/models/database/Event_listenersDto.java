@@ -14,7 +14,7 @@ public class Event_listenersDto implements IxigoDto{
 	private String url_listener = "";
 	private EventType event_type;
 	private LocalDateTime last_failure = null;
-	private Long consecutive_failure = null;
+	private Integer consecutive_failure = null;
 	private String active = "";
 	private LocalDateTime last_successful = null;
 
@@ -45,11 +45,11 @@ public class Event_listenersDto implements IxigoDto{
 	}
 
 
-	public Long getConsecutive_failure(){
+	public Integer getConsecutive_failure(){
 		return this.consecutive_failure;
 	}
 
-	public void setConsecutive_failure(Long consecutive_failure){
+	public void setConsecutive_failure(Integer consecutive_failure){
 		this.consecutive_failure = consecutive_failure;
 	}
 
@@ -71,5 +71,8 @@ public class Event_listenersDto implements IxigoDto{
 		this.last_successful = last_successful;
 	}
 
-
+	@Override
+	public String toString() {
+		return "Event_listenersDto [url_listener=" + url_listener + ", event_type=" + event_type + "]";
+	}
 }

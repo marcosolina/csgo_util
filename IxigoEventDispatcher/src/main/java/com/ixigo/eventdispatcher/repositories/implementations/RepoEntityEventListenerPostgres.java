@@ -24,7 +24,9 @@ public class RepoEntityEventListenerPostgres implements RepoEntityEventListener 
 		_LOGGER.trace("Inside RepoEntityEventListenerPostgres.registerNewListener");
 		Event_listenersDao dao = new Event_listenersDao();
 		dao.setDto(dto);
-		return dao.prepareSqlInsert(client).then().thenReturn(true);
+		return dao.prepareSqlInsert(client).fetch().rowsUpdated().map(rowCount -> {
+			return rowCount == 1;
+		});
 	}
 
 	@Override
@@ -32,7 +34,9 @@ public class RepoEntityEventListenerPostgres implements RepoEntityEventListener 
 		_LOGGER.trace("Inside RepoEntityEventListenerPostgres.updateEntity");
 		Event_listenersDao dao = new Event_listenersDao();
 		dao.setDto(dto);
-		return dao.prepareSqlUpdate(client).then().thenReturn(true);
+		return dao.prepareSqlUpdate(client).fetch().rowsUpdated().map(rowCount -> {
+			return rowCount == 1;
+		});
 	}
 
 	@Override
@@ -45,7 +49,7 @@ public class RepoEntityEventListenerPostgres implements RepoEntityEventListener 
 		sql.append(" WHERE ");
 		sql.append(Event_listenersDto.Fields.consecutive_failure + " < 3");
 		sql.append(" AND ");
-		sql.append(Event_listenersDto.Fields.active + " = 'N'");
+		sql.append(Event_listenersDto.Fields.active + " <> 'N'");
 		sql.append(" AND ");
 		sql.append(Event_listenersDto.Fields.event_type + " = :" + Event_listenersDto.Fields.event_type);
 
@@ -63,7 +67,9 @@ public class RepoEntityEventListenerPostgres implements RepoEntityEventListener 
 		Event_listenersDao dao = new Event_listenersDao();
 		dao.setUrl_listener(url);
 		dao.setEvent_type(eventType);
-		return dao.prepareSqlDeleteByKey(client).then().thenReturn(true);
+		return dao.prepareSqlDeleteByKey(client).fetch().rowsUpdated().map(rowCount -> {
+			return rowCount == 1;
+		});
 	}
 
 	@Override

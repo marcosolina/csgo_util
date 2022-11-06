@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import com.ixigo.eventdispatcher.constants.ErrorCodes;
 import com.ixigo.eventdispatcher.enums.EventType;
 import com.ixigo.eventdispatcher.models.database.Event_listenersDto;
 import com.ixigo.eventdispatcher.models.rest.DispatchedEventMessage;
@@ -44,7 +45,7 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public Mono<Void> newIncomingEventFromServer(EventType event, String clientIp) {
-		_LOGGER.debug(String.format("Processing evenve: %s from IP: %s", event.name(), clientIp));
+		_LOGGER.debug(String.format("Processing event: %s from IP: %s", event.name(), clientIp));
 
 		if (clientIp == null) {
 			if (previousEvent.keySet().size() == 1) {
@@ -69,13 +70,17 @@ public class EventServiceImpl implements EventService {
 		checkListenerKey(listenerUrl, event);
 
 		Event_listenersDto listener = new Event_listenersDto();
+		listener.setActive("Y");
+		listener.setEvent_type(event);
+		listener.setUrl_listener(listenerUrl);
+		listener.setConsecutive_failure(0);
 
 		/*
-		 * https://stackoverflow.com/questions/53595420/correct-way-of-throwing-
+		 * https://stackoverflow.com/questions/53595420/correct-way-of-throwing-exceptions-with-reactor
 		 */
 		// @formatter:off
 		return repo.findListener(listenerUrl, event)
-				.flatMap(d -> Mono.error(new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage("DISP00001"))))
+				.flatMap(d -> Mono.error(new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.DUPLICATE_VALUE), ErrorCodes.DUPLICATE_VALUE)))
 				.switchIfEmpty(repo.registerNewListener(listener))
 				.flatMap(bool -> {
 					StringBuilder sb = new StringBuilder();
@@ -92,11 +97,14 @@ public class EventServiceImpl implements EventService {
 	public Mono<Boolean> deleteListener(String listenerUrl, EventType event) throws IxigoException {
 		
 		return repo.deleteListener(listenerUrl, event).flatMap(bool -> {
-			StringBuilder sb = new StringBuilder();
-			sb.append(String.format("%s- URL: %s", NEW_LINE_CHAR, listenerUrl));
-			sb.append(String.format("%s- Event: %s", NEW_LINE_CHAR, event.name()));
-			
-			return notiService.sendEventServiceError("Deleted event listener", sb.toString());
+			if(bool) {
+				StringBuilder sb = new StringBuilder();
+				sb.append(String.format("%s- URL: %s", NEW_LINE_CHAR, listenerUrl));
+				sb.append(String.format("%s- Event: %s", NEW_LINE_CHAR, event.name()));
+				
+				return notiService.sendEventServiceError("Deleted event listener", sb.toString());
+			}
+			return Mono.just(bool);
 		});
 	}
 
@@ -115,8 +123,9 @@ public class EventServiceImpl implements EventService {
 				
 				try {
 					URL url = new URL(dto.getUrl_listener());
-					mono = webClient.performRequestNoExceptions(String.class, HttpMethod.POST, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(message));
-				} catch (MalformedURLException e) {
+					mono = webClient.performRequestNoExceptions(String.class, HttpMethod.POST, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(message))
+							.onErrorResume(er -> Mono.just(new ResponseEntity<String>(er.getMessage(), HttpStatus.BAD_GATEWAY)));
+				} catch (Exception e) {
 					e.printStackTrace();
 					mono = Mono.just(new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
 				}
@@ -130,7 +139,7 @@ public class EventServiceImpl implements EventService {
 				// if successful rest otherwise set error
 				if(resp.getStatusCode().is2xxSuccessful()) {
 					dto.setLast_successful(DateUtils.getCurrentUtcDateTime());
-					dto.setConsecutive_failure(0L);
+					dto.setConsecutive_failure(0);
 				}else {
 					dto.setLast_failure(DateUtils.getCurrentUtcDateTime());
 					dto.setConsecutive_failure(dto.getConsecutive_failure() + 1);
@@ -141,6 +150,9 @@ public class EventServiceImpl implements EventService {
 				
 				return repo.updateEntity(dto)
 				.map(bool -> {
+					if(!bool) {
+						_LOGGER.error(String.format("Not able to update: %s", dto.toString()));
+					}
 					return Tuples.of(resp, dto);
 				});
 			}).filter(tuple -> !tuple.getT1().getStatusCode().is2xxSuccessful())
@@ -168,13 +180,13 @@ public class EventServiceImpl implements EventService {
 
 	private void checkListenerKey(String listenerUrl, EventType event) throws IxigoException {
 		if (event == null) {
-			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage("DISP00002"));
+			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MISSING_EVENT_TYPE), ErrorCodes.MISSING_EVENT_TYPE);
 		}
 
 		try {
 			new URL(listenerUrl);
 		} catch (MalformedURLException e) {
-			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage("DISP00003"));
+			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.WRONG_URL_FORMAT), ErrorCodes.WRONG_URL_FORMAT);
 		}
 	}
 }

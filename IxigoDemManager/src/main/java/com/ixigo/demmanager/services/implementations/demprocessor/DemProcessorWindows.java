@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
+import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.library.errors.IxigoException;
 
@@ -26,6 +27,8 @@ public class DemProcessorWindows implements DemProcessor {
 
 	@Autowired
 	private DemFileManagerProps props;
+	@Autowired
+	private CmdExecuter exec;
 
 	@Override
 	public Flux<SvcUserGotvScore> processDemFile(File demFile) throws IxigoException {
@@ -36,8 +39,7 @@ public class DemProcessorWindows implements DemProcessor {
 		cmd.add(props.parserExecPath.toString());
 		cmd.add(demFile.getAbsolutePath());
 
-		CmdExecuter ce = new CmdExecuter();
-		return ce.extractPlayersScore(cmd);
+		return exec.extractPlayersScore(cmd);
 	}
 
 }

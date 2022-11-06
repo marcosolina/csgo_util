@@ -63,13 +63,13 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
         rs.onStatus(s -> s == HttpStatus.SERVICE_UNAVAILABLE, clientResp -> {
             _LOGGER.error(String.format("Service unavailable for endpoint %s", url.toString()));
             String msg = String.format("Url: %s not available", url.toString());
-            throw new IxigoException(HttpStatus.BAD_GATEWAY, msg);
+            throw new IxigoException(HttpStatus.BAD_GATEWAY, msg, "IXIGO0000");
         });
 
         rs.onStatus(HttpStatus::is4xxClientError, clientResp -> {
             String msg = String.format("Url: %s replied with: %s", url.toString(), clientResp.statusCode().toString());
             _LOGGER.error(msg);
-            throw new IxigoException(clientResp.statusCode(), msg);
+            throw new IxigoException(clientResp.statusCode(), msg, "IXIGO0000");
         });
         return rs.toEntity(responseBodyClass);
 	}
@@ -88,7 +88,6 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
         if (body.isPresent()) {
             rbs.bodyValue(body.get());
         }
-
         return rbs.exchangeToMono(response -> {
             if (response.statusCode().is4xxClientError() || response.statusCode().is5xxServerError()) {
                 return Mono.just(new ResponseEntity<T>(response.statusCode()));
@@ -96,6 +95,8 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
 
             Mono<T> monoResp = response.bodyToMono(responseBodyClass);
             return mapToEntity(response, monoResp);
+        }).onErrorResume(error -> {
+        	return Mono.error(new IxigoException(HttpStatus.BAD_GATEWAY, error.getMessage(), ""));
         });
 	}
 	// @formatter:off

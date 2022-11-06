@@ -10,17 +10,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 
+import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.constants.RoundParserUtils;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
+import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.library.errors.IxigoException;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-public class CmdExecuter {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(CmdExecuter.class);
+public class CmdExecuterImpl implements CmdExecuter {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(CmdExecuterImpl.class);
 
+	@Override
 	public Flux<SvcUserGotvScore> extractPlayersScore(List<String> cmd) throws IxigoException {
 		var mono = Mono.fromSupplier(() -> {
 			List<SvcUserGotvScore> usersStats = new ArrayList<>();
@@ -107,7 +110,7 @@ public class CmdExecuter {
 				}
 
 				if (sb.length() > 0) {
-					throw new IxigoException(HttpStatus.BAD_GATEWAY, sb.toString());
+					throw new IxigoException(HttpStatus.BAD_GATEWAY, sb.toString(), ErrorCodes.GENERIC);
 				}
 				if (!dataAvailableInTheFile) {
 					return null;
@@ -117,7 +120,7 @@ public class CmdExecuter {
 				if (_LOGGER.isTraceEnabled()) {
 					e.printStackTrace();
 				}
-				throw new IxigoException(HttpStatus.BAD_GATEWAY, e.getMessage());
+				throw new IxigoException(HttpStatus.BAD_GATEWAY, e.getMessage(), ErrorCodes.GENERIC);
 			}
 			return usersStats;
 		}).subscribeOn(Schedulers.boundedElastic());

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.ixigo.demmanager.config.properties.TelegramProperties;
+import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.services.interfaces.NotificationService;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
@@ -44,7 +45,7 @@ public class TelegramNotificationService implements NotificationService {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			_LOGGER.error(e.getMessage());
-			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
 		}
 	}
 

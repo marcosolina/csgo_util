@@ -82,7 +82,7 @@ public class DemFileManagerImp implements DemFileManager {
 				return null;
 			} catch (MalformedURLException e) {
 				_LOGGER.error(e.getMessage());
-				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE));
+				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE), ErrorCodes.ERROR_READING_DEM_FILE);
 			}
 		}).subscribeOn(Schedulers.boundedElastic());
 	}
@@ -99,7 +99,7 @@ public class DemFileManagerImp implements DemFileManager {
 				if (_LOGGER.isTraceEnabled()) {
 					e.printStackTrace();
 				}
-				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
+				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
 			}
 
 			files.stream().forEach(f -> {
@@ -156,7 +156,7 @@ public class DemFileManagerImp implements DemFileManager {
 				return fileDestination;
 			} catch (Exception e) {
 				_LOGGER.error(e.getMessage());
-				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_WHILE_SAVING_DEM_FILE));
+				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_WHILE_SAVING_DEM_FILE), ErrorCodes.ERROR_WHILE_SAVING_DEM_FILE);
 			}
 		}).subscribeOn(Schedulers.boundedElastic());
 	}

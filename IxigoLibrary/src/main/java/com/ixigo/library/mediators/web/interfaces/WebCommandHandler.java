@@ -17,8 +17,8 @@ public interface WebCommandHandler<T, R> {
 	/**
 	 * Handles a request
 	 * 
-	 * @param request Request parameter
+	 * @param command Request parameter
 	 * @return Result type
 	 */
-	public Mono<ResponseEntity<R>> handle(T request);
+	public Mono<ResponseEntity<R>> handle(T cmd);
 }

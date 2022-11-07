@@ -9,6 +9,12 @@ Feature: Event dispatcher manage event listeners
     When I perform a POST request to register a new listern
     Then I should receive a 201 status in the response
     
+  @registerEventListener
+  Scenario: Registering an event listener with wrong data
+  	Given I dont have the listener registered
+    When I perform a POST request to register a new listern with wrong data
+    Then I should receive a 400 status in the response
+    
 	@registerEventListener
   Scenario: Registering duplicated event listener
   	Given I dont have the listener registered

@@ -30,7 +30,7 @@ public class PostEventCmdHandler implements WebCommandHandler<PostEventCmd, Void
 		_LOGGER.trace("Inside PostEventCmdHandler.handle");
 		EventType et = EventType.fromString(request.getCsgoServerEventType());
 		if (et == null) {
-			return Mono.error(new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.WRONG_EVENT_TYPE), ErrorCodes.MISSING_EVENT_TYPE));
+			return Mono.error(new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.WRONG_EVENT_TYPE), ErrorCodes.WRONG_EVENT_TYPE));
 		}
 
 		new Thread(() -> {

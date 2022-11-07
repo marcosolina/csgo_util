@@ -1,5 +1,7 @@
 package com.ixigo.eventdispatcher.models.rest;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
@@ -9,7 +11,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author Marco
  *
  */
-public class IncomingEventHttpRequest {
+public class IncomingEventHttpRequest implements Serializable{
+	private static final long serialVersionUID = 1L;
 	@JsonProperty("event_name")
     private String eventName;
 

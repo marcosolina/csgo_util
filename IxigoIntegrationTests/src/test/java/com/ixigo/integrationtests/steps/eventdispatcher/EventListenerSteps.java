@@ -65,6 +65,25 @@ public class EventListenerSteps {
 		}
 	}
 	
+	@When("I perform a POST request to register a new listern with wrong data")
+	public void i_perform_a_post_request_to_register_a_new_listern_with_wrong_data() {
+		try {
+			URL url = new URL(endPoints.getPostListener());
+			_LOGGER.debug(url.toString());
+			
+			EventListenerResgistraionRequest listener = new EventListenerResgistraionRequest();
+			listener.setUrl("dummyUrl");
+			listener.setEventType(EventType.WARMUP_START);
+			
+			var resp = webClient.performRequestNoExceptions(Void.class, HttpMethod.POST, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(listener)).block();
+			assertNotNull(resp);
+			sharedCr.setSharedResp(resp);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
+	
 	@When("I perform a DELETE request to un-register the listener")
 	public void i_perform_a_delete_request_to_un_register_the_listener() {
 		try {

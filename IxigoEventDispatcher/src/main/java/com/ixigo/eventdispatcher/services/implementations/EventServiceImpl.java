@@ -80,7 +80,7 @@ public class EventServiceImpl implements EventService {
 		 */
 		// @formatter:off
 		return repo.findListener(listenerUrl, event)
-				.flatMap(d -> Mono.error(new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.DUPLICATE_VALUE), ErrorCodes.DUPLICATE_VALUE)))
+				.flatMap(d -> Mono.error(new IxigoException(HttpStatus.CONFLICT, msgSource.getMessage(ErrorCodes.DUPLICATE_VALUE), ErrorCodes.DUPLICATE_VALUE)))
 				.switchIfEmpty(repo.registerNewListener(listener))
 				.flatMap(bool -> {
 					StringBuilder sb = new StringBuilder();

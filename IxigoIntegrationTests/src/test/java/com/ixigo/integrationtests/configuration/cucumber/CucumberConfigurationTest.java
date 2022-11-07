@@ -17,8 +17,9 @@ import io.cucumber.core.options.Constants;
 	@ConfigurationParameter(key = Constants.GLUE_PROPERTY_NAME,
 	// @formatter:off
 		value = "com.ixigo.integrationtests.configuration.cucumber,"
+				+ "com.ixigo.integrationtests.steps.common,"
 				+ "com.ixigo.integrationtests.steps.demmanager,"
-				+ "com.ixigo.integrationtests.steps.common")
+				+ "com.ixigo.integrationtests.steps.eventdispatcher")
 	// @formatter:on
 })
 

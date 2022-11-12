@@ -19,7 +19,7 @@ import io.cucumber.core.options.Constants;
 		value = "com.ixigo.integrationtests.configuration.cucumber,"
 				+ "com.ixigo.integrationtests.steps.common,"
 				+ "com.ixigo.integrationtests.steps.demmanager,"
-				+ "com.ixigo.integrationtests.steps.eventdispatcher"
+				+ "com.ixigo.integrationtests.steps.eventdispatcher,"
 				+ "com.ixigo.integrationtests.steps.playersmanager")
 	// @formatter:on
 })

@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A refactored version of <a href=
+ * A customised version of <a href=
  * "https://www.codeproject.com/Articles/1265125/Fast-and-Practically-perfect-Partition-Problem-Sol#DST">this
  * solution</a>
  * 
@@ -14,8 +14,8 @@ import org.slf4j.LoggerFactory;
  * 
  * @author Fedor Naumenko
  */
-public final class EfficientPartition {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(EfficientPartition.class);
+public final class IxigoEfficientPartition {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(IxigoEfficientPartition.class);
 	static final Double LARGEST_SUM = Double.MAX_VALUE;
 	/** if set on TRUE then then print test messages */
 	public static final boolean TEST = false;
@@ -37,31 +37,32 @@ public final class EfficientPartition {
 	 *                of 1 million recursive invokes by limMult times; if 0 then
 	 *                omit DSTree method invoking (fast, but not 'perfect')
 	 */
-	public EfficientPartition(List<Double> vals, int ssCnt, int limMult) {
+	private IxigoEfficientPartition(List<Double> vals, int ssCnt, int limMult, double penaltyWeitgh) {
 		int i = 1;
 		IdNumbers numbs = new IdNumbers(ssCnt);
 
 		for (Double val : vals) {
 			numbs.add(new IdNumber(i++, val));
 		}
-		this.result = new Result(numbs.size(), ssCnt);
+		this.result = new Result(numbs.size(), ssCnt, penaltyWeitgh);
+		for(Subset s: result.getSubsets()) {
+			s.setSize(s.getNumbIDs().size());
+		}
 		if (ssCnt == 0) {
 			return;
 		}
 		this.avr = numbs.getAvrSum(ssCnt);
-		new Partition(numbs, this.result, this.avr, limMult);
+		new Partition(numbs, this.result, this.avr, limMult, penaltyWeitgh);
 	}
 
 	/**
-	 * Constructs numbers partition by numbers, with sums sorted in descending order
+	 * Constructs two partitions, with sums sorted in descending order
 	 * 
 	 * @param vals  numbers to be distributed; their ID are assigned according to
 	 *              their ordinal numbers in array
-	 * @param ssCnt count of subsets; if 0 then creates an empty partition with
-	 *              undefined (maximum type's value) inaccuracy
 	 */
-	public EfficientPartition(List<Double> vals, int ssCnt) {
-		this(vals, ssCnt, 1);
+	public IxigoEfficientPartition(List<Double> vals, double penaltyWeitgh) {
+		this(vals, 2, 1, penaltyWeitgh);
 	}
 
 	/**

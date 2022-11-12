@@ -1,4 +1,4 @@
-package com.ixigo.integrationtests.configuration.properties;
+package com.ixigo.playersmanager.config.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

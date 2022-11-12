@@ -70,22 +70,22 @@ final class Partition {
 	 * @param limMult DSTree method call's limit multiplier; if 0 then omit DSTree
 	 *                method invoking
 	 */
-	public Partition(IdNumbers nmbs, Result result, Double avr, int limMult) {
+	public Partition(IdNumbers nmbs, Result result, Double avr, int limMult, double penaltyWeitgh) {
 		this.numbs = nmbs;
 		this.finalResult = result;
 		this.avrSum = avr;
 		this.isAvrFract = (int) avrSum != avrSum;
 		this.callLimit = MIN_CALL_LIMIT * limMult;
 		this.numbs.sortByDescent();
-		this.sumDiff = EfficientPartition.LARGEST_SUM;
+		this.sumDiff = IxigoEfficientPartition.LARGEST_SUM;
 		int ssCnt = finalResult.getSubsetCount();
 		int i = 0;
 		this.methods[i++] = Integer -> doUGreedy(ssCnt);
-		this.methods[i++] = Integer -> wrapGreedy(ssCnt);
+		this.methods[i++] = Integer -> wrapGreedy(ssCnt, penaltyWeitgh);
 		this.methods[i++] = Integer -> doSGreedy(ssCnt);
 		this.methods[i++] = Integer -> doISTree(ssCnt);
 
-		if (EfficientPartition.TEST) {
+		if (IxigoEfficientPartition.TEST) {
 			StringBuilder sb = new StringBuilder();
 			sb.append("avr: ");
 			sb.append(String.format(avrSum % 1.0 != 0 ? "%f" : "%s", avrSum));
@@ -94,7 +94,7 @@ final class Partition {
 		}
 
 		int cnt = limMult > 0 ? 4 : 3;
-		if (!EfficientPartition.TEST) {
+		if (!IxigoEfficientPartition.TEST) {
 			// for the degenerate case numbs.size()<=ssCnt method UGreedy() is comepletely
 			// enough
 			if (numbs.size() <= ssCnt) {
@@ -106,6 +106,7 @@ final class Partition {
 				return;
 			}
 		}
+		return;
 	}
 
 	/**
@@ -192,6 +193,7 @@ final class Partition {
 			}
 			Subset subset = currResult.getSubsets().get(k);
 			subset.setSumVal(subset.getSumVal() + n.getVal());
+			subset.setSize(subset.getSize()+1);
 			n.setBinIInd(ssCnt - k);
 		}
 
@@ -206,9 +208,9 @@ final class Partition {
 	 * 
 	 * @param ssCnt count of subsets
 	 */
-	void wrapGreedy(int ssCnt) {
+	void wrapGreedy(int ssCnt, double penaltyWeitgh) {
 		numbs.reset();
-		currResult = new Result(numbs.size(), ssCnt);
+		currResult = new Result(numbs.size(), ssCnt, penaltyWeitgh);
 		doGreedy(ssCnt);
 	}
 
@@ -236,6 +238,7 @@ final class Partition {
 					if (n.isFitted(avrUp - currResult.getSubsets().get(i).getSumVal())) {
 						Subset subset = currResult.getSubsets().get(i);
 						subset.setSumVal(subset.getSumVal() + n.getVal());
+						subset.setSize(subset.getSize()+1);
 						n.setBinIInd(ssCnt - i);
 						freeCnt--;
 					}
@@ -249,7 +252,7 @@ final class Partition {
 		// distribute remaining unallocated numbs by Greed protocol
 		// Checking for freeCnt==0 can be omitted, since as it happens very rarely
 		doGreedy(ssCnt);
-		if (EfficientPartition.TEST) {
+		if (IxigoEfficientPartition.TEST) {
 			callCnt = k - 1;
 		}
 	}
@@ -275,6 +278,7 @@ final class Partition {
 				n = numbs.get(i);
 				if (n.getBinIInd() == 0 && n.getVal() + ss.getSumVal() < maxSum) {
 					ss.setSumVal(ss.getSumVal() + n.getVal()); // take number's value into account
+					ss.setSize(ss.getSize() + 1);
 					n.setBinIInd(invInd); // take number's bin index
 					if (i + 1 < numbs.size()) { // checkup just to avoid blank recursive invoke
 						doDSTree(i + 1, invInd); // try to fit next numb to the same bin
@@ -283,17 +287,19 @@ final class Partition {
 						doDSTree(0, invInd - 1); // try to fit unallocated numbs to the next bin
 					}
 					ss.setSumVal(ss.getSumVal() - n.getVal()); // discharge number's value
+					ss.setSize(ss.getSize() - 1);
 					n.setBinIInd(0); // discharge number's bin index
 				}
 			}
 		} else { // last bin
-			if (EfficientPartition.TEST) {
+			if (IxigoEfficientPartition.TEST) {
 				bottomCnt++;
 			}
 			// accumulate sum for the last bin
 			for (IdNumber n : numbs) {
 				if (n.getBinIInd() == 0) { // zero invIndex means that number belongs to the last bin
 					ss.setSumVal(ss.getSumVal() + n.getVal());
+					ss.setSize(ss.getSize() + 1);
 				}
 			}
 			if (setRange(currResult)) { // is inaccuracy better than the previous one?
@@ -307,6 +313,7 @@ final class Partition {
 				standbySumDiff = currResult.getSumDiff();
 			}
 			ss.setSumVal(Double.valueOf(0)); // clear last bin sum
+			ss.setSize(0);
 		}
 	}
 
@@ -321,10 +328,10 @@ final class Partition {
 		if (up > avrSum) {
 			up = avrSum - 1;
 		}
-		standbySumDiff = EfficientPartition.LARGEST_SUM; // undefined standby inaccuracy
+		standbySumDiff = IxigoEfficientPartition.LARGEST_SUM; // undefined standby inaccuracy
 		lastSumDiff = finalResult.getSumDiff();
 		standbyNumbs = new IdNumbers(numbs);
-		if (EfficientPartition.TEST) {
+		if (IxigoEfficientPartition.TEST) {
 			bottomCnt = upCnt = 0;
 		}
 		do {
@@ -334,7 +341,7 @@ final class Partition {
 			complete = 0;
 			numbs.reset();
 			currResult.clear();
-			if (EfficientPartition.TEST) {
+			if (IxigoEfficientPartition.TEST) {
 				upCnt++;
 			}
 			doDSTree(0, ssCnt - 1);
@@ -345,7 +352,7 @@ final class Partition {
 			}
 		} while (lastSumDiff != currResult.getSumDiff()); // until previous and current inaccuracy are different
 		// use last fitted result
-		if (EfficientPartition.TEST || currResult.getSumDiff() < finalResult.getSumDiff()) {
+		if (IxigoEfficientPartition.TEST || currResult.getSumDiff() < finalResult.getSumDiff()) {
 			setRange(finalResult);
 			finalResult.fill(standbyNumbs, 1, standbySumDiff);
 		}
@@ -360,13 +367,13 @@ final class Partition {
 	 */
 	boolean doPartition(int i, int ssCnt) {
 		long startTime;
-		if (EfficientPartition.TEST) {
+		if (IxigoEfficientPartition.TEST) {
 			_LOGGER.debug(String.format("%s\t", METHOD_TITLES[i]));
-			sumDiff = EfficientPartition.LARGEST_SUM;
+			sumDiff = IxigoEfficientPartition.LARGEST_SUM;
 			startTime = System.nanoTime();
 		}
 		methods[i].doPart(ssCnt);
-		if (EfficientPartition.TEST) {
+		if (IxigoEfficientPartition.TEST) {
 			StringBuilder sb = new StringBuilder();
 			sb.append(String.format("%.3f ms\t", (float) (System.nanoTime() - startTime) / (1000 * 1000)));
 			sb.append(

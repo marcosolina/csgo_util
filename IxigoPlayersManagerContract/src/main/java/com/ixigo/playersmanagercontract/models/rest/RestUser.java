@@ -1,4 +1,4 @@
-package com.ixigo.models.rest;
+package com.ixigo.playersmanagercontract.models.rest;
 
 import io.swagger.annotations.ApiModelProperty;
 

@@ -48,13 +48,14 @@ public interface DemFileParser {
     public Flux<SvcUser> getListOfUsers() throws IxigoException;
     
     /**
-     * It will return all the Users scores for the most recent "gamesCounter" games
+     * It will return all the Users scores for the most recent "numberOfMatches" played
+     * with at least "minPercPlayed" of the match
      * 
      * @param gamesCounter
      * @param usersIDs
      * @return
      * @throws MarcoException
      */
-    public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs,
+    public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs,
             BigDecimal minPercPlayed) throws IxigoException;
 }

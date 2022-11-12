@@ -17,6 +17,7 @@ public interface IxigoWebClientUtils {
 	public WebClient.Builder getWebBuilder();
 	
 	public <T> Mono<ResponseEntity<T>> performGetRequestNoExceptions(Class<T> responseBodyClass, URL url, Optional<Map<String, String>> headers, Optional<Map<String, String>> queryParameters);
+	public <T> Mono<ResponseEntity<T>> performGetRequest(Class<T> responseBodyClass, URL url, Optional<Map<String, String>> headers, Optional<Map<String, String>> queryParameters);
 	
 	 /**
      * It perform the REST request using the provided input parameters, and it will

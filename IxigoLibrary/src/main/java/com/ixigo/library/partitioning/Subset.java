@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
  * @author Fedor Naumenko
  */
 public final class Subset implements Comparable<Subset> {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(Subset.class);
+private static final Logger _LOGGER = LoggerFactory.getLogger(Subset.class);
 	
 	/** subset's ID */
 	private int id;
@@ -24,6 +24,16 @@ public final class Subset implements Comparable<Subset> {
 	private Double sumVal;
 	/** number IDs container */
 	private List<Integer> numbIDs;
+	
+	private int size;
+
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
 
 	/**
 	 * Creates an empty Subset with reserved capacity
@@ -41,6 +51,7 @@ public final class Subset implements Comparable<Subset> {
 	 */
 	void clear() {
 		sumVal = Double.valueOf(0);
+		size = 0;
 		numbIDs.clear();
 	}
 
@@ -52,6 +63,7 @@ public final class Subset implements Comparable<Subset> {
 	void addNumb(IdNumber n) {
 		sumVal += n.getVal();
 		numbIDs.add(n.getId());
+		size++;
 	}
 
 	/**

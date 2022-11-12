@@ -7,23 +7,23 @@ import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 
 public class CmdGetUsersLastScores implements WebCommandRequest<RestUsersScores> {
-	private Integer counter;
+	private Integer numberOfMatches;
 	private List<String> usersIDs;
 	private BigDecimal minPercPlayed;
 
-	public CmdGetUsersLastScores(Integer counter, List<String> usersIDs, BigDecimal minPercPlayed) {
+	public CmdGetUsersLastScores(Integer numberOfMatches, List<String> usersIDs, BigDecimal minPercPlayed) {
 		super();
-		this.counter = counter;
+		this.numberOfMatches = numberOfMatches;
 		this.usersIDs = usersIDs;
 		this.minPercPlayed = minPercPlayed;
 	}
 
-	public Integer getCounter() {
-		return counter;
+	public Integer getNumberOfMatches() {
+		return numberOfMatches;
 	}
 
-	public void setCounter(Integer counter) {
-		this.counter = counter;
+	public void setNumberOfMatches(Integer numberOfMatches) {
+		this.numberOfMatches = numberOfMatches;
 	}
 
 	public List<String> getUsersIDs() {
@@ -41,5 +41,4 @@ public class CmdGetUsersLastScores implements WebCommandRequest<RestUsersScores>
 	public void setMinPercPlayed(BigDecimal minPercPlayed) {
 		this.minPercPlayed = minPercPlayed;
 	}
-
 }

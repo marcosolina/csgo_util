@@ -1,7 +1,5 @@
 package com.ixigo.playersmanager.services.interfaces;
 
-import java.util.List;
-
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.playersmanager.models.svc.SvcTeam;
 import com.ixigo.playersmanager.models.svc.SvcUserAvgScore;
@@ -15,20 +13,9 @@ import reactor.core.publisher.Flux;
  *
  */
 public interface PartitionTeams {
-    /**
-     * It will partition the teams considering only the scores. This means that you
-     * can have one team with 2 players and the other one with 7 players because the
-     * "team scores" is equal
-     * 
-     * @param usersList
-     * @param partions
-     * @return
-     */
-    public Flux<SvcTeam> partitionTheUsersComparingTheScores(List<SvcUserAvgScore> usersList, Integer partions,
-            double penaltyWeight) throws IxigoException;
 
     /**
-     * It will try to create teams with even number of players adding some penalty
+     * It will try to create two teams with even number of players adding some penalty
      * if required
      * 
      * @param usersList
@@ -36,6 +23,5 @@ public interface PartitionTeams {
      * @param penaltyWeight
      * @return
      */
-    public Flux<SvcTeam> partitionTheUsersComparingTheScoresAndTeamMembers(List<SvcUserAvgScore> usersList, Integer partions,
-            double penaltyWeight) throws IxigoException;
+    public Flux<SvcTeam> partitionTheUsersIntoTwoTeams(Flux<SvcUserAvgScore> usersList, double penaltyWeight) throws IxigoException;
 }

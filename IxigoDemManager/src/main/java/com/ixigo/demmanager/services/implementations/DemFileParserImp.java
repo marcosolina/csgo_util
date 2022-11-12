@@ -77,7 +77,7 @@ public class DemFileParserImp implements DemFileParser {
 			
 			switch (props.getParserExecutionType()) {
 			case SYNC:
-				return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
+				//return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
 			case ASYNC:
 				new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
 					_LOGGER.debug("Async queue process completed");
@@ -138,14 +138,14 @@ public class DemFileParserImp implements DemFileParser {
 	}
 
 	@Override
-	public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer gamesCounter, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
+	public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
 		// @formatter:off
 		
 		// https://stackoverflow.com/questions/70704314/how-to-return-a-reactive-flux-that-contains-a-reactive-mono-and-flux
 		return Flux.fromIterable(usersIDs)
 			.flatMap(steamId -> repoUser.findById(steamId).defaultIfEmpty(new UsersDto().setSteam_id(steamId)))
 			.map(dto -> {
-				var list = repoUserScore.getLastXUserScores(gamesCounter, dto.getSteam_id(), minPercPlayed)
+				var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, dto.getSteam_id(), minPercPlayed)
 						.map(dtoScore -> fromUsersScoreDtoToSvcMapStata(dto, dtoScore))
 						.collectList();
 				return Tuples.of(dto.getSteam_id(), list);

@@ -63,14 +63,14 @@ public class ControllerDemData {
 	 * @return
 	 */
 	@GetMapping("/usersscores")
-	@ApiOperation(value = "It will return the last \"counter\" number of scores associated to the Users provided in the input list")
+	@ApiOperation(value = "It will return the users scores for the last \"numberOfMatches\" played for at least \"minPercPlayed\"")
 	// @formatter:off
     public Mono<ResponseEntity<RestUsersScores>> getUsersLastScores(
-            @RequestParam(name = "counter", defaultValue = "50") Integer counter,
+            @RequestParam(name = "numberOfMatches", defaultValue = "50") Integer numberOfMatches,
             @RequestParam("usersIDs") List<String> usersIDs,
             @RequestParam(name = "minPercPlayed", defaultValue = "0") BigDecimal minPercPlayed) {
 	// @formatter:on
 		_LOGGER.trace("Inside ControllerDemData.getUsersLastScores");
-		return mediator.send(new CmdGetUsersLastScores(counter, usersIDs, minPercPlayed));
+		return mediator.send(new CmdGetUsersLastScores(numberOfMatches, usersIDs, minPercPlayed));
 	}
 }

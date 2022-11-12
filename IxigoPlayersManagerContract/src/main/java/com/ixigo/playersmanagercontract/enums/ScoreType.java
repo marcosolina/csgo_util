@@ -1,4 +1,4 @@
-package com.ixigo.enums;
+package com.ixigo.playersmanagercontract.enums;
 
 public enum ScoreType {
 	// @formatter:off

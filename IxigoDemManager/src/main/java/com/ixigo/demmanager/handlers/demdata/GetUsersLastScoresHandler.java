@@ -32,7 +32,7 @@ public class GetUsersLastScoresHandler implements WebCommandHandler<CmdGetUsersL
 	public Mono<ResponseEntity<RestUsersScores>> handle(CmdGetUsersLastScores request) {
 		_LOGGER.trace("Inside GetUsersLastScoresHandler.handle");
 
-		return service.getUsersStatsForLastXGames(request.getCounter(), request.getUsersIDs(), request.getMinPercPlayed())
+		return service.getUsersStatsForLastXGames(request.getNumberOfMatches(), request.getUsersIDs(), request.getMinPercPlayed())
 		.collectList().map(list -> {
 			Map<String, List<RestMapStats>> map = new HashMap<>();
 			list.forEach(stat -> {

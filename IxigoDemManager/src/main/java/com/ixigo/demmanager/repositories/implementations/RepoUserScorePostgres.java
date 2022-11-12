@@ -98,7 +98,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 	}
 
 	@Override
-	public Flux<Users_scoresDto> getLastXUserScores(Integer counter, String steamID, BigDecimal minPercPLayer) {
+	public Flux<Users_scoresDto> getLastXMatchesScoresForUser(Integer numberOfMatches, String steamID, BigDecimal minPercPlayed) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.getLastXUserScores");
 
 		Users_scoresDao dao = new Users_scoresDao();
@@ -120,8 +120,8 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		// @formatter:off
 		return client.sql(sql.toString())
 			.bind(Users_scoresDto.Fields.steam_id, steamID)
-			.bind(Users_scoresDto.Fields.mp, minPercPLayer)
-			.bind("limit", counter)
+			.bind(Users_scoresDto.Fields.mp, minPercPlayed)
+			.bind("limit", numberOfMatches)
 			.map(dao::mappingFunction)
 			.all();
 		// @formatter:on

@@ -153,4 +153,9 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
 	public Builder getWebBuilder() {
 		return this.builder;
 	}
+
+	@Override
+	public <T> Mono<ResponseEntity<T>> performGetRequest(Class<T> responseBodyClass, URL url, Optional<Map<String, String>> headers, Optional<Map<String, String>> queryParameters) {
+		return performRequest(responseBodyClass, HttpMethod.GET, url, headers, queryParameters, Optional.of(MediaType.APPLICATION_JSON), Optional.empty());
+	}
 }

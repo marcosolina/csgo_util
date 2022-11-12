@@ -1,4 +1,4 @@
-package com.ixigo.enums;
+package com.ixigo.playersmanagercontract.enums;
 
 /**
  * The algorithm to apply when generating the teams

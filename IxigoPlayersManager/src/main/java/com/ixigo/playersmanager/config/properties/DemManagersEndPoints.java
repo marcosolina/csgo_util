@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "ixigo.end-points.demmanager")
+@ConfigurationProperties(prefix = "ixigo.end-points.dem-manager")
 public class DemManagersEndPoints {
 	private String postDemFile;
 	private String getDemFile;

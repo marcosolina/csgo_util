@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.ixigo.demmanagercontract.models.rest.demdata.EsersScoresQueryParam;
+import com.ixigo.demmanagercontract.models.rest.demdata.UsersScoresQueryParam;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
@@ -264,9 +264,9 @@ public class PlayersManagerImp implements PlayersManager {
 			URL url = new URL(demManagerEndPoints.getGetDemDataUsersScores());
 			_LOGGER.debug(url.toString());
 			Map<String, String> queryParams = new HashMap<>();
-			queryParams.put(EsersScoresQueryParam.NUMBER_OF_MATCHES.getQueryParamKey(), numberOfMatches.toString());
-			queryParams.put(EsersScoresQueryParam.USERS_STEAM_IDS.getQueryParamKey(), String.join(",", usersIDs));
-	        queryParams.put(EsersScoresQueryParam.MINIMUM_PERCE_MATCH_PLAYED.getQueryParamKey(), minPercPlayed.toString());
+			queryParams.put(UsersScoresQueryParam.NUMBER_OF_MATCHES.getQueryParamKey(), numberOfMatches.toString());
+			queryParams.put(UsersScoresQueryParam.USERS_STEAM_IDS.getQueryParamKey(), String.join(",", usersIDs));
+	        queryParams.put(UsersScoresQueryParam.MINIMUM_PERCE_MATCH_PLAYED.getQueryParamKey(), minPercPlayed.toString());
 			return webClient.performGetRequest(RestUsersScores.class, url, Optional.empty(), Optional.of(queryParams))
 					.map(resp -> resp.getBody().getUsersScores());
 		}

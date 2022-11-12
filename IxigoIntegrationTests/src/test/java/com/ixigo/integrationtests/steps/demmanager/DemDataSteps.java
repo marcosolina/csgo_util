@@ -22,6 +22,7 @@ import com.ixigo.demmanagercontract.models.rest.demdata.RestMapsPlayed;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
+import com.ixigo.demmanagercontract.models.rest.demdata.UsersScoresQueryParam;
 import com.ixigo.integrationtests.components.SharedResponseEntity;
 import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
@@ -139,8 +140,8 @@ public class DemDataSteps {
 			URL url = new URL(endPoints.getGetDemDataUsersScores());
 			_LOGGER.debug(url.toString());
 			Map<String, String> queryParams = new HashMap<>();
-			queryParams.put("counter", numberOfMatches.toString());
-			queryParams.put("usersIDs", String.join(",", steamIds));
+			queryParams.put(UsersScoresQueryParam.NUMBER_OF_MATCHES.getQueryParamKey(), numberOfMatches.toString());
+			queryParams.put(UsersScoresQueryParam.USERS_STEAM_IDS.getQueryParamKey(), String.join(",", steamIds));
 			var resp = webClient.performGetRequestNoExceptions(RestUsersScores.class, url, Optional.empty(), Optional.of(queryParams)).block();
 			assertNotNull(resp);
 			sharedCr.setSharedResp(resp);

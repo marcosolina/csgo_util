@@ -17,6 +17,7 @@
 		<cucumber.version>7.5.0</cucumber.version>
 		<contract.demmanager>2.0.0</contract.demmanager>
 		<contract.eventdispatcher>2.0.0</contract.eventdispatcher>
+		<contract.playersmanagercontract>2.0.0</contract.playersmanagercontract>
 	</properties>
 	
 	<dependencies>
@@ -62,6 +63,11 @@
 			<groupId>com.ixigo</groupId>
 			<artifactId>IxigoEventDispatcherContract</artifactId>
 			<version>${contract.eventdispatcher}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoPlayersManagerContract</artifactId>
+			<version>${contract.playersmanagercontract}</version>
 		</dependency>
 	</dependencies>
 

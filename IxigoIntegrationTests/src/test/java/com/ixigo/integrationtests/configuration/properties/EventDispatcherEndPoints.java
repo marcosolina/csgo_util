@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "ixigo.end-points.eventdispatcher")
+@ConfigurationProperties(prefix = "ixigo.end-points.event-dispatcher")
 public class EventDispatcherEndPoints {
 	private String postEvent;
 	private String postListener;

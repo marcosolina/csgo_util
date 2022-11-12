@@ -9,7 +9,7 @@ import com.ixigo.demmanager.enums.ParserEnvironment;
 import com.ixigo.demmanager.enums.ParserExecutionType;
 
 @Configuration
-@ConfigurationProperties(prefix = "ixigo.demmanager.demfileprops")
+@ConfigurationProperties(prefix = "ixigo.dem-manager.dem-file-props")
 public class DemFileManagerProps {
 	public Path rootFolder;
 	public ParserEnvironment parserEnvironment;

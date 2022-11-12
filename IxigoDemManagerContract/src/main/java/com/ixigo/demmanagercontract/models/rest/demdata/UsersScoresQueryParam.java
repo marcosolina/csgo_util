@@ -1,6 +1,6 @@
 package com.ixigo.demmanagercontract.models.rest.demdata;
 
-public enum EsersScoresQueryParam {
+public enum UsersScoresQueryParam {
 	NUMBER_OF_MATCHES("numberOfMatches"),
 	USERS_STEAM_IDS("usersIDs"),
 	MINIMUM_PERCE_MATCH_PLAYED("minPercPlayed"),
@@ -9,7 +9,7 @@ public enum EsersScoresQueryParam {
 
     private final String queryParamKey;
 
-    EsersScoresQueryParam(String queryParamKey) {
+    UsersScoresQueryParam(String queryParamKey) {
         this.queryParamKey = queryParamKey;
     }
 
@@ -17,8 +17,8 @@ public enum EsersScoresQueryParam {
         return this.queryParamKey;
     }
 
-    public static EsersScoresQueryParam fromDesc(String desc) {
-        for (EsersScoresQueryParam i : EsersScoresQueryParam.values()) {
+    public static UsersScoresQueryParam fromDesc(String desc) {
+        for (UsersScoresQueryParam i : UsersScoresQueryParam.values()) {
             if (i.queryParamKey.equals(desc)) {
                 return i;
             }

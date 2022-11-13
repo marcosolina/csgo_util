@@ -16,18 +16,18 @@ import com.ixigo.playersmanagercontract.models.rest.RestTeams;
 import reactor.core.publisher.Mono;
 
 @Component
-public class GetTeamsCmdHandler  implements WebCommandHandler<GetTeamsCmd, RestTeams> {
+public class GetTeamsCmdHandler implements WebCommandHandler<GetTeamsCmd, RestTeams> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(GetTeamsCmdHandler.class);
-	
+
 	@Autowired
-    private PlayersManager service;
+	private PlayersManager service;
 	@Autowired
-    private RestMapper mapper;
-	
+	private RestMapper mapper;
+
 	@Override
 	public Mono<ResponseEntity<RestTeams>> handle(GetTeamsCmd cmd) {
 		_LOGGER.trace("Inside GetTeamsCmdHandler.handle");
-		
+
 		// @formatter:off
 		return service.generateTwoTeamsForcingSimilarTeamSizes(
 				cmd.getNumberOfMatches(),

@@ -1,0 +1,16 @@
+logging:
+  file:
+    name: ./logs/ixigo-rcon-api.log
+  level:
+    com:
+      ixigo:
+        rconapi: DEBUG
+
+server:
+  servlet:
+    context-path: /rcon
+    
+com:
+  ixigo:
+    rconapiservice:
+      version: ^project.version^

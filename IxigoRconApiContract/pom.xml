@@ -1,12 +1,13 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.ixigo</groupId>
-	<artifactId>IxigoPlayersManagerContract</artifactId>
-	<packaging>jar</packaging>
-	<version>2.0.0</version>
-	<name>IxigoPlayersManagerContract</name>
-	<url>http://maven.apache.org</url>
-	<properties>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.ixigo</groupId>
+  <artifactId>IxigoRconApiContract</artifactId>
+  <version>2.0.0</version>
+  <packaging>jar</packaging>
+  <name>IxigoRconApiContract</name>
+  <url>http://maven.apache.org</url>
+  <properties>
 		<java.version>11</java.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jackson.version>2.13.4.2</jackson.version>
@@ -45,5 +46,5 @@
 				</configuration>
 			</plugin>
 		</plugins>
-	</build>
+	</build>>
 </project>

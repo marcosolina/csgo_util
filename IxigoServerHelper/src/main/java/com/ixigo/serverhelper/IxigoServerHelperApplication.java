@@ -1,4 +1,4 @@
-package com.marco.ixigo.serverhelper;
+package com.ixigo.serverhelper;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

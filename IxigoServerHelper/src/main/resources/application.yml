@@ -1,40 +1,21 @@
 logging:
   file:
     name: ./logs/server-helper.log
-  pattern:
-    console: "%d %-5level : %msg%n"
-    file: "%d %-5level : %msg%n"
   level:
-    root: INFO
     com:
-      marco:
-       ixigo:
-         serverhelper: DEBUG
+      ixigo:
+        serverhelper: DEBUG
 
 server:
   servlet:
     context-path: /ixigohelper                                                                                    # Do not change this
-  port: 8083
-  
+
 com:
-  marco:
-   ixigo:
-     serverhelper:
-       version: ^project.version^
-       demFilesFolderFullPath: "E:\\VmSharedFiles\\CsgoServer\\ixi_go\\CsgoServer\\csgo"                          # Full path the the csgo game server folder
-       justmondaynight: true                                                                                      # It sends the DEM files to the dem manager service only if it is Monday
-       services:
-         demmanager:
-           protocol: http                                                                                         # HTTP or HTTPs
-           host: 192.168.1.25                                                                                     # Host name of the Ixigo Proxy service
-           port: 8763                                                                                             # Port on which the Ixigo Proxy Service is listening
-           contextPath: "/ixigoproxy/ixigo-dem-manager/demmanager"                                                # Do not change this
-           uploadFile: "${com.marco.ixigo.serverhelper.services.demmanager.contextPath}/files"                    # Do not change this
-           parseFile: "${com.marco.ixigo.serverhelper.services.demmanager.contextPath}/parse"                     # Do not change this
-         eventdispatcher:
-           protocol: http                                                                                         # HTTP or HTTPs
-           host: 192.168.1.25                                                                                     # Host name of the Ixigo Proxy service
-           port: 8763                                                                                             # Port on which the Ixigo Proxy Service is listening
-           contextPath: "/ixigoproxy/ixigo-event-dispatcher/eventsdispatcher"                                     # Do not change this
-           dispatchEvent: "${com.marco.ixigo.serverhelper.services.eventdispatcher.contextPath}/event"            # Do not change this
-           sendEvents: false
+  ixigo:
+    serverhelper:
+      version: ^project.version^
+      dem-files:
+        dem-files-folder-full-path: "E:\\VmSharedFiles\\CsgoServer\\ixi_go\\CsgoServer\\csgo" # Full path the the csgo game server folder
+        upload-files-only-if-monday: true                                                     # It sends the DEM files to the dem manager service only if it is Monday
+      events:
+        send-events: true                                                                     # Send the events to the dispatch event service

@@ -16,7 +16,16 @@ public enum DateFormats {
 	/**
 	 * yyyy-MM-dd
 	 */
-	DB_DATE("yyyy-MM-dd");
+	DB_DATE("yyyy-MM-dd"),
+	/**
+	 * yyyyMMdd
+	 */
+	FILE_NAME_JUST_DATE("yyyyMMdd"),
+	/**
+	 * yyyyMMdd HHmmss
+	 */
+	FILE_NAME_WITH_SPACE("yyyyMMdd HHmmss")
+	;
 
 	private final String format;
 

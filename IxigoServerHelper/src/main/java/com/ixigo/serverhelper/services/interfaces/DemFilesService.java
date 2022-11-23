@@ -2,8 +2,6 @@ package com.ixigo.serverhelper.services.interfaces;
 
 import com.ixigo.library.errors.IxigoException;
 
-import reactor.core.publisher.Mono;
-
 /**
  * Interface to manage the dem files
  * 
@@ -17,5 +15,5 @@ public interface DemFilesService {
      * 
      * @throws MarcoException
      */
-    public Mono<Void> postLastDemFiles(boolean isShutDown) throws IxigoException;
+    public void postLastDemFiles(boolean isShutDown) throws IxigoException;
 }

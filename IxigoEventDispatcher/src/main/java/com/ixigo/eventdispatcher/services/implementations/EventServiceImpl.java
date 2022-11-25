@@ -112,70 +112,65 @@ public class EventServiceImpl implements EventService {
 		DispatchedEventMessage message = new DispatchedEventMessage();
 		message.setEventTime(DateUtils.getCurrentUtcDateTime());
 		message.setEventType(event);
-		
 		// @formatter:off
-		new Thread(() -> {
-			repo.getListernersOfEvent(event)
-			.parallel()
-			.runOn(Schedulers.boundedElastic())
-			.flatMap(dto -> {
-				Mono<ResponseEntity<String>> mono = null;
-				
-				try {
-					URL url = new URL(dto.getUrl_listener());
-					mono = webClient.performRequestNoExceptions(String.class, HttpMethod.POST, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(message))
-							.onErrorResume(er -> Mono.just(new ResponseEntity<String>(er.getMessage(), HttpStatus.BAD_GATEWAY)));
-				} catch (Exception e) {
-					e.printStackTrace();
-					mono = Mono.just(new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
-				}
-				
-				return mono.map(resp -> {
-					return Tuples.of(dto, resp);
-				});
-			}).flatMap(tuple -> {
-				var dto = tuple.getT1();
-				var resp = tuple.getT2();
-				// if successful rest otherwise set error
-				if(resp.getStatusCode().is2xxSuccessful()) {
-					dto.setLast_successful(DateUtils.getCurrentUtcDateTime());
-					dto.setConsecutive_failure(0);
-				}else {
-					dto.setLast_failure(DateUtils.getCurrentUtcDateTime());
-					dto.setConsecutive_failure(dto.getConsecutive_failure() + 1);
-					if(dto.getConsecutive_failure() > 2) {
-						dto.setActive("N");
-					}
-				}
-				
-				return repo.updateEntity(dto)
-				.map(bool -> {
-					if(!bool) {
-						_LOGGER.error(String.format("Not able to update: %s", dto.toString()));
-					}
-					return Tuples.of(resp, dto);
-				});
-			}).filter(tuple -> !tuple.getT1().getStatusCode().is2xxSuccessful())
-			.flatMap(tuple -> {
-				var resp = tuple.getT1();
-				var dto = tuple.getT2();
-				StringBuilder sb = new StringBuilder();
-	            sb.append(String.format("%s- URL: %s", NEW_LINE_CHAR, dto.getUrl_listener()));
-	            sb.append(String.format("%s- Event: %s", NEW_LINE_CHAR, dto.getEvent_type().name()));
-	            sb.append(String.format("%s- Attempt: %d", NEW_LINE_CHAR, dto.getConsecutive_failure()));
-	            sb.append(String.format("%s- Reason: %s", NEW_LINE_CHAR, resp.getBody()));
-	            
-	            return notiService.sendEventServiceError("Not able to dispatch the event", sb.toString())
-	            		.map(b -> dto);
-			})
-			.subscribe(dto -> {
-				_LOGGER.error(String.format("Failed to send envent: %s to: %s", dto.getEvent_type().name(), dto.getUrl_listener()));
+		return repo.getListernersOfEvent(event)
+		.parallel()
+		.runOn(Schedulers.boundedElastic())
+		.flatMap(dto -> {
+			Mono<ResponseEntity<String>> mono = null;
+			
+			try {
+				URL url = new URL(dto.getUrl_listener());
+				mono = webClient.performRequestNoExceptions(String.class, HttpMethod.POST, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(message))
+						.onErrorResume(er -> Mono.just(new ResponseEntity<String>(er.getMessage(), HttpStatus.BAD_GATEWAY)));
+			} catch (Exception e) {
+				e.printStackTrace();
+				mono = Mono.just(new ResponseEntity<String>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR));
+			}
+			
+			return mono.map(resp -> {
+				return Tuples.of(dto, resp);
 			});
-			;
-		}).start();
+		}).flatMap(tuple -> {
+			var dto = tuple.getT1();
+			var resp = tuple.getT2();
+			// if successful rest otherwise set error
+			if(resp.getStatusCode().is2xxSuccessful()) {
+				dto.setLast_successful(DateUtils.getCurrentUtcDateTime());
+				dto.setConsecutive_failure(0);
+			}else {
+				dto.setLast_failure(DateUtils.getCurrentUtcDateTime());
+				dto.setConsecutive_failure(dto.getConsecutive_failure() + 1);
+				if(dto.getConsecutive_failure() > 2) {
+					dto.setActive("N");
+				}
+			}
+			
+			return repo.updateEntity(dto)
+			.map(bool -> {
+				if(!bool) {
+					_LOGGER.error(String.format("Not able to update: %s", dto.toString()));
+				}
+				return Tuples.of(resp, dto);
+			});
+		}).filter(tuple -> !tuple.getT1().getStatusCode().is2xxSuccessful())
+		.flatMap(tuple -> {
+			var resp = tuple.getT1();
+			var dto = tuple.getT2();
+			StringBuilder sb = new StringBuilder();
+            sb.append(String.format("%s- URL: %s", NEW_LINE_CHAR, dto.getUrl_listener()));
+            sb.append(String.format("%s- Event: %s", NEW_LINE_CHAR, dto.getEvent_type().name()));
+            sb.append(String.format("%s- Attempt: %d", NEW_LINE_CHAR, dto.getConsecutive_failure()));
+            sb.append(String.format("%s- Reason: %s", NEW_LINE_CHAR, resp.getBody()));
+            
+            return notiService.sendEventServiceError("Not able to dispatch the event", sb.toString())
+            		.map(b -> dto);
+		})
+		.map(dto -> {
+			_LOGGER.error(String.format("Failed to send envent: %s to: %s", dto.getEvent_type().name(), dto.getUrl_listener()));
+			return dto;
+		}).then();
 		// @formatter:on
-		
-		return Mono.just("").then();
 	}
 
 	private void checkListenerKey(String listenerUrl, EventType event) throws IxigoException {

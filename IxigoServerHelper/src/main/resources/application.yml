@@ -15,7 +15,9 @@ com:
     serverhelper:
       version: ^project.version^
       dem-files:
-        dem-files-folder-full-path: "E:\\VmSharedFiles\\CsgoServer\\ixi_go\\CsgoServer\\csgo" # Full path the the csgo game server folder
+        dem-files-folder-full-path: "E:\\tmp\\csgoutils\\demfiles" # Full path the the csgo game server folder
         upload-files-only-if-monday: true                                                     # It sends the DEM files to the dem manager service only if it is Monday
       events:
         send-events: true                                                                     # Send the events to the dispatch event service
+        event-file-reader-impl: "POWERSHELL" # TAIL or POWERSHELL
+        event-file-path: "E:\\tmp\\csgoutils\\events.txt"

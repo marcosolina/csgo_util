@@ -2,8 +2,8 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ixigo</groupId>
 	<artifactId>IxigoEventDispatcherContract</artifactId>
-	<packaging>jar</packaging>
 	<version>2.0.0</version>
+	<packaging>jar</packaging>
 	<name>IxigoEventDispatcherContract</name>
 	<url>http://maven.apache.org</url>
 	<properties>

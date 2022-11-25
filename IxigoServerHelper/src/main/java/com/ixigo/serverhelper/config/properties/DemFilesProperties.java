@@ -1,19 +1,21 @@
 package com.ixigo.serverhelper.config.properties;
 
+import java.nio.file.Path;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ConfigurationProperties(prefix = "com.ixigo.serverhelper.demFiles")
+@ConfigurationProperties(prefix = "com.ixigo.serverhelper.dem-files")
 public class DemFilesProperties {
-	private String demFilesFolderFullPath;
+	private Path demFilesFolderFullPath;
 	private Boolean uploadFilesOnlyIfMonday;
 
-	public String getDemFilesFolderFullPath() {
+	public Path getDemFilesFolderFullPath() {
 		return demFilesFolderFullPath;
 	}
 
-	public void setDemFilesFolderFullPath(String demFilesFolderFullPath) {
+	public void setDemFilesFolderFullPath(Path demFilesFolderFullPath) {
 		this.demFilesFolderFullPath = demFilesFolderFullPath;
 	}
 

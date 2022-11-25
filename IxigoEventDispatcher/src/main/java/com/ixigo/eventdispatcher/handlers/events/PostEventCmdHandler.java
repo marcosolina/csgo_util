@@ -38,7 +38,7 @@ public class PostEventCmdHandler implements WebCommandHandler<PostEventCmd, Void
 				_LOGGER.debug(String.format("Event: %s from server: %s dispatched", et.name(), request.getCsgoServerIpAddress()));
 			});
 		}).start();
-
+		
 		return Mono.just(new ResponseEntity<>(HttpStatus.ACCEPTED));
 	}
 

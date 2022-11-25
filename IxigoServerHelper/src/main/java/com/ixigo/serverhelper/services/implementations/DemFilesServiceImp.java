@@ -123,7 +123,7 @@ public class DemFilesServiceImp implements DemFilesService {
 
 	private Flux<Path> getListOfFiles() {
 		try {
-			var stream = Files.list(Path.of(demProps.getDemFilesFolderFullPath()));
+			var stream = Files.list(demProps.getDemFilesFolderFullPath());
 			return Flux.fromStream(stream);
 		} catch (IOException e) {
 			e.printStackTrace();

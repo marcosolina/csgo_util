@@ -5,7 +5,7 @@ import java.nio.file.Path;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
-import com.ixigo.serverhelper.EventFileReaderImplementations;
+import com.ixigo.serverhelper.enums.EventFileReaderImplementations;
 
 @Configuration
 @ConfigurationProperties(prefix = "com.ixigo.serverhelper.events")

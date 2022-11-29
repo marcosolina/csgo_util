@@ -1,4 +1,4 @@
-package com.ixigo.serverhelper;
+package com.ixigo.serverhelper.enums;
 
 public enum EventFileReaderImplementations {
 	TAIL, POWERSHELL

@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.ixigo.serverhelper.EventFileReaderImplementations;
 import com.ixigo.serverhelper.config.properties.EventProperties;
+import com.ixigo.serverhelper.enums.EventFileReaderImplementations;
 import com.ixigo.serverhelper.services.implementations.DemFilesServiceImp;
 import com.ixigo.serverhelper.services.implementations.IxiGoEventMonitorImp;
 import com.ixigo.serverhelper.services.implementations.IxigoEventFileReaderPowerShell;

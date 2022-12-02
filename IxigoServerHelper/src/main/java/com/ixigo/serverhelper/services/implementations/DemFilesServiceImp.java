@@ -60,7 +60,7 @@ public class DemFilesServiceImp implements DemFilesService {
 		.sort((o1, o2) -> {
 			String[] tmp = o1.getFileName().toString().split("-");
             LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(String.format("%s %s", tmp[1], tmp[2]), DateFormats.FILE_NAME_WITH_SPACE);
-            String[] tmp2 = o1.getFileName().toString().split("-");
+            String[] tmp2 = o2.getFileName().toString().split("-");
             LocalDateTime ldt2 = DateUtils.fromStringToLocalDateTime(String.format("%s %s", tmp2[1], tmp2[2]), DateFormats.FILE_NAME_WITH_SPACE);
             return ldt.compareTo(ldt2) * -1;
 		});
@@ -157,17 +157,8 @@ public class DemFilesServiceImp implements DemFilesService {
 	                })
 					.contentType(MediaType.MULTIPART_FORM_DATA)
 					.bodyValue(parts)
-					.exchangeToMono(response -> {
-						if (response.statusCode().is4xxClientError() || response.statusCode().is5xxServerError()) {
-			                return Mono.just(new ResponseEntity<Void>(response.statusCode()));
-			            }
-
-			            return response.bodyToMono(Void.class)
-			            		.map(body -> new ResponseEntity<Void>(null, response.headers().asHttpHeaders(), response.rawStatusCode()));
-					}).onErrorResume(error -> {
-			        	return Mono.error(new IxigoException(HttpStatus.BAD_GATEWAY, error.getMessage(), ""));
-			        });
-				
+					.exchangeToMono(response -> Mono.just(new ResponseEntity<Void>(response.statusCode())))
+					.onErrorResume(error -> Mono.error(new IxigoException(HttpStatus.BAD_GATEWAY, error.getMessage(), "")));
 				return resp;
 			})
 			; 

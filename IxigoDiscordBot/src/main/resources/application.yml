@@ -1,54 +1,16 @@
 logging:
   file:
-    name: ./logs/discordbot.log
-  pattern:
-    console: "%d %-5level : %msg%n"
-    file: "%d %-5level : %msg%n"
+    name: ./logs/ixigo-dem-manager.log
   level:
-    root: INFO
     com:
-      marco:
+      ixigo:
         discordbot: DEBUG
 
 server:
   servlet:
-    context-path: /discordbot
-  
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/discordbot                                                              # You can change this, but do not change the DB name.
-    username: ${IXIGO_POSTGRES_USER:REPLACE_ME}
-    password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME}
-
+    context-path: /discordbot                                                                                           # Do not change this
 com:
-  marco:
-    ixigo:
-      discordbot:
-        startBotOnStartup: false                                                                                  # Automatically start the bot on boot true/false
-        bottoken: ${DISCORD_BOT_TOKEN}
-        version: ^project.version^
-        services:
-          discord:                                                                                                # These are the discors IDs that I use on my test server.
-            serverId: 700738420686717000                                                                          # You can get these IDs from Discord,
-            textChannels:                                                                                         # right click on the specific item and copy the ID
-              general: 700738421131444234 
-            voiceChannels:
-              terrorist: 706943323084161124
-              ct: 706942842173653094
-              general: 700738421131444236
-          rconapi:
-            protocol: http                                                                                        # HTTP or HTTPs
-            host: localhost                                                                                       # Host name of the Ixigo Proxy service
-            port: 8763                                                                                            # Port on which the Ixigo Proxy Service is listening
-            contextPath: "/ixigoproxy/ixigo-rcon-api/rcon"                                                        # Do not change this
-            sendcommand: "${com.marco.ixigo.discordbot.services.rconapi.contextPath}/cmd"                         # Do not change this
-            csgoServerPort: 27015                                                                                 # CSGO server port
-            csgoServerHost: 192.168.1.10                                                                          # Host where the CSGO server is running
-            csgoServerPassw: ${CSGO_SERVER_PASSW:localtest}                                                       # CSGO RCON password
-          players-manager:
-            protocol: http                                                                                        # HTTP or HTTPs
-            host: localhost                                                                                       # Host name of the Ixigo Proxy service
-            port: 8763                                                                                            # Port on which the Ixigo Proxy Service is listening
-            contextPath: "/ixigoproxy/ixigo-players-manager/playersmanager"                                       # Do not change this
-            generateTeams: "${com.marco.ixigo.discordbot.services.players-manager.contextPath}/teams"             # Do not change this
-            
+  ixigo:
+    demmanager:
+      version: ^project.version^  
+      

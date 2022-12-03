@@ -10,6 +10,10 @@
 	<name>IxigoDiscordBot</name>
 	<version>2.0.0</version>
 	<description>Ixigo Discord Bot</description>
+	
+	<properties>
+		<discord.api>4.2.1_253</discord.api>
+	</properties>
 
 	<dependencies>
 		<!-- START Database Stuff -->
@@ -36,5 +40,21 @@
 			<artifactId>IxigoDemManagerContract</artifactId>
 			<version>2.0.0</version>
 		</dependency>
+		
+		<!-- Discord API wrapper -->
+		<dependency>
+			<groupId>net.dv8tion</groupId>
+			<artifactId>JDA</artifactId>
+			<version>${discord.api}</version>
+		</dependency>
 	</dependencies>
+	
+	<!-- JDA Repository (Discord API wrapper) -->
+	<repositories>
+		<repository>
+			<id>dv8tion</id>
+			<name>m2-dv8tion</name>
+			<url>https://m2.dv8tion.net/releases</url>
+		</repository>
+	</repositories>
 </project>

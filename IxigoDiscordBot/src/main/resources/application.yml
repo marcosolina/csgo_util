@@ -11,6 +11,6 @@ server:
     context-path: /discordbot                                                                                           # Do not change this
 com:
   ixigo:
-    demmanager:
+    discordbot:
       version: ^project.version^  
       

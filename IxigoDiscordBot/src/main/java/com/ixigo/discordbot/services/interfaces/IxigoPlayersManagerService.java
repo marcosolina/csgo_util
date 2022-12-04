@@ -16,7 +16,7 @@ public interface IxigoPlayersManagerService {
 			Optional<Integer> numberOfMatches,
 			Optional<Double> penaltyWeight,
 			Optional<ScoreType> partitionScore,
-			Optional<Integer> minPercPlayed
+			Optional<Double> minPercPlayed
 			) throws IxigoException;
 	// @formatter:on
 }

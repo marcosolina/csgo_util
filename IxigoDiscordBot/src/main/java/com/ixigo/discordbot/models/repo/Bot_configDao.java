@@ -1,5 +1,6 @@
 package com.ixigo.discordbot.models.repo;
 
+import com.ixigo.discordbot.enums.BotConfigKey;
 import com.ixigo.library.dao.IxigoDao;
 
 import io.r2dbc.spi.Row;
@@ -20,7 +21,7 @@ public class Bot_configDao extends IxigoDao<Bot_configDto> {
 	@Override
 	public Bot_configDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		Bot_configDto dto = new Bot_configDto();
-		dto.setConfig_key(row.get(Bot_configDto.Fields.config_key, String.class));
+		dto.setConfig_key(BotConfigKey.valueOf(row.get(Bot_configDto.Fields.config_key, String.class)));
 		dto.setConfig_val(row.get(Bot_configDto.Fields.config_val, String.class));
 		return dto;
 	}
@@ -33,11 +34,11 @@ public class Bot_configDao extends IxigoDao<Bot_configDto> {
 		this.dto.setConfig_val(config_val);
 	}
 
-	public String getConfig_key() {
+	public BotConfigKey getConfig_key() {
 		return dto.getConfig_key();
 	}
 
-	public void setConfig_key(String config_key) {
+	public void setConfig_key(BotConfigKey config_key) {
 		this.dto.setConfig_key(config_key);
 	}
 

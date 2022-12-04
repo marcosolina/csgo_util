@@ -15,7 +15,8 @@
 		<discord.api>5.0.0-beta.1</discord.api>
 		<contract.eventdispatcher>2.0.0</contract.eventdispatcher>
 		<contract.demmanager>2.0.0</contract.demmanager>
-		<contract.playersmanagercontract>2.0.0</contract.playersmanagercontract>
+		<contract.playersmanager>2.0.0</contract.playersmanager>
+		<contract.rcon>2.0.0</contract.rcon>
 	</properties>
 
 	<dependencies>
@@ -59,7 +60,12 @@
 		<dependency>
 			<groupId>com.ixigo</groupId>
 			<artifactId>IxigoPlayersManagerContract</artifactId>
-			<version>${contract.playersmanagercontract}</version>
+			<version>${contract.playersmanager}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoRconApiContract</artifactId>
+			<version>${contract.rcon}</version>
 		</dependency>
 	</dependencies>
 

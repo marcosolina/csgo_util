@@ -1,8 +1,11 @@
 package com.ixigo.rconapi.models.rest;
 
+import java.io.Serializable;
+
 import io.swagger.annotations.ApiModelProperty;
 
-public class RestRconRequest {
+public class RestRconRequest implements Serializable{
+	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "The host that is running the RCON server", required = true)
 	private String rconHost;
 	@ApiModelProperty(notes = "The RCON port that the server is listening to", required = true)

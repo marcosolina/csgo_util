@@ -1,5 +1,7 @@
 package com.ixigo.discordbot.repositories.implementations;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,6 +54,30 @@ public class RepoUsersMapPostgres implements RepoUsersMap {
 		_LOGGER.trace("Inside RepoUsersMapPostgres.getAll");
 		Users_mapDao dao = new Users_mapDao();
 		return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
+	}
+
+	@Override
+	public Flux<Users_mapDto> findAllById(List<Long> discordIds) {
+		_LOGGER.trace("Inside RepoUsersMapPostgres.findAllById");
+		
+		if(discordIds == null || discordIds.isEmpty()) {
+			return Flux.empty();
+		}
+		
+		Users_mapDao dao = new Users_mapDao();
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM " + Users_mapDao.tableName);
+		sql.append(" WHERE " + Users_mapDto.Fields.discord_id);
+		sql.append(" IN (:ids) ");
+		sql.append(" AND "  + Users_mapDto.Fields.steam_id + " IS NOT NULL");
+		
+		// @formatter:off
+		return client.sql(sql.toString())
+			.bind("ids", discordIds)
+			.map(dao::mappingFunction)
+			.all();
+		// @formatter:on
 	}
 
 }

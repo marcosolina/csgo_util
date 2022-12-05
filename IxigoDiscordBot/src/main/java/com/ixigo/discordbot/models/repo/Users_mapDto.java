@@ -8,9 +8,9 @@ import lombok.experimental.FieldNameConstants;
 public class Users_mapDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
-	private String steam_id = "";
-	private String steam_name = "";
-	private String discord_name = "";
+	private String steam_id = null;
+	private String steam_name = null;
+	private String discord_name = null;
 	private Long discord_id = null;
 
 	public String getSteam_id() {

@@ -6,12 +6,12 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
 public class Users_mapDao extends IxigoDao<Users_mapDto> {
-
+	public static final String tableName = "users_map";
 	private static final long serialVersionUID = 1L;
 	private Users_mapDto dto = null;
 
 	public Users_mapDao() {
-		this.setSqlViewName("users_map");
+		this.setSqlViewName(tableName);
 		this.setSqlKeys(new String[] { Users_mapDto.Fields.discord_id });
 		// @formatter:off
 		this.setSqlFields(new String[] {

@@ -13,6 +13,6 @@ import reactor.core.publisher.Mono;
 public interface IxigoRconService {
 	public Mono<Map<TeamType, List<RestUser>>> getCurrentActivePlayersOnTheIxiGoServer() throws IxigoException;
     public Mono<Boolean> kickTheBots() throws IxigoException;
-    public Mono<Boolean> restartIxiGoRound() throws IxigoException;
+    public Mono<Boolean> restartIxiGoMatch() throws IxigoException;
     public Mono<Boolean> movePlayersToAppropriateTeam(RestTeams teams) throws IxigoException;
 }

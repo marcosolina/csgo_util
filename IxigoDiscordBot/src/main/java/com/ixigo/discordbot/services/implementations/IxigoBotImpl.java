@@ -1,8 +1,10 @@
 package com.ixigo.discordbot.services.implementations;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -16,12 +18,15 @@ import com.ixigo.discordbot.constants.ErrorCodes;
 import com.ixigo.discordbot.enums.BotConfigKey;
 import com.ixigo.discordbot.enums.TeamType;
 import com.ixigo.discordbot.listeners.IxiGoDiscordListener;
+import com.ixigo.discordbot.models.repo.Bot_configDto;
 import com.ixigo.discordbot.models.repo.Users_mapDto;
 import com.ixigo.discordbot.models.svc.discord.DiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.models.svc.discord.SvcPlayer;
+import com.ixigo.discordbot.repositories.interfaces.RepoBotConfig;
 import com.ixigo.discordbot.repositories.interfaces.RepoUsersMap;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
+import com.ixigo.discordbot.services.interfaces.IxigoPlayersManagerService;
 import com.ixigo.discordbot.services.interfaces.IxigoRconService;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.messages.IxigoMessageResource;
@@ -58,7 +63,11 @@ public class IxigoBotImpl implements IxigoBot {
 	@Autowired
 	private RepoUsersMap repoUsersMap;
 	@Autowired
+	private RepoBotConfig repoBotConfig;
+	@Autowired
 	private IxigoRconService rconService;
+	@Autowired
+	private IxigoPlayersManagerService balanceService;
 
 	private static JDA jda;
 	private boolean botOnline = false;
@@ -165,50 +174,63 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> balanceTheTeams() throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		// @formatter:off
+		var monoRcon = rconService.getCurrentActivePlayersOnTheIxiGoServer();
+		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION);
+		
+		var monoResult = Mono.zip(monoRepo, monoRcon)
+			.flatMap(tuple -> {
+				Bot_configDto config = tuple.getT1();
+				Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
+				
+				List<String> steamIds = new ArrayList<>();
+				Map<TeamType, List<RestUser>> teamsMap = tuple.getT2();
+				teamsMap.forEach((k,v) -> {
+					v.stream().map(u -> u.getSteamId()).forEach(steamIds::add);
+				});
+				return balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty());
+			})
+			.flatMap(rconService::movePlayersToAppropriateTeam)
+		;
+		return monoResult;
+		// @formatter:on
 	}
 
 	@Override
 	public Mono<Boolean> kickTheBots() throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		return kickBots ? rconService.kickTheBots() : Mono.just(false);
 	}
 
 	@Override
-	public Mono<Boolean> restartCsgpMatch() throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+	public Mono<Boolean> restartCsgoMatch() throws IxigoException {
+		return rconService.restartIxiGoMatch();
 	}
 
 	@Override
 	public Mono<Boolean> warmUpBalanceTeamApi() throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		return rconService.getCurrentActivePlayersOnTheIxiGoServer().map(map -> map != null);
 	}
 
 	@Override
 	public Mono<Void> setAutoBalance(boolean active) {
-		// TODO Auto-generated method stub
-		return null;
+		this.autoBalance = active;
+		return Mono.empty();
 	}
 
 	@Override
 	public Mono<Boolean> isAutobalance() {
-		// TODO Auto-generated method stub
-		return null;
+		return Mono.just(autoBalance);
 	}
 
 	@Override
 	public Mono<Boolean> isKickBots() {
-		// TODO Auto-generated method stub
-		return null;
+		return Mono.just(kickBots);
 	}
 
 	@Override
 	public Mono<Void> setKickBots(boolean active) {
-		// TODO Auto-generated method stub
-		return null;
+		kickBots = active;
+		return Mono.empty();
 	}
 
 	@Override
@@ -234,7 +256,7 @@ public class IxigoBotImpl implements IxigoBot {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	private void moveUsersToAppropriateVoiceChannel(List<Member> members) {
 		// @formatter:off
 		List<Member> membersInVoiceChat = members.stream()
@@ -282,7 +304,7 @@ public class IxigoBotImpl implements IxigoBot {
 		;
 		// @formatter:on
 	}
-	
+
 	private void checkIfBotIsOnline() throws IxigoException {
 		if (!botOnline) {
 			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.BOT_OFFLINE), ErrorCodes.BOT_OFFLINE);

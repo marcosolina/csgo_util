@@ -38,7 +38,7 @@ public interface IxigoBot {
 
 	public abstract Mono<Boolean> kickTheBots() throws IxigoException;
 
-	public abstract Mono<Boolean> restartCsgpMatch() throws IxigoException;
+	public abstract Mono<Boolean> restartCsgoMatch() throws IxigoException;
 
 	public abstract Mono<Boolean> warmUpBalanceTeamApi() throws IxigoException;
 

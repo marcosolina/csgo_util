@@ -86,7 +86,7 @@ public class IxigoRconServiceImpl implements IxigoRconService {
 	}
 
 	@Override
-	public Mono<Boolean> restartIxiGoRound() throws IxigoException {
+	public Mono<Boolean> restartIxiGoMatch() throws IxigoException {
 		_LOGGER.trace("Inside IxigoRconServiceImpl.restartIxiGoRound");
 		return sendRconCommand("mp_restartgame 5").map(resp -> resp.getStatusCode().is2xxSuccessful());
 	}

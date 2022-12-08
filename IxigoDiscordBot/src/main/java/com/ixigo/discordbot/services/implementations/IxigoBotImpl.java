@@ -120,7 +120,7 @@ public class IxigoBotImpl implements IxigoBot {
 	}
 
 	@Override
-	public Flux<DiscordUser> getDiscordOnlineUsers() throws IxigoException {
+	public Flux<DiscordUser> getDiscordUsers() throws IxigoException {
 		var mono = getGuild().map(guild -> {
 			// @formatter:off
 	        return guild.loadMembers().get().stream()
@@ -235,8 +235,37 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Flux<SvcPlayer> getListOfMappedPlayers() throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		// @formatter:off
+		return getDiscordUsers()
+			.flatMap(du -> {
+				var userMap = new Users_mapDto();
+				userMap.setDiscord_id(Long.parseLong(du.getId()));
+				userMap.setDiscord_name(du.getName());
+				userMap.setSteam_id("");
+				userMap.setSteam_name("");
+				
+				return repoUsersMap.findById(Long.parseLong(du.getId()))
+						.defaultIfEmpty(userMap);
+			})
+			.flatMap(userMap -> {
+				if(userMap.getSteam_id().isEmpty()) {
+					return repoUsersMap.insertOrUpdate(userMap).map(b -> userMap);
+				}
+				return Mono.just(userMap);
+			})
+			.map(userMap -> {
+				DiscordUser du = new DiscordUser();
+				du.setId(userMap.getDiscord_id().toString());
+				du.setName(userMap.getDiscord_name());
+				
+				RestUser ru = new RestUser();
+				ru.setSteamId(userMap.getSteam_id());
+				ru.setUserName(userMap.getSteam_name());
+				
+				return new SvcPlayer(du, ru);
+			})
+			;
+		// @formatter:on
 	}
 
 	@Override

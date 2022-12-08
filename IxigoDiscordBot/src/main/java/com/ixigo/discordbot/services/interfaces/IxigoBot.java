@@ -28,7 +28,7 @@ public interface IxigoBot {
 	 */
 	public abstract Mono<Boolean> stop() throws IxigoException;
 
-	public abstract Flux<DiscordUser> getDiscordOnlineUsers() throws IxigoException;
+	public abstract Flux<DiscordUser> getDiscordUsers() throws IxigoException;
 
 	public abstract void moveAllMembersIntoGeneralChannel() throws IxigoException;
 

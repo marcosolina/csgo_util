@@ -311,11 +311,11 @@ public class IxigoBotImpl implements IxigoBot {
 			.collect(Collectors.toList())
 			;
 		
-		var usersTsearchMappingFor = membersInVoiceChat.stream().map(u -> u.getIdLong()).collect(Collectors.toList());
+		var discordUsersIds = membersInVoiceChat.stream().map(u -> u.getIdLong()).collect(Collectors.toList());
 		
 		var monoGuild = getGuild();
 		var monoPlayersOnCsgoServer = rconService.getCurrentActivePlayersOnTheIxiGoServer();
-		var monoListOfDiscordMappedUsers = repoUsersMap.findAllById(usersTsearchMappingFor).collectList();
+		var monoListOfDiscordMappedUsers = repoUsersMap.findAllById(discordUsersIds).collectList();
 		
 		Mono.zip(monoGuild, monoPlayersOnCsgoServer, monoListOfDiscordMappedUsers)
 		.subscribe(tuple -> {

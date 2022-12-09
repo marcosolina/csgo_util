@@ -1,6 +1,7 @@
 package com.ixigo.discordbot.services.implementations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -18,6 +19,7 @@ import com.ixigo.discordbot.constants.ErrorCodes;
 import com.ixigo.discordbot.enums.BotConfigKey;
 import com.ixigo.discordbot.enums.TeamType;
 import com.ixigo.discordbot.listeners.IxiGoDiscordListener;
+import com.ixigo.discordbot.mappers.RepoMapper;
 import com.ixigo.discordbot.models.repo.Bot_configDto;
 import com.ixigo.discordbot.models.repo.Users_mapDto;
 import com.ixigo.discordbot.models.svc.discord.DiscordUser;
@@ -68,6 +70,8 @@ public class IxigoBotImpl implements IxigoBot {
 	private IxigoRconService rconService;
 	@Autowired
 	private IxigoPlayersManagerService balanceService;
+	@Autowired
+	private RepoMapper mapper;
 
 	private static JDA jda;
 	private boolean botOnline = false;
@@ -270,20 +274,32 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> storePlayersDetails(List<SvcPlayer> players) throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		// @formatter:off
+		var monoList = players.stream().map(p -> {
+			Users_mapDto dto = new Users_mapDto();
+			dto.setDiscord_id(Long.parseLong(p.getDiscordDetails().getId()));
+			dto.setDiscord_name(p.getDiscordDetails().getName());
+			dto.setSteam_id(p.getSteamDetails().getSteamId());
+			dto.setSteam_name(p.getSteamDetails().getUserName());
+			return repoUsersMap.insertOrUpdate(dto);
+		}).collect(Collectors.toList());
+		
+		return Mono.zip(monoList, arr -> {
+			return Arrays.stream(arr)
+				.map(el -> Boolean.class.cast(el))
+				.allMatch(el -> el == true);
+		});
+		// @formatter:on
 	}
 
 	@Override
 	public Mono<Boolean> updateBotConfig(SvcBotConfig config) throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		return repoBotConfig.insertOtUpdate(mapper.raceFromSvcToDto(config));
 	}
 
 	@Override
 	public Mono<SvcBotConfig> getBotConfig(BotConfigKey key) throws IxigoException {
-		// TODO Auto-generated method stub
-		return null;
+		return repoBotConfig.fingConfig(key).map(mapper::raceFromDtoSvcToSvc);
 	}
 
 	private void moveUsersToAppropriateVoiceChannel(List<Member> members) {

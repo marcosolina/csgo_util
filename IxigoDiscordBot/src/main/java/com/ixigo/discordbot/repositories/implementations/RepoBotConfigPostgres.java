@@ -5,10 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.r2dbc.core.DatabaseClient;
 
-import com.ixigo.discordbot.enums.BotConfigKey;
 import com.ixigo.discordbot.models.repo.Bot_configDao;
 import com.ixigo.discordbot.models.repo.Bot_configDto;
 import com.ixigo.discordbot.repositories.interfaces.RepoBotConfig;
+import com.ixigo.enums.BotConfigKey;
 
 import reactor.core.publisher.Mono;
 

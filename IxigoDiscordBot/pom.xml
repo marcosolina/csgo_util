@@ -17,6 +17,7 @@
 		<contract.demmanager>2.0.0</contract.demmanager>
 		<contract.playersmanager>2.0.0</contract.playersmanager>
 		<contract.rcon>2.0.0</contract.rcon>
+		<contract.discordbot>2.0.0</contract.discordbot>
 	</properties>
 
 	<dependencies>
@@ -47,6 +48,11 @@
 			<version>${discord.api}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoDiscordBotContract</artifactId>
+			<version>${contract.discordbot}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.ixigo</groupId>
 			<artifactId>IxigoEventDispatcherContract</artifactId>

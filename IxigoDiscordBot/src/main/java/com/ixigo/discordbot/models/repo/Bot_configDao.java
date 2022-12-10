@@ -1,6 +1,6 @@
 package com.ixigo.discordbot.models.repo;
 
-import com.ixigo.discordbot.enums.BotConfigKey;
+import com.ixigo.enums.BotConfigKey;
 import com.ixigo.library.dao.IxigoDao;
 
 import io.r2dbc.spi.Row;

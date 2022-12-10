@@ -1,6 +1,6 @@
 package com.ixigo.discordbot.models.svc.discord;
 
-import com.ixigo.discordbot.enums.BotConfigKey;
+import com.ixigo.enums.BotConfigKey;
 
 public class SvcBotConfig {
 	private BotConfigKey configKey;

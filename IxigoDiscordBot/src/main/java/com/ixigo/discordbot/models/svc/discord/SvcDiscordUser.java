@@ -1,13 +1,13 @@
 package com.ixigo.discordbot.models.svc.discord;
 
-public class DiscordUser {
+public class SvcDiscordUser {
 	private String id;
 	private String name;
 
-	public DiscordUser() {
+	public SvcDiscordUser() {
 	}
 
-	public DiscordUser(String id, String name) {
+	public SvcDiscordUser(String id, String name) {
 		super();
 		this.id = id;
 		this.name = name;

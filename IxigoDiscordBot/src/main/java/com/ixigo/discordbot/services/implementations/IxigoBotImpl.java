@@ -16,13 +16,12 @@ import org.springframework.http.HttpStatus;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
 import com.ixigo.discordbot.config.properties.DiscordProps;
 import com.ixigo.discordbot.constants.ErrorCodes;
-import com.ixigo.discordbot.enums.BotConfigKey;
 import com.ixigo.discordbot.enums.TeamType;
 import com.ixigo.discordbot.listeners.IxiGoDiscordListener;
 import com.ixigo.discordbot.mappers.RepoMapper;
 import com.ixigo.discordbot.models.repo.Bot_configDto;
 import com.ixigo.discordbot.models.repo.Users_mapDto;
-import com.ixigo.discordbot.models.svc.discord.DiscordUser;
+import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.models.svc.discord.SvcPlayer;
 import com.ixigo.discordbot.repositories.interfaces.RepoBotConfig;
@@ -30,6 +29,7 @@ import com.ixigo.discordbot.repositories.interfaces.RepoUsersMap;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.discordbot.services.interfaces.IxigoPlayersManagerService;
 import com.ixigo.discordbot.services.interfaces.IxigoRconService;
+import com.ixigo.enums.BotConfigKey;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.messages.IxigoMessageResource;
 import com.netflix.servo.util.Strings;
@@ -75,8 +75,6 @@ public class IxigoBotImpl implements IxigoBot {
 
 	private static JDA jda;
 	private boolean botOnline = false;
-	private boolean autoBalance = true;
-	private boolean kickBots = true;
 
 	@Override
 	public synchronized Mono<Boolean> start() throws IxigoException {
@@ -124,13 +122,13 @@ public class IxigoBotImpl implements IxigoBot {
 	}
 
 	@Override
-	public Flux<DiscordUser> getDiscordUsers() throws IxigoException {
+	public Flux<SvcDiscordUser> getDiscordUsers() throws IxigoException {
 		var mono = getGuild().map(guild -> {
 			// @formatter:off
 	        return guild.loadMembers().get().stream()
                     .filter(m -> !m.getUser().isBot())
                     .map(m -> {
-                    	DiscordUser du = new DiscordUser();
+                    	SvcDiscordUser du = new SvcDiscordUser();
                         du.setId(Long.toString(m.getIdLong()));
                         du.setName(m.getUser().getName());
                         return du;
@@ -202,7 +200,8 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> kickTheBots() throws IxigoException {
-		return kickBots ? rconService.kickTheBots() : Mono.just(false);
+		return getBotConfig(BotConfigKey.KICK_BOTS)
+			.map(config -> Boolean.parseBoolean(config.getConfigVal()));
 	}
 
 	@Override
@@ -213,28 +212,6 @@ public class IxigoBotImpl implements IxigoBot {
 	@Override
 	public Mono<Boolean> warmUpBalanceTeamApi() throws IxigoException {
 		return rconService.getCurrentActivePlayersOnTheIxiGoServer().map(map -> map != null);
-	}
-
-	@Override
-	public Mono<Void> setAutoBalance(boolean active) {
-		this.autoBalance = active;
-		return Mono.empty();
-	}
-
-	@Override
-	public Mono<Boolean> isAutobalance() {
-		return Mono.just(autoBalance);
-	}
-
-	@Override
-	public Mono<Boolean> isKickBots() {
-		return Mono.just(kickBots);
-	}
-
-	@Override
-	public Mono<Void> setKickBots(boolean active) {
-		kickBots = active;
-		return Mono.empty();
 	}
 
 	@Override
@@ -258,7 +235,7 @@ public class IxigoBotImpl implements IxigoBot {
 				return Mono.just(userMap);
 			})
 			.map(userMap -> {
-				DiscordUser du = new DiscordUser();
+				SvcDiscordUser du = new SvcDiscordUser();
 				du.setId(userMap.getDiscord_id().toString());
 				du.setName(userMap.getDiscord_name());
 				
@@ -293,7 +270,7 @@ public class IxigoBotImpl implements IxigoBot {
 	}
 
 	@Override
-	public Mono<Boolean> updateBotConfig(SvcBotConfig config) throws IxigoException {
+	public synchronized Mono<Boolean> updateBotConfig(SvcBotConfig config) throws IxigoException {
 		return repoBotConfig.insertOtUpdate(mapper.raceFromSvcToDto(config));
 	}
 

@@ -2,10 +2,10 @@ package com.ixigo.discordbot.services.interfaces;
 
 import java.util.List;
 
-import com.ixigo.discordbot.enums.BotConfigKey;
-import com.ixigo.discordbot.models.svc.discord.DiscordUser;
+import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.models.svc.discord.SvcPlayer;
+import com.ixigo.enums.BotConfigKey;
 import com.ixigo.library.errors.IxigoException;
 
 import reactor.core.publisher.Flux;
@@ -28,7 +28,7 @@ public interface IxigoBot {
 	 */
 	public abstract Mono<Boolean> stop() throws IxigoException;
 
-	public abstract Flux<DiscordUser> getDiscordUsers() throws IxigoException;
+	public abstract Flux<SvcDiscordUser> getDiscordUsers() throws IxigoException;
 
 	public abstract void moveAllMembersIntoGeneralChannel() throws IxigoException;
 
@@ -41,14 +41,6 @@ public interface IxigoBot {
 	public abstract Mono<Boolean> restartCsgoMatch() throws IxigoException;
 
 	public abstract Mono<Boolean> warmUpBalanceTeamApi() throws IxigoException;
-
-	public abstract Mono<Void> setAutoBalance(boolean active);
-
-	public abstract Mono<Boolean> isAutobalance();
-
-	public abstract Mono<Boolean> isKickBots();
-
-	public abstract Mono<Void> setKickBots(boolean active);
 
 	public abstract Flux<SvcPlayer> getListOfMappedPlayers() throws IxigoException;
 

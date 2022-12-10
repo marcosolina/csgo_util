@@ -1,7 +1,9 @@
 package com.ixigo.discordbot.listeners;
 
 import com.ixigo.discordbot.enums.DiscordChatCommands;
+import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
+import com.ixigo.enums.BotConfigKey;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -70,15 +72,21 @@ public class IxiGoDiscordListener extends ListenerAdapter {
 			channel.sendMessage(listOfCommandsMessage().toString()).queue();
 			break;
 		case AUTO_BALANCE_ON:
-			ixigoBot.setAutoBalance(true);
-			channel.sendMessage("Done").queue();
+			ixigoBot.updateBotConfig(new SvcBotConfig(BotConfigKey.AUTOBALANCE, Boolean.TRUE.toString()))
+				.subscribe(b -> channel.sendMessage(b ? "Done" : "Sorry, I was not able to do that").queue())
+				;
 			break;
 		case AUTO_BALANCE_OFF:
-			ixigoBot.setAutoBalance(false);
-			channel.sendMessage("Done").queue();
+			ixigoBot.updateBotConfig(new SvcBotConfig(BotConfigKey.AUTOBALANCE, Boolean.FALSE.toString()))
+				.subscribe(b -> channel.sendMessage(b ? "Done" : "Sorry, I was not able to do that").queue())
+				;
 			break;
 		case AUTO_BALANCE_SATUS:
-			ixigoBot.isAutobalance().subscribe(status -> channel.sendMessage(status ? "On" : "Off").queue());
+			ixigoBot.getBotConfig(BotConfigKey.AUTOBALANCE)
+				.subscribe(config -> {
+					var status = Boolean.parseBoolean(config.getConfigVal());
+					channel.sendMessage(status ? "On" : "Off").queue();
+				});
 			break;
 		default:
 			break;
@@ -89,15 +97,14 @@ public class IxiGoDiscordListener extends ListenerAdapter {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Hi!\n");
 		sb.append("Here a list of what you can send me:");
-		sb.append("\n- !ping -> Check if I am responsive");
-		sb.append("\n- !balance -> Generate the CSGO teams and move the players (in the game)");
-		sb.append("\n- !together -> Move everybody in the general voice channel");
-		sb.append("\n- !moveToChannel -> Move everybody in the appropirat voice channel");
-		sb.append("\n- !autoBalanceOn -> I will monitor the game, balance the teams and move the users in the appropriate voice channels");
-		sb.append("\n- !autoBalanceOff -> Turn off the auto balance");
-		sb.append("\n- !autoBalanceStatus -> It tells you if the auto balance is On or Off");
-		sb.append("\n- !help -> Print this message again");
-
+		sb.append(String.format("%s- %s -> Check if I am responsive", System.lineSeparator(), DiscordChatCommands.PING.getDesc()));
+		sb.append(String.format("%s- %s -> Generate the CSGO teams and move the players (in the game)", System.lineSeparator(), DiscordChatCommands.BALANCE.getDesc()));
+		sb.append(String.format("%s- %s -> Move everybody in the general voice channel", System.lineSeparator(), DiscordChatCommands.TOGETHER.getDesc()));
+		sb.append(String.format("%s- %s -> Move everybody in the appropirat voice channel", System.lineSeparator(), DiscordChatCommands.MOVE_TO_CHANNEL.getDesc()));
+		sb.append(String.format("%s- %s -> I will monitor the game, balance the teams and move the users in the appropriate voice channels", System.lineSeparator(), DiscordChatCommands.AUTO_BALANCE_ON.getDesc()));
+		sb.append(String.format("%s- %s -> Turn off the auto balance", System.lineSeparator(), DiscordChatCommands.AUTO_BALANCE_OFF.getDesc()));
+		sb.append(String.format("%s- %s -> It tells you if the auto balance is On or Off", System.lineSeparator(), DiscordChatCommands.AUTO_BALANCE_SATUS.getDesc()));
+		sb.append(String.format("%s- %s -> Print this message again", System.lineSeparator(), DiscordChatCommands.HELP.getDesc()));
 		return sb;
 	}
 }

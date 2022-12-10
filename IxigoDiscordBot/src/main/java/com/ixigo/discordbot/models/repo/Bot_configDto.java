@@ -1,6 +1,6 @@
 package com.ixigo.discordbot.models.repo;
 
-import com.ixigo.discordbot.enums.BotConfigKey;
+import com.ixigo.enums.BotConfigKey;
 import com.ixigo.library.dto.IxigoDto;
 
 import lombok.experimental.FieldNameConstants;

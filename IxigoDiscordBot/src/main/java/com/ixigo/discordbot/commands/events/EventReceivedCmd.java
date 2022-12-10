@@ -1,4 +1,4 @@
-package com.ixigo.discordbot.commands;
+package com.ixigo.discordbot.commands.events;
 
 import com.ixigo.eventdispatcher.models.rest.DispatchedEventMessage;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;

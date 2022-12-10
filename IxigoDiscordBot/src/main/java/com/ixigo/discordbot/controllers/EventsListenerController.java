@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.discordbot.commands.EventReceivedCmd;
+import com.ixigo.discordbot.commands.events.EventReceivedCmd;
 import com.ixigo.eventdispatcher.models.rest.DispatchedEventMessage;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 

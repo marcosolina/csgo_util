@@ -7,6 +7,14 @@ public class RestDiscordUsers implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<RestDiscordUser> members;
 
+	public RestDiscordUsers() {
+	}
+
+	public RestDiscordUsers(List<RestDiscordUser> members) {
+		super();
+		this.members = members;
+	}
+
 	public List<RestDiscordUser> getMembers() {
 		return members;
 	}

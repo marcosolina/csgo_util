@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ixigo.discordbot.commands.users.GetDiscordUsersCmd;
+import com.ixigo.discordbot.commands.users.GetMappedUsersCmd;
+import com.ixigo.discordbot.commands.users.PutMappedUsersCmd;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.models.rest.RestDiscordUsers;
 import com.ixigo.models.rest.RestMappedPlayers;
@@ -27,18 +30,18 @@ public class UsersController {
 	@GetMapping(value = "/mapping")
 	public Mono<ResponseEntity<RestMappedPlayers>> getMappedPlayersList() {
 		_LOGGER.trace("Inside UsersController.getMappedPlayersList");
-		return null;
+		return mediator.send(new GetMappedUsersCmd());
 	}
 
 	@PutMapping(value = "/mapping")
 	public Mono<ResponseEntity<Void>> saveMappedPlayersList(@RequestBody RestMappedPlayers players) {
 		_LOGGER.trace("Inside UsersController.saveMappedPlayersList");
-		return null;
+		return mediator.send(new PutMappedUsersCmd(players));
 	}
 
 	@GetMapping(value = "/discord")
 	public Mono<ResponseEntity<RestDiscordUsers>> getDiscordUsersList() {
 		_LOGGER.trace("Inside UsersController.getDiscordUsersList");
-		return null;
+		return mediator.send(new GetDiscordUsersCmd());
 	}
 }

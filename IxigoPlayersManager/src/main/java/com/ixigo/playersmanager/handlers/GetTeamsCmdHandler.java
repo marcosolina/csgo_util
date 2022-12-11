@@ -8,8 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
-import com.ixigo.playersmanager.RestMapper;
 import com.ixigo.playersmanager.commands.GetTeamsCmd;
+import com.ixigo.playersmanager.mappers.RestMapper;
 import com.ixigo.playersmanager.services.interfaces.PlayersManager;
 import com.ixigo.playersmanagercontract.models.rest.RestTeams;
 

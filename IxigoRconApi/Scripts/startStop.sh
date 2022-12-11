@@ -1,6 +1,6 @@
 #!/bin/bash
 
-APP_NAME=IxigoRconApiService
+APP_NAME=IxigoRconApi
 APP_FOLDER=/opt/ixigo/${APP_NAME}/
 APP_JAR=${APP_NAME}.jar
 APP_NOHUP=${APP_FOLDER}${APP_NAME}.log

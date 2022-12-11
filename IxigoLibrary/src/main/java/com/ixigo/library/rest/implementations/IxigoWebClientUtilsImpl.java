@@ -15,13 +15,10 @@ import org.springframework.web.reactive.function.client.ClientResponse;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClient.Builder;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
-import org.springframework.web.reactive.function.client.WebClient.ResponseSpec;
 import org.springframework.web.util.UriBuilder;
 
-import com.ixigo.library.dto.ValidationFailure;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
-import com.ixigo.library.validators.ValidationException;
 
 import reactor.core.publisher.Mono;
 
@@ -39,25 +36,47 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
 	@Override
 	public <T> Mono<ResponseEntity<T>> performRequest(Class<T> responseBodyClass, HttpMethod method, URL url, Optional<Map<String, String>> headers, Optional<Map<String, String>> queryParameters, Optional<MediaType> contentType,
 	        Optional<? extends Serializable> body) {
+		
+		
+		Mono<ResponseEntity<T>> monoResp = performRequestNoExceptions(responseBodyClass, method, url, headers, queryParameters, contentType, body);
+		
+		return monoResp.map(resp -> {
+			if(!resp.getStatusCode().is2xxSuccessful()) {
+				_LOGGER.error(String.format("Service unavailable for endpoint %s", url.toString()));
+	            String msg = String.format("Url: %s received a non successful response: %s", url.toString(), resp.getStatusCode().toString());
+				throw new IxigoException(HttpStatus.BAD_GATEWAY, msg, "IXIGO0000");
+			}
+			return resp;
+		});
+		
+		
+		/*
+		
 		/*
          * Create the request and adds query parameters if provided
-         */
+         *
         RequestBodySpec rbs = getRequestBodySpec(method, url, headers, queryParameters, contentType);
 
         /*
          * Perform the call
-         */
+         *
         ResponseSpec rs = null;
         if (body.isPresent()) {
-            rs = rbs.bodyValue(body.get()).retrieve();
+            rbs.bodyValue(body.get()).retrieve();
         } else {
             rs = rbs.retrieve();
         }
-
+        
         rs.onStatus(s -> s == HttpStatus.BAD_REQUEST, clientResp -> {
             return clientResp.bodyToMono(ValidationFailure.class).flatMap(er -> {
                 return Mono.error(new ValidationException(er.getErrors()));
             });
+        });
+        
+        rs.onStatus(s -> s == HttpStatus.BAD_GATEWAY, clientResp -> {
+        	_LOGGER.error(String.format("Service unavailable for endpoint %s", url.toString()));
+            String msg = String.format("Url: %s received a BAD Gateway error", url.toString());
+			throw new IxigoException(HttpStatus.BAD_GATEWAY, msg, "IXIGO0000");
         });
 
         rs.onStatus(s -> s == HttpStatus.SERVICE_UNAVAILABLE, clientResp -> {
@@ -71,7 +90,9 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
             _LOGGER.error(msg);
             throw new IxigoException(clientResp.statusCode(), msg, "IXIGO0000");
         });
+        
         return rs.toEntity(responseBodyClass);
+        */
 	}
 
 	@Override

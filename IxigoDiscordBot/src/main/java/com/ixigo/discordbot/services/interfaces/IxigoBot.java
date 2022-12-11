@@ -49,4 +49,6 @@ public interface IxigoBot {
 	public abstract Mono<Boolean> updateBotConfig(SvcBotConfig config) throws IxigoException;
 
 	public abstract Mono<SvcBotConfig> getBotConfig(BotConfigKey key) throws IxigoException;
+	
+	public abstract void sendMessageToGeneralChat(String msg);
 }

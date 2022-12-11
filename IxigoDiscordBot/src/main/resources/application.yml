@@ -13,4 +13,8 @@ com:
   ixigo:
     discordbot:
       version: ^project.version^  
-      
+
+spring:
+    mvc:
+      pathmatch:
+            matching-strategy: ant_path_matcher

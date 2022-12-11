@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
+import com.ixigo.discordbot.commands.errors.IxigoErrorCmd;
 import com.ixigo.discordbot.config.properties.DiscordProps;
 import com.ixigo.discordbot.constants.ErrorCodes;
 import com.ixigo.discordbot.enums.TeamType;
@@ -31,6 +32,7 @@ import com.ixigo.discordbot.services.interfaces.IxigoPlayersManagerService;
 import com.ixigo.discordbot.services.interfaces.IxigoRconService;
 import com.ixigo.enums.BotConfigKey;
 import com.ixigo.library.errors.IxigoException;
+import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.library.messages.IxigoMessageResource;
 import com.netflix.servo.util.Strings;
 
@@ -72,6 +74,8 @@ public class IxigoBotImpl implements IxigoBot {
 	private IxigoPlayersManagerService balanceService;
 	@Autowired
 	private RepoMapper mapper;
+	@Autowired
+	private WebMediator mediator;
 
 	private static JDA jda;
 	private boolean botOnline = false;
@@ -86,12 +90,14 @@ public class IxigoBotImpl implements IxigoBot {
 
 		return Mono.fromSupplier(() -> {
 			try {
+				LOGGER.debug("Building the bot");
 				// @formatter:off
 				jda = JDABuilder.create(
 						discordProps.getBottoken(),
 						GatewayIntent.GUILD_MEMBERS,
 						GatewayIntent.GUILD_MESSAGES,
-						GatewayIntent.GUILD_VOICE_STATES
+						GatewayIntent.GUILD_VOICE_STATES,
+						GatewayIntent.MESSAGE_CONTENT
 						)
 						.setChunkingFilter(ChunkingFilter.ALL)
 						.setMemberCachePolicy(MemberCachePolicy.ALL)
@@ -200,8 +206,7 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> kickTheBots() throws IxigoException {
-		return getBotConfig(BotConfigKey.KICK_BOTS)
-			.map(config -> Boolean.parseBoolean(config.getConfigVal()));
+		return getBotConfig(BotConfigKey.KICK_BOTS).map(config -> Boolean.parseBoolean(config.getConfigVal()));
 	}
 
 	@Override
@@ -279,6 +284,14 @@ public class IxigoBotImpl implements IxigoBot {
 		return repoBotConfig.fingConfig(key).map(mapper::raceFromDtoSvcToSvc);
 	}
 
+	@Override
+	public void sendMessageToGeneralChat(String msg) {
+		getGuild().subscribe(guidl -> {
+			guidl.getTextChannelById(discordProps.getTextChannels().getGeneral()).sendMessage(msg).queue();
+		});
+
+	}
+
 	private void moveUsersToAppropriateVoiceChannel(List<Member> members) {
 		// @formatter:off
 		List<Member> membersInVoiceChat = members.stream()
@@ -289,12 +302,14 @@ public class IxigoBotImpl implements IxigoBot {
 			;
 		
 		var discordUsersIds = membersInVoiceChat.stream().map(u -> u.getIdLong()).collect(Collectors.toList());
-		
 		var monoGuild = getGuild();
 		var monoPlayersOnCsgoServer = rconService.getCurrentActivePlayersOnTheIxiGoServer();
 		var monoListOfDiscordMappedUsers = repoUsersMap.findAllById(discordUsersIds).collectList();
 		
 		Mono.zip(monoGuild, monoPlayersOnCsgoServer, monoListOfDiscordMappedUsers)
+		.doOnError(error -> {
+			mediator.send(new IxigoErrorCmd(error.getMessage()));
+		})
 		.subscribe(tuple -> {
 			Guild guild = tuple.getT1();
 			Map<TeamType, List<RestUser>> mapActivePlayers = tuple.getT2();
@@ -306,11 +321,11 @@ public class IxigoBotImpl implements IxigoBot {
 					.collect(Collectors.toList());
 			
 			var discordIdsToMove = discordMappedUsers.stream()
-				.filter(u -> !Strings.isNullOrEmpty(u.getSteam_id()))
-				.filter(u -> terroristCurrentlyPlaying.contains(u.getSteam_id()))
-				.map(u -> u.getDiscord_id())
-				.collect(Collectors.toList())
-			;
+					.filter(u -> !Strings.isNullOrEmpty(u.getSteam_id()))
+					.filter(u -> terroristCurrentlyPlaying.contains(u.getSteam_id()))
+					.map(u -> u.getDiscord_id())
+					.collect(Collectors.toList())
+					;
 			
 			if(!discordIdsToMove.isEmpty()) {
 				VoiceChannel vc = guild.getVoiceChannelById(discordProps.getVoiceChannels().getTerrorist());

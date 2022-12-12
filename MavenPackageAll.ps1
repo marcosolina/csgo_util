@@ -1,6 +1,6 @@
 $toInstall = @(
-    "IxigoParent"
     "IxigoLibrary"
+    "IxigoParent"
     "IxigoDemManagerContract"
     "IxigoDiscordBotContract"
     "IxigoEventDispatcherContract"

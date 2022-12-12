@@ -6,8 +6,8 @@ WORKDIR /ixigo
 RUN git clone --branch refactoring https://github.com/marcosolina/csgo_util.git
 
 RUN \
-mvn clean install -f ./csgo_util/IxigoParent/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoLibrary/pom.xml && \
+mvn clean install -f ./csgo_util/IxigoParent/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoDemManagerContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoDiscordBotContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoEventDispatcherContract/pom.xml && \

@@ -54,4 +54,15 @@ services:
       - "8765:8765"
     depends_on:
       - my-maven
-  
+  config-service:
+    image: ixigo-config-img
+    env_file:
+      - ./env-spring-config.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoConfigServer
+    ports:
+      - "8888:8888"
+    depends_on:
+      - my-maven

@@ -5,35 +5,35 @@ networks:
     name: ixigo_network
 
 services:
-  csgo:
-    image: ixigo_csgo
-    env_file:
-      - ./env-spring-config.properties
-      - ./env-eureka.properties
-      - ./env-spring-common.properties
-      - ./env-csgo-server.properties
-    networks: 
-      - ixigo
-    build:
-      context: ./CsGoServer
-    ports:
-      - "27015:27015/tcp"
-      - "27015:27015/udp"
-      - "27020:27020/udp"
-      - "27005:27005/udp"
-      - "51840:51840/udp"
-    volumes: 
-      - "__CSGO_FOLDER__:/csgoserver/ixi_go"
-    depends_on: 
-      - my_maven
-  my_maven:
-    image: my_maven
+  #csgo:
+  #  image: ixigo-csgo-img # Container name
+  #  env_file:
+  #    - ./env-spring-config.properties
+  #    - ./env-eureka.properties
+  #    - ./env-spring-common.properties
+  #    - ./env-csgo-server.properties
+  #  networks: 
+  #    - ixigo
+  #  build:
+  #    context: ./CsGoServer
+  #  ports:
+  #    - "27015:27015/tcp"
+  #    - "27015:27015/udp"
+  #    - "27020:27020/udp"
+  #    - "27005:27005/udp"
+  #    - "51840:51840/udp"
+  #  volumes: 
+  #    - "__CSGO_FOLDER__:/csgoserver/ixi_go"
+  #  depends_on: 
+  #    - my-maven
+  my-maven: # container name
+    image: my-maven-img
     networks: 
       - ixigo
     build:
       context: ./Build
-  dbpostgres:
-    image: postgres_ixigo
+  dbpostgres: # container name
+    image: postgres-ixigo-img
     env_file:
       - ./env-database.properties
     networks: 
@@ -42,4 +42,16 @@ services:
       context: ./PostgreSql
     ports:
       - "5432:5432"
+  discovery-service: # container name
+    image: ixigo-discovery-img
+    env_file:
+      - ./env-eureka.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoDiscovery
+    ports:
+      - "8765:8765"
+    depends_on:
+      - my-maven
   

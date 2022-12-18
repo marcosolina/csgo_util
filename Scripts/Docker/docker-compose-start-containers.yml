@@ -26,12 +26,18 @@ services:
   #    - "__CSGO_FOLDER__:/csgoserver/ixi_go"
   #  depends_on: 
   #    - my-maven
+  ############################
+  # MAVEN BUILD
+  ############################
   my-maven: # container name
     image: my-maven-img
     networks: 
       - ixigo
     build:
       context: ./Build
+  ############################
+  # Postgres DB
+  ############################
   dbpostgres: # container name
     image: postgres-ixigo-img
     env_file:
@@ -42,6 +48,9 @@ services:
       context: ./PostgreSql
     ports:
       - "5432:5432"
+  ############################
+  # Eureka Service
+  ############################
   discovery-service: # container name
     image: ixigo-discovery-img
     env_file:
@@ -54,6 +63,9 @@ services:
       - "8765:8765"
     depends_on:
       - my-maven
+  ############################
+  # Configuration Service
+  ############################
   config-service:
     image: ixigo-config-img
     env_file:
@@ -66,3 +78,24 @@ services:
       - "8888:8888"
     depends_on:
       - my-maven
+  ############################
+  # Dem Manager Service
+  ############################
+  dem-manager:
+    image: ixigo-dem-manager-img
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoDemManager
+    ports:
+      - "8081:8081"
+    depends_on: 
+      - dbpostgres
+      - my-maven
+    volumes: 
+      - "__DEM_FOLDER__:/demFiles"

@@ -23,7 +23,7 @@ services:
   #    - "27005:27005/udp"
   #    - "51840:51840/udp"
   #  volumes: 
-  #    - "__CSGO_FOLDER__:/csgoserver/ixi_go"
+  #    - "/home/marco/Windows/docker/server:/csgoserver/ixi_go"
   #  depends_on: 
   #    - my-maven
   ############################
@@ -79,6 +79,25 @@ services:
     depends_on:
       - my-maven
   ############################
+  # Event dispatcher
+  ############################
+  event-dispatcher:
+    image: ixigo-event-dispatcher-img
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./IxigoEventDispatcher
+    ports:
+      - "8086:8086"
+    depends_on: 
+      - dbpostgres
+      - my-maven
+  ############################
   # Dem Manager Service
   ############################
   dem-manager:
@@ -98,4 +117,4 @@ services:
       - dbpostgres
       - my-maven
     volumes: 
-      - "__DEM_FOLDER__:/demFiles"
+      - "/home/marco/Windows/docker/dem:/demFiles"

@@ -5,27 +5,6 @@ networks:
     name: ixigo_network
 
 services:
-  #csgo:
-  #  image: ixigo-csgo-img # Container name
-  #  env_file:
-  #    - ./env-spring-config.properties
-  #    - ./env-eureka.properties
-  #    - ./env-spring-common.properties
-  #    - ./env-csgo-server.properties
-  #  networks: 
-  #    - ixigo
-  #  build:
-  #    context: ./CsGoServer
-  #  ports:
-  #    - "27015:27015/tcp"
-  #    - "27015:27015/udp"
-  #    - "27020:27020/udp"
-  #    - "27005:27005/udp"
-  #    - "51840:51840/udp"
-  #  volumes: 
-  #    - "/home/marco/Windows/docker/server:/csgoserver/ixi_go"
-  #  depends_on: 
-  #    - my-maven
   ############################
   # MAVEN BUILD
   ############################
@@ -185,5 +164,29 @@ services:
       context: ./IxigoProxy
     ports:
       - "8763:8763"
+    depends_on: 
+      - my-maven
+  ############################
+  # Counter Strike Server
+  ############################
+  csgo:
+    image: ixigo-csgo-img # Container name
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+      - ./env-csgo-server.properties
+    networks: 
+      - ixigo
+    build:
+      context: ./CsGoServer
+    ports:
+      - "27015:27015/tcp"
+      - "27015:27015/udp"
+      - "27020:27020/udp"
+      - "27005:27005/udp"
+      - "51840:51840/udp"
+    volumes: 
+      - "/home/marco/Windows/docker/server:/csgoserver/ixi_go"
     depends_on: 
       - my-maven

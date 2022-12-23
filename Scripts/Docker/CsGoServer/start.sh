@@ -18,12 +18,7 @@ fi
 EVENT_FILE=$CSGO_SERVER_DIR/csgo/addons/sourcemod/event.txt
 echo "NO" > $EVENT_FILE
 
-nohup java -jar $JAR_SERVICE \
---spring.cloud.config.uri=$IXIGO_CONFIG_SERVER_URI \
---spring.cloud.config.username=$IXIGO_CONFIG_SERVER_USER \
---spring.cloud.config.password=$IXIGO_CONFIG_SERVER_PASSW \
---eureka.client.serviceUrl.defaultZone=$IXIGO_EUREKA_SERVER \
---spring.profiles.active=$IXIGO_PROFILE &
+nohup java -jar $JAR_SERVICE &
 
 #rm -rf $CSGO_SERVER_DIR/csgo/*.dem
 rm -rf $CSGO_SERVER_DIR/csgo/backup_round*.txt
@@ -34,6 +29,9 @@ HOST_IP=$(hostname -I | awk '{print $1}')
 # Use a small map while we wait for everybody to join
 maps=(
 "cs_militia"
+"de_stmarc"
+"de_lake"
+"de_safehouse"
 )
 
 arrSize=$((${#maps[@]} - 1))
@@ -42,4 +40,4 @@ startMap=$randomMapIndex
 MAP_START=${maps[$startMap]}
 
 $STEAM_FOLDER/steamcmd.sh +login anonymous +force_install_dir $CSGO_SERVER_DIR +app_update 740 +quit
-$CSGO_SERVER_DIR/srcds_run -game csgo -console -usercon -port 27015 +ip $HOST_IP +game_type 0 +game_mode 1 +mapgroup mg_ixico_maps +map $MAP_START -authkey $ENV_STEAM_API_KEY +sv_setsteamaccount $ENV_STEAM_CSGO_KEY -net_port_try 1
+$CSGO_SERVER_DIR/srcds_run -game csgo -console -usercon -port 27015 +ip $HOST_IP +game_type 0 +game_mode 1 +mapgroup mg_all_maps +map $MAP_START -authkey $ENV_STEAM_API_KEY +sv_setsteamaccount $ENV_STEAM_CSGO_KEY -net_port_try 1

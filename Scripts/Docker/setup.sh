@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Clone the repo in the folder specified by the user
-
+rm -rf csgo_util
 git clone --branch refactoring https://github.com/marcosolina/csgo_util.git
 
 # Remove uneccessary folders / files

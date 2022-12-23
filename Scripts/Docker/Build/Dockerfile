@@ -1,6 +1,6 @@
 # Building the Java "stuff"
 
-FROM maven:3.8.6-openjdk-18 AS MAVEN_IMAGE
+FROM maven:3.5.4-jdk-11 AS MAVEN_IMAGE
 RUN mkdir /ixigo
 WORKDIR /ixigo
 RUN git clone --branch refactoring https://github.com/marcosolina/csgo_util.git

@@ -37,7 +37,13 @@ public class Repositories {
 	@Bean
 	public ConnectionFactory connectionFactory() {
 		
-		_LOGGER.debug(String.format("Creating postgres bean with: %s", postrgresProps.toString()));
+		_LOGGER.info("##############################################################");
+		_LOGGER.info("##############################################################");
+		_LOGGER.info("##############################################################");
+		_LOGGER.info(String.format("Creating postgres bean with: %s", postrgresProps.toString()));
+		_LOGGER.info("##############################################################");
+		_LOGGER.info("##############################################################");
+		_LOGGER.info("##############################################################");
 		
 		return new PostgresqlConnectionFactory(
 				// @formatter:off

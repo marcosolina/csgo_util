@@ -34,4 +34,8 @@ public class PostgresProps {
 		this.password = password;
 	}
 
+	@Override
+	public String toString() {
+		return "PostgresProps [host=" + host + ", user=" + user + ", password=" + password + "]";
+	}
 }

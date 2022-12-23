@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.config.beans;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,12 +29,15 @@ import io.r2dbc.spi.ConnectionFactory;
  */
 @Configuration
 public class Repositories {
-
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Repositories.class);
+	
 	@Autowired
 	private PostgresProps postrgresProps;
 
 	@Bean
 	public ConnectionFactory connectionFactory() {
+		
+		_LOGGER.debug(String.format("Creating postgres bean with: %s", postrgresProps.toString()));
 		
 		return new PostgresqlConnectionFactory(
 				// @formatter:off

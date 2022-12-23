@@ -93,7 +93,7 @@ services:
     build:
       context: ./IxigoEventDispatcher
     ports:
-      - "8086:8086"
+      - "8081:8081"
     depends_on: 
       - dbpostgres
       - my-maven
@@ -112,7 +112,7 @@ services:
     build:
       context: ./IxigoDemManager
     ports:
-      - "8081:8081"
+      - "8080:8080"
     depends_on: 
       - dbpostgres
       - my-maven
@@ -132,7 +132,7 @@ services:
     build:
       context: ./IxigoPlayersManager
     ports:
-      - "8087:8087"
+      - "8082:8082"
     depends_on: 
       - my-maven
   ############################
@@ -149,7 +149,7 @@ services:
     build:
       context: ./IxigoRconApi
     ports:
-      - "8084:8084"
+      - "8083:8083"
     depends_on: 
       - my-maven
   ############################
@@ -167,7 +167,7 @@ services:
     build:
       context: ./IxigoDiscordBot
     ports:
-      - "8082:8082"
+      - "8085:8085"
     depends_on: 
       - dbpostgres
       - my-maven

@@ -12,7 +12,7 @@ RUN dotnet publish -c Release -o out -r linux-x64
 
 # Putting all together
 FROM openjdk:11
-EXPOSE 8081:8081
+EXPOSE 8080:8080
 RUN mkdir /demFiles && mkdir /demParser
 COPY --from=DEM_PARSER /app/out/* /demParser/
 COPY --from=my-maven-img /ixigo/csgo_util/IxigoDemManager/target/IxigoDemManager*.jar IxigoDemManager.jar

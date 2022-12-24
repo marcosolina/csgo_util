@@ -16,7 +16,7 @@ import com.ixigo.playersmanagercontract.models.rest.RestUserAvgScore;
 @Mapper(componentModel = "spring")
 public interface RestMapper {
 	public SvcMapStats fromRestToSvc(RestMapStats rest);
-	public SvcUserMapStats fromRestToSvc(RestUserGotvScore rest);
+	public SvcUserMapStats fromRestUserGotvScoreToSvc(RestUserGotvScore rest);
 	public List<SvcMapStats> fromRestToSvcList(List<RestMapStats> rest);
 	public List<SvcUserMapStats> fromRestUserListToSvcList(List<RestUserGotvScore> rest);
 	

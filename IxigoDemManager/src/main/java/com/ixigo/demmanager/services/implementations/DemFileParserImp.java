@@ -110,6 +110,7 @@ public class DemFileParserImp implements DemFileParser {
 					}).then(processQueuedFiles());
 			// @formatter:on
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE), ErrorCodes.ERROR_READING_DEM_FILE);
 		}
 	}

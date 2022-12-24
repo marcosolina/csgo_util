@@ -81,6 +81,7 @@ public class DemFileManagerImp implements DemFileManager {
 				}
 				return null;
 			} catch (MalformedURLException e) {
+				e.printStackTrace();
 				_LOGGER.error(e.getMessage());
 				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE), ErrorCodes.ERROR_READING_DEM_FILE);
 			}
@@ -96,9 +97,7 @@ public class DemFileManagerImp implements DemFileManager {
 			try (Stream<Path> walk = Files.walk(props.getRootFolder())) {
 				walk.filter(p -> p.toFile().getName().endsWith(".dem")).map(Path::toFile).forEach(files::add);
 			} catch (IOException e) {
-				if (_LOGGER.isTraceEnabled()) {
-					e.printStackTrace();
-				}
+				e.printStackTrace();
 				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
 			}
 
@@ -155,6 +154,7 @@ public class DemFileManagerImp implements DemFileManager {
 
 				return fileDestination;
 			} catch (Exception e) {
+				e.printStackTrace();
 				_LOGGER.error(e.getMessage());
 				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_WHILE_SAVING_DEM_FILE), ErrorCodes.ERROR_WHILE_SAVING_DEM_FILE);
 			}

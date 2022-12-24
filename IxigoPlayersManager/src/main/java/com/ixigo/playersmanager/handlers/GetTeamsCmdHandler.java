@@ -36,7 +36,7 @@ public class GetTeamsCmdHandler implements WebCommandHandler<GetTeamsCmd, RestTe
 				cmd.getPartitionScore(),
 				cmd.getMinPercPlayed())
 			.collectList()
-			.map(mapper::fromSvcTeamToRestList)
+			.map(mapper::fromListSvcTeamToRestList)
 			.map(list -> {
 				RestTeams teams = new RestTeams();
 				teams.setTeams(list);

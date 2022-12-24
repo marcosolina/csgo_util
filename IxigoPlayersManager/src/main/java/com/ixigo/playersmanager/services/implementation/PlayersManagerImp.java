@@ -69,7 +69,7 @@ public class PlayersManagerImp implements PlayersManager {
 			Map<String, List<SvcMapStats>> usersScores = tuple.getT1()
 					.entrySet()
 					.stream()
-					.collect(Collectors.toMap(Map.Entry::getKey, entry -> mapper.fromRestToSvcList(entry.getValue())));
+					.collect(Collectors.toMap(Map.Entry::getKey, entry -> mapper.fromListRestMapStatsToSvcList(entry.getValue())));
 			Map<String, String> userDefinitions = new HashMap<>();
 			
 			tuple.getT2().forEach(user -> userDefinitions.put(user.getSteamId(), user.getUserName()));
@@ -82,7 +82,6 @@ public class PlayersManagerImp implements PlayersManager {
 	            uas.setUserName(userDefinitions.get(k));
 	            
 	            if (!v.isEmpty()) {
-	            	
 	                uas.setRoundWinShare(           fromBigDecimalToBidecimalAvg(SvcUserMapStats::getRoundWinShare,             v, 2));
 	                uas.setKillDeathRatio(          fromBigDecimalToBidecimalAvg(SvcUserMapStats::getKillDeathRation,           v, 2));
 	                uas.setHeadShotsPercentage(     fromBigDecimalToBidecimalAvg(SvcUserMapStats::getHeadShotsPercentage,       v, 2));

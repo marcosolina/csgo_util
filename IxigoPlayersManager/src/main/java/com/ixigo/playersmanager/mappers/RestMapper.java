@@ -15,17 +15,17 @@ import com.ixigo.playersmanagercontract.models.rest.RestUserAvgScore;
 
 @Mapper(componentModel = "spring")
 public interface RestMapper {
-	public SvcMapStats fromRestToSvc(RestMapStats rest);
+	public SvcMapStats fromRestMapStatsToSvc(RestMapStats rest);
 	public SvcUserMapStats fromRestUserGotvScoreToSvc(RestUserGotvScore rest);
-	public List<SvcMapStats> fromRestToSvcList(List<RestMapStats> rest);
-	public List<SvcUserMapStats> fromRestUserListToSvcList(List<RestUserGotvScore> rest);
+	public List<SvcMapStats> fromListRestMapStatsToSvcList(List<RestMapStats> rest);
+	public List<SvcUserMapStats> fromListRestUserGotvScoreToSvcList(List<RestUserGotvScore> rest);
 	
-	public RestMapStats fromSvcToRest(SvcMapStats svc);
-	public List<RestMapStats> fromSvcMapStatsToRestList(List<SvcMapStats> svc);
+	public RestMapStats fromSvcMapStatsToRest(SvcMapStats svc);
+	public List<RestMapStats> fromListSvcMapStatsToRestList(List<SvcMapStats> svc);
 	
-	public RestTeam fromSvcToRest(SvcTeam svc);
-	public List<RestTeam> fromSvcTeamToRestList(List<SvcTeam> svc);
+	public RestTeam fromSvcTeamToRest(SvcTeam svc);
+	public List<RestTeam> fromListSvcTeamToRestList(List<SvcTeam> svc);
 	
-	public RestUserAvgScore fromSvcToRest(SvcUserAvgScore svc);
-	public List<RestUserAvgScore> fromSvcUserAvgScoreToRestList(List<SvcUserAvgScore> svc);
+	public RestUserAvgScore fromSvcUserAvgScoreToRest(SvcUserAvgScore svc);
+	public List<RestUserAvgScore> fromListSvcUserAvgScoreToRestList(List<SvcUserAvgScore> svc);
 }

@@ -82,6 +82,15 @@ public class PlayersManagerImp implements PlayersManager {
 	            uas.setUserName(userDefinitions.get(k));
 	            
 	            if (!v.isEmpty()) {
+	            	
+	            	if(_LOGGER.isDebugEnabled()) {
+	            		_LOGGER.debug(String.format("Processing steam ID: %s", k));
+	            		v.stream()
+	            			.flatMap(data -> data.getUsersStats().stream())
+	            			.forEach(stats -> _LOGGER.debug(stats.toString()))
+	            			;
+	            	}
+	            	
 	                uas.setRoundWinShare(           fromBigDecimalToBidecimalAvg(SvcUserMapStats::getRoundWinShare,             v, 2));
 	                uas.setKillDeathRatio(          fromBigDecimalToBidecimalAvg(SvcUserMapStats::getKillDeathRation,           v, 2));
 	                uas.setHeadShotsPercentage(     fromBigDecimalToBidecimalAvg(SvcUserMapStats::getHeadShotsPercentage,       v, 2));

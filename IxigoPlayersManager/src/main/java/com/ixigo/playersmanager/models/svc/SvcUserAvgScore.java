@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter @Setter
+@Getter @Setter @ToString
 public class SvcUserAvgScore {
     private String steamID;
     private String userName;

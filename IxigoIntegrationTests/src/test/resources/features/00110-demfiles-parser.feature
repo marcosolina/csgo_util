@@ -11,9 +11,11 @@ Feature: DEM files parser
 
   Scenario: Parse queued DEM files
     When I perform a POST request to parse the queued files
-    And I should receive a 202 status in the response
+    And I give 20 seconds to the server to process the dem files
+    Then I should receive a 202 status in the response
 
   Scenario: Parse queued and non queued DEM files
     When I perform a POST request to parse the queued and non queued files
-    And I should receive a 202 status in the response    
+    And I give 20 seconds to the server to process the dem files
+    Then I should receive a 202 status in the response    
    

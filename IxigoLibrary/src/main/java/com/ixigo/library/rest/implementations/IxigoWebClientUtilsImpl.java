@@ -1,6 +1,7 @@
 package com.ixigo.library.rest.implementations;
 
 import java.io.Serializable;
+import java.net.URI;
 import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
@@ -138,7 +139,9 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
                     ub = ub.queryParam(entry.getKey(), entry.getValue());
                 }
             }
-            return ub.build();
+            URI uri = ub.build();
+            _LOGGER.debug(String.format("Http request to: %s", uri.toString()));
+            return uri;
 
         }).contentType(contentType.orElse(MediaType.APPLICATION_JSON));
 

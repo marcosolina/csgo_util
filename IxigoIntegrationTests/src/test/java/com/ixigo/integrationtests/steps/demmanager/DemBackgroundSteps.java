@@ -44,8 +44,7 @@ public class DemBackgroundSteps {
 
 	@Given("that I have two DEM files")
 	public void that_i_have_two_dem_files() {
-		Arrays.asList(DemFiles.FOLDER + "/" + DemFiles.FILE_1, DemFiles.FOLDER + "/" + DemFiles.FILE_2)
-		.forEach(f -> {
+		Arrays.asList(DemFiles.FOLDER + "/" + DemFiles.FILE_1, DemFiles.FOLDER + "/" + DemFiles.FILE_2).forEach(f -> {
 			try {
 				File file = ResourceUtils.getFile(f);
 				Resource resource = new UrlResource(file.toURI());
@@ -83,7 +82,7 @@ public class DemBackgroundSteps {
 		});
 
 	}
-	
+
 	@Given("only one of them is marked as queued")
 	public void only_one_of_them_is_marked_as_queued() {
 		try {
@@ -97,7 +96,7 @@ public class DemBackgroundSteps {
 			fail(e.getMessage());
 		}
 	}
-	
+
 	@Given("they are both parsed")
 	public void they_are_both_parsed() {
 		try {

@@ -7,6 +7,7 @@ Feature: DEM files data
   Background: 
     Given that I have two DEM files
     And they are both parsed
+    And I give 20 seconds to the server to process the dem files
 
   Scenario: Get scores types
     When I perform a GET request to retrieve the type of available scores

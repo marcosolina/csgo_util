@@ -63,9 +63,9 @@ public class PlayersManagerImp implements PlayersManager {
 	public Mono<Map<String, SvcUserAvgScore>> getUsersAvgStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs, ScoreType partionByScore, BigDecimal minPercPlayed) throws IxigoException {
 		
 		var monoScores = this.getUserScoresFromDemManagerService(numberOfMatches, usersIDs, minPercPlayed);
-		var monoKnowUsers = this.getKnownUsersList();
+		var monoKnownUsers = this.getKnownUsersList();
 		// @formatter:off
-		return Mono.zip(monoScores, monoKnowUsers).map(tuple -> {
+		return Mono.zip(monoScores, monoKnownUsers).map(tuple -> {
 			Map<String, List<SvcMapStats>> usersScores = tuple.getT1()
 					.entrySet()
 					.stream()

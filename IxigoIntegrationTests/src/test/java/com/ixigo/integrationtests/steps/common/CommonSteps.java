@@ -19,4 +19,13 @@ public class CommonSteps {
 		assertNotNull(sharedCr.getSharedResp(Object.class));
 		assertEquals(HttpStatus.valueOf(int1), sharedCr.getSharedResp(Object.class).getStatusCode());
 	}
+	
+	@And("I give {int} seconds to the server to process the dem files")
+	public void i_give_seconds_to_the_server_to_process_the_dem_files(Integer seconds) {
+		try {
+			Thread.sleep(seconds * 1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

@@ -2,8 +2,9 @@ package com.ixigo.playersmanager.models.svc;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter @Setter
+@Getter @Setter @ToString
 public class SvcUserMapStats {
 	private String userName;
     private String steamID;

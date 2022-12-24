@@ -262,11 +262,14 @@ public class PlayersManagerImp implements PlayersManager {
 	private Mono<Map<String, List<RestMapStats>>> getUserScoresFromDemManagerService(Integer numberOfMatches, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
 		try {
 			URL url = new URL(demManagerEndPoints.getGetDemDataUsersScores());
-			_LOGGER.debug(url.toString());
 			Map<String, String> queryParams = new HashMap<>();
 			queryParams.put(UsersScoresQueryParam.NUMBER_OF_MATCHES.getQueryParamKey(), numberOfMatches.toString());
 			queryParams.put(UsersScoresQueryParam.USERS_STEAM_IDS.getQueryParamKey(), String.join(",", usersIDs));
 	        queryParams.put(UsersScoresQueryParam.MINIMUM_PERCE_MATCH_PLAYED.getQueryParamKey(), minPercPlayed.toString());
+	        
+	        _LOGGER.debug(url.toString());
+	        _LOGGER.debug(String.format("Query paramas: %s",queryParams.toString()));
+	        
 			return webClient.performGetRequest(RestUsersScores.class, url, Optional.empty(), Optional.of(queryParams))
 					.map(resp -> resp.getBody().getUsersScores());
 		}

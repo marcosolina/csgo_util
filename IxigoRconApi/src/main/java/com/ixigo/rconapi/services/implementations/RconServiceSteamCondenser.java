@@ -44,7 +44,7 @@ public class RconServiceSteamCondenser implements RconService {
 		return Mono.fromSupplier(() -> {
 			try {
 				GameServer server = new SourceServer(host, port);
-				LOGGER.debug("Authenticating on the server");
+				LOGGER.debug(String.format("Authenticating on server: %s with password: %s", host, rconPassw));
 				server.rconAuth(rconPassw);
 				LOGGER.debug(String.format("Sending RCON command: %s", rconCmd));
 				String response = server.rconExec(rconCmd);

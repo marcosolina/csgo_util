@@ -47,4 +47,21 @@ public class EventsDispatcherSteps {
 			fail(e.getMessage());
 		}
 	}
+	
+	@When("I dispatch a round_announce_warmup")
+	public void i_dispatch_a_round_announce_warmup() {
+		try {
+			var event = new IncomingEventHttpRequest();
+			event.setEventName(EventType.WARMUP_START.getDesc());
+			
+			URL url = new URL(endPoints.getPostEvent());
+			_LOGGER.debug(url.toString());
+			var resp = webClient.performRequestNoExceptions(Void.class, HttpMethod.POST, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.of(event)).block();
+			assertNotNull(resp);
+			sharedCr.setSharedResp(resp);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+			fail(e.getMessage());
+		}
+	}
 }

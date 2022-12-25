@@ -65,7 +65,7 @@ public class PlayersManagerSteps {
 			queryParams.put(GetTeamsQueryParam.MINIMUM_PERC_MATCH_PLAYED.getQueryParamKey(), map.get("minPercPlayed"));
 			queryParams.put(GetTeamsQueryParam.PENALTY_WEIGHT.getQueryParamKey(), map.get("penaltyWeigth"));
 			queryParams.put(GetTeamsQueryParam.PARTITION_SCORE_TYPE.getQueryParamKey(), map.get("partitionScore"));
-			
+			_LOGGER.debug(String.format("Query params: %s", queryParams.toString()));
 			var resp = webClient.performGetRequestNoExceptions(RestTeams.class, url, Optional.empty(), Optional.of(queryParams)).block();
 			assertNotNull(resp);
 			sharedCr.setSharedResp(resp);

@@ -69,17 +69,7 @@ public class PlayersManagerImp implements PlayersManager {
 			Map<String, List<SvcMapStats>> usersScores = tuple.getT1()
 					.entrySet()
 					.stream()
-					.collect(Collectors.toMap(Map.Entry::getKey, entry -> {
-						var restVal = entry.getValue();
-						restVal.stream().flatMap(restData -> restData.getUsersStats().stream())
-							.forEach(d -> _LOGGER.info(d.toString()))
-						;
-						var mappedValue = mapper.fromListRestMapStatsToSvcList(entry.getValue());
-						mappedValue.stream().flatMap(restData -> restData.getUsersStats().stream())
-							.forEach(d -> _LOGGER.info(d.toString()))
-						;
-						return mappedValue;
-					}));
+					.collect(Collectors.toMap(Map.Entry::getKey, entry -> mapper.fromListRestMapStatsToSvcList(entry.getValue())));
 			Map<String, String> userDefinitions = new HashMap<>();
 			
 			tuple.getT2().forEach(user -> userDefinitions.put(user.getSteamId(), user.getUserName()));

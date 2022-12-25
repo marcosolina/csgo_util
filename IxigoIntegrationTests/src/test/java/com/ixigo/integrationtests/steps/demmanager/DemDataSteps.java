@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 
+import com.ixigo.demmanagercontract.models.enums.UsersScoresQueryParam;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapsPlayed;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
-import com.ixigo.demmanagercontract.models.rest.demdata.UsersScoresQueryParam;
 import com.ixigo.integrationtests.components.SharedResponseEntity;
 import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;

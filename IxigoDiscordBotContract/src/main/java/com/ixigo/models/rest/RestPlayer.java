@@ -1,6 +1,9 @@
 package com.ixigo.models.rest;
 
-public class RestPlayer {
+import java.io.Serializable;
+
+public class RestPlayer  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private RestDiscordUser discordDetails;
 	private RestUser steamDetails;
 

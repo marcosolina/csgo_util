@@ -1,5 +1,6 @@
 package com.ixigo.playersmanagercontract.models.rest;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -7,7 +8,8 @@ import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class RestTeam {
+public class RestTeam  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "Total team score")
     private BigDecimal teamScore = BigDecimal.ZERO.setScale(2, RoundingMode.DOWN);
     @ApiModelProperty(notes = "List of the members of the team with their average score")

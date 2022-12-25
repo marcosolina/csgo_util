@@ -1,11 +1,14 @@
 package com.ixigo.models.rest;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ixigo.enums.BotConfigKey;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class RestBotConfig {
+public class RestBotConfig  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	@JsonProperty("config_key")
 	@ApiModelProperty(notes = "The config property type", required = true)
 	private BotConfigKey configKey;

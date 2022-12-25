@@ -1,4 +1,4 @@
-package com.ixigo.demmanagercontract.models.rest.demdata;
+package com.ixigo.demmanagercontract.models.enums;
 
 public enum UsersScoresQueryParam {
 	NUMBER_OF_MATCHES("numberOfMatches"),

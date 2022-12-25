@@ -1,5 +1,6 @@
 package com.ixigo.demmanagercontract.models.rest.demdata;
 
+import java.io.Serializable;
 import java.util.List;
 
 import io.swagger.annotations.ApiModelProperty;
@@ -10,7 +11,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @author Marco
  *
  */
-public class RestUsers {
+public class RestUsers  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "List of users")
 	private List<RestUser> users;
 

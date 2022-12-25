@@ -1,10 +1,12 @@
 package com.ixigo.playersmanagercontract.models.rest;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import io.swagger.annotations.ApiModelProperty;
 
-public class RestUserAvgScore {
+public class RestUserAvgScore  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "Steam ID of the user")
 	private String steamID;
 	@ApiModelProperty(notes = "User Name")

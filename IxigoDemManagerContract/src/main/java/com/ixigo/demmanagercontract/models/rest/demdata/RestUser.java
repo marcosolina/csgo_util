@@ -1,5 +1,7 @@
 package com.ixigo.demmanagercontract.models.rest.demdata;
 
+import java.io.Serializable;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -8,7 +10,8 @@ import io.swagger.annotations.ApiModelProperty;
  * @author Marco
  *
  */
-public class RestUser {
+public class RestUser  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "Steam ID of the user")
     private String steamId;
     @ApiModelProperty(notes = "User Name")

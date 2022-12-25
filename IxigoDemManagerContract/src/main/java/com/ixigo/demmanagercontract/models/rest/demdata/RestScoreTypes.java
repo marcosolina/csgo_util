@@ -1,5 +1,6 @@
 package com.ixigo.demmanagercontract.models.rest.demdata;
 
+import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -9,7 +10,8 @@ import java.util.Map;
  * @author Marco
  *
  */
-public class RestScoreTypes {
+public class RestScoreTypes  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private Map<String, String> types;
 
     public Map<String, String> getTypes() {

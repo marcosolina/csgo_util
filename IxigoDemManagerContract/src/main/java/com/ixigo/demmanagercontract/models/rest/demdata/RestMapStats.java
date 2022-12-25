@@ -1,10 +1,12 @@
 package com.ixigo.demmanagercontract.models.rest.demdata;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RestMapStats {
+public class RestMapStats  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private String mapName;
 	private LocalDateTime playedOn;
 	private List<RestUserGotvScore> usersStats;

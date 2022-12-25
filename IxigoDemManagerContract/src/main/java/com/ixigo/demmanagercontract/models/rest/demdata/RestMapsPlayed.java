@@ -1,5 +1,6 @@
 package com.ixigo.demmanagercontract.models.rest.demdata;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -8,7 +9,8 @@ import java.util.List;
  * @author Marco
  *
  */
-public class RestMapsPlayed {
+public class RestMapsPlayed  implements Serializable {
+	private static final long serialVersionUID = 1L;
 	private List<RestMapPlayed> maps;
 
     public List<RestMapPlayed> getMaps() {

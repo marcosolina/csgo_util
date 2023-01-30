@@ -10,7 +10,7 @@ services:
   ############################
   my-maven: # container name
     image: my-maven-img
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./Build
@@ -21,7 +21,7 @@ services:
     image: postgres-ixigo-img
     env_file:
       - ./env-database.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./PostgreSql
@@ -34,7 +34,7 @@ services:
     image: ixigo-discovery-img
     env_file:
       - ./env-eureka.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./IxigoDiscovery
@@ -49,7 +49,7 @@ services:
     image: ixigo-config-img
     env_file:
       - ./env-spring-config.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./IxigoConfigServer
@@ -67,13 +67,13 @@ services:
       - ./env-database.properties
       - ./env-eureka.properties
       - ./env-spring-common.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./IxigoEventDispatcher
     ports:
       - "8081:8081"
-    depends_on: 
+    depends_on:
       - dbpostgres
       - my-maven
   ############################
@@ -86,17 +86,17 @@ services:
       - ./env-database.properties
       - ./env-eureka.properties
       - ./env-spring-common.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./IxigoDemManager
     ports:
       - "8080:8080"
-    depends_on: 
+    depends_on:
       - dbpostgres
       - my-maven
-    volumes: 
-      - "/home/marco/Windows/docker/dem:/demFiles"
+    volumes:
+      - "__DEM_FOLDER__:/demFiles"
   ############################
   # Players manager
   ############################
@@ -106,13 +106,13 @@ services:
       - ./env-spring-config.properties
       - ./env-eureka.properties
       - ./env-spring-common.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./IxigoPlayersManager
     ports:
       - "8082:8082"
-    depends_on: 
+    depends_on:
       - my-maven
   ############################
   # RCON Api
@@ -123,13 +123,13 @@ services:
       - ./env-eureka.properties
       - ./env-spring-common.properties
       - ./env-spring-config.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./IxigoRconApi
     ports:
       - "8083:8083"
-    depends_on: 
+    depends_on:
       - my-maven
   ############################
   # Ixigo Discord Bot
@@ -142,13 +142,13 @@ services:
       - ./env-eureka.properties
       - ./env-spring-common.properties
       - ./env-csgo-server.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./IxigoDiscordBot
     ports:
       - "8085:8085"
-    depends_on: 
+    depends_on:
       - dbpostgres
       - my-maven
   ############################
@@ -159,35 +159,35 @@ services:
     env_file:
       - ./env-eureka.properties
       - ./env-spring-common.properties
-    networks: 
+    networks:
       - ixigo
     build:
       context: ./IxigoProxy
     ports:
       - "8763:8763"
-    depends_on: 
+    depends_on:
       - my-maven
   ############################
   # Counter Strike Server
   ############################
-  #csgo:
-  #  image: ixigo-csgo-img # Container name
-  #  env_file:
-  #    - ./env-spring-config.properties
-  #    - ./env-eureka.properties
-  #    - ./env-spring-common.properties
-  #    - ./env-csgo-server.properties
-  #  networks: 
-  #    - ixigo
-  #  build:
-  #    context: ./CsGoServer
-  #  ports:
-  #    - "27015:27015/tcp"
-  #    - "27015:27015/udp"
-  #    - "27020:27020/udp"
-  #    - "27005:27005/udp"
-  #    - "51840:51840/udp"
-  #  volumes: 
-  #    - "/home/marco/Windows/docker/server:/csgoserver/ixi_go"
-  #  depends_on: 
-  #    - my-maven
+  csgo:
+    image: ixigo-csgo-img # Container name
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+      - ./env-csgo-server.properties
+    networks:
+      - ixigo
+    build:
+      context: ./CsGoServer
+    ports:
+      - "27015:27015/tcp"
+      - "27015:27015/udp"
+      - "27020:27020/udp"
+      - "27005:27005/udp"
+      - "51840:51840/udp"
+    volumes:
+      - "__CSGO_FOLDER__:/csgoserver/ixi_go"
+    depends_on:
+      - my-maven

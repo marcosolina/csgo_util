@@ -10,6 +10,7 @@ rm -rf csgo_util/Csgo*
 rm -rf csgo_util/Dem*
 rm -rf csgo_util/misc
 rm -rf csgo_util/README*
+rm -rf csgo_util/Scripts/Jenkin*
 rm -rf csgo_util/MavenPackageAll.ps1
 
 # Saving the path to the files that I need

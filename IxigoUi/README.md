@@ -16,3 +16,6 @@ This is a Spring Boot project which leverage the Ixigo Services and provides a U
 - [Javascript](https://en.wikipedia.org/wiki/JavaScript)
 - [jQuery](https://jquery.com/)
 - [Bootstrap](https://getbootstrap.com/)
+
+
+npx create-react-app reactapp --template typescript

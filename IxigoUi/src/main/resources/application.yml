@@ -6,10 +6,9 @@ logging:
       ixigo:
         ui: DEBUG
 
-server:
-  servlet:
-    context-path: /ixigoui                                                                                # Do not change this
-
+spring:
+  thymeleaf:
+    prefix: classpath:/static/
 com:
   ixigo:
     ui:

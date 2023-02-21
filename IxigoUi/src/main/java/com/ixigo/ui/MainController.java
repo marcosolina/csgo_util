@@ -6,8 +6,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
@@ -18,16 +16,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 public class MainController {
 	@Value("classpath:static/static/**")
     private Resource[] resources;
+	
+	private static final String proxyContextPath = "/ixigoproxy/ixigo-ui";
     
     private Comparator<? super File> c = (f1, f2) -> f1.lastModified() < f2.lastModified() ? 1 : -1; 
     
-    @GetMapping(value = { "/ixigoui/**" })
-    public String ui(Model model, HttpServletRequest request) {
+    @GetMapping(value = { "/ui/**" })
+    public String ui(Model model) {
         
         model.addAttribute("js", getJsName());
         model.addAttribute("css", getCssName());
-        model.addAttribute("contextPath", request.getContextPath() + "/ixigoui");
-
+        model.addAttribute("proxyUiContextPath", proxyContextPath);
         return "ui";
     }
     

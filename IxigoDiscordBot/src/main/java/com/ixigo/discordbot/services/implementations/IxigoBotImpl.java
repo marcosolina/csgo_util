@@ -160,7 +160,10 @@ public class IxigoBotImpl implements IxigoBot {
 						.map(m -> moveMemberToVoiceChannel(guild, m, vc))
 						.collect(Collectors.toList())
 						;
-					RestAction.allOf(actions).queue();
+					
+					if(!actions.isEmpty()) {						
+						RestAction.allOf(actions).queue();
+					}
 				});
 		});
 		;
@@ -335,7 +338,9 @@ public class IxigoBotImpl implements IxigoBot {
 						.collect(Collectors.toList())
 						;
 				
-				RestAction.allOf(actions).queue();
+				if(!actions.isEmpty()) {					
+					RestAction.allOf(actions).queue();
+				}
 			}
 		})
 		;

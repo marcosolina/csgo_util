@@ -41,7 +41,7 @@ RUN chmod +x -R ./*
 
 WORKDIR ${TOP_FOLDER}
 
-COPY --from=my-maven-img /ixigo/csgo_util/IxigoServerHelper/target/IxigoServerHelper*.jar IxigoServerHelper.jar
+COPY --from=my_maven /ixigo/csgo_util/IxigoServerHelper/target/IxigoServerHelper*.jar IxigoServerHelper.jar
 
 # Expose ports
 EXPOSE 27015/tcp \

@@ -39,5 +39,16 @@ randomMapIndex=$(($RANDOM % $arrSize))
 startMap=$randomMapIndex
 MAP_START=${maps[$startMap]}
 
-$STEAM_FOLDER/steamcmd.sh +login anonymous +force_install_dir $CSGO_SERVER_DIR +app_update 740 +quit
-$CSGO_SERVER_DIR/srcds_run -game csgo -console -usercon -port 27015 +ip $HOST_IP +game_type 0 +game_mode 1 +mapgroup mg_all_maps +map $MAP_START -authkey $ENV_STEAM_API_KEY +sv_setsteamaccount $ENV_STEAM_CSGO_KEY -net_port_try 1
+$STEAM_FOLDER/steamcmd.sh +force_install_dir "$CSGO_SERVER_DIR" +login anonymous +app_update 740 +quit
+$CSGO_SERVER_DIR/srcds_run -game csgo \
+    -console \
+    -usercon \
+    -port 27015 \
+    +ip $HOST_IP \
+    +game_type 0 \
+    +game_mode 1 \
+    +mapgroup mg_all_maps \
+    +map $MAP_START \
+    -authkey $ENV_STEAM_API_KEY \
+    +sv_setsteamaccount $ENV_STEAM_CSGO_KEY \
+    -net_port_try 1

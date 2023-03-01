@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Ixigo",
+  "name": "Ixigo, the fair way to play CSGO with your friends",
   "icons": [
     {
       "src": "favicon.ico",

@@ -1,29 +1,23 @@
-import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
+import { QueryClientProvider, QueryClient } from "react-query";
+import BaseLayout from "./common/layout/BaseLayout";
 
-const contextPathUi =
-  (window as { [key: string]: any })["proxyUiContextPath"] || "";
+const App = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        refetchOnWindowFocus: false,
+        // ms * seconds * minutes
+        staleTime: 1000 * 30,
+        cacheTime: 1000 * 60 * 5,
+      },
+    },
+  });
 
-function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={`${contextPathUi}${logo}`} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <BaseLayout />
+    </QueryClientProvider>
   );
-}
+};
 
 export default App;

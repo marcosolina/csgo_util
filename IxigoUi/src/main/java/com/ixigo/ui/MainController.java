@@ -60,6 +60,10 @@ public class MainController {
             e.printStackTrace();
         }
         
+        if(files.isEmpty()) {
+        	return "";
+        }
+        
         files.sort(c);
         return files.get(0).getName();
     }

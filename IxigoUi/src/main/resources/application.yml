@@ -5,7 +5,9 @@ logging:
     com:
       ixigo:
         ui: DEBUG
-
+server:
+  servlet:
+    context-path: /ixigoui
 spring:
   thymeleaf:
     prefix: classpath:/static/

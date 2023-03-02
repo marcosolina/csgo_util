@@ -14,12 +14,13 @@
     <script th:inline="javascript">
       /*<![CDATA[*/  
 
-      window.proxyUiContextPath = /*[[${proxyUiContextPath}]]*/ "";
+      window.END_POINTS = JSON.parse(/*[[${endPoints}]]*/ "{}");
+      window.proxyBasePath = /*[[${proxyBasePath}]]*/ "";
+      
       
       /*]]>*/
       </script>
-<script defer="defer" th:src="${'/ixigoproxy/ixigo-ui/static/js/' + js}"></script>
-<link th:href="${'/ixigoproxy/ixigo-ui/static/css/' + css}" rel="stylesheet">
+<script defer="defer" th:src="${'/ixigoui/static/js/' + js}"></script>
 </head>
 <body>
 	<noscript>You need to enable JavaScript to run this app.</noscript>

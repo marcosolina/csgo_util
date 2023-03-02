@@ -6,7 +6,7 @@ import { IRestGetDemFilesResponse } from "./interfaces";
 export const useGetDemFiles = () => {
   const { data, status } = useQuery(
     "getAllDemFiles",
-    async () => await performGet<IRestGetDemFilesResponse>(SERVICES_URLS.DEM_MANAGER.GET_DEM_FILES)
+    async () => await performGet<IRestGetDemFilesResponse>(SERVICES_URLS["dem-manager"]["get-all-dem-files"])
   );
   console.log(status, data);
 };

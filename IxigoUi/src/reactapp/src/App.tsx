@@ -1,5 +1,13 @@
+import CssBaseline from "@mui/material/CssBaseline";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { QueryClientProvider, QueryClient } from "react-query";
 import BaseLayout from "./common/layout/BaseLayout";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+  },
+});
 
 const App = () => {
   const queryClient = new QueryClient({
@@ -14,9 +22,12 @@ const App = () => {
   });
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <BaseLayout />
-    </QueryClientProvider>
+    <ThemeProvider theme={darkTheme}>
+      <CssBaseline />
+      <QueryClientProvider client={queryClient}>
+        <BaseLayout />
+      </QueryClientProvider>
+    </ThemeProvider>
   );
 };
 

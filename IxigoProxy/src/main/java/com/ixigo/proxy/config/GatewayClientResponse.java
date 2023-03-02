@@ -1,4 +1,4 @@
-package com.marco.ixigo.proxy.config;
+package com.ixigo.proxy.config;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

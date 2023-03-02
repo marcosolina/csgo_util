@@ -1,4 +1,4 @@
-package com.marco.ixigo.proxy.config;
+package com.ixigo.proxy.config;
 
 import org.springframework.cloud.netflix.zuul.filters.route.FallbackProvider;
 import org.springframework.http.HttpStatus;

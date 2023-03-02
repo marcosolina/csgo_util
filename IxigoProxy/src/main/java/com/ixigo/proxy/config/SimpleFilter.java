@@ -1,4 +1,4 @@
-package com.marco.ixigo.proxy.config;
+package com.ixigo.proxy.config;
 
 import javax.servlet.http.HttpServletRequest;
 

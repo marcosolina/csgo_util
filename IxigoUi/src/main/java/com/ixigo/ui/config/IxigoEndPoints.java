@@ -1,4 +1,4 @@
-package com.ixigo.ui;
+package com.ixigo.ui.config;
 
 import java.util.Map;
 

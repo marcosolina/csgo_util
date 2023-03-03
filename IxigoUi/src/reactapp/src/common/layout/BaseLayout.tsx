@@ -1,6 +1,7 @@
 import { AppBar, Tab, Tabs, Typography } from "@mui/material";
 import { Box } from "@mui/system";
 import { useState } from "react";
+import { useGetDemFiles } from "../../services";
 
 const BaseLayout = () => {
   const [value, setValue] = useState(0);
@@ -8,6 +9,9 @@ const BaseLayout = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  useGetDemFiles();
+
   return (
     <>
       <AppBar position="sticky">

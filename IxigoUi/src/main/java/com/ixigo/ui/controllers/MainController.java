@@ -1,10 +1,12 @@
-package com.ixigo.ui;
+package com.ixigo.ui.controllers;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ixigo.ui.config.IxigoEndPoints;
 
 @Controller
 public class MainController {
@@ -28,14 +31,14 @@ public class MainController {
     private Comparator<? super File> c = (f1, f2) -> f1.lastModified() < f2.lastModified() ? 1 : -1; 
     
     @GetMapping(value = { "/" })
-    public String ui(Model model) {
+    public String ui(HttpServletRequest request, Model model) {
         model.addAttribute("js", getJsName());
         model.addAttribute("css", getCssName());
         
 		try {
 			String jsonString = objectMapper.writeValueAsString(endPoints.getEndPoints());
 			model.addAttribute("endPoints", jsonString);
-			model.addAttribute("proxyBasePath", endPoints.getEndPoints().get("gateway").get("base-url"));
+			model.addAttribute("srvContextPath", request.getContextPath() + Forward.REQUEST_MAPPING);
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

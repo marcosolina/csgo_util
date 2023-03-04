@@ -1,5 +1,6 @@
 export const PROXY_BASE_PATH =
   (window as { [key: string]: any })["srvContextPath"] || "http://localhost:8763/ixigoproxy";
+export const UI_CONTEXT_PATH = (window as { [key: string]: any })["uiContextPath"] || "";
 
 export const SERVICES_URLS = {
   "dem-manager": {

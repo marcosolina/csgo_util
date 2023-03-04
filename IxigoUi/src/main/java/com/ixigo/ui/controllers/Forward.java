@@ -1,13 +1,11 @@
 package com.ixigo.ui.controllers;
 
-import java.io.Serializable;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
@@ -20,33 +18,41 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
-import com.ixigo.ui.config.IxigoEndPoints;
+import com.ixigo.library.mediators.web.interfaces.WebMediator;
+import com.ixigo.ui.commands.ForwardHttpReqCmd;
 
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping(Forward.REQUEST_MAPPING + "/**")
 public class Forward {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Forward.class);
 	public static final String REQUEST_MAPPING = "/services";
+
 	@Autowired
-	private IxigoWebClientUtils webClient;
-	@Autowired
-	private IxigoEndPoints endPoints;
+	private WebMediator mediator;
 
 	@GetMapping
 	@PostMapping
 	@DeleteMapping
 	@PutMapping
 	// @formatter:off
-	public Mono<ResponseEntity<Object>> get(
+	public Mono<ResponseEntity<Object>> forwardHttpRequest(
 			HttpServletRequest request,
 			@RequestParam Map<String,String> allRequestParams,
-			@RequestBody(required = false) Object body) throws MalformedURLException {
-	// @formatter:on
-		var url = request.getRequestURI().replace(request.getContextPath() + REQUEST_MAPPING, endPoints.getEndPoints().get("gateway").get("base-url"));
-		HttpMethod method = HttpMethod.resolve(request.getMethod());
-		var tmpBody = Serializable.class.cast(body);
-		return webClient.performRequest(Object.class, method, new URL(url), Optional.empty(), Optional.of(allRequestParams), Optional.empty(), Optional.ofNullable(tmpBody));
+			@RequestBody(required = false) Object body){
+		
+		_LOGGER.trace("Inside Forward.forwardHttpRequest");
+		
+		return mediator.send(
+			ForwardHttpReqCmd.builder()
+			.contextPath(request.getContextPath())
+			.body(body)
+			.httpMethod(HttpMethod.resolve(request.getMethod()))
+			.queryParams(allRequestParams)
+			.requestedUri(request.getRequestURI())
+			.build()
+		);
 	}
+	// @formatter:on
 }

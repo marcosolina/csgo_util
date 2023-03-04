@@ -91,7 +91,14 @@ public class DemFileManagerImp implements DemFileManager {
 	@Override
 	public Mono<Map<String, List<SvcFileInfo>>> loadAllFileNames() throws IxigoException {
 		return Mono.fromSupplier(() -> {
-			Map<String, List<SvcFileInfo>> map = new TreeMap<>(Comparator.reverseOrder());
+			Map<String, List<SvcFileInfo>> map = new TreeMap<>(new Comparator<String>() {
+
+				@Override
+				public int compare(String o1, String o2) {
+					return o1.compareTo(o2) * -1;
+				}
+				
+			});
 
 			List<File> files = new ArrayList<>();
 			try (Stream<Path> walk = Files.walk(props.getRootFolder())) {

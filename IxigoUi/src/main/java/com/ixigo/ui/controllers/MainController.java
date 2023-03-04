@@ -39,6 +39,7 @@ public class MainController {
 			String jsonString = objectMapper.writeValueAsString(endPoints.getEndPoints());
 			model.addAttribute("endPoints", jsonString);
 			model.addAttribute("srvContextPath", request.getContextPath() + Forward.REQUEST_MAPPING);
+			model.addAttribute("uiContextPath", request.getContextPath());
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}

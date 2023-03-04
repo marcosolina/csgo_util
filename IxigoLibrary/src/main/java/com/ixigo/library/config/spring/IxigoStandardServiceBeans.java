@@ -3,6 +3,7 @@ package com.ixigo.library.config.spring;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import com.ixigo.library.mediators.web.implementations.WebMediatorImpl;
@@ -30,7 +31,12 @@ public class IxigoStandardServiceBeans {
 	@Bean
     public IxigoWebClientUtils getWeWebClientUtils() {
         // @formatter:off
+		final int size = 100 * 1024 * 1024;
+	    final ExchangeStrategies strategies = ExchangeStrategies.builder()
+	        .codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size))
+	        .build();
         WebClient.Builder builder = WebClient.builder()
+        		.exchangeStrategies(strategies)
                 .clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true)));
         // @formatter:on
 

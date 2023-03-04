@@ -6,9 +6,9 @@ export const SERVICES_URLS = {
     "gateway-path": "ixigo-dem-manager",
     "base-url": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager",
     "post-dem-file": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/files",
-    "get-dem-file": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/files/%s",
+    "get-dem-file": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/files", // Append the file name as path param
     "get-all-dem-files": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/files",
-    "delete-dem-file-from-queue": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/files/%s",
+    "delete-dem-file-from-queue": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/files", // Append the file name as path param
     "post-parse-queued-files": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/parse/queued",
     "post-parse-all-files": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/parse/all",
     "get-dem-data-scores-type": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/scorestype",

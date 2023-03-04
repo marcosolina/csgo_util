@@ -1,0 +1,14 @@
+{
+  "page": {
+    "home": {
+      "tabs": {
+        "0": "Dem Files",
+        "1": "Players",
+        "2": "Charts",
+        "3": "Rcon",
+        "4": "Discord Bot",
+        "5": "Join The Server"
+      }
+    }
+  }
+}

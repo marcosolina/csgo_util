@@ -14,7 +14,7 @@ import { QueryStatus } from "../../lib/http-requests";
 import { useGetDemFiles } from "../../services";
 import Loading from "./Loading";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { IGamingNight } from "./interfaces";
 import DownloadDemFileButton from "./DownloadDemFileButton";
 import { useSnackbar } from "notistack";
@@ -29,7 +29,7 @@ const DemFilesContent = () => {
   const [nights, setNights] = useState<IGamingNight[]>([]);
   const { status, data } = useGetDemFiles();
   const { enqueueSnackbar } = useSnackbar();
-  const files = data?.data?.files;
+  const files = useMemo(() => data?.data?.files, [data?.data?.files]);
 
   useEffect(() => {
     if (status === QueryStatus.success && !!files) {

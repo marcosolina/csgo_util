@@ -9,6 +9,11 @@
         "4": "Discord Bot",
         "5": "Join The Server"
       }
+    },
+    "demFiles": {
+      "errors": {
+        "loading": "Sorry something went wrong"
+      }
     }
   }
 }

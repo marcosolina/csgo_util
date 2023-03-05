@@ -17,10 +17,18 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import { useEffect, useState } from "react";
 import { IGamingNight } from "./interfaces";
 import DownloadDemFileButton from "./DownloadDemFileButton";
+import { useSnackbar } from "notistack";
+import { INotificationType } from "../../lib/constants";
+import { useTranslation } from "react-i18next";
+import Error from "./Error";
 
 const DemFilesContent = () => {
+  const { t } = useTranslation();
+  const [isError, setIsError] = useState<boolean>(false);
+  const [errorMsg, setErrorMsg] = useState<string>();
   const [nights, setNights] = useState<IGamingNight[]>([]);
   const { status, data } = useGetDemFiles();
+  const { enqueueSnackbar } = useSnackbar();
   const files = data?.data?.files;
 
   useEffect(() => {
@@ -35,7 +43,15 @@ const DemFilesContent = () => {
       arr.sort((a, b) => a.date.localeCompare(b.date) * -1);
       setNights(arr);
     }
+
+    setIsError(status === QueryStatus.error || data?.isError === true);
   }, [status, files]);
+
+  useEffect(() => {
+    if (isError) {
+      enqueueSnackbar(t("page.demFiles.errors.loading"), { variant: INotificationType.error });
+    }
+  }, [isError]);
 
   return (
     <Switch value={status}>
@@ -61,6 +77,9 @@ const DemFilesContent = () => {
             </AccordionDetails>
           </Accordion>
         ))}
+      </Case>
+      <Case case={QueryStatus.error}>
+        <Error />
       </Case>
     </Switch>
   );

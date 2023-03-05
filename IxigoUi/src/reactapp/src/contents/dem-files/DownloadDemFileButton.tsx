@@ -11,6 +11,10 @@ const DownloadDemFileButton: React.FC<IDownloadDemFileButtonProps> = (props) => 
     setIsDownloading(true);
     const url = `${SERVICES_URLS["dem-manager"]["get-dem-file"]}/${props.fileName}`;
     const resp = await fetch(url, { method: "get", mode: "no-cors", referrerPolicy: "no-referrer" });
+    if (!resp.ok) {
+      setIsDownloading(false);
+      return;
+    }
     const blob = await resp.blob();
     const aElement = document.createElement("a");
     aElement.setAttribute("download", props.fileName);

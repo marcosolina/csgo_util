@@ -1,5 +1,7 @@
 package com.ixigo.rconapi.services.implementations;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
@@ -10,8 +12,11 @@ import org.springframework.http.HttpStatus;
 import com.github.koraktor.steamcondenser.exceptions.SteamCondenserException;
 import com.github.koraktor.steamcondenser.steam.servers.GameServer;
 import com.github.koraktor.steamcondenser.steam.servers.SourceServer;
+import com.ixigo.library.dto.ValidationError;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.messages.IxigoMessageResource;
+import com.ixigo.library.validators.IxigoValidator;
+import com.ixigo.rconapi.models.service.SvcRconRequest;
 import com.ixigo.rconapi.services.interfaces.RconService;
 
 import reactor.core.publisher.Mono;
@@ -21,10 +26,14 @@ public class RconServiceSteamCondenser implements RconService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RconServiceSteamCondenser.class);
 	@Autowired
 	private IxigoMessageResource msgSource;
+	
+	@Autowired
+    private IxigoValidator<SvcRconRequest> ownerValidator;
 
 	@Override
-	public Mono<String> sendRconCommand(String host, int port, String rconPassw, String rconCmd) throws IxigoException {
+	public Mono<String> sendRconCommand(SvcRconRequest request) throws IxigoException {
 		String errorCode = null;
+		List<ValidationError> errors = new ArrayList<>();
 		if (host == null || host.isEmpty()) {
 			errorCode = "RCON00001";
 		}

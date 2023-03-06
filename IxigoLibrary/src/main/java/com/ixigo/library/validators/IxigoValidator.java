@@ -17,7 +17,6 @@ import br.com.fluentvalidator.AbstractValidator;
  * @param <T>
  */
 public abstract class IxigoValidator<T> extends AbstractValidator<T> {
-
     /**
      * It will try to get the value of the annotation @JsonProperty of the Java
      * field specified as input parameter.

@@ -25,6 +25,15 @@
       "successRcon": "Command sent",
       "dialog": {
         "title": "Rcon response"
+      },
+      "inputs": {
+        "labels": {
+          "serverAddr": "RCON Server Address",
+          "serverPort": "RCON Server Port",
+          "serverPassw": "RCON Server Password",
+          "serverCmd": "RCON Command to Send",
+          "serverResp": "RCON Server Response"
+        }
       }
     }
   },

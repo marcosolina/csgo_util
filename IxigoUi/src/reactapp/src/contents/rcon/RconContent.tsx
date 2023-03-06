@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import { useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
 import { useSnackbar } from "notistack";
 import IxigoDialog from "../../common/dialog/IxigoDialog";
+import DefaultCommands from "./DefaultCommands";
 
 const XS = 12;
 const SM = 12;
@@ -46,9 +47,12 @@ const RconContent = () => {
 
   useEffect(() => {
     if (rconHook.response && rconHook.status === QueryStatus.success) {
-      const successMessage = t("pages.rcon.successRcon");
+      const successMessage = t("page.rcon.successRcon");
       const checkOutput = checkRespFunc.current(rconHook.response, successMessage);
       setErrorFields(checkOutput.errorFields);
+      if (!rconHook.response.errors) {
+        onChangeInputHandler("rcon_command", "");
+      }
       if (rconHook.response?.data?.rcon_response) {
         setDialogOpen(true);
       }
@@ -66,7 +70,7 @@ const RconContent = () => {
       <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
-            label={"RCON Server Address"}
+            label={t("page.rcon.inputs.labels.serverAddr") as string}
             value={request?.rcon_host}
             state={IxigoTextState.mandatory}
             onChange={(value) => onChangeInputHandler("rcon_host", value)}
@@ -75,7 +79,7 @@ const RconContent = () => {
         </Grid>
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
-            label={"RCON Server Port"}
+            label={t("page.rcon.inputs.labels.serverPort") as string}
             value={request?.rcon_port as string | undefined}
             state={IxigoTextState.mandatory}
             type={IxigoTextType.number}
@@ -85,7 +89,7 @@ const RconContent = () => {
         </Grid>
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
-            label={"RCON Server Password"}
+            label={t("page.rcon.inputs.labels.serverPassw") as string}
             value={request?.rcon_passw}
             state={IxigoTextState.mandatory}
             type={IxigoTextType.password}
@@ -95,7 +99,7 @@ const RconContent = () => {
         </Grid>
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
-            label={"RCON command to send"}
+            label={t("page.rcon.inputs.labels.serverCmd") as string}
             value={request?.rcon_command}
             state={IxigoTextState.mandatory}
             endAdornment={
@@ -115,13 +119,16 @@ const RconContent = () => {
           />
         </Grid>
       </Grid>
-      <IxigoDialog
-        isOpen={dialogOpen}
-        onClose={dialogButtonHandler}
-        onContinue={dialogButtonHandler}
-        title={t("page.rcon.dialog.title")}
-      >
-        {rconHook.response?.data?.rcon_response}
+      <DefaultCommands />
+      <IxigoDialog isOpen={dialogOpen} onClose={dialogButtonHandler} onContinue={dialogButtonHandler} title={""}>
+        <br />
+        <IxigoText
+          label={t("page.rcon.inputs.labels.serverResp") as string}
+          value={rconHook.response?.data?.rcon_response}
+          state={IxigoTextState.readonly}
+          type={IxigoTextType.text}
+          rows={10}
+        />
       </IxigoDialog>
     </>
   );

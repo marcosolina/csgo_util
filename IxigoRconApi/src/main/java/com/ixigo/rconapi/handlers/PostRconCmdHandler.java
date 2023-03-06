@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 import com.ixigo.rconapi.commands.PostRconCmd;
+import com.ixigo.rconapi.mappers.RestMapper;
 import com.ixigo.rconapi.models.rest.RestRconResponse;
 import com.ixigo.rconapi.services.interfaces.RconService;
 
@@ -17,6 +18,8 @@ public class PostRconCmdHandler implements WebCommandHandler<PostRconCmd, RestRc
 
 	@Autowired
 	private RconService service;
+	@Autowired
+    private RestMapper mapper;
 
 	@Override
 	public Mono<ResponseEntity<RestRconResponse>> handle(PostRconCmd cmd) {

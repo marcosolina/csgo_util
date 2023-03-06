@@ -19,3 +19,12 @@ export interface IxigoError {
   error_value: string;
   error_code: string;
 }
+
+export interface CheckErrorsFuncReturnType<T> {
+  checkResp: (resp: IxigoResponse<T>, successfullMessage?: string) => CheckRespOutcome;
+}
+
+export interface CheckRespOutcome {
+  errorFields: string[];
+  isError: boolean;
+}

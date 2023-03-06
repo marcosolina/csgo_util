@@ -1,5 +1,8 @@
 import axios from "axios";
-import { IxigoResponse, QueryParamType } from "./interfaces";
+import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
+import { NotistackVariant } from "../constants/style";
+import { CheckErrorsFuncReturnType, IxigoResponse, QueryParamType } from "./interfaces";
 
 export const createQueryParamString = (input: Record<string, QueryParamType> | undefined): string => {
   if (!input) {
@@ -44,5 +47,52 @@ export async function performGet<T>(url: string): Promise<IxigoResponse<T>> {
     status: result.status,
     errors: result.data.errors,
     isError: result.status >= 400,
+  };
+}
+
+export async function performPost<T, J>(url: string, body: J): Promise<IxigoResponse<T>> {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  const result = await axios
+    .post(url, body, { headers })
+    .then((result) => result)
+    .catch((error) => error.response);
+  return {
+    data: result.data,
+    status: result.status,
+    errors: result.data.errors,
+    isError: result.status >= 400,
+  };
+}
+
+export function useCheckErrorsInResponse<T>(): CheckErrorsFuncReturnType<T> {
+  const { t } = useTranslation();
+  const { enqueueSnackbar } = useSnackbar();
+
+  return {
+    checkResp: (resp: IxigoResponse<T>, successfullMessage?: string) => {
+      if (resp.isError) {
+        if (resp.errors) {
+          resp.errors.forEach((e) => {
+            enqueueSnackbar(e.error_message, {
+              variant: NotistackVariant.error,
+            });
+          });
+        } else {
+          enqueueSnackbar(t("error.generic.message"), {
+            variant: NotistackVariant.error,
+          });
+        }
+      } else {
+        if (successfullMessage) {
+          enqueueSnackbar(successfullMessage, { variant: NotistackVariant.success });
+        }
+      }
+      return {
+        errorFields: resp.errors?.map((e) => e.error_field) || ([] as string[]),
+        isError: resp.isError,
+      };
+    },
   };
 }

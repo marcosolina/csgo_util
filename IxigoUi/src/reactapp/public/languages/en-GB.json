@@ -1,4 +1,10 @@
 {
+  "dialog": {
+    "btn": {
+      "cancel": "Cancle",
+      "continue": "Continue"
+    }
+  },
   "page": {
     "home": {
       "tabs": {
@@ -14,6 +20,17 @@
       "errors": {
         "loading": "Sorry something went wrong"
       }
+    },
+    "rcon": {
+      "successRcon": "Command sent",
+      "dialog": {
+        "title": "Rcon response"
+      }
+    }
+  },
+  "error": {
+    "generic": {
+      "message": "Sorry, something went wrong"
     }
   }
 }

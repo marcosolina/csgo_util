@@ -24,7 +24,7 @@ const BaseLayout = () => {
   return (
     <>
       <AppBar position="sticky">
-        <Box padding={"5px"}>
+        <Box padding={"8px 16px"}>
           <Typography variant="h5">IXI-GO: Monday Nights</Typography>
         </Box>
       </AppBar>

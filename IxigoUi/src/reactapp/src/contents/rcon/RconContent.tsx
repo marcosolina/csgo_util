@@ -49,7 +49,9 @@ const RconContent = () => {
       const successMessage = t("pages.rcon.successRcon");
       const checkOutput = checkRespFunc.current(rconHook.response, successMessage);
       setErrorFields(checkOutput.errorFields);
-      setDialogOpen(true);
+      if (rconHook.response?.data?.rcon_response) {
+        setDialogOpen(true);
+      }
       return;
     }
 
@@ -117,7 +119,7 @@ const RconContent = () => {
         isOpen={dialogOpen}
         onClose={dialogButtonHandler}
         onContinue={dialogButtonHandler}
-        title={t("pages.rcon.dialog.title")}
+        title={t("page.rcon.dialog.title")}
       >
         {rconHook.response?.data?.rcon_response}
       </IxigoDialog>

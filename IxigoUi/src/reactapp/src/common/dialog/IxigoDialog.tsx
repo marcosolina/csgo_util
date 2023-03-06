@@ -6,7 +6,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import IxigoButton from "../button/IxigoButton";
-import { IxigoButtonColor, IxigoButtonSize } from "../button";
+import { IxigoButtonColor, IxigoButtonSize, IxigoButtonVariant } from "../button";
 
 const IxigoDialog: React.FC<IxigoDialogProps> = (props) => {
   const { t } = useTranslation();
@@ -19,6 +19,7 @@ const IxigoDialog: React.FC<IxigoDialogProps> = (props) => {
           text={props.btnCancelLbl || t("dialog.btn.cancel")}
           size={IxigoButtonSize.small}
           onClick={props.onClose}
+          variant={IxigoButtonVariant.outlined}
         />
         <IxigoButton
           text={props.btnContinueLbl || t("dialog.btn.continue")}
@@ -26,6 +27,7 @@ const IxigoDialog: React.FC<IxigoDialogProps> = (props) => {
           onClick={props.onContinue}
           color={IxigoButtonColor.primary}
           loading={props.loading}
+          variant={IxigoButtonVariant.outlined}
         />
       </DialogActions>
     </Dialog>

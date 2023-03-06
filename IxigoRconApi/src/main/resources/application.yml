@@ -12,5 +12,5 @@ server:
     
 com:
   ixigo:
-    rconapiservice:
+    rconapi:
       version: ^project.version^

@@ -27,11 +27,7 @@ public class PostRconCmdHandler implements WebCommandHandler<PostRconCmd, RestRc
 		var req = cmd.getRequest();
 
 		// @formatter:off
-		return service.sendRconCommand(
-				req.getRconHost(),
-				req.getRconPort(),
-				req.getRconPass(),
-				req.getRconCmd())
+		return service.sendRconCommand(mapper.fromRestToSvc(req))
 			.map(stringResp -> {
 				var resp = new RestRconResponse();
 				resp.setRconResponse(stringResp);

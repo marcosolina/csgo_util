@@ -1,7 +1,5 @@
 package com.ixigo.rconapi.services.implementations;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
@@ -12,51 +10,39 @@ import org.springframework.http.HttpStatus;
 import com.github.koraktor.steamcondenser.exceptions.SteamCondenserException;
 import com.github.koraktor.steamcondenser.steam.servers.GameServer;
 import com.github.koraktor.steamcondenser.steam.servers.SourceServer;
-import com.ixigo.library.dto.ValidationError;
 import com.ixigo.library.errors.IxigoException;
-import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.validators.IxigoValidator;
+import com.ixigo.library.validators.IxigoValidatorUtils;
+import com.ixigo.library.validators.ValidationException;
 import com.ixigo.rconapi.models.service.SvcRconRequest;
 import com.ixigo.rconapi.services.interfaces.RconService;
 
+import br.com.fluentvalidator.context.ValidationResult;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 public class RconServiceSteamCondenser implements RconService {
 	private static final Logger LOGGER = LoggerFactory.getLogger(RconServiceSteamCondenser.class);
-	@Autowired
-	private IxigoMessageResource msgSource;
 	
 	@Autowired
-    private IxigoValidator<SvcRconRequest> ownerValidator;
+    private IxigoValidator<SvcRconRequest> validator;
 
 	@Override
 	public Mono<String> sendRconCommand(SvcRconRequest request) throws IxigoException {
-		String errorCode = null;
-		List<ValidationError> errors = new ArrayList<>();
-		if (host == null || host.isEmpty()) {
-			errorCode = "RCON00001";
-		}
-		if (port == 0) {
-			errorCode = "RCON00002";
-		}
-		if (rconPassw == null || rconPassw.isEmpty()) {
-			errorCode = "RCON00003";
-		}
-		if (rconCmd == null || rconCmd.isEmpty()) {
-			errorCode = "RCON00004";
-		}
 		
-		if(errorCode != null) {
-			return Mono.error(new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(errorCode), errorCode));
-		}
+		ValidationResult result = validator.validate(request);
+
+        if (!result.isValid()) {
+        	return Mono.error(new ValidationException(IxigoValidatorUtils.fromCollectionErrorToValidationError(result.getErrors())));
+        }
+		
 		return Mono.fromSupplier(() -> {
 			try {
-				GameServer server = new SourceServer(host, port);
-				LOGGER.debug(String.format("Authenticating on server: %s with password: %s", host, rconPassw));
-				server.rconAuth(rconPassw);
-				LOGGER.debug(String.format("Sending RCON command: %s", rconCmd));
-				String response = server.rconExec(rconCmd);
+				GameServer server = new SourceServer(request.getRconHost(), request.getRconPort());
+				LOGGER.debug(String.format("Authenticating on server: %s with password: %s", request.getRconHost(), request.getRconPass()));
+				server.rconAuth(request.getRconPass());
+				LOGGER.debug(String.format("Sending RCON command: %s", request.getRconCmd()));
+				String response = server.rconExec(request.getRconCmd());
 				LOGGER.debug(String.format("RCON response: %s", response));
 				return response;
 			} catch (SteamCondenserException | TimeoutException e) {

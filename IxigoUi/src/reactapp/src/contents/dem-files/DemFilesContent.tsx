@@ -25,7 +25,6 @@ import Error from "./Error";
 const DemFilesContent = () => {
   const { t } = useTranslation();
   const [isError, setIsError] = useState<boolean>(false);
-  const [errorMsg, setErrorMsg] = useState<string>();
   const [nights, setNights] = useState<IGamingNight[]>([]);
   const { status, data } = useGetDemFiles();
   const { enqueueSnackbar } = useSnackbar();
@@ -45,13 +44,13 @@ const DemFilesContent = () => {
     }
 
     setIsError(status === QueryStatus.error || data?.isError === true);
-  }, [status, files]);
+  }, [status, files, data?.isError]);
 
   useEffect(() => {
     if (isError) {
       enqueueSnackbar(t("page.demFiles.errors.loading"), { variant: INotificationType.error });
     }
-  }, [isError]);
+  }, [isError, enqueueSnackbar, t]);
 
   return (
     <Switch value={status}>

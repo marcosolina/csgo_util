@@ -6,6 +6,7 @@ import ChartsContent from "../../contents/charts/ChartsContent";
 import DemFilesContent from "../../contents/dem-files/DemFilesContent";
 import DiscordBotContent from "../../contents/discord-bot/DiscordBotContent";
 import PlayersContent from "../../contents/players/PlayersContent";
+import { RconContentProvider } from "../../contents/rcon/indext";
 import RconContent from "../../contents/rcon/RconContent";
 import ServerInfoContent from "../../contents/server-info/ServerInfoContent";
 import Case from "../switch-case/Case";
@@ -61,7 +62,9 @@ const BaseLayout = () => {
             <ChartsContent />
           </Case>
           <Case case={3}>
-            <RconContent />
+            <RconContentProvider>
+              <RconContent />
+            </RconContentProvider>
           </Case>
           <Case case={4}>
             <DiscordBotContent />

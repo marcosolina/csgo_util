@@ -75,14 +75,21 @@ export function useCheckErrorsInResponse<T>(): CheckErrorsFuncReturnType<T> {
       if (resp.isError) {
         if (resp.errors) {
           resp.errors.forEach((e) => {
-            enqueueSnackbar(e.error_message, {
+            enqueueSnackbar(`${e.error_code} - ${e.error_message}`, {
               variant: NotistackVariant.error,
             });
           });
         } else {
-          enqueueSnackbar(t("error.generic.message"), {
-            variant: NotistackVariant.error,
-          });
+          const err = resp.data as any;
+          if (err.error_code) {
+            enqueueSnackbar(`${err.error_code} - ${err.error_msg}`, {
+              variant: NotistackVariant.error,
+            });
+          } else {
+            enqueueSnackbar(t("error.generic.message"), {
+              variant: NotistackVariant.error,
+            });
+          }
         }
       } else {
         if (successfullMessage) {

@@ -4,14 +4,14 @@ import IxigoText from "../../common/input/IxigoText";
 import { DEFAULT_SPACING, NotistackVariant } from "../../lib/constants";
 import SendIcon from "@mui/icons-material/Send";
 import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
-import { IRconRequest, useSendRconCommand } from "../../services";
+import { useCallback, useEffect, useState } from "react";
+import { IRconRequest } from "../../services";
 import { QueryStatus } from "../../lib/http-requests";
 import { useTranslation } from "react-i18next";
-import { useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
 import { useSnackbar } from "notistack";
 import IxigoDialog from "../../common/dialog/IxigoDialog";
 import DefaultCommands from "./DefaultCommands";
+import { useRconContentProvider } from "./useRconContentProvider";
 
 const XS = 12;
 const SM = 12;
@@ -22,48 +22,35 @@ const XL = 3;
 const RconContent = () => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
-  const rconHook = useSendRconCommand();
-  const { checkResp } = useCheckErrorsInResponse();
-  const checkRespFunc = useRef(checkResp);
 
-  const [errorFields, setErrorFields] = useState<string[]>([]);
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const [request, setRequest] = useState<IRconRequest>();
+  const { request, setRequest, rconResponse, queryState, errorFields, sendCommand } = useRconContentProvider();
 
   const dialogButtonHandler = () => setDialogOpen(false);
 
-  const onChangeInputHandler = (inputField: string, value: string) => {
-    const newRequest = { ...request } as any;
-    newRequest[inputField] = value;
-    setRequest(newRequest as IRconRequest);
-  };
+  const onChangeInputHandler = useCallback(
+    (inputField: string, value: string) => {
+      const newRequest = { ...request } as any;
+      newRequest[inputField] = value;
+      setRequest(newRequest as IRconRequest);
+    },
+    [request, setRequest]
+  );
 
-  const onSubmitHandler = () => {
-    if (!request) {
-      return;
-    }
-    rconHook.sendCommand(request);
+  const sendRequestHandler = () => {
+    sendCommand(request);
   };
 
   useEffect(() => {
-    if (rconHook.response && rconHook.status === QueryStatus.success) {
-      const successMessage = t("page.rcon.successRcon");
-      const checkOutput = checkRespFunc.current(rconHook.response, successMessage);
-      setErrorFields(checkOutput.errorFields);
-      if (!rconHook.response.errors) {
-        onChangeInputHandler("rcon_command", "");
-      }
-      if (rconHook.response?.data?.rcon_response) {
-        setDialogOpen(true);
-      }
-      return;
+    if (queryState === QueryStatus.success && rconResponse?.rcon_response) {
+      setDialogOpen(true);
     }
 
-    if (rconHook.status === QueryStatus.error) {
+    if (queryState === QueryStatus.error) {
       enqueueSnackbar(t("error.generic.message"), { variant: NotistackVariant.error });
       return;
     }
-  }, [rconHook.status, rconHook.response]);
+  }, [queryState, rconResponse?.rcon_response, t, enqueueSnackbar]);
 
   return (
     <>
@@ -80,7 +67,7 @@ const RconContent = () => {
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
             label={t("page.rcon.inputs.labels.serverPort") as string}
-            value={request?.rcon_port as string | undefined}
+            value={request.rcon_port.toString()}
             state={IxigoTextState.mandatory}
             type={IxigoTextType.number}
             onChange={(value) => onChangeInputHandler("rcon_port", value)}
@@ -108,9 +95,9 @@ const RconContent = () => {
                   aria-label="toggle password visibility"
                   edge="end"
                   color="primary"
-                  onClick={onSubmitHandler}
+                  onClick={sendRequestHandler}
                 >
-                  {rconHook.status === QueryStatus.loading ? <CircularProgress size={20} /> : <SendIcon />}
+                  {queryState === QueryStatus.loading ? <CircularProgress size={20} /> : <SendIcon />}
                 </IconButton>
               </InputAdornment>
             }
@@ -124,7 +111,7 @@ const RconContent = () => {
         <br />
         <IxigoText
           label={t("page.rcon.inputs.labels.serverResp") as string}
-          value={rconHook.response?.data?.rcon_response}
+          value={rconResponse?.rcon_response}
           state={IxigoTextState.readonly}
           type={IxigoTextType.text}
           rows={10}

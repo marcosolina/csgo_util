@@ -1,10 +1,12 @@
 import { Grid } from "@mui/material";
 import { DEFAULT_SPACING } from "../../lib/constants";
+import { IRconCommand } from "./interfaces";
 import RconCommand from "./RconCommand";
 
-const CMDS = [
+const CMDS: IRconCommand[] = [
   {
     cmd: "sm_list_players",
+    name: "list the players",
   },
 ];
 
@@ -19,7 +21,7 @@ const DefaultCommands = () => {
     <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
       {CMDS.map((cmd, index) => (
         <Grid key={index} item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-          <RconCommand />
+          <RconCommand cmd={cmd.cmd} name={cmd.name} />
         </Grid>
       ))}
     </Grid>

@@ -3,6 +3,7 @@ import { useRconContentProvider } from "./useRconContentProvider";
 import { styled } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
+import { UI_CONTEXT_PATH } from "../../lib/constants";
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
   position: "relative",
@@ -86,7 +87,7 @@ const RconCommand: React.FC<IRconCommand> = (props) => {
         width: "100%",
       }}
     >
-      <ImageSrc style={{ backgroundImage: `url(${props.image})` }} />
+      <ImageSrc style={{ backgroundImage: `url(${UI_CONTEXT_PATH}${props.image})` }} />
       <ImageBackdrop className="MuiImageBackdrop-root" />
       <Image>
         <Typography

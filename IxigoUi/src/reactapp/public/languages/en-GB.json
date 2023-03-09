@@ -34,6 +34,28 @@
           "serverCmd": "RCON Command to Send",
           "serverResp": "RCON Server Response"
         }
+      },
+      "commands": {
+        "groups": {
+          "bots": {
+            "title": "Bots",
+            "buttons": {
+              "bot_add_t": "Add Terrorist Bot",
+              "bot_add_ct": "Add C.T. Bot",
+              "bot_kick": "Kick all the bots"
+            }
+          },
+          "game": {
+            "title": "Game",
+            "buttons": {
+              "sm_list_players": "List active players",
+              "mp_restartgame": "Restart the game",
+              "pause": "Pause the game",
+              "unpause": "Resume the game",
+              "exit": "Stop the server"
+            }
+          }
+        }
       }
     }
   },

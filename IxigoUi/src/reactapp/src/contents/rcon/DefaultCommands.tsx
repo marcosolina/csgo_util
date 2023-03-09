@@ -1,33 +1,9 @@
-import { Grid } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
+import { useTranslation } from "react-i18next";
 import { DEFAULT_SPACING } from "../../lib/constants";
-import { IRconCommand } from "./interfaces";
+import { IRconCmdsGroup, RCON_BOTS } from "./commands";
+import { RCON_GAME } from "./commands/game";
 import RconCommand from "./RconCommand";
-import ct from "../../assets/bots/counterterrorist.jpg";
-import terr from "../../assets/bots/terrorist.jpg";
-import kick from "../../assets/bots/kickbots.jpg";
-
-const CMDS: IRconCommand[] = [
-  {
-    cmd: "sm_list_players",
-    name: "list the players",
-    image: "",
-  },
-  {
-    cmd: "bot_add_t",
-    name: "Add Terrorist Bot",
-    image: terr,
-  },
-  {
-    cmd: "bot_add_ct",
-    name: "Add C.T. Bot",
-    image: ct,
-  },
-  {
-    cmd: "bot_kick",
-    name: "Kick all the bots",
-    image: kick,
-  },
-];
 
 const XS = 12;
 const SM = 12;
@@ -36,14 +12,24 @@ const LG = 4;
 const XL = 3;
 
 const DefaultCommands = () => {
+  const { t } = useTranslation();
+  const cmdGroups: IRconCmdsGroup[] = [RCON_BOTS, RCON_GAME];
+
   return (
-    <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
-      {CMDS.map((cmd, index) => (
-        <Grid key={index} item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-          <RconCommand cmd={cmd.cmd} name={cmd.name} image={cmd.image} />
+    <>
+      {cmdGroups.map((group, i) => (
+        <Grid key={i} container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
+          <Grid item xs={12} textAlign={"center"}>
+            <Typography variant="h3">{t(`${group.languagePrefix}.title`)}</Typography>
+          </Grid>
+          {group.cmds.map((cmd, j) => (
+            <Grid key={j} item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+              <RconCommand cmd={cmd.cmd} image={cmd.image} label={t(`${group.languagePrefix}.buttons.${cmd.cmdKey}`)} />
+            </Grid>
+          ))}
         </Grid>
       ))}
-    </Grid>
+    </>
   );
 };
 

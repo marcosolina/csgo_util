@@ -1,9 +1,10 @@
-import { IRconCommand } from "./interfaces";
+import { IRconCommandProps } from "./interfaces";
 import { useRconContentProvider } from "./useRconContentProvider";
 import { styled } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
 import { UI_CONTEXT_PATH } from "../../lib/constants";
+import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
   position: "relative",
@@ -69,7 +70,7 @@ const ImageMarked = styled("span")(({ theme }) => ({
   transition: theme.transitions.create("opacity"),
 }));
 
-const RconCommand: React.FC<IRconCommand> = (props) => {
+const RconCommand: React.FC<IRconCommandProps> = (props) => {
   const { request, setRequest, sendCommand } = useRconContentProvider();
 
   const clickHandler = () => {
@@ -87,23 +88,26 @@ const RconCommand: React.FC<IRconCommand> = (props) => {
         width: "100%",
       }}
     >
-      <ImageSrc style={{ backgroundImage: `url(${UI_CONTEXT_PATH}${props.image})` }} />
+      {props.image && <ImageSrc style={{ backgroundImage: `url(${UI_CONTEXT_PATH}${props.image})` }} />}
       <ImageBackdrop className="MuiImageBackdrop-root" />
       <Image>
-        <Typography
-          component="span"
-          variant="subtitle1"
-          color="inherit"
-          sx={{
-            position: "relative",
-            p: 4,
-            pt: 2,
-            pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
-          }}
-        >
-          {props.name}
-          <ImageMarked className="MuiImageMarked-root" />
-        </Typography>
+        <>
+          <Typography
+            component="span"
+            variant="subtitle1"
+            color="inherit"
+            sx={{
+              position: "relative",
+              p: 4,
+              pt: 2,
+              pb: (theme) => `calc(${theme.spacing(1)} + 6px)`,
+            }}
+          >
+            {props.label}
+            <ImageMarked className="MuiImageMarked-root" />
+          </Typography>
+          {props.icon}
+        </>
       </Image>
     </ImageButton>
   );

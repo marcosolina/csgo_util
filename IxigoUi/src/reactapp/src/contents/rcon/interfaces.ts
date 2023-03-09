@@ -1,3 +1,5 @@
+import { SvgIconTypeMap } from "@mui/material";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { QueryStatus } from "react-query";
 import { IRconRequest, IRconResponse } from "../../services";
 
@@ -12,6 +14,14 @@ export interface IUseRconContentResult {
 
 export interface IRconCommand {
   cmd: string;
-  name: string;
-  image: string;
+  cmdKey: string;
+  image?: string;
+  icon?: () => React.ReactNode;
+}
+
+export interface IRconCommandProps {
+  cmd: string;
+  label: string;
+  image?: string;
+  icon?: OverridableComponent<SvgIconTypeMap<{}, "svg">> & { muiName: string };
 }

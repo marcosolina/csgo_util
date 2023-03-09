@@ -13,4 +13,5 @@ export interface IUseRconContentResult {
 export interface IRconCommand {
   cmd: string;
   name: string;
+  image: string;
 }

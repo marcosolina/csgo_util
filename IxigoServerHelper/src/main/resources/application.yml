@@ -21,3 +21,5 @@ com:
         send-events: true                                                                     # Send the events to the dispatch event service
         event-file-reader-impl: "POWERSHELL" # TAIL or POWERSHELL
         event-file-path: "E:\\tmp\\csgoutils\\events.txt"
+      maps:
+        root-folder: "E:\\VmSharedFiles\\docker\\server\\CsgoServer\\csgo\\maps" # Full path to the csgo / maps folder

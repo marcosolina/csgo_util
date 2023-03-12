@@ -26,10 +26,14 @@ import org.springframework.web.util.UriBuilder;
 
 import com.ixigo.library.enums.DateFormats;
 import com.ixigo.library.errors.IxigoException;
+import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 import com.ixigo.library.utils.DateUtils;
 import com.ixigo.serverhelper.config.properties.DemFilesProperties;
 import com.ixigo.serverhelper.config.properties.DemManagersEndPoints;
+import com.ixigo.serverhelper.config.properties.MapsProperties;
+import com.ixigo.serverhelper.constants.ErrorCodes;
+import com.ixigo.serverhelper.models.svc.SvcServerMap;
 import com.ixigo.serverhelper.services.interfaces.DemFilesService;
 
 import reactor.core.publisher.Flux;
@@ -45,7 +49,11 @@ public class DemFilesServiceImp implements DemFilesService {
 	@Autowired
 	private DemManagersEndPoints demManagerEndPoints;
 	@Autowired
+	private MapsProperties mapsProps;
+	@Autowired
 	private IxigoWebClientUtils webClient;
+	@Autowired
+	private IxigoMessageResource msgSource;
 
 	@Override
 	public void postLastDemFiles(boolean isShutDown) throws IxigoException {
@@ -108,6 +116,36 @@ public class DemFilesServiceImp implements DemFilesService {
 		})
 		;
 		// @formatter:on
+	}
+	
+	@Override
+	public Flux<SvcServerMap> getServerMaps() throws IxigoException {
+		try {
+			// @formatter:off
+			return Flux.fromStream(
+					Files.walk(mapsProps.getRootFolder())
+					.filter(Files::isRegularFile)
+				)
+				.filter(p -> p.toString().endsWith(".bsp"))
+				.map(p -> {
+					SvcServerMap map = new SvcServerMap();
+					var fullPath = p.toAbsolutePath().toString();
+					map.setWorkshop(fullPath.contains("workshop"));
+					if(map.isWorkshop()) {
+						int count = p.getNameCount();
+						if (count > 2) {
+						    String workshopId = p.getName(count - 2).toString();
+						    map.setWorkshopId(workshopId);
+						}
+					}
+					map.setMapName(p.getFileName().toString());
+					return map;
+				});
+			// @formatter:on
+
+		} catch (IOException e) {
+			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.GENERIC_ERROR), ErrorCodes.GENERIC_ERROR);
+		}
 	}
 
 	private Mono<ResponseEntity<Void>> triggerParseNewDem() {

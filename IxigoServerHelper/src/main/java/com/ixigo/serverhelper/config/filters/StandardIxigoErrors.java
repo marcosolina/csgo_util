@@ -1,4 +1,4 @@
-package com.ixigo.discordbot.config.filters;
+package com.ixigo.serverhelper.config.filters;
 
 import org.springframework.web.bind.annotation.ControllerAdvice;
 
@@ -9,7 +9,7 @@ import com.ixigo.library.messages.IxigoMessageResource;
 public class StandardIxigoErrors extends IxigoServiceExceptionHandler {
 
     public StandardIxigoErrors(IxigoMessageResource msgSource) {
-        super(msgSource, "HELP00000");
+        super(msgSource, "DISCBOT00000");
     }
 
 }

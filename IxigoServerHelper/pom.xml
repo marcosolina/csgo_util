@@ -17,6 +17,7 @@
 	
 	<properties>
 		<contract.eventdispatcher>2.0.0</contract.eventdispatcher>
+		<contract.serverhelper>2.0.0</contract.serverhelper>
 	</properties>
 
 	<dependencies>
@@ -24,6 +25,11 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-configuration-processor</artifactId>
 			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoServerHelperContract</artifactId>
+			<version>${contract.serverhelper}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ixigo</groupId>

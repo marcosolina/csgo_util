@@ -13,6 +13,7 @@ mvn clean install -f ./csgo_util/IxigoDiscordBotContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoEventDispatcherContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoPlayersManagerContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoRconApiContract/pom.xml && \
+mvn clean install -f ./csgo_util/IxigoServerHelperContract/pom.xml && \
 mvn clean package -f ./csgo_util/IxigoConfigServer/pom.xml && \
 mvn clean package -f ./csgo_util/IxigoDemManager/pom.xml && \
 mvn clean package -f ./csgo_util/IxigoDiscordBot/pom.xml && \

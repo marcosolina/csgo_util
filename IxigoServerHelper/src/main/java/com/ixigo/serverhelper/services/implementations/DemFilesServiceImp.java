@@ -122,6 +122,7 @@ public class DemFilesServiceImp implements DemFilesService {
 	public Flux<SvcServerMap> getServerMaps() throws IxigoException {
 		try {
 			// @formatter:off
+			_LOGGER.debug(mapsProps.getRootFolder().toString());
 			return Flux.fromStream(
 					Files.walk(mapsProps.getRootFolder())
 					.filter(Files::isRegularFile)
@@ -144,6 +145,7 @@ public class DemFilesServiceImp implements DemFilesService {
 			// @formatter:on
 
 		} catch (IOException e) {
+			e.printStackTrace();
 			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.GENERIC_ERROR), ErrorCodes.GENERIC_ERROR);
 		}
 	}

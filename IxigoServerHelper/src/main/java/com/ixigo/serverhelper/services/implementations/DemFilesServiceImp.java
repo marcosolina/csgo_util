@@ -122,12 +122,13 @@ public class DemFilesServiceImp implements DemFilesService {
 	public Flux<SvcServerMap> getServerMaps() throws IxigoException {
 		try {
 			// @formatter:off
+			String mapExtension = ".bsp";
 			_LOGGER.debug(mapsProps.getRootFolder().toString());
 			return Flux.fromStream(
 					Files.walk(mapsProps.getRootFolder())
 					.filter(Files::isRegularFile)
 				)
-				.filter(p -> p.toString().endsWith(".bsp"))
+				.filter(p -> p.toString().endsWith(mapExtension))
 				.map(p -> {
 					SvcServerMap map = new SvcServerMap();
 					var fullPath = p.toAbsolutePath().toString();
@@ -139,7 +140,7 @@ public class DemFilesServiceImp implements DemFilesService {
 						    map.setWorkshopId(workshopId);
 						}
 					}
-					map.setMapName(p.getFileName().toString());
+					map.setMapName(p.getFileName().toString().replace(mapExtension, ""));
 					return map;
 				});
 			// @formatter:on

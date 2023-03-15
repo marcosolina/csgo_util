@@ -29,6 +29,9 @@ export const SERVICES_URLS = {
     "base-url": PROXY_BASE_PATH + "/ixigo-players-manager/playersmanager",
     "get-teams": PROXY_BASE_PATH + "/ixigo-players-manager/playersmanager/teams",
   },
+  "server-helper": {
+    "get-maps": PROXY_BASE_PATH + "/ixigo-server-helper/ixigohelper/maps",
+  },
   "rcon-api": {
     "gateway-path": "ixigo-rcon-api",
     "base-url": PROXY_BASE_PATH + "/ixigo-rcon-api/rcon",

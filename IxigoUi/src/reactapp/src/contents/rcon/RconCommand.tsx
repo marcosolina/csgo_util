@@ -4,7 +4,6 @@ import { styled } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
 import { UI_CONTEXT_PATH } from "../../lib/constants";
-import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
   position: "relative",

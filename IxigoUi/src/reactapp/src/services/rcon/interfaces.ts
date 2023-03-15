@@ -17,3 +17,13 @@ export interface ISendRconCommand {
 export interface IRconResponse {
   rcon_response: string;
 }
+
+export interface IGetMapsResponse {
+  server_maps: IMapResponse[];
+}
+
+export interface IMapResponse {
+  map_name: string;
+  is_workshop_map: boolean;
+  workshop_id?: string;
+}

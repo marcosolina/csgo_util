@@ -45,6 +45,9 @@
               "bot_kick": "Kick all the bots"
             }
           },
+          "maps": {
+            "title": "Maps"
+          },
           "game": {
             "title": "Game",
             "buttons": {

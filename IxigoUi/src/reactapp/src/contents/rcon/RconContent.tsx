@@ -12,6 +12,7 @@ import { useSnackbar } from "notistack";
 import IxigoDialog from "../../common/dialog/IxigoDialog";
 import DefaultCommands from "./DefaultCommands";
 import { useRconContentProvider } from "./useRconContentProvider";
+import RconMaps from "./RconMaps";
 
 const XS = 12;
 const SM = 12;
@@ -107,6 +108,7 @@ const RconContent = () => {
         </Grid>
       </Grid>
       <DefaultCommands />
+      <RconMaps />
       <IxigoDialog isOpen={dialogOpen} onClose={dialogButtonHandler} onContinue={dialogButtonHandler} title={""}>
         <br />
         <IxigoText

@@ -6,8 +6,8 @@ import { RCON_GAME } from "./commands/game";
 import RconCommand from "./RconCommand";
 
 const XS = 12;
-const SM = 12;
-const MD = 6;
+const SM = 6;
+const MD = 4;
 const LG = 4;
 const XL = 3;
 

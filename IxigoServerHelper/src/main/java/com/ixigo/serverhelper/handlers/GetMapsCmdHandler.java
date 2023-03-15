@@ -32,6 +32,10 @@ public class GetMapsCmdHandler implements WebCommandHandler<GetMapsCmd, RestServ
 			.map(mapper::fromSvcToRest)
 			.collectList()
 			.map(list -> {
+				list.sort((o1, o2) -> o1.getMapName().compareTo(o2.getMapName()));
+				return list;
+			})
+			.map(list -> {
 				RestServerMaps maps = new RestServerMaps();
 				maps.setMaps(list);
 				return maps;

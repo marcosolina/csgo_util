@@ -10,6 +10,7 @@ export interface IIxigoText {
   type?: IxigoTextType;
   rows?: number;
   endAdornment?: React.ReactNode;
+  step?: number;
 }
 
 export enum IxigoTextWidth {

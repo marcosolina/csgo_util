@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModelProperty;
 
 /**
@@ -15,6 +17,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class RestUsersScores  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "List of Users and their scores")
+	@JsonProperty("users_scores")
 	private Map<String, List<RestMapStats>> usersScores;
 
 	public Map<String, List<RestMapStats>> getUsersScores() {

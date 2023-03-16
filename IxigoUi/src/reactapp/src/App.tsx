@@ -7,6 +7,7 @@ import { i18n } from "./lib/multilanguage";
 import { SnackbarKey, SnackbarProvider, useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import { RconContentProvider } from "./contents/rcon/indext";
 
 const darkTheme = createTheme({
   palette: {
@@ -42,7 +43,9 @@ const App = () => {
         <ThemeProvider theme={darkTheme}>
           <CssBaseline />
           <QueryClientProvider client={queryClient}>
-            <BaseLayout />
+            <RconContentProvider>
+              <BaseLayout />
+            </RconContentProvider>
           </QueryClientProvider>
         </ThemeProvider>
       </I18nextProvider>

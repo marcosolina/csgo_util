@@ -8,3 +8,16 @@ export interface IRestFileInfo {
   size: string;
   url: string;
 }
+
+export interface IRestGetScoreTypesResponse {
+  types: Record<string, string>;
+}
+
+export interface IRestGetCsgoUsersResponse {
+  users: ICsgoUser[];
+}
+
+export interface ICsgoUser {
+  steam_id: string;
+  user_name: string;
+}

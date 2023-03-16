@@ -5,10 +5,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RestMapStats  implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@JsonProperty("map_name")
 	private String mapName;
+	@JsonProperty("played_on")
 	private LocalDateTime playedOn;
+	@JsonProperty("users_statistics")
 	private List<RestUserGotvScore> usersStats;
 
 	public String getMapName() {

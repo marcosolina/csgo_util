@@ -6,7 +6,6 @@ import ChartsContent from "../../contents/charts/ChartsContent";
 import DemFilesContent from "../../contents/dem-files/DemFilesContent";
 import DiscordBotContent from "../../contents/discord-bot/DiscordBotContent";
 import PlayersContent from "../../contents/players/PlayersContent";
-import { RconContentProvider } from "../../contents/rcon/indext";
 import RconContent from "../../contents/rcon/RconContent";
 import ServerInfoContent from "../../contents/server-info/ServerInfoContent";
 import Case from "../switch-case/Case";
@@ -26,7 +25,7 @@ const BaseLayout = () => {
     <>
       <AppBar position="sticky">
         <Box padding={"8px 16px"}>
-          <Typography variant="h5">IXI-GO: Monday Nights</Typography>
+          <Typography variant="h5">{t(`${LANG_BASE_PATH}.title`)}</Typography>
         </Box>
       </AppBar>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
@@ -62,9 +61,7 @@ const BaseLayout = () => {
             <ChartsContent />
           </Case>
           <Case case={3}>
-            <RconContentProvider>
-              <RconContent />
-            </RconContentProvider>
+            <RconContent />
           </Case>
           <Case case={4}>
             <DiscordBotContent />

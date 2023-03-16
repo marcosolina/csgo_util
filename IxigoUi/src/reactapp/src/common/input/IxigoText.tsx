@@ -22,6 +22,9 @@ const IxigoText: React.FC<IIxigoText> = (props) => {
       value={props.value || ""}
       onChange={onChange}
       size="small"
+      inputProps={{
+        step: props.step,
+      }}
       style={{ width }}
       required={props.state === IxigoTextState.mandatory}
       disabled={props.state === IxigoTextState.disabled}

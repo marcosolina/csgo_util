@@ -6,3 +6,8 @@ export interface IPlayersContent {
   scoreTypes?: Record<string, string>;
   csgoPlayers?: ICsgoUser[];
 }
+
+export interface IIxigoTeamProps {
+  picture: string;
+  title: string;
+}

@@ -1,4 +1,15 @@
-import { Grid } from "@mui/material";
+import {
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Grid,
+  List,
+  ListItem,
+  ListSubheader,
+  Typography,
+} from "@mui/material";
 import { useMemo, useState } from "react";
 import { IxigoTextType } from "../../common/input";
 import IxigoText from "../../common/input/IxigoText";
@@ -8,10 +19,13 @@ import Case from "../../common/switch-case/Case";
 import Switch from "../../common/switch-case/Switch";
 import { DEFAULT_SPACING } from "../../lib/constants";
 import { QueryStatus } from "../../lib/http-requests";
-import { useGetScoreTypes } from "../../services/dem-manager";
+import ct from "../../assets/bots/counterterrorist.jpg";
+import terr from "../../assets/bots/terrorist.jpg";
 import Loading from "./Loading";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { usePlayersContent } from "./usePlayersContent";
+import IxigoSwitch from "../../common/switch/IxigoSwitch";
+import IxigoTeam from "./IxigoTeam";
 
 const XS = 12;
 const SM = 12;
@@ -92,6 +106,25 @@ const PlayersContent = () => {
               step={0.1}
               onChange={(v) => setPenaltyWeight(parseFloat(v))}
             />
+          </Grid>
+          <Grid item xs={12}></Grid>
+          <Grid item xs={XS} sm={SM} md={12} lg={LG} xl={XL}>
+            <List
+              sx={{ width: "100%", bgcolor: "background.paper" }}
+              subheader={<ListSubheader>Steam Players</ListSubheader>}
+            >
+              {pContent.csgoPlayers?.map((player) => (
+                <ListItem key={player.steam_id}>
+                  <IxigoSwitch key={player.steam_id} label={player.user_name} value={player.steam_id} checked={false} />
+                </ListItem>
+              ))}
+            </List>
+          </Grid>
+          <Grid item xs={XS} sm={6} md={MD} lg={LG} xl={XL}>
+            <IxigoTeam picture={terr} title="Terrorists" />
+          </Grid>
+          <Grid item xs={XS} sm={6} md={MD} lg={LG} xl={XL}>
+            <IxigoTeam picture={ct} title="Counter Terrorists" />
           </Grid>
         </Grid>
       </Case>

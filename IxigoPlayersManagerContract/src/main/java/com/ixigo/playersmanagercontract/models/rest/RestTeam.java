@@ -6,13 +6,17 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModelProperty;
 
 public class RestTeam  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "Total team score")
+	@JsonProperty("team_score")
     private BigDecimal teamScore = BigDecimal.ZERO.setScale(2, RoundingMode.DOWN);
     @ApiModelProperty(notes = "List of the members of the team with their average score")
+    @JsonProperty("team_members")
     private List<RestUserAvgScore> members = new ArrayList<>();
 
     public BigDecimal getTeamScore() {

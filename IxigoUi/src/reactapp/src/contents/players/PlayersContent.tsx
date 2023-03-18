@@ -38,10 +38,13 @@ const PlayersContent = () => {
   const [percPlayed, setPercPlayed] = useState<number>(90);
   const [roundsToConsider, setRoundsToConsider] = useState<number>(50);
   const [scoreType, setScoreType] = useState<string>("HLTV");
+  const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>([]);
 
   const pContent = usePlayersContent();
 
   const typesResp = pContent.scoreTypes;
+
+  const onSelectedPlayer = (stramId: string, addUser: boolean) => {};
 
   const types = useMemo(() => {
     const arr: IxigoPossibleValue[] = [];
@@ -115,7 +118,13 @@ const PlayersContent = () => {
             >
               {pContent.csgoPlayers?.map((player) => (
                 <ListItem key={player.steam_id}>
-                  <IxigoSwitch key={player.steam_id} label={player.user_name} value={player.steam_id} checked={false} />
+                  <IxigoSwitch
+                    key={player.steam_id}
+                    label={player.user_name}
+                    value={player.steam_id}
+                    checked={listOfSelectedPlayers.includes(player.steam_id)}
+                    onChange={onSelectedPlayer}
+                  />
                 </ListItem>
               ))}
             </List>

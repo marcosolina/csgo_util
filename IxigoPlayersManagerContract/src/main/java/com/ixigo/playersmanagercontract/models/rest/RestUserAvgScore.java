@@ -3,17 +3,23 @@ package com.ixigo.playersmanagercontract.models.rest;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import io.swagger.annotations.ApiModelProperty;
 
 public class RestUserAvgScore  implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@ApiModelProperty(notes = "Steam ID of the user")
+	@JsonProperty("steam_id")
 	private String steamID;
 	@ApiModelProperty(notes = "User Name")
+	@JsonProperty("user_name")
 	private String userName;
 	@ApiModelProperty(notes = "Scored used to genarate the teams")
+	@JsonProperty("split_score")
 	private BigDecimal teamSplitScore;
 	@ApiModelProperty(notes = "Back-up of the original value")
+	@JsonProperty("original_split_score")
 	private BigDecimal originalTeamSplitScore;
 
 	public String getSteamID() {

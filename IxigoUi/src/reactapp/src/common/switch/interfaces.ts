@@ -5,6 +5,7 @@ export interface IIxigoSwitchProps {
   value: string;
   checked: boolean;
   color?: IxigoSwitchColor;
+  onChange?: (value: string, checked: boolean) => void;
 }
 
 export enum IIxigoSwitchLabelPlacement {

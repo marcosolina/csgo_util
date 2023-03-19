@@ -41,7 +41,7 @@ const PlayersContent = () => {
   const [percPlayed, setPercPlayed] = useState<number>(0.9);
   const [roundsToConsider, setRoundsToConsider] = useState<number>(50);
   const [scoreType, setScoreType] = useState<string>("HLTV");
-  const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>(["76561198266269604"]);
+  const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>([]);
   const { getTeams, status: getTeamsStatus, response: getTeamsResp } = useGetTeams();
 
   const pContent = usePlayersContent();
@@ -141,7 +141,7 @@ const PlayersContent = () => {
             />
           </Grid>
           <Grid item xs={12}></Grid>
-          <Grid item xs={XS} sm={SM} md={4} lg={LG} xl={XL}>
+          <Grid item xs={XS} sm={SM} md={4} lg={LG} xl={4}>
             <List
               sx={{ width: "100%", bgcolor: "background.paper" }}
               subheader={<ListSubheader>Steam Players</ListSubheader>}
@@ -159,10 +159,10 @@ const PlayersContent = () => {
               ))}
             </List>
           </Grid>
-          <Grid item xs={XS} sm={6} md={4} lg={LG} xl={XL}>
+          <Grid item xs={XS} sm={6} md={4} lg={LG} xl={4}>
             <IxigoTeam picture={terr} title="Terrorists" team={getTeamsResp?.data?.teams[0]} status={getTeamsStatus} />
           </Grid>
-          <Grid item xs={XS} sm={6} md={4} lg={LG} xl={XL}>
+          <Grid item xs={XS} sm={6} md={4} lg={LG} xl={4}>
             <IxigoTeam
               picture={ct}
               title="Counter Terrorists"

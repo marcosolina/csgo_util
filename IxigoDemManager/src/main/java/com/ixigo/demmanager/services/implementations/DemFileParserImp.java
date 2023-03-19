@@ -3,7 +3,6 @@ package com.ixigo.demmanager.services.implementations;
 import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -143,13 +142,11 @@ public class DemFileParserImp implements DemFileParser {
 	public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
 		// @formatter:off
 		
-		BigDecimal perc = minPercPlayed.divide(BigDecimal.valueOf(100), 2, RoundingMode.DOWN);
-		
 		// https://stackoverflow.com/questions/70704314/how-to-return-a-reactive-flux-that-contains-a-reactive-mono-and-flux
 		return Flux.fromIterable(usersIDs)
 			.flatMap(steamId -> repoUser.findById(steamId).defaultIfEmpty(new UsersDto().setSteam_id(steamId)))
 			.map(dto -> {
-				var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, dto.getSteam_id(), perc)
+				var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, dto.getSteam_id(), minPercPlayed)
 						.map(dtoScore -> fromUsersScoreDtoToSvcMapStata(dto, dtoScore))
 						.collectList();
 				return Tuples.of(dto.getSteam_id(), list);

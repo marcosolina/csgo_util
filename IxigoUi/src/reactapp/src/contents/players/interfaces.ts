@@ -1,5 +1,6 @@
 import { QueryStatus } from "react-query";
 import { ICsgoUser } from "../../services";
+import { ITeam } from "../../services/players-manager";
 
 export interface IPlayersContent {
   state: QueryStatus;
@@ -10,4 +11,6 @@ export interface IPlayersContent {
 export interface IIxigoTeamProps {
   picture: string;
   title: string;
+  team?: ITeam;
+  status: QueryStatus;
 }

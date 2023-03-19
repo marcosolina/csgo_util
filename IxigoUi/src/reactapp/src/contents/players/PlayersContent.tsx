@@ -38,7 +38,7 @@ let timeOut = setTimeout(() => {}, 100);
 
 const PlayersContent = () => {
   const [penaltyWeight, setPenaltyWeight] = useState<number>(0.4);
-  const [percPlayed, setPercPlayed] = useState<number>(90);
+  const [percPlayed, setPercPlayed] = useState<number>(0.9);
   const [roundsToConsider, setRoundsToConsider] = useState<number>(50);
   const [scoreType, setScoreType] = useState<string>("HLTV");
   const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>(["76561198266269604"]);
@@ -75,8 +75,6 @@ const PlayersContent = () => {
 
     setListOfSelectedPlayers(players);
   };
-
-  console.log(getTeamsResp);
 
   const types = useMemo(() => {
     const arr: IxigoPossibleValue[] = [];
@@ -128,7 +126,7 @@ const PlayersContent = () => {
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoSelect
               label="Min % played"
-              possibleValues={percPlayedArr.map((i) => ({ value: `${i}`, label: `${i} %` }))}
+              possibleValues={percPlayedArr.map((i) => ({ value: `${i / 100}`, label: `${i} %` }))}
               selectedValue={`${percPlayed}`}
               onChange={(v) => setPercPlayed(parseInt(v))}
             />
@@ -162,10 +160,15 @@ const PlayersContent = () => {
             </List>
           </Grid>
           <Grid item xs={XS} sm={6} md={4} lg={LG} xl={XL}>
-            <IxigoTeam picture={terr} title="Terrorists" />
+            <IxigoTeam picture={terr} title="Terrorists" team={getTeamsResp?.data?.teams[0]} status={getTeamsStatus} />
           </Grid>
           <Grid item xs={XS} sm={6} md={4} lg={LG} xl={XL}>
-            <IxigoTeam picture={ct} title="Counter Terrorists" />
+            <IxigoTeam
+              picture={ct}
+              title="Counter Terrorists"
+              team={getTeamsResp?.data?.teams[1]}
+              status={getTeamsStatus}
+            />
           </Grid>
         </Grid>
       </Case>

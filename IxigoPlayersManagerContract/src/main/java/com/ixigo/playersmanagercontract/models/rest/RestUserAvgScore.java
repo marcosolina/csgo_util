@@ -9,17 +9,20 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class RestUserAvgScore  implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@ApiModelProperty(notes = "Steam ID of the user")
 	@JsonProperty("steam_id")
+	@ApiModelProperty(notes = "Steam ID of the user")
 	private String steamID;
-	@ApiModelProperty(notes = "User Name")
+	
 	@JsonProperty("user_name")
+	@ApiModelProperty(notes = "User Name")
 	private String userName;
-	@ApiModelProperty(notes = "Scored used to genarate the teams")
+	
 	@JsonProperty("split_score")
+	@ApiModelProperty(notes = "Scored used to genarate the teams")
 	private BigDecimal teamSplitScore;
-	@ApiModelProperty(notes = "Back-up of the original value")
+	
 	@JsonProperty("original_split_score")
+	@ApiModelProperty(notes = "Back-up of the original value")
 	private BigDecimal originalTeamSplitScore;
 
 	public String getSteamID() {

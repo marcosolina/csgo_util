@@ -1,4 +1,16 @@
-import { Box, Button, Card, CardActions, CardContent, CardMedia, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  CardActions,
+  CardContent,
+  CardMedia,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Typography,
+} from "@mui/material";
 import { IIxigoTeamProps } from "./interfaces";
 
 const IxigoTeam: React.FC<IIxigoTeamProps> = (props) => {
@@ -11,10 +23,15 @@ const IxigoTeam: React.FC<IIxigoTeamProps> = (props) => {
         <Typography gutterBottom variant="h5" component="div">
           {props.title}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          Lizards are a widespread group of squamate reptiles, with over 6,000 species, ranging across all continents
-          except Antarctica
-        </Typography>
+        <List>
+          {props.team?.team_members?.map((player) => (
+            <ListItem disablePadding key={player.steam_id}>
+              <ListItemButton>
+                <ListItemText primary={player.user_name} />
+              </ListItemButton>
+            </ListItem>
+          ))}
+        </List>
       </CardContent>
       <CardActions>
         <Button size="small">Share</Button>

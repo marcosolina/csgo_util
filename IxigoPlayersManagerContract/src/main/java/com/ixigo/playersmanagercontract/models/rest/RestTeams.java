@@ -9,8 +9,9 @@ import io.swagger.annotations.ApiModelProperty;
 
 public class RestTeams  implements Serializable {
 	private static final long serialVersionUID = 1L;
-	@ApiModelProperty(notes = "List of calculated teams used the average users scores")
+	
 	@JsonProperty("teams")
+	@ApiModelProperty(notes = "List of calculated teams used the average users scores")
     private List<RestTeam> teams;
 
     public List<RestTeam> getTeams() {

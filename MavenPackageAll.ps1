@@ -6,6 +6,7 @@ $toInstall = @(
     "IxigoEventDispatcherContract"
     "IxigoPlayersManagerContract"
     "IxigoRconApiContract"
+    "IxigoServerHelperContract"
 )
 
 $toPackage = @(

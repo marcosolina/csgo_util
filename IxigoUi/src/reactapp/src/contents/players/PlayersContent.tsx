@@ -26,6 +26,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { usePlayersContent } from "./usePlayersContent";
 import IxigoSwitch from "../../common/switch/IxigoSwitch";
 import IxigoTeam from "./IxigoTeam";
+import { useGetTeams } from "../../services/players-manager";
 
 const XS = 12;
 const SM = 12;
@@ -33,18 +34,49 @@ const MD = 6;
 const LG = 4;
 const XL = 3;
 
+let timeOut = setTimeout(() => {}, 100);
+
 const PlayersContent = () => {
   const [penaltyWeight, setPenaltyWeight] = useState<number>(0.4);
   const [percPlayed, setPercPlayed] = useState<number>(90);
   const [roundsToConsider, setRoundsToConsider] = useState<number>(50);
   const [scoreType, setScoreType] = useState<string>("HLTV");
-  const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>([]);
+  const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>(["76561198266269604"]);
+  const { getTeams, status: getTeamsStatus, response: getTeamsResp } = useGetTeams();
 
   const pContent = usePlayersContent();
 
   const typesResp = pContent.scoreTypes;
 
-  const onSelectedPlayer = (stramId: string, addUser: boolean) => {};
+  const onSelectedPlayer = (stramId: string, addUser: boolean) => {
+    const players = [...listOfSelectedPlayers];
+
+    const index = listOfSelectedPlayers.indexOf(stramId);
+    if (addUser && index < 0) {
+      players.push(stramId);
+    }
+
+    if (index >= 0) {
+      players.splice(index, 1);
+    }
+
+    if (players.length > 2) {
+      clearTimeout(timeOut);
+      timeOut = setTimeout(() => {
+        getTeams({
+          steamIDs: players,
+          minPercPlayed: percPlayed,
+          numberOfMatches: roundsToConsider,
+          partitionScore: scoreType,
+          penaltyWeigth: penaltyWeight,
+        });
+      }, 1000);
+    }
+
+    setListOfSelectedPlayers(players);
+  };
+
+  console.log(getTeamsResp);
 
   const types = useMemo(() => {
     const arr: IxigoPossibleValue[] = [];
@@ -111,7 +143,7 @@ const PlayersContent = () => {
             />
           </Grid>
           <Grid item xs={12}></Grid>
-          <Grid item xs={XS} sm={SM} md={12} lg={LG} xl={XL}>
+          <Grid item xs={XS} sm={SM} md={4} lg={LG} xl={XL}>
             <List
               sx={{ width: "100%", bgcolor: "background.paper" }}
               subheader={<ListSubheader>Steam Players</ListSubheader>}
@@ -129,10 +161,10 @@ const PlayersContent = () => {
               ))}
             </List>
           </Grid>
-          <Grid item xs={XS} sm={6} md={MD} lg={LG} xl={XL}>
+          <Grid item xs={XS} sm={6} md={4} lg={LG} xl={XL}>
             <IxigoTeam picture={terr} title="Terrorists" />
           </Grid>
-          <Grid item xs={XS} sm={6} md={MD} lg={LG} xl={XL}>
+          <Grid item xs={XS} sm={6} md={4} lg={LG} xl={XL}>
             <IxigoTeam picture={ct} title="Counter Terrorists" />
           </Grid>
         </Grid>

@@ -51,7 +51,7 @@ public interface RepoUserScore {
      * 
      * @param numberOfMatches
      * @param steamID
-     * @param minPercPLayer
+     * @param minPercPLayer (min 0 - max 1)
      * @return
      */
     public Flux<Users_scoresDto> getLastXMatchesScoresForUser(Integer numberOfMatches, String steamID, BigDecimal minPercPlayed);

@@ -14,7 +14,7 @@ const IxigoSwitch: React.FC<IIxigoSwitchProps> = (props) => {
       control={
         <Switch
           color={props.color || IxigoSwitchColor.primary}
-          defaultChecked={props.checked}
+          checked={props.checked}
           size="small"
           onChange={onChangeHandler}
         />

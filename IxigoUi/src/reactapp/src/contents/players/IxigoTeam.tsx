@@ -36,13 +36,10 @@ const IxigoTeam: React.FC<IIxigoTeamProps> = (props) => {
           <Case case={QueryStatus.success}>
             <List>
               {props.team?.team_members?.map((player) => (
-                <ListItem
-                  disablePadding
-                  key={player.steam_id}
-                  secondaryAction={<Chip label={player.split_score} color="primary" size="small" />}
-                >
-                  <ListItemButton>
+                <ListItem disablePadding key={player.steam_id}>
+                  <ListItemButton sx={{ paddingRight: 0 }}>
                     <ListItemText primary={player.user_name} />
+                    <Chip label={player.split_score} size="small" variant="outlined" color="primary" />
                   </ListItemButton>
                 </ListItem>
               ))}

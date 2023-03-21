@@ -1,19 +1,6 @@
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Grid,
-  List,
-  ListItem,
-  ListSubheader,
-  Typography,
-} from "@mui/material";
-import { useMemo, useState } from "react";
+import { Grid, List, ListItem, ListSubheader } from "@mui/material";
 import { IxigoTextType } from "../../common/input";
 import IxigoText from "../../common/input/IxigoText";
-import { IxigoPossibleValue } from "../../common/select";
 import IxigoSelect from "../../common/select/IxigoSelect";
 import Case from "../../common/switch-case/Case";
 import Switch from "../../common/switch-case/Switch";
@@ -27,6 +14,11 @@ import { usePlayersContent } from "./usePlayersContent";
 import IxigoSwitch from "../../common/switch/IxigoSwitch";
 import IxigoTeam from "./IxigoTeam";
 import { useGetTeams } from "../../services/players-manager";
+import IxigoButton from "../../common/button/IxigoButton";
+import { IxigoButtonColor, IxigoButtonVariant, IxigoButtonWidth } from "../../common";
+import SendIcon from "@mui/icons-material/Send";
+import { useRconContentProvider } from "../rcon/useRconContentProvider";
+import { useTranslation } from "react-i18next";
 
 const XS = 12;
 const SM = 12;
@@ -34,24 +26,30 @@ const MD = 6;
 const LG = 4;
 const XL = 3;
 
+const MIN_SELECTED_PLAYERS = 3;
+const BASE_LANGUAGE_PATH = "page.players";
+
 let timeOut = setTimeout(() => {}, 100);
 
 const PlayersContent = () => {
-  const [penaltyWeight, setPenaltyWeight] = useState<number>(0.4);
-  const [percPlayed, setPercPlayed] = useState<number>(0.9);
-  const [roundsToConsider, setRoundsToConsider] = useState<number>(50);
-  const [scoreType, setScoreType] = useState<string>("HLTV");
-  const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>([]);
-  const { getTeams, status: getTeamsStatus, response: getTeamsResp } = useGetTeams();
-
+  const { t } = useTranslation();
   const pContent = usePlayersContent();
 
-  const typesResp = pContent.scoreTypes;
+  const { getTeams, status: getTeamsStatus, response: getTeamsResp } = useGetTeams();
+  const { request, queryState, sendCommand } = useRconContentProvider();
+
+  const setPlayersHandler = () => {
+    const ids = getTeamsResp?.data?.teams[0].team_members.map((t) => t.steam_id).join('" "');
+    const cmd = `sm_move_players "${ids}" dummy`;
+    const newReq = { ...request };
+    newReq.rcon_command = cmd;
+    sendCommand(newReq);
+  };
 
   const onSelectedPlayer = (stramId: string, addUser: boolean) => {
-    const players = [...listOfSelectedPlayers];
+    const players = [...pContent.listOfSelectedPlayers];
 
-    const index = listOfSelectedPlayers.indexOf(stramId);
+    const index = players.indexOf(stramId);
     if (addUser && index < 0) {
       players.push(stramId);
     }
@@ -60,44 +58,21 @@ const PlayersContent = () => {
       players.splice(index, 1);
     }
 
-    if (players.length > 2) {
+    if (players.length >= MIN_SELECTED_PLAYERS) {
       clearTimeout(timeOut);
       timeOut = setTimeout(() => {
         getTeams({
           steamIDs: players,
-          minPercPlayed: percPlayed,
-          numberOfMatches: roundsToConsider,
-          partitionScore: scoreType,
-          penaltyWeigth: penaltyWeight,
+          minPercPlayed: pContent.percPlayed,
+          numberOfMatches: pContent.roundsToConsider,
+          partitionScore: pContent.scoreType,
+          penaltyWeigth: pContent.penaltyWeight,
         });
       }, 1000);
     }
 
-    setListOfSelectedPlayers(players);
+    pContent.setListOfSelectedPlayers(players);
   };
-
-  const types = useMemo(() => {
-    const arr: IxigoPossibleValue[] = [];
-    if (!typesResp) {
-      return arr;
-    }
-    Object.keys(typesResp).forEach(function (key, index) {
-      arr.push({
-        value: key,
-        label: typesResp[key],
-      });
-    });
-    arr.sort((a, b) => a.label.localeCompare(b.label));
-    return arr;
-  }, [typesResp]);
-
-  const percPlayedArr = useMemo(() => {
-    let arr = [];
-    for (let i = 1; i < 101; i++) {
-      arr.push(i);
-    }
-    return arr;
-  }, []);
 
   return (
     <Switch value={pContent.state}>
@@ -108,38 +83,55 @@ const PlayersContent = () => {
         <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoText
-              label={"Rounds to consider"}
-              value={`${roundsToConsider}`}
+              label={t(`${BASE_LANGUAGE_PATH}.labels.lblRoundToConsider`) as string}
+              value={`${pContent.roundsToConsider}`}
               type={IxigoTextType.number}
               step={1}
-              onChange={(v) => setRoundsToConsider(parseInt(v))}
+              onChange={(v) => pContent.setRoundsToConsider(parseInt(v))}
             />
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoSelect
-              label="Score type"
-              possibleValues={types}
-              selectedValue={scoreType}
-              onChange={(v) => setScoreType(v)}
+              label={t(`${BASE_LANGUAGE_PATH}.labels.lblScoreType`) as string}
+              possibleValues={pContent.possibleScoreTypesValues}
+              selectedValue={pContent.scoreType}
+              onChange={(v) => pContent.setScoreType(v)}
             />
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoSelect
-              label="Min % played"
-              possibleValues={percPlayedArr.map((i) => ({ value: `${i / 100}`, label: `${i} %` }))}
-              selectedValue={`${percPlayed}`}
-              onChange={(v) => setPercPlayed(parseInt(v))}
+              label={t(`${BASE_LANGUAGE_PATH}.labels.lblMinPercPlayed`) as string}
+              possibleValues={pContent.possiblePercPlayedValues}
+              selectedValue={`${pContent.percPlayed}`}
+              onChange={(v) => pContent.setPercPlayed(parseInt(v))}
             />
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoText
-              label={"Penalty Weight"}
+              label={t(`${BASE_LANGUAGE_PATH}.labels.lblPenalty`) as string}
               type={IxigoTextType.number}
-              value={`${penaltyWeight}`}
+              value={`${pContent.penaltyWeight}`}
               step={0.1}
-              onChange={(v) => setPenaltyWeight(parseFloat(v))}
+              onChange={(v) => pContent.setPenaltyWeight(parseFloat(v))}
             />
           </Grid>
+          {pContent.listOfSelectedPlayers.length >= MIN_SELECTED_PLAYERS && (
+            <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+              <IxigoButton
+                text={
+                  <>
+                    {t(`${BASE_LANGUAGE_PATH}.labels.lblBtnSetPlayers`)}&nbsp;
+                    <SendIcon />
+                  </>
+                }
+                width={IxigoButtonWidth.fitParent}
+                variant={IxigoButtonVariant.outlined}
+                color={IxigoButtonColor.primary}
+                onClick={setPlayersHandler}
+                loading={queryState === QueryStatus.loading}
+              />
+            </Grid>
+          )}
           <Grid item xs={12}></Grid>
           <Grid item xs={XS} sm={SM} md={4} lg={LG} xl={4}>
             <List
@@ -152,7 +144,7 @@ const PlayersContent = () => {
                     key={player.steam_id}
                     label={player.user_name}
                     value={player.steam_id}
-                    checked={listOfSelectedPlayers.includes(player.steam_id)}
+                    checked={pContent.listOfSelectedPlayers.includes(player.steam_id)}
                     onChange={onSelectedPlayer}
                   />
                 </ListItem>
@@ -160,12 +152,17 @@ const PlayersContent = () => {
             </List>
           </Grid>
           <Grid item xs={XS} sm={6} md={4} lg={LG} xl={4}>
-            <IxigoTeam picture={terr} title="Terrorists" team={getTeamsResp?.data?.teams[0]} status={getTeamsStatus} />
+            <IxigoTeam
+              picture={terr}
+              title={t(`${BASE_LANGUAGE_PATH}.labels.lblTeamTerrorist`)}
+              team={getTeamsResp?.data?.teams[0]}
+              status={getTeamsStatus}
+            />
           </Grid>
           <Grid item xs={XS} sm={6} md={4} lg={LG} xl={4}>
             <IxigoTeam
               picture={ct}
-              title="Counter Terrorists"
+              title={t(`${BASE_LANGUAGE_PATH}.labels.lblTeamCt`)}
               team={getTeamsResp?.data?.teams[1]}
               status={getTeamsStatus}
             />

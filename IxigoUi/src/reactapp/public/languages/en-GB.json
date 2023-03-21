@@ -22,6 +22,17 @@
         "loading": "Sorry something went wrong"
       }
     },
+    "players": {
+      "labels": {
+        "lblRoundToConsider": "Rounds to consider",
+        "lblScoreType": "Score type",
+        "lblMinPercPlayed": "Min % played",
+        "lblPenalty": "Penalty weight",
+        "lblBtnSetPlayers": "Set these teams on the server",
+        "lblTeamTerrorist": "Terrorists",
+        "lblTeamCt": "Counter Terrorists"
+      }
+    },
     "rcon": {
       "successRcon": "Command sent",
       "dialog": {

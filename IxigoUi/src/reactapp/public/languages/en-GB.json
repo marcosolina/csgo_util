@@ -24,6 +24,7 @@
     },
     "players": {
       "labels": {
+        "lblListPlayers": "Steam players",
         "lblRoundToConsider": "Rounds to consider",
         "lblScoreType": "Score type",
         "lblMinPercPlayed": "Min % played",

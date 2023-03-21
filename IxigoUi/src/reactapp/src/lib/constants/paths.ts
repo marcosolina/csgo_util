@@ -37,4 +37,9 @@ export const SERVICES_URLS = {
     "base-url": PROXY_BASE_PATH + "/ixigo-rcon-api/rcon",
     "post-command": PROXY_BASE_PATH + "/ixigo-rcon-api/rcon/cmd",
   },
+  "discord-bot": {
+    "gateway-path": "ixigo-discord-bot",
+    "get-config": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/config",
+    "put-config": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/config",
+  },
 };

@@ -66,6 +66,22 @@ export async function performPost<T, J>(url: string, body: J): Promise<IxigoResp
   };
 }
 
+export async function performPut<T, J>(url: string, body: J): Promise<IxigoResponse<T>> {
+  const headers = {
+    "Content-Type": "application/json",
+  };
+  const result = await axios
+    .put(url, body, { headers })
+    .then((result) => result)
+    .catch((error) => error.response);
+  return {
+    data: result.data,
+    status: result.status,
+    errors: result.data.errors,
+    isError: result.status >= 400,
+  };
+}
+
 export function useCheckErrorsInResponse<T>(): CheckErrorsFuncReturnType<T> {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();

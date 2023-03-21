@@ -136,7 +136,7 @@ const PlayersContent = () => {
           <Grid item xs={XS} sm={SM} md={4} lg={LG} xl={4}>
             <List
               sx={{ width: "100%", bgcolor: "background.paper" }}
-              subheader={<ListSubheader>Steam Players</ListSubheader>}
+              subheader={<ListSubheader>{t(`${BASE_LANGUAGE_PATH}.labels.lblListPlayers`)}</ListSubheader>}
             >
               {pContent.csgoPlayers?.map((player) => (
                 <ListItem key={player.steam_id}>

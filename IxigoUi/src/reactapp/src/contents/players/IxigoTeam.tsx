@@ -35,14 +35,18 @@ const IxigoTeam: React.FC<IIxigoTeamProps> = (props) => {
           </Case>
           <Case case={QueryStatus.success}>
             <List>
-              {props.team?.team_members?.map((player) => (
-                <ListItem disablePadding key={player.steam_id}>
-                  <ListItemButton sx={{ paddingRight: 0 }}>
-                    <ListItemText primary={player.user_name} />
-                    <Chip label={player.split_score} size="small" variant="outlined" color="primary" />
-                  </ListItemButton>
-                </ListItem>
-              ))}
+              {props.team?.team_members?.map((player) => {
+                const playerScoreFixed = player.split_score.toFixed(2);
+                const score = playerScoreFixed.length < 5 ? "0" + playerScoreFixed : playerScoreFixed;
+                return (
+                  <ListItem disablePadding key={player.steam_id}>
+                    <ListItemButton sx={{ paddingRight: 0 }}>
+                      <ListItemText primary={player.user_name} />
+                      <Chip label={score} size="small" variant="outlined" color="primary" />
+                    </ListItemButton>
+                  </ListItem>
+                );
+              })}
             </List>
           </Case>
         </Switch>

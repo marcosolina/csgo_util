@@ -2,9 +2,13 @@ package com.ixigo.models.rest;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class RestDiscordUser implements Serializable{
 	private static final long serialVersionUID = 1L;
+	@JsonProperty("discord_id")
 	private String id;
+	@JsonProperty("discord_name")
 	private String name;
 
 	public String getId() {

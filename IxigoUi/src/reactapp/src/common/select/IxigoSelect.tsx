@@ -53,7 +53,7 @@ const IxigoSelect: React.FC<IIxigoMultipleSelectProps> = (props) => {
       error={props.isError}
       focused
     >
-      <InputLabel id="demo-multiple-checkbox-label">{props.label}</InputLabel>
+      {props.label && <InputLabel id="demo-multiple-checkbox-label">{props.label}</InputLabel>}
       <Select
         labelId="demo-multiple-checkbox-label"
         id="demo-multiple-checkbox"

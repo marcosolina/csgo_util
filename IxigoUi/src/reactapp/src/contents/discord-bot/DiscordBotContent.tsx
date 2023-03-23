@@ -1,11 +1,29 @@
-import { Grid, List, ListItem, ListSubheader } from "@mui/material";
-import { IxigoButtonColor, IxigoButtonVariant, IxigoButtonWidth, IxigoTextType } from "../../common";
+import { Grid, List, ListItem, ListItemText, ListSubheader } from "@mui/material";
+import {
+  IxigoButtonColor,
+  IxigoButtonVariant,
+  IxigoButtonWidth,
+  IxigoMultipleSelectVariant,
+  IxigoPossibleValue,
+  IxigoTextState,
+  IxigoTextType,
+  IxigoTextVariant,
+} from "../../common";
 import IxigoButton from "../../common/button/IxigoButton";
 import IxigoText from "../../common/input/IxigoText";
 import IxigoSwitch from "../../common/switch/IxigoSwitch";
 import { DEFAULT_SPACING } from "../../lib/constants";
 import SaveIcon from "@mui/icons-material/Save";
-import { BotConfigKey, useGetDiscordBotConfig } from "../../services/discord-bot";
+import {
+  BotConfigKey,
+  useGetDiscordBotConfig,
+  useGetDiscordChannelMembers,
+  useGetDiscordMappedPlayers,
+} from "../../services/discord-bot";
+import { useMemo } from "react";
+import { useGetCsgoPlayers } from "../../services/dem-manager";
+import IxigoSelect from "../../common/select/IxigoSelect";
+import { useDiscordBotContent } from "./useDiscordBotContent";
 
 const XS = 12;
 const SM = 12;
@@ -14,9 +32,8 @@ const LG = 4;
 const XL = 3;
 
 const DiscordBotContent = () => {
-  const q1 = useGetDiscordBotConfig(BotConfigKey.AUTOBALANCE);
-  const q2 = useGetDiscordBotConfig(BotConfigKey.KICK_BOTS);
-  const q3 = useGetDiscordBotConfig(BotConfigKey.ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION);
+  const hook = useDiscordBotContent();
+
   return (
     <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
       <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
@@ -57,6 +74,38 @@ const DiscordBotContent = () => {
           variant={IxigoButtonVariant.outlined}
           color={IxigoButtonColor.primary}
         />
+      </Grid>
+      <Grid item xs={12}></Grid>
+      <Grid item xs={6}>
+        <List
+          sx={{ width: "100%", bgcolor: "background.paper" }}
+          subheader={<ListSubheader>Discord Details</ListSubheader>}
+        >
+          {possibleDiscordMembers.map((player) => (
+            <ListItem key={player.value}>
+              <IxigoText value={player.label} variant={IxigoTextVariant.standard} state={IxigoTextState.readonly} />
+            </ListItem>
+          ))}
+        </List>
+      </Grid>
+      <Grid item xs={6}>
+        <List
+          sx={{ width: "100%", bgcolor: "background.paper" }}
+          subheader={<ListSubheader>Steam Details</ListSubheader>}
+        >
+          {possibleDiscordMembers.map((player) => (
+            <ListItem key={player.value}>
+              <IxigoSelect
+                variant={IxigoMultipleSelectVariant.standard}
+                possibleValues={steamUsers}
+                selectedValue={
+                  p.data?.data?.players.find((mapping) => mapping.discord_details.discord_id === player.value)
+                    ?.steam_details.steam_id || ""
+                }
+              />
+            </ListItem>
+          ))}
+        </List>
       </Grid>
     </Grid>
   );

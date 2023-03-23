@@ -41,5 +41,8 @@ export const SERVICES_URLS = {
     "gateway-path": "ixigo-discord-bot",
     "get-config": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/config",
     "put-config": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/config",
+    "get-mapped-players": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/mapping",
+    "put-mapped-players": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/mapping",
+    "get-discord-channel-members": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/discord",
   },
 };

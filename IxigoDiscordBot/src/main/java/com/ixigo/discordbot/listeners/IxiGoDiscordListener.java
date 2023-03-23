@@ -4,6 +4,7 @@ import com.ixigo.discordbot.enums.DiscordChatCommands;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.enums.BotConfigKey;
+import com.ixigo.enums.BotConfigValueType;
 
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
@@ -72,12 +73,12 @@ public class IxiGoDiscordListener extends ListenerAdapter {
 			channel.sendMessage(listOfCommandsMessage().toString()).queue();
 			break;
 		case AUTO_BALANCE_ON:
-			ixigoBot.updateBotConfig(new SvcBotConfig(BotConfigKey.AUTOBALANCE, Boolean.TRUE.toString()))
+			ixigoBot.updateBotConfig(new SvcBotConfig(BotConfigKey.AUTOBALANCE, Boolean.TRUE.toString(), BotConfigValueType.BOOLEAN))
 				.subscribe(b -> channel.sendMessage(b ? "Done" : "Sorry, I was not able to do that").queue())
 				;
 			break;
 		case AUTO_BALANCE_OFF:
-			ixigoBot.updateBotConfig(new SvcBotConfig(BotConfigKey.AUTOBALANCE, Boolean.FALSE.toString()))
+			ixigoBot.updateBotConfig(new SvcBotConfig(BotConfigKey.AUTOBALANCE, Boolean.FALSE.toString(), BotConfigValueType.BOOLEAN))
 				.subscribe(b -> channel.sendMessage(b ? "Done" : "Sorry, I was not able to do that").queue())
 				;
 			break;

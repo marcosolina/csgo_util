@@ -17,3 +17,26 @@ export interface IUpdateDiscordBotConfigResult {
   status: QueryStatus;
   response?: IxigoResponse<{}>;
 }
+
+export interface IBotMappedPlayers {
+  players: IBotMappedPlayer[];
+}
+
+export interface IBotMappedPlayer {
+  discord_details: IBotDiscordPlayer;
+  steam_details: IBotSteamPlayer;
+}
+
+export interface IBotDiscordPlayer {
+  discord_id: string;
+  discord_name: string;
+}
+
+export interface IBotSteamPlayer {
+  steam_id: string;
+  steam_user_name: string;
+}
+
+export interface IDiscordChannelMembers {
+  members: IBotDiscordPlayer[];
+}

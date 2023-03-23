@@ -4,12 +4,18 @@ import { IxigoResponse } from "../../lib/http-requests";
 export interface IDiscordBotConfig {
   config_key: BotConfigKey;
   config_value: string;
+  config_value_type: BotConfigValueType;
 }
 
 export enum BotConfigKey {
   ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION = "ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION",
   AUTOBALANCE = "AUTOBALANCE",
   KICK_BOTS = "KICK_BOTS",
+}
+
+export enum BotConfigValueType {
+  number = "NUMBER",
+  boolean = "BOOLEAN",
 }
 
 export interface IUpdateDiscordBotConfigResult {

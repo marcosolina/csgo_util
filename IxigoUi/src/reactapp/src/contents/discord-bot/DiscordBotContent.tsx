@@ -16,6 +16,7 @@ import { DEFAULT_SPACING } from "../../lib/constants";
 import SaveIcon from "@mui/icons-material/Save";
 import {
   BotConfigKey,
+  BotConfigValueType,
   useGetDiscordBotConfig,
   useGetDiscordChannelMembers,
   useGetDiscordMappedPlayers,
@@ -24,6 +25,8 @@ import { useMemo } from "react";
 import { useGetCsgoPlayers } from "../../services/dem-manager";
 import IxigoSelect from "../../common/select/IxigoSelect";
 import { useDiscordBotContent } from "./useDiscordBotContent";
+import Switch from "../../common/switch-case/Switch";
+import Case from "../../common/switch-case/Case";
 
 const XS = 12;
 const SM = 12;
@@ -37,30 +40,29 @@ const DiscordBotContent = () => {
   return (
     <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
       <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-        <List sx={{ width: "100%", bgcolor: "background.paper" }} subheader={<ListSubheader>Flags</ListSubheader>}>
+        <List sx={{ width: "100%", bgcolor: "background.paper" }} subheader={<ListSubheader>Bot config</ListSubheader>}>
           <ListItem>
-            <IxigoSwitch
-              checked={q2.data?.data?.config_value === "true"}
-              value={q2.data?.data?.config_key as string}
-              label={q2.data?.data?.config_key}
-            />
-          </ListItem>
-          <ListItem>
-            <IxigoSwitch
-              checked={q1.data?.data?.config_value === "true"}
-              value={q1.data?.data?.config_key as string}
-              label={q1.data?.data?.config_key}
-            />
+            {hook.bot_config.map((config) => (
+              <Switch value={config.config_key} key={config.config_key}>
+                <Case case={BotConfigValueType.number}>
+                  <IxigoText
+                    label={config.config_key}
+                    value={config.config_value}
+                    type={IxigoTextType.number}
+                    step={1}
+                  />
+                </Case>
+                <Case case={BotConfigValueType.boolean}>
+                  <IxigoSwitch
+                    checked={config.config_value === "true"}
+                    value={config.config_key}
+                    label={config.config_key}
+                  />
+                </Case>
+              </Switch>
+            ))}
           </ListItem>
         </List>
-      </Grid>
-      <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-        <IxigoText
-          label={"Rounds to consider"}
-          value={q3.data?.data?.config_value}
-          type={IxigoTextType.number}
-          step={1}
-        />
       </Grid>
       <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
         <IxigoButton
@@ -81,7 +83,7 @@ const DiscordBotContent = () => {
           sx={{ width: "100%", bgcolor: "background.paper" }}
           subheader={<ListSubheader>Discord Details</ListSubheader>}
         >
-          {possibleDiscordMembers.map((player) => (
+          {hook.discord_channel_members.map((player) => (
             <ListItem key={player.value}>
               <IxigoText value={player.label} variant={IxigoTextVariant.standard} state={IxigoTextState.readonly} />
             </ListItem>
@@ -93,14 +95,14 @@ const DiscordBotContent = () => {
           sx={{ width: "100%", bgcolor: "background.paper" }}
           subheader={<ListSubheader>Steam Details</ListSubheader>}
         >
-          {possibleDiscordMembers.map((player) => (
-            <ListItem key={player.value}>
+          {hook.discord_channel_members.map((discord) => (
+            <ListItem key={discord.value}>
               <IxigoSelect
                 variant={IxigoMultipleSelectVariant.standard}
-                possibleValues={steamUsers}
+                possibleValues={hook.steam_users}
                 selectedValue={
-                  p.data?.data?.players.find((mapping) => mapping.discord_details.discord_id === player.value)
-                    ?.steam_details.steam_id || ""
+                  hook.mapped_players.find((mUser) => discord.value === mUser.discord_details.discord_id)?.steam_details
+                    .steam_id || ""
                 }
               />
             </ListItem>

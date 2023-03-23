@@ -5,7 +5,7 @@ export function combineQueryStatuses(statuses: QueryStatus[]): QueryStatus {
   const error = (status: QueryStatus) => status === IxigoQueryStatus.error;
   const loading = (status: QueryStatus) => status === IxigoQueryStatus.loading;
   const success = (status: QueryStatus) => status === IxigoQueryStatus.success;
-
+  console.log(statuses);
   if (statuses.some(error)) {
     return IxigoQueryStatus.error;
   }

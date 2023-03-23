@@ -22,8 +22,8 @@ import com.ixigo.discordbot.listeners.IxiGoDiscordListener;
 import com.ixigo.discordbot.mappers.RepoMapper;
 import com.ixigo.discordbot.models.repo.Bot_configDto;
 import com.ixigo.discordbot.models.repo.Users_mapDto;
-import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
+import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcPlayer;
 import com.ixigo.discordbot.repositories.interfaces.RepoBotConfig;
 import com.ixigo.discordbot.repositories.interfaces.RepoUsersMap;
@@ -31,9 +31,11 @@ import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.discordbot.services.interfaces.IxigoPlayersManagerService;
 import com.ixigo.discordbot.services.interfaces.IxigoRconService;
 import com.ixigo.enums.BotConfigKey;
+import com.ixigo.library.dto.ValidationError;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.library.messages.IxigoMessageResource;
+import com.ixigo.library.validators.ValidationException;
 import com.netflix.servo.util.Strings;
 
 import net.dv8tion.jda.api.JDA;
@@ -347,9 +349,12 @@ public class IxigoBotImpl implements IxigoBot {
 		// @formatter:on
 	}
 
-	private void checkIfBotIsOnline() throws IxigoException {
+	private void checkIfBotIsOnline() throws ValidationException {
 		if (!botOnline) {
-			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.BOT_OFFLINE), ErrorCodes.BOT_OFFLINE);
+			ValidationError err = new ValidationError();
+			err.setCode(ErrorCodes.BOT_OFFLINE);
+			err.setMessage(msgSource.getMessage(ErrorCodes.BOT_OFFLINE));
+			throw new ValidationException(Arrays.asList(err));
 		}
 	}
 

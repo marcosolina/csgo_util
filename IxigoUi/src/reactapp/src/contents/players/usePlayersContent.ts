@@ -48,7 +48,7 @@ export const usePlayersContent = (): IPlayersContent => {
   }, [scoreTypes]);
 
   return {
-    state: combineQueryStatuses([qScoreTypes.status, qCsgoPlayers.status]),
+    state: combineQueryStatuses([qScoreTypes, qCsgoPlayers]),
     penaltyWeight,
     percPlayed,
     roundsToConsider,

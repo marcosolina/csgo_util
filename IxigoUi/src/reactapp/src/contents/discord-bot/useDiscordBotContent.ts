@@ -1,10 +1,15 @@
+import { useSnackbar } from "notistack";
 import { useEffect, useMemo, useRef } from "react";
+import { useTranslation } from "react-i18next";
+import { useMutation, useQueryClient } from "react-query";
 import { IxigoPossibleValue } from "../../common";
-import { useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
+import { NotistackVariant, SERVICES_URLS } from "../../lib/constants";
+import { performPut, useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
 import { combineQueryStatuses } from "../../lib/queries";
 import { useGetCsgoPlayers } from "../../services";
 import {
   BotConfigKey,
+  IBotMappedPlayers,
   IDiscordBotConfig,
   useGetDiscordBotConfig,
   useGetDiscordChannelMembers,
@@ -13,6 +18,9 @@ import {
 import { IDiscordBotContentResult } from "./interfaces";
 
 export const useDiscordBotContent = (): IDiscordBotContentResult => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const { enqueueSnackbar } = useSnackbar();
   const q1 = useGetDiscordBotConfig(BotConfigKey.AUTOBALANCE);
   const q2 = useGetDiscordBotConfig(BotConfigKey.KICK_BOTS);
   const q3 = useGetDiscordBotConfig(BotConfigKey.ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION);
@@ -22,6 +30,24 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
 
   const { checkResp } = useCheckErrorsInResponse();
   const checkRespFunc = useRef(checkResp);
+
+  const updateConfig = useMutation({
+    mutationFn: async (config: IDiscordBotConfig) =>
+      await performPut<void, IDiscordBotConfig>(SERVICES_URLS["discord-bot"]["put-config"], config),
+    onSuccess: (data, config) => {
+      queryClient.invalidateQueries({ queryKey: ["getDiscordBotConfig", config.config_key] });
+      enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
+    },
+  });
+
+  const updateMapping = useMutation({
+    mutationFn: async (mapping: IBotMappedPlayers) =>
+      await performPut<void, IBotMappedPlayers>(SERVICES_URLS["discord-bot"]["put-mapped-players"], mapping),
+    onSuccess: (data, config) => {
+      queryClient.invalidateQueries({ queryKey: ["getDiscordMappedPlayers"] });
+      enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
+    },
+  });
 
   const steamUsers = useMemo((): IxigoPossibleValue[] => {
     if (!qCsgoPlayers.data?.data?.users) {
@@ -60,14 +86,7 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
     botConfig.push(q3.data?.data);
   }
 
-  const combinedState = combineQueryStatuses([
-    q1.status,
-    q2.status,
-    q3.status,
-    qMapping.status,
-    qMembers.status,
-    qCsgoPlayers.status,
-  ]);
+  const combinedState = combineQueryStatuses([q1, q2, q3, qMapping, qMembers, qCsgoPlayers]);
 
   useEffect(() => {
     if (q1.data) {
@@ -91,17 +110,14 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
   }, [combinedState, q1.data, q2.data, q3.data, qMapping.data, qMembers.data, qCsgoPlayers.data]);
 
   return {
-    state: combineQueryStatuses([
-      q1.status,
-      q2.status,
-      q3.status,
-      qMapping.status,
-      qMembers.status,
-      qCsgoPlayers.status,
-    ]),
+    state: combinedState,
     steam_users: steamUsers,
     discord_channel_members: possibleDiscordMembers,
     bot_config: botConfig,
     mapped_players: qMapping.data?.data?.players || [],
+    updateConfig: updateConfig.mutate,
+    updateConfigStatus: updateConfig.status,
+    updateMapping: updateMapping.mutate,
+    updateMappingStatus: updateMapping.status,
   };
 };

@@ -15,7 +15,7 @@ const LG = 4;
 const XL = 3;
 
 const LNG_PREFIX = "page.rcon.commands.groups.maps";
-const IMG_PREFIX = `${UI_CONTEXT_PATH}/maps`;
+const IMG_MAP_PREFIX = `/maps`;
 const LOADING = [1, 2, 3, 4];
 
 const RconMaps = () => {
@@ -35,8 +35,8 @@ const RconMaps = () => {
                 cmd={map.is_workshop_map ? `map workshop/${map.workshop_id}/${map.map_name}` : `map ${map.map_name}`}
                 image={
                   map.is_workshop_map
-                    ? `${IMG_PREFIX}/workshop-${map.workshop_id}-${map.map_name}.jpg`
-                    : `${IMG_PREFIX}/${map.map_name}.jpg`
+                    ? `${IMG_MAP_PREFIX}/workshop-${map.workshop_id}-${map.map_name}.jpg`
+                    : `${IMG_MAP_PREFIX}/${map.map_name}.jpg`
                 }
                 label={map.map_name}
               />

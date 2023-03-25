@@ -1,6 +1,6 @@
 import { QueryStatus } from "react-query";
 import { IxigoPossibleValue } from "../../common/select";
-import { IBotMappedPlayer, IDiscordBotConfig } from "../../services/discord-bot";
+import { IBotMappedPlayer, IBotMappedPlayers, IDiscordBotConfig } from "../../services/discord-bot";
 
 export interface IDiscordBotContentResult {
   state: QueryStatus;
@@ -8,4 +8,8 @@ export interface IDiscordBotContentResult {
   discord_channel_members: IxigoPossibleValue[];
   bot_config: IDiscordBotConfig[];
   mapped_players: IBotMappedPlayer[];
+  updateConfig: (config: IDiscordBotConfig) => void;
+  updateConfigStatus: QueryStatus;
+  updateMapping: (mapping: IBotMappedPlayers) => void;
+  updateMappingStatus: QueryStatus;
 }

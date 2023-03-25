@@ -48,6 +48,7 @@ const BaseLayout = () => {
           <Tab label={t(`${LANG_BASE_PATH}.tabs.5`)} />
         </Tabs>
       </Box>
+
       <Container>
         <Box sx={{ m: "2rem" }} />
         <Switch value={value}>

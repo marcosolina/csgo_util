@@ -1,20 +1,22 @@
-import { QueryStatus } from "react-query";
-import { QueryStatus as IxigoQueryStatus } from "../http-requests";
+import { QueryStatus, UseQueryResult } from "react-query";
+import { IxigoResponse, QueryStatus as IxigoQueryStatus } from "../http-requests";
 
-export function combineQueryStatuses(statuses: QueryStatus[]): QueryStatus {
-  const error = (status: QueryStatus) => status === IxigoQueryStatus.error;
-  const loading = (status: QueryStatus) => status === IxigoQueryStatus.loading;
-  const success = (status: QueryStatus) => status === IxigoQueryStatus.success;
-  console.log(statuses);
-  if (statuses.some(error)) {
+export function combineQueryStatuses(results: UseQueryResult<IxigoResponse<unknown>, unknown>[]): QueryStatus {
+  const error = (result: UseQueryResult<IxigoResponse<unknown>, unknown>) => result.isError;
+  const loading = (result: UseQueryResult<IxigoResponse<unknown>, unknown>) =>
+    result.status === IxigoQueryStatus.loading;
+  const success = (result: UseQueryResult<IxigoResponse<unknown>, unknown>) =>
+    result.status === IxigoQueryStatus.success;
+
+  if (results.some(error)) {
     return IxigoQueryStatus.error;
   }
 
-  if (statuses.some(loading)) {
+  if (results.some(loading)) {
     return IxigoQueryStatus.loading;
   }
 
-  if (statuses.every(success)) {
+  if (results.every(success)) {
     return IxigoQueryStatus.success;
   }
 

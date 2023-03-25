@@ -1,5 +1,4 @@
 import {
-  Checkbox,
   FilledInput,
   FormControl,
   FormHelperText,
@@ -57,7 +56,7 @@ const IxigoSelect: React.FC<IIxigoMultipleSelectProps> = (props) => {
       <Select
         labelId="demo-multiple-checkbox-label"
         id="demo-multiple-checkbox"
-        value={props.selectedValue as ""}
+        value={props.possibleValues.find((e) => props.selectedValue === e.value)?.value || ""}
         onChange={onChange}
         input={variantElement}
         renderValue={(selected) => props.possibleValues.filter((e) => selected === e.value).map((e) => e.label)}

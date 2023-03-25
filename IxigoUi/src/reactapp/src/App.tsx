@@ -8,6 +8,7 @@ import { SnackbarKey, SnackbarProvider, useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { RconContentProvider } from "./contents/rcon/indext";
+import { BrowserRouter } from "react-router-dom";
 
 const darkTheme = createTheme({
   palette: {
@@ -38,18 +39,20 @@ const App = () => {
   });
 
   return (
-    <SnackbarProvider maxSnack={10} action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
-      <I18nextProvider i18n={i18n}>
-        <ThemeProvider theme={darkTheme}>
-          <CssBaseline />
-          <QueryClientProvider client={queryClient}>
-            <RconContentProvider>
-              <BaseLayout />
-            </RconContentProvider>
-          </QueryClientProvider>
-        </ThemeProvider>
-      </I18nextProvider>
-    </SnackbarProvider>
+    <BrowserRouter>
+      <SnackbarProvider maxSnack={10} action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
+        <I18nextProvider i18n={i18n}>
+          <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <QueryClientProvider client={queryClient}>
+              <RconContentProvider>
+                <BaseLayout />
+              </RconContentProvider>
+            </QueryClientProvider>
+          </ThemeProvider>
+        </I18nextProvider>
+      </SnackbarProvider>
+    </BrowserRouter>
   );
 };
 

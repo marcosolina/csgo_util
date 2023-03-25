@@ -17,9 +17,53 @@
         "5": "Join The Server"
       }
     },
+    "discord": {
+      "labels": {
+        "config": {
+          "main": "Bot config",
+          "ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION": "Round to consider for team creation",
+          "AUTOBALANCE": "Autobalance",
+          "KICK_BOTS": "Kick bots"
+        },
+        "btnSaveMappings": "Save the mapping",
+        "discordUsers": "Discord users",
+        "steamUsers": "Steam users"
+      },
+      "notifications": {
+        "configSaved": "Configuration saved"
+      }
+    },
     "demFiles": {
       "errors": {
         "loading": "Sorry something went wrong"
+      }
+    },
+    "serverInfo": {
+      "pictures": {
+        "1": {
+          "title": "Click the icon to play CS:GO",
+          "subtitle": ""
+        },
+        "2": {
+          "title": "Select \"Community Server Browser\" from the drop down menu",
+          "subtitle": ""
+        },
+        "3": {
+          "title": "Click on the favorites tab",
+          "subtitle": ""
+        },
+        "4": {
+          "title": "Type: ixigo.selfip.net",
+          "subtitle": "And click \"Add this address to favorites\""
+        },
+        "5": {
+          "title": "Double click the server name",
+          "subtitle": ""
+        },
+        "6": {
+          "title": "Type the password and click \"connect\"",
+          "subtitle": "You can ask for the password in the discord channel"
+        }
       }
     },
     "players": {

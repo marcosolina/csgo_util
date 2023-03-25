@@ -46,6 +46,9 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 		try {
 			// Update the URI to let it point to the proxy Service
 			var stringUri = cmd.getRequestedUri().replace(cmd.getContextPath() + Forward.REQUEST_MAPPING, endPoints.getEndPoints().get("gateway").get("base-url"));
+			_LOGGER.debug(cmd.getRequestedUri());
+			_LOGGER.debug(cmd.getContextPath());
+			_LOGGER.debug(stringUri);
 			var tmpBody = Serializable.class.cast(cmd.getBody());
 			var url = new URL(stringUri);
 			

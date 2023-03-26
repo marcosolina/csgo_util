@@ -3,7 +3,12 @@
 FROM maven:3.5.4-jdk-11 AS MAVEN_IMAGE
 RUN mkdir /ixigo
 WORKDIR /ixigo
-RUN git clone --branch refactoring https://github.com/marcosolina/csgo_util.git
+
+COPY --from=my-nodejs-img /ixigo/csgo_util ./csgo_util
+
+# Copying the "compiled" React App into the Ixigo UI project
+# to make it available in the JAR package
+RUN cp -r ./csgo_util/IxigoUi/src/reactapp/build/* ./csgo_util/IxigoUi/src/main/resources/static
 
 RUN \
 mvn clean install -f ./csgo_util/IxigoLibrary/pom.xml && \
@@ -22,8 +27,8 @@ mvn clean package -f ./csgo_util/IxigoEventDispatcher/pom.xml && \
 mvn clean package -f ./csgo_util/IxigoPlayersManager/pom.xml && \
 mvn clean package -f ./csgo_util/IxigoProxy/pom.xml && \
 mvn clean package -f ./csgo_util/IxigoRconApi/pom.xml && \
-mvn clean package -f ./csgo_util/IxigoServerHelper/pom.xml
-
+mvn clean package -f ./csgo_util/IxigoServerHelper/pom.xml && \
+mvn clean package -f ./csgo_util/IxigoUi/pom.xml
 
 COPY ./start.sh start.sh
 RUN sed -i -e 's/\r$//' start.sh && \

@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import Case from "../../common/switch-case/Case";
 import Switch from "../../common/switch-case/Switch";
+import { UI_CONTEXT_PATH } from "../../lib/constants";
 import { QueryStatus } from "../../lib/http-requests";
 import { IIxigoTeamProps } from "./interfaces";
 import LoadingTeam from "./LoadingTeam";
@@ -20,7 +21,7 @@ const IxigoTeam: React.FC<IIxigoTeamProps> = (props) => {
   return (
     <Card>
       <Box sx={{ width: "100%" }}>
-        <img src={props.picture} width={"100%"} alt="" />
+        <img src={`${UI_CONTEXT_PATH}${props.picture}`} width={"100%"} alt="" />
       </Box>
       <CardContent>
         <Stack direction="row" spacing={2} justifyContent="space-between" alignItems={"center"}>

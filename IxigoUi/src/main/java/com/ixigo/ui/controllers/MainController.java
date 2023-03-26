@@ -1,11 +1,5 @@
 package com.ixigo.ui.controllers;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,19 +16,17 @@ import com.ixigo.ui.config.IxigoEndPoints;
 @Controller
 public class MainController {
 	@Value("classpath:static/static/**")
-    private Resource[] resources;
+	private Resource[] resources;
 	private ObjectMapper objectMapper = new ObjectMapper();
-	
+
 	@Autowired
 	private IxigoEndPoints endPoints;
-	
-    private Comparator<? super File> c = (f1, f2) -> f1.lastModified() < f2.lastModified() ? 1 : -1; 
-    
-    @GetMapping(value = { "/" })
-    public String ui(HttpServletRequest request, Model model) {
-        model.addAttribute("js", getJsName());
-        model.addAttribute("css", getCssName());
-        
+
+	@GetMapping(value = { "/" })
+	public String ui(HttpServletRequest request, Model model) {
+		model.addAttribute("js", getJsName());
+		model.addAttribute("css", getCssName());
+
 		try {
 			String jsonString = objectMapper.writeValueAsString(endPoints.getEndPoints());
 			model.addAttribute("endPoints", jsonString);
@@ -43,44 +35,28 @@ public class MainController {
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-        return "ui";
-    }
-    
-    private String getJsName() {
-        List<File> files = new ArrayList<>();
-        try {
-            for (final Resource res : resources) {
-                String fileName = res.getFilename();
-                if (fileName.startsWith("main.") && fileName.endsWith(".js")) {
-                    files.add(res.getFile());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        files.sort(c);
-        return files.get(0).getName();
-    }
-    
-    private String getCssName() {
-        List<File> files = new ArrayList<>();
-        try {
-            for (final Resource res : resources) {
-                String fileName = res.getFilename();
-                if (fileName.startsWith("main.") && fileName.endsWith(".css")) {
-                    files.add(res.getFile());
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        
-        if(files.isEmpty()) {
-        	return "";
-        }
-        
-        files.sort(c);
-        return files.get(0).getName();
-    }
+		return "ui";
+	}
+
+	private String getJsName() {
+		for (final Resource res : resources) {
+			String fileName = res.getFilename();
+			if (fileName.startsWith("main.") && fileName.endsWith(".js")) {
+				return fileName;
+			}
+		}
+
+		return "";
+	}
+
+	private String getCssName() {
+		for (final Resource res : resources) {
+			String fileName = res.getFilename();
+			if (fileName.startsWith("main.") && fileName.endsWith(".css")) {
+				return fileName;
+			}
+		}
+
+		return "";
+	}
 }

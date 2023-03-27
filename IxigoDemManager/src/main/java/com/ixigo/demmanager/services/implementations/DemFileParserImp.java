@@ -195,8 +195,8 @@ public class DemFileParserImp implements DemFileParser {
 		AtomicInteger countProcessedFiles = new AtomicInteger(0);
 		// @formatter:off
 		return Flux.fromIterable(files)
-			.parallel()
-			.runOn(Schedulers.boundedElastic())
+			//.parallel()
+			//.runOn(Schedulers.boundedElastic())
 			.flatMap(f -> { // Extracting info from DEM file 
 				return generateMapStatFromFile(f).map(stats -> {
 					return Tuples.of(f.getAbsolutePath(), stats);
@@ -206,7 +206,7 @@ public class DemFileParserImp implements DemFileParser {
 					return Mono.just(Tuples.of(f.getAbsolutePath(), setMapNameAndTime(f)));
 				});
 			})
-			.sequential()// Avoiding running out of DB connections
+			//.sequential()// Avoiding running out of DB connections
 			.map(tuple -> { // Checking if the DEM file had info in it
 				String fileName = tuple.getT1();
 				SvcMapStats stats = tuple.getT2();

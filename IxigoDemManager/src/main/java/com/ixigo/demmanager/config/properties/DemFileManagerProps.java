@@ -15,6 +15,7 @@ public class DemFileManagerProps {
 	public ParserEnvironment parserEnvironment;
 	public ParserExecutionType parserExecutionType;
 	public Path parserExecPath;
+	public Boolean processFilesInParallel;
 
 	public Path getRootFolder() {
 		return rootFolder;
@@ -46,6 +47,14 @@ public class DemFileManagerProps {
 
 	public void setParserExecPath(Path parserExecPath) {
 		this.parserExecPath = parserExecPath;
+	}
+
+	public Boolean getProcessFilesInParallel() {
+		return processFilesInParallel;
+	}
+
+	public void setProcessFilesInParallel(Boolean processFilesInParallel) {
+		this.processFilesInParallel = processFilesInParallel;
 	}
 
 }

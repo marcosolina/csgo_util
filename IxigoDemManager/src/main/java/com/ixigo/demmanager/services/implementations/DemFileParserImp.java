@@ -11,8 +11,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.reactivestreams.Publisher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +49,7 @@ import com.ixigo.library.utils.DateUtils;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
 public class DemFileParserImp implements DemFileParser {
@@ -193,21 +196,30 @@ public class DemFileParserImp implements DemFileParser {
 
 	private synchronized Mono<Void>  processFiles(List<File> files) {
 		AtomicInteger countProcessedFiles = new AtomicInteger(0);
-		// @formatter:off
-		return Flux.fromIterable(files)
-			//.parallel()
-			//.runOn(Schedulers.boundedElastic())
-			.flatMap(f -> { // Extracting info from DEM file 
-				return generateMapStatFromFile(f).map(stats -> {
-					return Tuples.of(f.getAbsolutePath(), stats);
-				})
-				.onErrorResume(error -> {
-					_LOGGER.error(String.format("Error while processing %s, msg: %s", f.getAbsolutePath(), error.getMessage()));
-					return Mono.just(Tuples.of(f.getAbsolutePath(), setMapNameAndTime(f)));
-				});
+		
+		Function<? super File, ? extends Publisher<? extends Tuple2<String, SvcMapStats>>> function = f -> { // Extracting info from DEM file 
+			return generateMapStatFromFile(f).map(stats -> {
+				return Tuples.of(f.getAbsolutePath(), stats);
 			})
-			//.sequential()// Avoiding running out of DB connections
-			.map(tuple -> { // Checking if the DEM file had info in it
+			.onErrorResume(error -> {
+				_LOGGER.error(String.format("Error while processing %s, msg: %s", f.getAbsolutePath(), error.getMessage()));
+				return Mono.just(Tuples.of(f.getAbsolutePath(), setMapNameAndTime(f)));
+			});
+		};
+		
+		// @formatter:off
+		Flux<File> fileFlux = Flux.fromIterable(files);
+		Flux<Tuple2<String, SvcMapStats>> flux = null;
+		if(props.getProcessFilesInParallel()) {
+			flux = fileFlux.parallel()
+					.runOn(Schedulers.boundedElastic())
+					.flatMap(function)
+					.sequential();
+		}else {
+			flux = fileFlux.flatMap(function);
+		}
+		
+		return flux.map(tuple -> { // Checking if the DEM file had info in it
 				String fileName = tuple.getT1();
 				SvcMapStats stats = tuple.getT2();
 				boolean canProcessTheFile = stats.getUsersStats() != null; 

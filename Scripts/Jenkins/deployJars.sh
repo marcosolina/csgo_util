@@ -3,9 +3,11 @@
 WORKSPACE_FOLDER=$1
 RASP_IP=192.168.1.24
 BASE_FOLDER=/opt/ixigo
+USR=marco
 
+SSH_ADDRESS=$USR@$RASP_IP
 
-ssh pi@$RASP_IP mkdir -p $BASE_FOLDER
+ssh $SSH_ADDRESS mkdir -p $BASE_FOLDER
 
 apps=(
 "IxigoDiscovery"
@@ -18,9 +20,6 @@ apps=(
 "IxigoRconApi"
 "IxigoUi"
 )
-
-
-SSH_ADDRESS=pi@$RASP_IP
 
 
 for i in ${!apps[@]}; do

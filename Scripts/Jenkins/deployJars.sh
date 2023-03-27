@@ -9,6 +9,15 @@ SSH_ADDRESS=$USR@$RASP_IP
 
 ssh $SSH_ADDRESS mkdir -p $BASE_FOLDER
 
+# Deploy DemParser C#
+DEM_APP_FOLDER=$BASE_FOLDER/DemParser
+ssh $SSH_ADDRESS mkdir -p $DEM_APP_FOLDER
+ssh $SSH_ADDRESS rm -rf $DEM_APP_FOLDER/*
+
+scp -r $WORKSPACE_FOLDER/DemParser/bin/Debug/netcoreapp3.1/linux-arm64/* $SSH_ADDRESS:$DEM_APP_FOLDER
+ssh $SSH_ADDRESS chmod +x $DEM_APP_FOLDER
+
+# Deply Java apps
 apps=(
 "IxigoDiscovery"
 "IxigoConfigServer"

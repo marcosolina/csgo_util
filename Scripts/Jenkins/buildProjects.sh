@@ -7,8 +7,13 @@ cd $WORKSPACE_FOLDER/IxigoUi/src/reactapp
 npm install
 npm run build
 
-cp ./build/* $WORKSPACE_FOLDER/IxigoUi/src/main/resources/static
+cp -r ./build/* $WORKSPACE_FOLDER/IxigoUi/src/main/resources/static
 
+# Build the C# Dem parser
+dotnet publish $WORKSPACE_FOLDER/DemParser -r linux-arm64
+
+
+# Build the Java projects
 mvn clean install -f $WORKSPACE_FOLDER/IxigoLibrary/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoParent/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoDemManagerContract/pom.xml

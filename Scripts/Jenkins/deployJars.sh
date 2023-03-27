@@ -1,9 +1,9 @@
 #!/bin/bash
 
 WORKSPACE_FOLDER=$1
-RASP_IP=192.168.1.24
+RASP_IP=192.168.1.27
 BASE_FOLDER=/opt/ixigo
-USR=marco
+USR=pi
 
 SSH_ADDRESS=$USR@$RASP_IP
 

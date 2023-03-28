@@ -29,7 +29,7 @@ const RconMaps = () => {
       </Grid>
       <Switch value={status}>
         <Case case={QueryStatus.success}>
-          {data?.data?.server_maps.map((map, j) => (
+          {data?.data?.server_maps?.map((map, j) => (
             <Grid key={j} item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
               <RconCommand
                 cmd={map.is_workshop_map ? `map workshop/${map.workshop_id}/${map.map_name}` : `map ${map.map_name}`}

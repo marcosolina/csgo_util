@@ -211,11 +211,13 @@ public class DemFileParserImp implements DemFileParser {
 		Flux<File> fileFlux = Flux.fromIterable(files);
 		Flux<Tuple2<String, SvcMapStats>> flux = null;
 		if(props.getProcessFilesInParallel()) {
+			_LOGGER.debug("Parsing dem files in parallel");
 			flux = fileFlux.parallel()
 					.runOn(Schedulers.boundedElastic())
 					.flatMap(function)
 					.sequential();
 		}else {
+			_LOGGER.debug("Parsing dem files synchronously");
 			flux = fileFlux.flatMap(function);
 		}
 		

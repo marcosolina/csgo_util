@@ -32,17 +32,45 @@ public class Forward {
 	@Autowired
 	private WebMediator mediator;
 
-	@GetMapping
-	@PostMapping
-	@DeleteMapping
-	@PutMapping
 	// @formatter:off
-	public Mono<ResponseEntity<Object>> forwardHttpRequest(
+	@GetMapping
+    public Mono<ResponseEntity<Object>> handleGetRequest(
+            HttpServletRequest request,
+            @RequestParam Map<String,String> allRequestParams){
+        return forwardHttpRequest(request, allRequestParams, null);
+    }
+
+    @PostMapping
+    public Mono<ResponseEntity<Object>> handlePostRequest(
+            HttpServletRequest request,
+            @RequestParam Map<String,String> allRequestParams,
+            @RequestBody(required = false) Object body){
+        return forwardHttpRequest(request, allRequestParams, body);
+    }
+    
+    @PutMapping
+    public Mono<ResponseEntity<Object>> handlePutRequest(
+            HttpServletRequest request,
+            @RequestParam Map<String,String> allRequestParams,
+            @RequestBody(required = false) Object body){
+        return forwardHttpRequest(request, allRequestParams, body);
+    }
+    
+    @DeleteMapping
+    public Mono<ResponseEntity<Object>> handleDeleteRequest(
+            HttpServletRequest request,
+            @RequestParam Map<String,String> allRequestParams,
+            @RequestBody(required = false) Object body){
+        return forwardHttpRequest(request, allRequestParams, body);
+    }
+
+	
+	private Mono<ResponseEntity<Object>> forwardHttpRequest(
 			HttpServletRequest request,
 			@RequestParam Map<String,String> allRequestParams,
 			@RequestBody(required = false) Object body){
 		
-		_LOGGER.trace("Inside Forward.forwardHttpRequest");
+		_LOGGER.debug("Inside Forward.forwardHttpRequest");
 		
 		return mediator.send(
 			ForwardHttpReqCmd.builder()

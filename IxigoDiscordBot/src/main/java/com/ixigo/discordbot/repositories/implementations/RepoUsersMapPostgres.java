@@ -31,7 +31,7 @@ public class RepoUsersMapPostgres implements RepoUsersMap {
 			.switchIfEmpty(Mono.just(new Users_mapDto()))
 			.flatMap(dto -> {
 				// Update
-				if (dto.getDiscord_id() != 0) {
+				if (dto.getDiscord_id() != null && dto.getDiscord_id() != 0) {
 					return dao.prepareSqlUpdate(client).then().thenReturn(true);
 				}
 				return dao.prepareSqlInsert(client).then().thenReturn(true);

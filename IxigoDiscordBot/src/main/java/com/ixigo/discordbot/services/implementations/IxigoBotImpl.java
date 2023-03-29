@@ -31,7 +31,6 @@ import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.discordbot.services.interfaces.IxigoPlayersManagerService;
 import com.ixigo.discordbot.services.interfaces.IxigoRconService;
 import com.ixigo.enums.BotConfigKey;
-import com.ixigo.library.dto.ValidationError;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.library.messages.IxigoMessageResource;
@@ -120,13 +119,12 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> stop() throws IxigoException {
-		return Mono.fromSupplier(() -> {
-			checkIfBotIsOnline();
+		return checkIfBotIsOnlineOrStart(false).map(b -> {
 			LOGGER.debug("Stopping the bot");
 			jda.shutdown();
 			botOnline = false;
 			return !botOnline;
-		}).subscribeOn(Schedulers.boundedElastic());
+		});
 	}
 
 	@Override
@@ -349,13 +347,12 @@ public class IxigoBotImpl implements IxigoBot {
 		// @formatter:on
 	}
 
-	private void checkIfBotIsOnline() throws ValidationException {
-		if (!botOnline) {
-			ValidationError err = new ValidationError();
-			err.setCode(ErrorCodes.BOT_OFFLINE);
-			err.setMessage(msgSource.getMessage(ErrorCodes.BOT_OFFLINE));
-			throw new ValidationException(Arrays.asList(err));
+	private Mono<Boolean> checkIfBotIsOnlineOrStart(boolean startIfOffline) throws ValidationException {
+		if (!botOnline && startIfOffline) {
+			return this.start();
 		}
+		
+		return Mono.just(true);
 	}
 
 	private RestAction<Void> moveMemberToVoiceChannel(Guild guild, Member m, VoiceChannel v) {
@@ -373,10 +370,7 @@ public class IxigoBotImpl implements IxigoBot {
 	}
 
 	private Mono<Guild> getGuild() {
-		return Mono.fromSupplier(() -> {
-			checkIfBotIsOnline();
-
-			return jda.getGuildById(discordProps.getServerId());
-		}).subscribeOn(Schedulers.boundedElastic());
+		return this.checkIfBotIsOnlineOrStart(true)
+			.map(b -> jda.getGuildById(discordProps.getServerId()));
 	}
 }

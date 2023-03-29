@@ -2,7 +2,7 @@ import { Grid, Skeleton, Typography } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import Case from "../../common/switch-case/Case";
 import Switch from "../../common/switch-case/Switch";
-import { DEFAULT_SPACING, UI_CONTEXT_PATH } from "../../lib/constants";
+import { DEFAULT_SPACING } from "../../lib/constants";
 import { QueryStatus } from "../../lib/http-requests";
 import { useGetServerMaps } from "../../services/rcon";
 import RconCommand from "./RconCommand";
@@ -44,7 +44,7 @@ const RconMaps = () => {
           ))}
         </Case>
         <Case case={QueryStatus.loading}>
-          {LOADING.map((element, index) => (
+          {LOADING.map((element) => (
             <Grid key={element} item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
               <Skeleton animation="wave" height={300} />
             </Grid>

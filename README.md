@@ -73,3 +73,9 @@ Replace the IP with your machine/s IP/s
 - [Open API Sepcs - RCON APIs](http://MACHINE_IP:8084/rcon/swagger-ui.html)
 - [Open API Sepcs - Discord Bot](http://MACHINE_IP:8082/discordbot/swagger-ui.html)
 - [Open API Sepcs - Event Dispatcher](http://MACHINE_IP:8086/eventsdispatcher/swagger-ui.html)
+
+## Utils
+
+~~~~bash
+mvn archetype:generate -DgroupId=com.ixigo -DartifactId=IxigoPlayersManagerContract -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
+~~~~

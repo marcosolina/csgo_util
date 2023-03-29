@@ -1,61 +1,17 @@
 logging:
   file:
-    name: ./logs/ixigo-ui.log
-  pattern:
-    console: "%d %-5level : %msg%n"
-    file: "%d %-5level : %msg%n"
+    name: ./logs/ixigo-rcon-api.log
   level:
-    root: INFO
     com:
-      marco:
-        ixigo:
-          ui: DEBUG
-
+      ixigo:
+        ui: DEBUG
 server:
   servlet:
-    context-path: /ixigoui                                                                                # Do not change this
+    context-path: /ixigoui
+spring:
+  thymeleaf:
+    prefix: classpath:/static/
 com:
-  marco:
-    ixigo:
-      ui:
-        version: ^project.version^
-        rconapi:
-          host: localhost
-        urls:
-          dem_manager:
-            protocol: "http://"                                                                           # http:// or https://
-            host: "localhost:8763"                                                                        # Host name and port of the Ixigo Proxy service
-            contextPath: "/ixigoproxy/ixigo-dem-manager/demmanager"                                       # Do not change this
-            baseurl: "${com.marco.ixigo.ui.urls.dem_manager.protocol}${com.marco.ixigo.ui.urls.dem_manager.host}${com.marco.ixigo.ui.urls.dem_manager.contextPath}" # Do not change this
-            get_all_files: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/files/all"                     # Do not change this
-            download_file: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/files"                         # Do not change this
-            get_scores_types: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/demdata/scorestype"         # Do not change this
-            get_players: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/demdata/users"                   # Do not change this
-            get_players_scores: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/demdata/usersscores"      # Do not change this
-            get_maps_played: "${com.marco.ixigo.ui.urls.dem_manager.baseurl}/demdata/mapsplayed"          # Do not change this
-          players_manager:
-            protocol: "http://"                                                                           # http:// or https://
-            host: "localhost:8763"                                                                        # Host name and port of the Ixigo Proxy service
-            contextPath: "/ixigoproxy/ixigo-players-manager/playersmanager"                               # Do not change this
-            baseurl: "${com.marco.ixigo.ui.urls.players_manager.protocol}${com.marco.ixigo.ui.urls.players_manager.host}${com.marco.ixigo.ui.urls.players_manager.contextPath}" # Do not change this
-            get_teams: "${com.marco.ixigo.ui.urls.players_manager.baseurl}/teams"                         # Do not change this
-          rcon_api:
-            protocol: "http://"                                                                           # http:// or https://
-            host: "localhost:8763"                                                                        # Host name and port of the Ixigo Proxy service
-            contextPath: "/ixigoproxy/ixigo-rcon-api/rcon"                                                # Do not change this
-            baseurl: "${com.marco.ixigo.ui.urls.rcon_api.protocol}${com.marco.ixigo.ui.urls.rcon_api.host}${com.marco.ixigo.ui.urls.rcon_api.contextPath}" # Do not change this
-            send_cmd: "${com.marco.ixigo.ui.urls.rcon_api.baseurl}/cmd"                                   # Do not change this
-          discord_bot:
-            protocol: "http://"                                                                           # http:// or https://
-            host: "localhost:8763"                                                                        # Host name and port of the Ixigo Proxy service
-            contextPath: "/ixigoproxy/ixigo-discord-bot/discordbot"                                       # Do not change this
-            baseurl: "${com.marco.ixigo.ui.urls.discord_bot.protocol}${com.marco.ixigo.ui.urls.discord_bot.host}${com.marco.ixigo.ui.urls.discord_bot.contextPath}" # Do not change this
-            get_mapped_players: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/mapped/players"           # Do not change this
-            post_players_mapping: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/players/mapping"        # Do not change this
-            get_config: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/config"                           # Do not change this
-            put_config: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/config"                           # Do not change this
-            start_bot: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/start"                             # Do not change this
-            stop_bot: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/stop"                               # Do not change this
-            auto_balance: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/autoBalance"                    # Do not change this
-            kick_bots: "${com.marco.ixigo.ui.urls.discord_bot.baseurl}/kickBots"                          # Do not change this
-
+  ixigo:
+    ui:
+      version: ^project.version^

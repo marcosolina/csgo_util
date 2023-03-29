@@ -1,0 +1,127 @@
+{
+  "dialog": {
+    "btn": {
+      "cancel": "Cancel",
+      "continue": "Continue"
+    }
+  },
+  "page": {
+    "home": {
+      "title": "IXI-GO: Monday Nights",
+      "tabs": {
+        "0": "Dem Files",
+        "1": "Players",
+        "2": "Charts",
+        "3": "Rcon",
+        "4": "Discord Bot",
+        "5": "Join The Server"
+      }
+    },
+    "discord": {
+      "labels": {
+        "config": {
+          "main": "Bot config",
+          "ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION": "Round to consider for team creation",
+          "AUTOBALANCE": "Autobalance",
+          "KICK_BOTS": "Kick bots"
+        },
+        "btnSaveMappings": "Save the mapping",
+        "discordUsers": "Discord users",
+        "steamUsers": "Steam users"
+      },
+      "notifications": {
+        "configSaved": "Configuration saved"
+      }
+    },
+    "demFiles": {
+      "errors": {
+        "loading": "Sorry something went wrong"
+      }
+    },
+    "serverInfo": {
+      "pictures": {
+        "1": {
+          "title": "Click the icon to play CS:GO",
+          "subtitle": ""
+        },
+        "2": {
+          "title": "Select \"Community Server Browser\" from the drop down menu",
+          "subtitle": ""
+        },
+        "3": {
+          "title": "Click on the favorites tab",
+          "subtitle": ""
+        },
+        "4": {
+          "title": "Type: ixigo.selfip.net",
+          "subtitle": "And click \"Add this address to favorites\""
+        },
+        "5": {
+          "title": "Double click the server name",
+          "subtitle": ""
+        },
+        "6": {
+          "title": "Type the password and click \"connect\"",
+          "subtitle": "You can ask for the password in the discord channel"
+        }
+      }
+    },
+    "players": {
+      "labels": {
+        "lblListPlayers": "Steam players",
+        "lblRoundToConsider": "Rounds to consider",
+        "lblScoreType": "Score type",
+        "lblMinPercPlayed": "Min % played",
+        "lblPenalty": "Penalty weight",
+        "lblBtnSetPlayers": "Set these teams on the server",
+        "lblTeamTerrorist": "Terrorists",
+        "lblTeamCt": "Counter Terrorists"
+      }
+    },
+    "rcon": {
+      "successRcon": "Command sent",
+      "dialog": {
+        "title": "Rcon response"
+      },
+      "inputs": {
+        "labels": {
+          "serverAddr": "RCON Server Address",
+          "serverPort": "RCON Server Port",
+          "serverPassw": "RCON Server Password",
+          "serverCmd": "RCON Command to Send",
+          "serverResp": "RCON Server Response"
+        }
+      },
+      "commands": {
+        "groups": {
+          "bots": {
+            "title": "Bots",
+            "buttons": {
+              "bot_add_t": "Add Terrorist Bot",
+              "bot_add_ct": "Add C.T. Bot",
+              "bot_kick": "Kick all the bots"
+            }
+          },
+          "maps": {
+            "title": "Maps"
+          },
+          "game": {
+            "title": "Game",
+            "buttons": {
+              "sm_list_players": "List active players",
+              "mp_restartgame": "Restart the game",
+              "pause": "Pause the game",
+              "unpause": "Resume the game",
+              "exit": "Stop the server"
+            }
+          }
+        }
+      }
+    }
+  },
+  "error": {
+    "generic": {
+      "message": "Sorry, something went wrong"
+    }
+  }
+}

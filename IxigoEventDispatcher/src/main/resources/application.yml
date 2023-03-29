@@ -1,36 +1,17 @@
+logging:
+  file:
+    name: ./logs/ixigo-event-dispatcher.log
+  level:
+    com:
+      ixigo:
+        eventdispatcher: DEBUG
 
 server:
   servlet:
     context-path: /eventsdispatcher                                                                     # Do not change this
-  port: 8080
     
 com:
-  marco:
-    ixigo:
-      eventdispatcher:
-        version: ^project.version^
-        notification:
-          telegram:
-            enabled: false
-            telegramToken: TELEGRAM_TOKEN
-            chatGroupId: TELGRAM_GROUP_ID
+  ixigo:
+    eventdispatcher:
+      version: ^project.version^
 
-
-spring:
-  datasource:
-    url: jdbc:postgresql://localhost:5432/event_dispatcher                                              # You can change this, but do not change the DB name.
-    username: ${IXIGO_POSTGRES_USER:REPLACE_ME}
-    password: ${IXIGO_POSTGRES_PASSW:REPLACE_ME}
-
-logging:
-  file:
-    name: ./logs/ixigo-event-dispatcher.log
-  pattern:
-    console: "%d %-5level : %msg%n"
-    file: "%d %-5level : %msg%n"
-  level:
-    root: INFO
-    com:
-      marco:
-        ixigo:
-          eventdispatcher: DEBUG

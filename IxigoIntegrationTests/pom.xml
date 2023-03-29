@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.ixigo</groupId>
+		<artifactId>IxigoParent</artifactId>
+		<version>1.0.0</version>
+	</parent>
+
+	<artifactId>IxigoIntegrationTests</artifactId>
+	<name>IxigoIntegrationTests</name>
+	<version>2.0.0</version>
+	<description>Integration tests</description>
+	<packaging>jar</packaging>
+	
+	<properties>
+		<cucumber.version>7.5.0</cucumber.version>
+		<contract.demmanager>2.0.0</contract.demmanager>
+		<contract.eventdispatcher>2.0.0</contract.eventdispatcher>
+		<contract.playersmanagercontract>2.0.0</contract.playersmanagercontract>
+	</properties>
+	
+	<dependencies>
+
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-java</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-spring</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>io.cucumber</groupId>
+			<artifactId>cucumber-junit-platform-engine</artifactId>
+			<version>${cucumber.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.junit.platform</groupId>
+			<artifactId>junit-platform-suite</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-configuration-processor</artifactId>
+			<optional>true</optional>
+		</dependency>
+		
+		<!-- Contracts -->
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoDemManagerContract</artifactId>
+			<version>${contract.demmanager}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoEventDispatcherContract</artifactId>
+			<version>${contract.eventdispatcher}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoPlayersManagerContract</artifactId>
+			<version>${contract.playersmanagercontract}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
+</project>

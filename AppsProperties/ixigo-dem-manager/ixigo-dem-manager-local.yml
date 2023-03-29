@@ -1,8 +1,0 @@
-server:
-  port: 8081
-com:
-  marco:
-    ixigo:
-      demmanager:
-        demFileManager:
-          rootFolder: "E:\\Games\\Ixigo\\DemFiles"

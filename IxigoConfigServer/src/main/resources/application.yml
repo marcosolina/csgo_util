@@ -9,13 +9,13 @@ spring:
     config:
       server:
         git:
-          uri: ${IXIGO_CONFIG_REPO:file://E:\\Workspaces\\Git\\csgo_util}   # Git repo where to get the properties from
-          default-label: ${IXIGO_GIT_REPO_BRANCH:main}
+          uri: https://github.com/marcosolina/csgo_props.git                # Git repo where to get the properties from
+          default-label: ${IXIGO_GIT_REPO_BRANCH:dev}
           #password: ${GIT_PASSWORD}                                        # Git user name (for private repositories)
           #username: ${GIT_USERNAME}                                        # Git password (for private repositories)
           search-paths:                                                     # List of folders that will be queried by this config service
-          - 'AppsProperties/**'
-          
+          - '/*'
+          - '/**'
 
 server:
   port: 8888                                                                # Port to use when running this service

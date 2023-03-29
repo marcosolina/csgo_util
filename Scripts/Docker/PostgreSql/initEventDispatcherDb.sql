@@ -32,6 +32,27 @@ CREATE TABLE EVENT_LISTENERS (
  */
 INSERT INTO EVENT_LISTENERS VALUES
 
+/*
+* Local developmnet
+*/
+('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'CS_WIN_PANEL_MATCH',   NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_END',           NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_START',         NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'WARMUP_START',         NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'SHUT_DOWN',            NULL, NULL, 0, 'Y'),
+
+/*
+ * Rasp
+ */
+('https://marco.selfip.net/ixigoproxy/ixigo-discord-bot/discordbot/events',    'CS_WIN_PANEL_MATCH',   NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_END',           NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_START',         NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'WARMUP_START',         NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'SHUT_DOWN',            NULL, NULL, 0, 'Y'),
+
+/*
+* Docker
+*/
 ('http://ixigo-proxy:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'CS_WIN_PANEL_MATCH',   NULL, NULL, 0, 'Y'),
 ('http://ixigo-proxy:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_END',           NULL, NULL, 0, 'Y'),
 ('http://ixigo-proxy:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_START',         NULL, NULL, 0, 'Y'),

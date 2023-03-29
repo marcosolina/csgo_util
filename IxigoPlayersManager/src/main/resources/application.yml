@@ -1,32 +1,16 @@
-server:
-  servlet:
-    context-path: /playersmanager
-  port: 8080
-    
-com:
-  marco:
-    ixigo:
-      playersmanager:
-        version: ^project.version^
-        services:
-          demmanager:
-            protocol: "http"                                                                                            # HTTP or HTTPs     
-            dns: "localhost"                                                                                            # Host name of the Ixigo Proxy service
-            port: 8763                                                                                                  # Port on which the Ixigo Proxy Service is listening
-            contextpath: "/ixigoproxy/ixigo-dem-manager/demmanager"                                                     # Do not change this
-            getUsersScores: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/usersscores"     # Do not change this
-            getUsers: "${com.marco.ixigo.playersmanager.services.demmanager.contextpath}/demdata/users"                 # Do not change this
-            
-
 logging:
   file:
     name: ./logs/ixigo-players-manager.log
-  pattern:
-    console: "%d %-5level : %msg%n"
-    file: "%d %-5level : %msg%n"
   level:
-    root: INFO
     com:
-      marco:
-        ixigo:
-          playersmanager: DEBUG
+      ixigo:
+        playersmanager: DEBUG
+
+server:
+  servlet:
+    context-path: /playersmanager
+    
+com:
+  ixigo:
+    playersmanager:
+      version: ^project.version^

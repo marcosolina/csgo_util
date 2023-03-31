@@ -45,4 +45,8 @@ export const SERVICES_URLS = {
     "put-mapped-players": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/mapping",
     "get-discord-channel-members": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/discord",
   },
+  "ixigo-server": {
+    "gateway-path": "ixigo-server-helper",
+    "get-csgo-config": PROXY_BASE_PATH + "/ixigo-server-helper/ixigohelper/config/csgo",
+  },
 };

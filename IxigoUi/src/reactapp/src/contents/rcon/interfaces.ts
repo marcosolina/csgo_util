@@ -2,6 +2,7 @@ import { SvgIconTypeMap } from "@mui/material";
 import { OverridableComponent } from "@mui/material/OverridableComponent";
 import { QueryStatus } from "react-query";
 import { IRconRequest, IRconResponse } from "../../services";
+import { IIxigoServerConfig } from "../../services/ixigo-server";
 
 export interface IUseRconContentResult {
   sendCommand: (request: IRconRequest) => void;
@@ -10,6 +11,7 @@ export interface IUseRconContentResult {
   setRequest: (request: IRconRequest) => void;
   rconResponse?: IRconResponse;
   queryState: QueryStatus;
+  csgoConfig?: IIxigoServerConfig;
 }
 
 export interface IRconCommand {

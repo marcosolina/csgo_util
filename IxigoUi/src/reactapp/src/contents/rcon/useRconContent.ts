@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react";
+import { QueryStatus } from "../../lib/http-requests";
 import { useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
+import { combineQueryStatuses } from "../../lib/queries";
 import { IRconRequest, IRconResponse, useSendRconCommand } from "../../services";
+import { useGetIxigoServerConfig } from "../../services/ixigo-server";
 import { IUseRconContentResult } from "./interfaces";
 
 const DEFAULT_STATE: IRconRequest = {
@@ -12,6 +15,7 @@ const DEFAULT_STATE: IRconRequest = {
 
 export const useRconContent = (): IUseRconContentResult => {
   const rconHook = useSendRconCommand();
+  const qCsgoSrvConfig = useGetIxigoServerConfig();
   const { checkResp } = useCheckErrorsInResponse();
   const checkRespFunc = useRef(checkResp);
 
@@ -19,6 +23,15 @@ export const useRconContent = (): IUseRconContentResult => {
   const [rconResponse, setRconResponse] = useState<IRconResponse>();
 
   const [request, setRequest] = useState<IRconRequest>(DEFAULT_STATE);
+
+  useEffect(() => {
+    if (qCsgoSrvConfig.status === QueryStatus.success) {
+      const host = qCsgoSrvConfig.data.data?.csgo_host || "";
+      const port = qCsgoSrvConfig.data.data?.csgo_port || 0;
+      const newRequestState = { ...request, ...{ rcon_host: host, rcon_port: port } };
+      setRequest(newRequestState);
+    }
+  }, [qCsgoSrvConfig.status, qCsgoSrvConfig.data]);
 
   useEffect(() => {
     if (rconHook.response) {
@@ -35,6 +48,6 @@ export const useRconContent = (): IUseRconContentResult => {
     request,
     setRequest,
     rconResponse,
-    queryState: rconHook.status,
+    queryState: combineQueryStatuses([rconHook, qCsgoSrvConfig]),
   };
 };

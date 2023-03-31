@@ -6,10 +6,12 @@ import org.springframework.context.annotation.Configuration;
 
 import com.ixigo.serverhelper.config.properties.EventProperties;
 import com.ixigo.serverhelper.enums.EventFileReaderImplementations;
+import com.ixigo.serverhelper.services.implementations.CsgoServerConfigManagerImp;
 import com.ixigo.serverhelper.services.implementations.DemFilesServiceImp;
 import com.ixigo.serverhelper.services.implementations.IxiGoEventMonitorImp;
 import com.ixigo.serverhelper.services.implementations.IxigoEventFileReaderPowerShell;
 import com.ixigo.serverhelper.services.implementations.IxigoEventFileReaderTail;
+import com.ixigo.serverhelper.services.interfaces.CsgoServerConfigManager;
 import com.ixigo.serverhelper.services.interfaces.DemFilesService;
 import com.ixigo.serverhelper.services.interfaces.IxiGoEventMonitor;
 import com.ixigo.serverhelper.services.interfaces.IxigoEventFileReader;
@@ -35,5 +37,10 @@ public class ServicesBeans {
 			return new IxigoEventFileReaderPowerShell();
 		}
 		return new IxigoEventFileReaderTail();
+	}
+	
+	@Bean
+	public CsgoServerConfigManager getCsgoServerConfigManager() {
+		return new CsgoServerConfigManagerImp();
 	}
 }

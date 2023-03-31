@@ -48,6 +48,6 @@ export const useRconContent = (): IUseRconContentResult => {
     request,
     setRequest,
     rconResponse,
-    queryState: combineQueryStatuses([rconHook, qCsgoSrvConfig]),
+    queryState: rconHook.status,
   };
 };

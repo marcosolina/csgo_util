@@ -11,11 +11,12 @@ import com.ixigo.discordbot.commands.config.PutBotConfigCmd;
 import com.ixigo.discordbot.mappers.RestMapper;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
+import com.ixigo.models.rest.RestBotConfig;
 
 import reactor.core.publisher.Mono;
 
 @Component
-public class PutBotConfigCmdHandler implements WebCommandHandler<PutBotConfigCmd, Void> {
+public class PutBotConfigCmdHandler implements WebCommandHandler<PutBotConfigCmd, RestBotConfig> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(PutBotConfigCmdHandler.class);
 	@Autowired
 	private IxigoBot botService;
@@ -23,12 +24,12 @@ public class PutBotConfigCmdHandler implements WebCommandHandler<PutBotConfigCmd
 	private RestMapper mapper;
 
 	@Override
-	public Mono<ResponseEntity<Void>> handle(PutBotConfigCmd cmd) {
+	public Mono<ResponseEntity<RestBotConfig>> handle(PutBotConfigCmd cmd) {
 		_LOGGER.trace("Inside PutBotConfigCmdHandler.handle");
 
 		// @formatter:off
 		return botService.updateBotConfig(mapper.fromRestToSvc(cmd.getConfig()))
-			.map(status -> new ResponseEntity<>(status ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
+			.map(status -> new ResponseEntity<>(cmd.getConfig(), status ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR));
 		// @formatter:on
 	}
 

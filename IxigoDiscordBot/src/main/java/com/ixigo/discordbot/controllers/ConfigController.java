@@ -34,7 +34,7 @@ public class ConfigController {
 	}
 	
 	@PutMapping
-	public Mono<ResponseEntity<Void>> putConfig(@RequestBody RestBotConfig config) {
+	public Mono<ResponseEntity<RestBotConfig>> putConfig(@RequestBody RestBotConfig config) {
 		_LOGGER.trace("Inside ConfigController.putConfig");
 		return mediator.send(new PutBotConfigCmd(config));
 	}

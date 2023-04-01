@@ -8,6 +8,7 @@ import {
   IDiscordBotConfig,
   IDiscordChannelMembers,
   IUpdateDiscordBotConfigResult,
+  IUpdateDiscordMappedPlayersResult,
 } from "./interfaces";
 
 export const useGetDiscordBotConfig = (
@@ -26,6 +27,18 @@ export const usePutDiscordBotConfig = (): IUpdateDiscordBotConfigResult => {
 
   return {
     saveConfig: mutation.mutate,
+    status: mutation.status,
+    response: mutation.data,
+  };
+};
+
+export const usePutMappedDiscordPlayers = (): IUpdateDiscordMappedPlayersResult => {
+  const mutation = useMutation(async (mapping: IBotMappedPlayers) => {
+    return await performPut<{}, IBotMappedPlayers>(`${SERVICES_URLS["discord-bot"]["put-mapped-players"]}`, mapping);
+  });
+
+  return {
+    saveMapping: mutation.mutate,
     status: mutation.status,
     response: mutation.data,
   };

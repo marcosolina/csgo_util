@@ -14,8 +14,11 @@ import {
   useGetDiscordBotConfig,
   useGetDiscordChannelMembers,
   useGetDiscordMappedPlayers,
+  usePutDiscordBotConfig,
+  usePutMappedDiscordPlayers,
 } from "../../services/discord-bot";
 import { IDiscordBotContentResult } from "./interfaces";
+import { QueryStatus } from "../../lib/http-requests";
 
 export const useDiscordBotContent = (): IDiscordBotContentResult => {
   const { t } = useTranslation();
@@ -26,11 +29,28 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
   const q3 = useGetDiscordBotConfig(BotConfigKey.ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION);
   const qMapping = useGetDiscordMappedPlayers();
   const qMembers = useGetDiscordChannelMembers();
+  const mutateConfig = usePutDiscordBotConfig();
+  const mutateMapping = usePutMappedDiscordPlayers();
   const qCsgoPlayers = useGetCsgoPlayers();
 
   const { checkResp } = useCheckErrorsInResponse();
   const checkRespFunc = useRef(checkResp);
 
+  useEffect(() => {
+    if (mutateConfig.status === QueryStatus.success) {
+      //queryClient.invalidateQueries({ queryKey: ["getDiscordBotConfig"] });
+      enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
+    }
+  }, [mutateConfig.status]);
+
+  useEffect(() => {
+    if (mutateMapping.status === QueryStatus.success) {
+      //queryClient.invalidateQueries({ queryKey: ["getDiscordBotConfig"] });
+      enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
+    }
+  }, [mutateMapping.status]);
+
+  /*
   const updateConfig = useMutation({
     mutationFn: async (config: IDiscordBotConfig) =>
       await performPut<void, IDiscordBotConfig>(SERVICES_URLS["discord-bot"]["put-config"], config),
@@ -39,7 +59,9 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
       enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
     },
   });
+  */
 
+  /*
   const updateMapping = useMutation({
     mutationFn: async (mapping: IBotMappedPlayers) =>
       await performPut<void, IBotMappedPlayers>(SERVICES_URLS["discord-bot"]["put-mapped-players"], mapping),
@@ -48,6 +70,7 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
       enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
     },
   });
+  */
 
   const steamUsers = useMemo((): IxigoPossibleValue[] => {
     if (!qCsgoPlayers.data?.data?.users) {
@@ -115,9 +138,9 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
     discord_channel_members: possibleDiscordMembers,
     bot_config: botConfig,
     mapped_players: qMapping.data?.data?.players || [],
-    updateConfig: updateConfig.mutate,
-    updateConfigStatus: updateConfig.status,
-    updateMapping: updateMapping.mutate,
-    updateMappingStatus: updateMapping.status,
+    updateConfig: mutateConfig.saveConfig,
+    updateConfigStatus: mutateConfig.status,
+    updateMapping: mutateMapping.saveMapping,
+    updateMappingStatus: mutateMapping.status,
   };
 };

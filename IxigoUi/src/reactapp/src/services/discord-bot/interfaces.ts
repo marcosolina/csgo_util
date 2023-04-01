@@ -24,6 +24,12 @@ export interface IUpdateDiscordBotConfigResult {
   response?: IxigoResponse<{}>;
 }
 
+export interface IUpdateDiscordMappedPlayersResult {
+  saveMapping: (mapping: IBotMappedPlayers) => void;
+  status: QueryStatus;
+  response?: IxigoResponse<{}>;
+}
+
 export interface IBotMappedPlayers {
   players: IBotMappedPlayer[];
 }

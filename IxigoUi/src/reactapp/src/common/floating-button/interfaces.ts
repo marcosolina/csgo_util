@@ -3,6 +3,8 @@ export interface IxigoFloatingButtonProps {
   fixedPosition?: IxigoFloatingButtonFixedPosition;
   onClick?: () => void;
   loading?: boolean;
+  tooltip?: string;
+  icon?: React.ReactNode;
 }
 
 export enum IxigoFloatingButtonFixedPosition {

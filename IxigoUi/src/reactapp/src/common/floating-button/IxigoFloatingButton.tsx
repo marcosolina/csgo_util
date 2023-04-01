@@ -1,4 +1,4 @@
-import { CircularProgress, Fab } from "@mui/material";
+import { CircularProgress, Fab, Tooltip } from "@mui/material";
 import React from "react";
 import { IxigoFloatingButtonColor, IxigoFloatingButtonFixedPosition, IxigoFloatingButtonProps } from ".";
 import SaveIcon from "@mui/icons-material/Save";
@@ -52,9 +52,11 @@ const IxigoFloatingButton: React.FC<IxigoFloatingButtonProps> = (props) => {
       {props.loading ? (
         <CircularProgress color={color} sx={{ ...fixedPosition }} />
       ) : (
-        <Fab color={color} sx={{ ...fixedPosition }} onClick={props.onClick}>
-          <SaveIcon />
-        </Fab>
+        <Tooltip title={props.tooltip}>
+          <Fab color={color} sx={{ ...fixedPosition }} onClick={props.onClick}>
+            {props.icon || <SaveIcon />}
+          </Fab>
+        </Tooltip>
       )}
     </>
   );

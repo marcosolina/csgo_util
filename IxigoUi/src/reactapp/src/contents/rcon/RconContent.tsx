@@ -3,7 +3,6 @@ import { IxigoTextState, IxigoTextType } from "../../common/input";
 import IxigoText from "../../common/input/IxigoText";
 import { DEFAULT_SPACING, NotistackVariant } from "../../lib/constants";
 import SendIcon from "@mui/icons-material/Send";
-import { CircularProgress, IconButton, InputAdornment } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { IRconRequest } from "../../services";
 import { QueryStatus } from "../../lib/http-requests";
@@ -13,12 +12,15 @@ import IxigoDialog from "../../common/dialog/IxigoDialog";
 import DefaultCommands from "./DefaultCommands";
 import { useRconContentProvider } from "./useRconContentProvider";
 import RconMaps from "./RconMaps";
+import IxigoFloatingButton from "../../common/floating-button/IxigoFloatingButton";
 
 const XS = 12;
 const SM = 12;
 const MD = 6;
 const LG = 4;
 const XL = 3;
+
+const BASE_LANGUAGE_PATH = "page.rcon.inputs";
 
 const RconContent = () => {
   const { t } = useTranslation();
@@ -58,7 +60,7 @@ const RconContent = () => {
       <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
-            label={t("page.rcon.inputs.labels.serverAddr") as string}
+            label={t(`${BASE_LANGUAGE_PATH}.labels.serverAddr`) as string}
             value={request?.rcon_host}
             state={IxigoTextState.mandatory}
             onChange={(value) => onChangeInputHandler("rcon_host", value)}
@@ -67,7 +69,7 @@ const RconContent = () => {
         </Grid>
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
-            label={t("page.rcon.inputs.labels.serverPort") as string}
+            label={t(`${BASE_LANGUAGE_PATH}.labels.serverPort`) as string}
             value={request.rcon_port.toString()}
             state={IxigoTextState.mandatory}
             type={IxigoTextType.number}
@@ -77,7 +79,7 @@ const RconContent = () => {
         </Grid>
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
-            label={t("page.rcon.inputs.labels.serverPassw") as string}
+            label={t(`${BASE_LANGUAGE_PATH}.labels.serverPassw`) as string}
             value={request?.rcon_passw}
             state={IxigoTextState.mandatory}
             type={IxigoTextType.password}
@@ -87,21 +89,9 @@ const RconContent = () => {
         </Grid>
         <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
           <IxigoText
-            label={t("page.rcon.inputs.labels.serverCmd") as string}
+            label={t(`${BASE_LANGUAGE_PATH}.labels.serverCmd`) as string}
             value={request?.rcon_command}
             state={IxigoTextState.mandatory}
-            endAdornment={
-              <InputAdornment position="end">
-                <IconButton
-                  aria-label="toggle password visibility"
-                  edge="end"
-                  color="primary"
-                  onClick={sendRequestHandler}
-                >
-                  {queryState === QueryStatus.loading ? <CircularProgress size={20} /> : <SendIcon />}
-                </IconButton>
-              </InputAdornment>
-            }
             onChange={(value) => onChangeInputHandler("rcon_command", value)}
             isError={errorFields.includes("rcon_command")}
           />
@@ -112,13 +102,19 @@ const RconContent = () => {
       <IxigoDialog isOpen={dialogOpen} onClose={dialogButtonHandler} onContinue={dialogButtonHandler} title={""}>
         <br />
         <IxigoText
-          label={t("page.rcon.inputs.labels.serverResp") as string}
+          label={t(`${BASE_LANGUAGE_PATH}.labels.serverResp`) as string}
           value={rconResponse?.rcon_response}
           state={IxigoTextState.readonly}
           type={IxigoTextType.text}
           rows={10}
         />
       </IxigoDialog>
+      <IxigoFloatingButton
+        onClick={sendRequestHandler}
+        tooltip={t(`${BASE_LANGUAGE_PATH}.btnSendCmd`) as string}
+        loading={queryState === QueryStatus.loading}
+        icon={<SendIcon />}
+      />
     </>
   );
 };

@@ -14,11 +14,10 @@ import { usePlayersContent } from "./usePlayersContent";
 import IxigoSwitch from "../../common/switch/IxigoSwitch";
 import IxigoTeam from "./IxigoTeam";
 import { useGetTeams } from "../../services/players-manager";
-import IxigoButton from "../../common/button/IxigoButton";
-import { IxigoButtonColor, IxigoButtonVariant, IxigoButtonWidth } from "../../common";
 import SendIcon from "@mui/icons-material/Send";
 import { useRconContentProvider } from "../rcon/useRconContentProvider";
 import { useTranslation } from "react-i18next";
+import IxigoFloatingButton from "../../common/floating-button/IxigoFloatingButton";
 
 const XS = 12;
 const SM = 12;
@@ -115,23 +114,6 @@ const PlayersContent = () => {
               onChange={(v) => pContent.setPenaltyWeight(parseFloat(v))}
             />
           </Grid>
-          {pContent.listOfSelectedPlayers.length >= MIN_SELECTED_PLAYERS && (
-            <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-              <IxigoButton
-                text={
-                  <>
-                    {t(`${BASE_LANGUAGE_PATH}.labels.lblBtnSetPlayers`)}&nbsp;
-                    <SendIcon />
-                  </>
-                }
-                width={IxigoButtonWidth.fitParent}
-                variant={IxigoButtonVariant.outlined}
-                color={IxigoButtonColor.primary}
-                onClick={setPlayersHandler}
-                loading={queryState === QueryStatus.loading}
-              />
-            </Grid>
-          )}
           <Grid item xs={12}></Grid>
           <Grid item xs={XS} sm={SM} md={4} lg={LG} xl={4}>
             <List
@@ -168,6 +150,14 @@ const PlayersContent = () => {
             />
           </Grid>
         </Grid>
+        {pContent.listOfSelectedPlayers.length >= MIN_SELECTED_PLAYERS && (
+          <IxigoFloatingButton
+            onClick={setPlayersHandler}
+            tooltip={t(`${BASE_LANGUAGE_PATH}.labels.lblBtnSetPlayers`) as string}
+            loading={queryState === QueryStatus.loading}
+            icon={<SendIcon />}
+          />
+        )}
       </Case>
       <Case case={QueryStatus.error}>
         <Grid item xs={12} textAlign={"center"}>

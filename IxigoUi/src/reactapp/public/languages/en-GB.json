@@ -90,7 +90,8 @@
           "serverPassw": "RCON Server Password",
           "serverCmd": "RCON Command to Send",
           "serverResp": "RCON Server Response"
-        }
+        },
+        "btnSendCmd": "Send the command to the server"
       },
       "commands": {
         "groups": {

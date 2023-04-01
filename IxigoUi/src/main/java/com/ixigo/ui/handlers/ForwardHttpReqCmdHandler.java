@@ -52,6 +52,8 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 			var tmpBody = Serializable.class.cast(cmd.getBody());
 			var url = new URL(stringUri);
 			
+			Mono<ResponseEntity<Object>> resp = null;
+			
 			/*
 			 * Dem files requires more http cache, hence I'll use
 			 * a custom strategy to allow the request to manage
@@ -59,7 +61,7 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 			 */
 			if(stringUri.endsWith(".dem")) { 
 				// @formatter:off
-				return webClient.getWebBuilder()
+				resp = webClient.getWebBuilder()
 						.exchangeStrategies(strategies)
 						.build()
 						.get()
@@ -80,7 +82,12 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 						});
 				// @formatter:on
 			}
-			return webClient.performRequest(Object.class, cmd.getHttpMethod(), url, Optional.empty(), Optional.ofNullable(cmd.getQueryParams()), Optional.empty(), Optional.ofNullable(tmpBody));
+			resp = webClient.performRequest(Object.class, cmd.getHttpMethod(), url, Optional.empty(), Optional.ofNullable(cmd.getQueryParams()), Optional.empty(), Optional.ofNullable(tmpBody));
+			
+			return resp.map(r -> {
+				_LOGGER.debug(String.format("Forwarded http resp status: %s", r.getStatusCode().toString()));
+				return r;
+			});
 		}catch (MalformedURLException ex) {
 			_LOGGER.error(ex.getMessage());
 			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MALFORMAT_URI), ErrorCodes.MALFORMAT_URI);

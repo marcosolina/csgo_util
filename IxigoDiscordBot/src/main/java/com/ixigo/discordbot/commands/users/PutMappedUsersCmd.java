@@ -3,7 +3,7 @@ package com.ixigo.discordbot.commands.users;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 import com.ixigo.models.rest.RestMappedPlayers;
 
-public class PutMappedUsersCmd implements WebCommandRequest<Void> {
+public class PutMappedUsersCmd implements WebCommandRequest<RestMappedPlayers> {
 	private RestMappedPlayers playersMap;
 
 	public PutMappedUsersCmd(RestMappedPlayers playersMap) {

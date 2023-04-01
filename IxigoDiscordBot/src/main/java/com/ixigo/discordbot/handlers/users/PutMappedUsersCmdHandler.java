@@ -11,12 +11,13 @@ import com.ixigo.discordbot.commands.users.PutMappedUsersCmd;
 import com.ixigo.discordbot.mappers.RestMapper;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
+import com.ixigo.models.rest.RestMappedPlayers;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 @Component
-public class PutMappedUsersCmdHandler implements WebCommandHandler<PutMappedUsersCmd, Void> {
+public class PutMappedUsersCmdHandler implements WebCommandHandler<PutMappedUsersCmd, RestMappedPlayers> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(PutMappedUsersCmdHandler.class);
 	@Autowired
 	private IxigoBot botService;
@@ -24,7 +25,7 @@ public class PutMappedUsersCmdHandler implements WebCommandHandler<PutMappedUser
 	private RestMapper mapper;
 
 	@Override
-	public Mono<ResponseEntity<Void>> handle(PutMappedUsersCmd cmd) {
+	public Mono<ResponseEntity<RestMappedPlayers>> handle(PutMappedUsersCmd cmd) {
 		_LOGGER.trace("Inside PutMappedUsersCmdHandler.handle");
 
 		// @formatter:off
@@ -32,7 +33,7 @@ public class PutMappedUsersCmdHandler implements WebCommandHandler<PutMappedUser
 			.map(mapper::fromRestToSvc)
 			.collectList()
 			.flatMap(botService::storePlayersDetails)
-			.map(status -> new ResponseEntity<Void>(status ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR))
+			.map(status -> new ResponseEntity<RestMappedPlayers>(cmd.getPlayersMap(), status ? HttpStatus.OK : HttpStatus.INTERNAL_SERVER_ERROR))
 		;
 		// @formatter:on
 		return mono;

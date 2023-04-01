@@ -34,7 +34,7 @@ public class UsersController {
 	}
 
 	@PutMapping(value = "/mapping")
-	public Mono<ResponseEntity<Void>> saveMappedPlayersList(@RequestBody RestMappedPlayers players) {
+	public Mono<ResponseEntity<RestMappedPlayers>> saveMappedPlayersList(@RequestBody RestMappedPlayers players) {
 		_LOGGER.trace("Inside UsersController.saveMappedPlayersList");
 		return mediator.send(new PutMappedUsersCmd(players));
 	}

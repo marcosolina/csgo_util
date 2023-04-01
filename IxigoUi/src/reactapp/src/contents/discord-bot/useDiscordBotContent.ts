@@ -1,15 +1,13 @@
 import { useSnackbar } from "notistack";
 import { useEffect, useMemo, useRef } from "react";
 import { useTranslation } from "react-i18next";
-import { useMutation, useQueryClient } from "react-query";
 import { IxigoPossibleValue } from "../../common";
-import { NotistackVariant, SERVICES_URLS } from "../../lib/constants";
-import { performPut, useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
+import { NotistackVariant } from "../../lib/constants";
+import { useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
 import { combineQueryStatuses } from "../../lib/queries";
 import { useGetCsgoPlayers } from "../../services";
 import {
   BotConfigKey,
-  IBotMappedPlayers,
   IDiscordBotConfig,
   useGetDiscordBotConfig,
   useGetDiscordChannelMembers,
@@ -22,7 +20,6 @@ import { QueryStatus } from "../../lib/http-requests";
 
 export const useDiscordBotContent = (): IDiscordBotContentResult => {
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const { enqueueSnackbar } = useSnackbar();
   const q1 = useGetDiscordBotConfig(BotConfigKey.AUTOBALANCE);
   const q2 = useGetDiscordBotConfig(BotConfigKey.KICK_BOTS);
@@ -41,14 +38,14 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
       //queryClient.invalidateQueries({ queryKey: ["getDiscordBotConfig"] });
       enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
     }
-  }, [mutateConfig.status]);
+  }, [mutateConfig.status, t, enqueueSnackbar]);
 
   useEffect(() => {
     if (mutateMapping.status === QueryStatus.success) {
       //queryClient.invalidateQueries({ queryKey: ["getDiscordBotConfig"] });
       enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
     }
-  }, [mutateMapping.status]);
+  }, [mutateMapping.status, t, enqueueSnackbar]);
 
   /*
   const updateConfig = useMutation({

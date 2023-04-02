@@ -7,7 +7,7 @@ export interface IPlayersContent {
   state: QueryStatus;
   penaltyWeight: number;
   percPlayed: number;
-  roundsToConsider: number;
+  matchesToConsider: number;
   scoreType: string;
   listOfSelectedPlayers: string[];
   possiblePercPlayedValues: IxigoPossibleValue[];
@@ -15,7 +15,7 @@ export interface IPlayersContent {
 
   setPenaltyWeight: (p: number) => void;
   setPercPlayed: (p: number) => void;
-  setRoundsToConsider: (r: number) => void;
+  setMatchesToConsider: (r: number) => void;
   setScoreType: (s: string) => void;
   setListOfSelectedPlayers: (l: string[]) => void;
 

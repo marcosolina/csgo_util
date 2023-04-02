@@ -63,7 +63,7 @@ const PlayersContent = () => {
         getTeams({
           steamIDs: players,
           minPercPlayed: pContent.percPlayed,
-          numberOfMatches: pContent.roundsToConsider,
+          numberOfMatches: pContent.matchesToConsider,
           partitionScore: pContent.scoreType,
           penaltyWeigth: pContent.penaltyWeight,
         });
@@ -83,10 +83,10 @@ const PlayersContent = () => {
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoText
               label={t(`${BASE_LANGUAGE_PATH}.labels.lblRoundToConsider`) as string}
-              value={`${pContent.roundsToConsider}`}
+              value={`${pContent.matchesToConsider}`}
               type={IxigoTextType.number}
               step={1}
-              onChange={(v) => pContent.setRoundsToConsider(parseInt(v))}
+              onChange={(v) => pContent.setMatchesToConsider(parseInt(v))}
             />
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>

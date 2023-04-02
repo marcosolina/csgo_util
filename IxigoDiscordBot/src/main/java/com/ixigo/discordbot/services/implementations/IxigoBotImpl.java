@@ -187,7 +187,7 @@ public class IxigoBotImpl implements IxigoBot {
 	public Mono<Boolean> balanceTheTeams() throws IxigoException {
 		// @formatter:off
 		var monoRcon = rconService.getCurrentActivePlayersOnTheIxiGoServer();
-		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION);
+		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
 		
 		var monoResult = Mono.zip(monoRepo, monoRcon)
 			.flatMap(tuple -> {
@@ -308,8 +308,9 @@ public class IxigoBotImpl implements IxigoBot {
 		var monoGuild = getGuild();
 		var monoPlayersOnCsgoServer = rconService.getCurrentActivePlayersOnTheIxiGoServer();
 		var monoListOfDiscordMappedUsers = repoUsersMap.findAllById(discordUsersIds).collectList();
+		var monoGetMoveToChannelConfig = getBotConfig(BotConfigKey.MOVE_TO_VOICE_CHANNEL);
 		
-		Mono.zip(monoGuild, monoPlayersOnCsgoServer, monoListOfDiscordMappedUsers)
+		Mono.zip(monoGuild, monoPlayersOnCsgoServer, monoListOfDiscordMappedUsers, monoGetMoveToChannelConfig)
 		.doOnError(error -> {
 			mediator.send(new IxigoErrorCmd(error.getMessage()));
 		})
@@ -330,7 +331,8 @@ public class IxigoBotImpl implements IxigoBot {
 					.collect(Collectors.toList())
 					;
 			
-			if(!discordIdsToMove.isEmpty()) {
+			if(!discordIdsToMove.isEmpty() && Boolean.parseBoolean(tuple.getT4().getConfigVal())) {
+				LOGGER.info(String.format("Getting voice channel by ID: %d", discordProps.getVoiceChannels().getTerrorist()));
 				VoiceChannel vc = guild.getVoiceChannelById(discordProps.getVoiceChannels().getTerrorist());
 				var actions = membersInVoiceChat.stream()
 						.filter(m -> discordIdsToMove.contains(m.getIdLong()))
@@ -361,6 +363,9 @@ public class IxigoBotImpl implements IxigoBot {
 				LOGGER.debug(String.format("Moving %s", m.getUser().getName()));
 				return guild.moveVoiceMember(m, v);
 			} else {
+				LOGGER.error(String.format("guild null value: %b", guild == null));
+				LOGGER.error(String.format("member null value: %b", m == null));
+				LOGGER.error(String.format("voiche channel null value: %b", v == null));
 				throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MOVE_TO_CHANNEL_FAIL), ErrorCodes.MOVE_TO_CHANNEL_FAIL);
 			}
 		} catch (Exception e) {

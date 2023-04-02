@@ -23,7 +23,8 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
   const { enqueueSnackbar } = useSnackbar();
   const q1 = useGetDiscordBotConfig(BotConfigKey.AUTOBALANCE);
   const q2 = useGetDiscordBotConfig(BotConfigKey.KICK_BOTS);
-  const q3 = useGetDiscordBotConfig(BotConfigKey.ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION);
+  const q3 = useGetDiscordBotConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
+  const q4 = useGetDiscordBotConfig(BotConfigKey.MOVE_TO_VOICE_CHANNEL);
   const qMapping = useGetDiscordMappedPlayers();
   const qMembers = useGetDiscordChannelMembers();
   const mutateConfig = usePutDiscordBotConfig();
@@ -81,8 +82,11 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
   if (q3.data?.data) {
     botConfig.push(q3.data?.data);
   }
+  if (q4.data?.data) {
+    botConfig.push(q4.data?.data);
+  }
 
-  const combinedState = combineQueryStatuses([q1, q2, q3, qMapping, qMembers, qCsgoPlayers]);
+  const combinedState = combineQueryStatuses([q1, q2, q3, q4, qMapping, qMembers, qCsgoPlayers]);
 
   useEffect(() => {
     if (q1.data) {
@@ -94,6 +98,9 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
     if (q3.data) {
       checkRespFunc.current(q3.data);
     }
+    if (q4.data) {
+      checkRespFunc.current(q4.data);
+    }
     if (qMapping.data) {
       checkRespFunc.current(qMapping.data);
     }
@@ -103,7 +110,7 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
     if (qCsgoPlayers.data) {
       checkRespFunc.current(qCsgoPlayers.data);
     }
-  }, [combinedState, q1.data, q2.data, q3.data, qMapping.data, qMembers.data, qCsgoPlayers.data]);
+  }, [combinedState, q1.data, q2.data, q3.data, q4.data, qMapping.data, qMembers.data, qCsgoPlayers.data]);
 
   return {
     state: combinedState,

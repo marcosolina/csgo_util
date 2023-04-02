@@ -7,7 +7,7 @@ import { IPlayersContent } from "./interfaces";
 export const usePlayersContent = (): IPlayersContent => {
   const [penaltyWeight, setPenaltyWeight] = useState<number>(0.4);
   const [percPlayed, setPercPlayed] = useState<number>(0.9);
-  const [roundsToConsider, setRoundsToConsider] = useState<number>(50);
+  const [matchesToConsider, setMatchesToConsider] = useState<number>(50);
   const [scoreType, setScoreType] = useState<string>("HLTV");
   const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>([]);
 
@@ -51,7 +51,7 @@ export const usePlayersContent = (): IPlayersContent => {
     state: combineQueryStatuses([qScoreTypes, qCsgoPlayers]),
     penaltyWeight,
     percPlayed,
-    roundsToConsider,
+    matchesToConsider: matchesToConsider,
     scoreType,
     listOfSelectedPlayers,
     possiblePercPlayedValues,
@@ -59,7 +59,7 @@ export const usePlayersContent = (): IPlayersContent => {
 
     setPenaltyWeight,
     setPercPlayed,
-    setRoundsToConsider,
+    setMatchesToConsider,
     setScoreType,
     setListOfSelectedPlayers,
 

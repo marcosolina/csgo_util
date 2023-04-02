@@ -21,9 +21,10 @@
       "labels": {
         "config": {
           "main": "Bot config",
-          "ROUNDS_TO_CONSIDER_FOR_TEAM_CREATION": "Round to consider for team creation",
+          "MATCHES_TO_CONSIDER_FOR_TEAM_CREATION": "Matches to consider for team creation",
           "AUTOBALANCE": "Autobalance",
-          "KICK_BOTS": "Kick bots"
+          "KICK_BOTS": "Kick bots",
+          "MOVE_TO_VOICE_CHANNEL": "Move players to specific voice channel"
         },
         "btnSaveMappings": "Save the mapping",
         "discordUsers": "Discord users",

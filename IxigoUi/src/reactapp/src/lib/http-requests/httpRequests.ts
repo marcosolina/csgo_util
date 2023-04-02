@@ -42,12 +42,14 @@ export async function performGet<T>(url: string): Promise<IxigoResponse<T>> {
     .then((result) => result)
     .catch((error) => error.response);
 
-  return {
+  const resp: IxigoResponse<T> = {
     data: result.data,
     status: result.status,
     errors: result.data.errors,
     isError: result.status >= 400,
   };
+
+  return result.status >= 400 ? Promise.reject(resp) : Promise.resolve(resp);
 }
 
 export async function performPost<T, J>(url: string, body: J): Promise<IxigoResponse<T>> {
@@ -97,7 +99,7 @@ export function useCheckErrorsInResponse<T>(): CheckErrorsFuncReturnType<T> {
           });
         } else {
           const err = resp.data as any;
-          if (err.error_code) {
+          if (err.error_code || err.error_msg) {
             enqueueSnackbar(`${err.error_code} - ${err.error_msg}`, {
               variant: NotistackVariant.error,
             });

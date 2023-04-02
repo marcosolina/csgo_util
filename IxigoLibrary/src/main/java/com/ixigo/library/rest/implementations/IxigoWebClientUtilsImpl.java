@@ -27,11 +27,12 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
 
 	private static final Logger _LOGGER = LoggerFactory.getLogger(IxigoWebClientUtilsImpl.class);
     private static final String VALUE_NONE = "\n\t\t\n\t\t\n\uE000\uE001\uE002\n\t\t\t\t\n";
+    private static final int size = 16 * 1024 * 1024;
 
     private WebClient.Builder builder;
 
     public IxigoWebClientUtilsImpl(WebClient.Builder builder) {
-        this.builder = builder;
+        this.builder = builder.codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size));
     }
 	
 	@Override

@@ -23,8 +23,8 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
   const { enqueueSnackbar } = useSnackbar();
   const q1 = useGetDiscordBotConfig(BotConfigKey.AUTOBALANCE);
   const q2 = useGetDiscordBotConfig(BotConfigKey.KICK_BOTS);
-  const q3 = useGetDiscordBotConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
-  const q4 = useGetDiscordBotConfig(BotConfigKey.MOVE_TO_VOICE_CHANNEL);
+  const q3 = useGetDiscordBotConfig(BotConfigKey.MOVE_TO_VOICE_CHANNEL);
+  const q4 = useGetDiscordBotConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
   const qMapping = useGetDiscordMappedPlayers();
   const qMembers = useGetDiscordChannelMembers();
   const mutateConfig = usePutDiscordBotConfig();

@@ -18,8 +18,10 @@ import org.springframework.web.reactive.function.client.WebClient.Builder;
 import org.springframework.web.reactive.function.client.WebClient.RequestBodySpec;
 import org.springframework.web.util.UriBuilder;
 
+import com.ixigo.library.dto.ValidationFailure;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
+import com.ixigo.library.validators.ValidationException;
 
 import reactor.core.publisher.Mono;
 
@@ -111,15 +113,25 @@ public class IxigoWebClientUtilsImpl implements IxigoWebClientUtils {
         if (body.isPresent()) {
             rbs.bodyValue(body.get());
         }
+        
         return rbs.exchangeToMono(response -> {
+        	
+        	if(response.statusCode() == HttpStatus.BAD_REQUEST) {
+        		return response.bodyToMono(ValidationFailure.class)
+        			.map(v -> {
+        				// Check if I can improve this
+        				if(v != null && v instanceof ValidationFailure ) {        					
+        					throw new ValidationException(((ValidationFailure) v).getErrors());
+        				}
+        				return new ResponseEntity<T>(response.statusCode());
+        				});
+        	}
             if (response.statusCode().is4xxClientError() || response.statusCode().is5xxServerError()) {
                 return Mono.just(new ResponseEntity<T>(response.statusCode()));
             }
 
             Mono<T> monoResp = response.bodyToMono(responseBodyClass);
             return mapToEntity(response, monoResp);
-        }).onErrorResume(error -> {
-        	return Mono.error(new IxigoException(HttpStatus.BAD_GATEWAY, error.getMessage(), ""));
         });
 	}
 	// @formatter:off

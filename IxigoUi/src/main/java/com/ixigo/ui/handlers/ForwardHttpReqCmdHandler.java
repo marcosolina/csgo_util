@@ -15,6 +15,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.util.UriBuilder;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 import com.ixigo.library.messages.IxigoMessageResource;
@@ -50,6 +52,14 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 			_LOGGER.debug(cmd.getContextPath());
 			_LOGGER.debug(stringUri);
 			var tmpBody = Serializable.class.cast(cmd.getBody());
+			if(tmpBody != null) {
+				var objectMapper = new ObjectMapper();
+				try {
+					_LOGGER.debug(objectMapper.writeValueAsString(tmpBody));
+				} catch (JsonProcessingException e) {
+					
+				}
+			}
 			var url = new URL(stringUri);
 			
 			Mono<ResponseEntity<Object>> resp = null;

@@ -194,8 +194,22 @@ public class IxigoBotImpl implements IxigoBot {
 				Bot_configDto config = tuple.getT1();
 				Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
 				
-				List<String> steamIds = new ArrayList<>();
 				Map<TeamType, List<RestUser>> teamsMap = tuple.getT2();
+				if(LOGGER.isDebugEnabled() && teamsMap != null) {
+					LOGGER.debug("Players retrieved from the server");
+					LOGGER.debug("- CT:");
+					var list = teamsMap.get(TeamType.CT);
+					if(list != null && !list.isEmpty()) {						
+						list.forEach(l -> LOGGER.debug(String.format("%s: %s", l.getUserName(), l.getSteamId())));
+					}
+					
+					LOGGER.debug("- Terrorists");
+					list = teamsMap.get(TeamType.TERRORISTS);
+					if(list != null && !list.isEmpty()) {
+						list.forEach(l -> LOGGER.debug(String.format("%s: %s", l.getUserName(), l.getSteamId())));
+					}
+				}				
+				List<String> steamIds = new ArrayList<>();
 				teamsMap.forEach((k,v) -> {
 					v.stream().map(u -> u.getSteamId()).forEach(steamIds::add);
 				});

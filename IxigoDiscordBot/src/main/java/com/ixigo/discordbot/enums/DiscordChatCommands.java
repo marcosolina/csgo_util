@@ -10,6 +10,7 @@ public enum DiscordChatCommands {
     AUTO_BALANCE_ON("!autoBalanceOn"),
     AUTO_BALANCE_OFF("!autoBalanceOff"),
     AUTO_BALANCE_SATUS("!autoBalanceStatus"),
+    NO_ACTION(""),
     // @formatter:on
     ;
     private final String desc;
@@ -28,6 +29,6 @@ public enum DiscordChatCommands {
                 return i;
             }
         }
-        return null;
+        return NO_ACTION;
     }
 }

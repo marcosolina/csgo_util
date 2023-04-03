@@ -102,7 +102,7 @@ public class IxigoRconServiceImpl implements IxigoRconService {
 			.collect(Collectors.toList());
 		
 		return sendRconCommand(
-				String.format("sm_move_players %s dummy", String.join(" \"", steamIdsList))
+				String.format("sm_move_players \"%s\" dummy", String.join("\" \"", steamIdsList))
 				).map(resp -> resp.getStatusCode().is2xxSuccessful());
 		// @formatter:on
 	}

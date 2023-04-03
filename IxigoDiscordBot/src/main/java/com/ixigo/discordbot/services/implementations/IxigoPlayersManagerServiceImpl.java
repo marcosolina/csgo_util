@@ -51,6 +51,11 @@ public class IxigoPlayersManagerServiceImpl implements IxigoPlayersManagerServic
 			if (minPercPlayed.isPresent()) {
 				queryParams.put(GetTeamsQueryParam.MINIMUM_PERC_MATCH_PLAYED.getQueryParamKey(), minPercPlayed.get().toString());
 			}
+			
+			if(_LOGGER.isDebugEnabled()) {
+				_LOGGER.debug("Requesting balancing for players:");
+				steamIds.forEach(_LOGGER::debug);
+			}
 
 			return webClient.performGetRequest(RestTeams.class, url, Optional.empty(), Optional.of(queryParams)).map(resp -> resp.getBody());
 		} catch (MalformedURLException e) {

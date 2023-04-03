@@ -378,4 +378,9 @@ public class IxigoBotImpl implements IxigoBot {
 		return this.checkIfBotIsOnlineOrStart(true)
 			.map(b -> jda.getGuildById(discordProps.getServerId()));
 	}
+
+	@Override
+	public Flux<SvcBotConfig> getBotConfigAll() throws IxigoException {
+		return repoBotConfig.findAllConfig().map(mapper::raceFromDtoSvcToSvc);
+	}
 }

@@ -6,6 +6,7 @@ import {
   BotConfigKey,
   IBotMappedPlayers,
   IDiscordBotConfig,
+  IDiscordBotConfigs,
   IDiscordChannelMembers,
   IUpdateDiscordBotConfigResult,
   IUpdateDiscordMappedPlayersResult,
@@ -17,6 +18,13 @@ export const useGetDiscordBotConfig = (
   return useQuery(
     ["getDiscordBotConfig", configKey],
     async () => await performGet<IDiscordBotConfig>(`${SERVICES_URLS["discord-bot"]["get-config"]}/${configKey}`)
+  );
+};
+
+export const useGetDiscordBotConfigAll = (): UseQueryResult<IxigoResponse<IDiscordBotConfigs>, unknown> => {
+  return useQuery(
+    ["getDiscordBotConfigAll"],
+    async () => await performGet<IDiscordBotConfigs>(`${SERVICES_URLS["discord-bot"]["get-config-all"]}`)
   );
 };
 

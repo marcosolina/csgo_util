@@ -7,9 +7,7 @@ import { useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
 import { combineQueryStatuses } from "../../lib/queries";
 import { useGetCsgoPlayers } from "../../services";
 import {
-  BotConfigKey,
-  IDiscordBotConfig,
-  useGetDiscordBotConfig,
+  useGetDiscordBotConfigAll,
   useGetDiscordChannelMembers,
   useGetDiscordMappedPlayers,
   usePutDiscordBotConfig,
@@ -21,10 +19,7 @@ import { QueryStatus } from "../../lib/http-requests";
 export const useDiscordBotContent = (): IDiscordBotContentResult => {
   const { t } = useTranslation();
   const { enqueueSnackbar } = useSnackbar();
-  const q1 = useGetDiscordBotConfig(BotConfigKey.AUTOBALANCE);
-  const q2 = useGetDiscordBotConfig(BotConfigKey.KICK_BOTS);
-  const q3 = useGetDiscordBotConfig(BotConfigKey.MOVE_TO_VOICE_CHANNEL);
-  const q4 = useGetDiscordBotConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
+  const qAllConfigs = useGetDiscordBotConfigAll();
   const qMapping = useGetDiscordMappedPlayers();
   const qMembers = useGetDiscordChannelMembers();
   const mutateConfig = usePutDiscordBotConfig();
@@ -72,34 +67,11 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
     return arr;
   }, [members]);
 
-  const botConfig: IDiscordBotConfig[] = [];
-  if (q1.data?.data) {
-    botConfig.push(q1.data?.data);
-  }
-  if (q2.data?.data) {
-    botConfig.push(q2.data?.data);
-  }
-  if (q3.data?.data) {
-    botConfig.push(q3.data?.data);
-  }
-  if (q4.data?.data) {
-    botConfig.push(q4.data?.data);
-  }
-
-  const combinedState = combineQueryStatuses([q1, q2, q3, q4, qMapping, qMembers, qCsgoPlayers]);
+  const combinedState = combineQueryStatuses([qMapping, qMapping, qMembers, qCsgoPlayers]);
 
   useEffect(() => {
-    if (q1.data) {
-      checkRespFunc.current(q1.data);
-    }
-    if (q2.data) {
-      checkRespFunc.current(q2.data);
-    }
-    if (q3.data) {
-      checkRespFunc.current(q3.data);
-    }
-    if (q4.data) {
-      checkRespFunc.current(q4.data);
+    if (qMapping.data) {
+      checkRespFunc.current(qMapping.data);
     }
     if (qMapping.data) {
       checkRespFunc.current(qMapping.data);
@@ -110,13 +82,13 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
     if (qCsgoPlayers.data) {
       checkRespFunc.current(qCsgoPlayers.data);
     }
-  }, [combinedState, q1.data, q2.data, q3.data, q4.data, qMapping.data, qMembers.data, qCsgoPlayers.data]);
+  }, [combinedState, qMapping.data, qMapping.data, qMembers.data, qCsgoPlayers.data]);
 
   return {
     state: combinedState,
     steam_users: steamUsers,
     discord_channel_members: possibleDiscordMembers,
-    bot_config: botConfig,
+    bot_config: qAllConfigs.data?.data?.configs || [],
     mapped_players: qMapping.data?.data?.players || [],
     updateConfig: mutateConfig.saveConfig,
     updateConfigStatus: mutateConfig.status,

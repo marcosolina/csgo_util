@@ -10,6 +10,7 @@ import com.ixigo.discordbot.models.repo.Bot_configDto;
 import com.ixigo.discordbot.repositories.interfaces.RepoBotConfig;
 import com.ixigo.enums.BotConfigKey;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public class RepoBotConfigPostgres implements RepoBotConfig {
@@ -45,6 +46,16 @@ public class RepoBotConfigPostgres implements RepoBotConfig {
 				return dao.prepareSqlInsert(client).then().thenReturn(true);
 			});
 		// @formatter:on
+	}
+
+	@Override
+	public Flux<Bot_configDto> findAllConfig() {
+		_LOGGER.trace("Inside RepoBotConfigPostgres.fingAllConfig");
+
+		Bot_configDao dao = new Bot_configDao();
+		dao.addSqlOrderFields(Bot_configDto.Fields.config_value_type);
+		dao.addSqlOrderFields(Bot_configDto.Fields.config_key);
+		return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
 	}
 
 }

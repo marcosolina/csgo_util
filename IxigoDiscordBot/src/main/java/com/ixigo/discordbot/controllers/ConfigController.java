@@ -11,11 +11,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ixigo.discordbot.commands.config.GetBotConfigAllCmd;
 import com.ixigo.discordbot.commands.config.GetBotConfigCmd;
 import com.ixigo.discordbot.commands.config.PutBotConfigCmd;
 import com.ixigo.enums.BotConfigKey;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.models.rest.RestBotConfig;
+import com.ixigo.models.rest.RestBotConfigs;
 
 import reactor.core.publisher.Mono;
 
@@ -27,6 +29,12 @@ public class ConfigController {
 	@Autowired
 	private WebMediator mediator;
 
+	@GetMapping
+	public Mono<ResponseEntity<RestBotConfigs>> getAll() {
+		_LOGGER.trace("Inside ConfigController.getAll");
+		return mediator.send(new GetBotConfigAllCmd());
+	}
+	
 	@GetMapping(value = "/{key}")
 	public Mono<ResponseEntity<RestBotConfig>> getConfig(@PathVariable("key") BotConfigKey key) {
 		_LOGGER.trace("Inside ConfigController.getConfig");

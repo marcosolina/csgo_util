@@ -7,6 +7,10 @@ export interface IDiscordBotConfig {
   config_value_type: BotConfigValueType;
 }
 
+export interface IDiscordBotConfigs {
+  configs: IDiscordBotConfig[];
+}
+
 export enum BotConfigKey {
   MATCHES_TO_CONSIDER_FOR_TEAM_CREATION = "MATCHES_TO_CONSIDER_FOR_TEAM_CREATION",
   AUTOBALANCE = "AUTOBALANCE",

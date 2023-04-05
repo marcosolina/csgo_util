@@ -13,6 +13,12 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Handler used to retrieve a list of available DEM files
+ * 
+ * @author marco
+ *
+ */
 @Component
 public class GetFilesListHandler implements WebCommandHandler<CmdGetDemFilesList, RestGetFilesResponse> {
 	@Autowired

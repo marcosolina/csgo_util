@@ -1,5 +1,11 @@
 package com.ixigo.demmanager.models.svc;
 
+/**
+ * Service layer model which carries the DEM file system info
+ * 
+ * @author marco
+ *
+ */
 public class SvcFileInfo {
 	private String name;
 	private String mapName;

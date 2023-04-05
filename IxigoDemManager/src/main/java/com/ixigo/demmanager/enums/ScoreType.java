@@ -1,5 +1,11 @@
 package com.ixigo.demmanager.enums;
 
+/**
+ * Indicates the score type available in the DEM files
+ * 
+ * @author marco
+ *
+ */
 public enum ScoreType {
 	// @formatter:off
     /**
@@ -157,22 +163,22 @@ public enum ScoreType {
     ;
     // @formatter:on
 
-    private final String desc;
+	private final String desc;
 
-    ScoreType(String desc) {
-        this.desc = desc;
-    }
+	ScoreType(String desc) {
+		this.desc = desc;
+	}
 
-    public String getDesc() {
-        return this.desc;
-    }
+	public String getDesc() {
+		return this.desc;
+	}
 
-    public static ScoreType fromDesc(String desc) {
-        for (ScoreType i : ScoreType.values()) {
-            if (i.desc.equals(desc)) {
-                return i;
-            }
-        }
-        return null;
-    }
+	public static ScoreType fromDesc(String desc) {
+		for (ScoreType i : ScoreType.values()) {
+			if (i.desc.equals(desc)) {
+				return i;
+			}
+		}
+		return null;
+	}
 }

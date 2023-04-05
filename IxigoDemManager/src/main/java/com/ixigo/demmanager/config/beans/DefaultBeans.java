@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import com.ixigo.library.config.spring.IxigoStandardServiceBeans;
 
 /**
+ * Configuration class to add the default bean into the the SpringBoot context
  * 
  * @author Marco
  *
@@ -13,4 +14,3 @@ import com.ixigo.library.config.spring.IxigoStandardServiceBeans;
 public class DefaultBeans extends IxigoStandardServiceBeans {
 
 }
-	

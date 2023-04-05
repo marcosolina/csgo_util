@@ -20,7 +20,7 @@ import io.r2dbc.postgresql.PostgresqlConnectionFactory;
 import io.r2dbc.spi.ConnectionFactory;
 
 /**
- * Repositories configuration class
+ * Configuration of the beans used to access the database
  * 
  * @author Marco
  *
@@ -33,28 +33,25 @@ public class Repositories {
 	@Bean
 	public ConnectionFactory connectionFactory() {
 		return new PostgresqlConnectionFactory(
-				// @formatter:off
-			        PostgresqlConnectionConfiguration.builder()
-			                .host(postrgresProps.getHost())
-			                .database("demfiles")
-			                .username(postrgresProps.getUser())
-			                .password(postrgresProps.getPassword())
+		// @formatter:off
+        PostgresqlConnectionConfiguration.builder()
+                .host(postrgresProps.getHost())
+                .database("demfiles")
+                .username(postrgresProps.getUser())
+                .password(postrgresProps.getPassword())
 //			                .codecRegistrar(
 //		                		EnumCodec.builder()
 //			                		.withEnum("process_status", DemProcessStatus.class)
 //			                		.build()
 //		            		)
-			                .build()
-					// @formatter:on
-				);
+                .build()
+		// @formatter:on
+		);
 	}
-	
+
 	@Bean
 	public DatabaseClient databaseClient(ConnectionFactory connectionFactory) {
-		var cp = ConnectionPoolConfiguration.builder(connectionFactory)
-	            .initialSize(2)
-	            .maxSize(20)
-	            .build();
+		var cp = ConnectionPoolConfiguration.builder(connectionFactory).initialSize(2).maxSize(20).build();
 		ConnectionPool pool = new ConnectionPool(cp);
 		return DatabaseClient.builder().connectionFactory(pool).build();
 	}

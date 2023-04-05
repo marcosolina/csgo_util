@@ -8,6 +8,12 @@ import com.ixigo.library.dao.IxigoDao;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
+/**
+ * DAO representing the DB table which has the DEM process queue info
+ * 
+ * @author marco
+ *
+ */
 public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 
 	private static final long serialVersionUID = 1L;

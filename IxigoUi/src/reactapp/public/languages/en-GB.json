@@ -70,7 +70,7 @@
     "players": {
       "labels": {
         "lblListPlayers": "Steam players",
-        "lblRoundToConsider": "Rounds to consider",
+        "lblMatchesToConsider": "Matches to consider",
         "lblScoreType": "Score type",
         "lblMinPercPlayed": "Min % played",
         "lblPenalty": "Penalty weight",

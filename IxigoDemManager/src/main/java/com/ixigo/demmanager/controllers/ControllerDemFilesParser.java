@@ -15,6 +15,12 @@ import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import io.swagger.annotations.ApiOperation;
 import reactor.core.publisher.Mono;
 
+/**
+ * This controller exposes APIs to process the DEM files
+ * 
+ * @author marco
+ *
+ */
 @RestController
 @RequestMapping("/parse")
 public class ControllerDemFilesParser {

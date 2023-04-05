@@ -22,8 +22,15 @@ import com.ixigo.demmanager.commands.demfilesmanager.CmdStoreDemFile;
 import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestGetFilesResponse;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
+import io.swagger.annotations.ApiOperation;
 import reactor.core.publisher.Mono;
 
+/**
+ * Controller used to expose the APIs to manage the DEM files
+ * 
+ * @author marco
+ *
+ */
 @RestController
 @RequestMapping("/files")
 public class ControllerDemFilesManager {
@@ -33,26 +40,35 @@ public class ControllerDemFilesManager {
 	private WebMediator mediator;
 
 	@PostMapping
+	@ApiOperation(value = "It allows you to upload a new DEM file")
 	public Mono<ResponseEntity<Void>> handleFileUpload(@RequestParam("file") MultipartFile file) {
 		_LOGGER.trace("Inside DemFilesManager.handleFileUpload");
 		return mediator.send(new CmdStoreDemFile(file));
 	}
 
 	@GetMapping("/{filename:.+}")
+	@ApiOperation(value = "It returns the specified DEM file")
 	public Mono<ResponseEntity<Resource>> getFile(@PathVariable String filename) {
 		_LOGGER.trace("Inside DemFilesManager.getFile");
 		return mediator.send(new CmdGetDemFile(filename));
 	}
-	
+
 	@DeleteMapping("/{filename:.+}")
+	@ApiOperation(value = "It deletes the specified DEM file")
 	public Mono<ResponseEntity<Void>> removeFileFromQueue(@PathVariable String filename) {
 		_LOGGER.trace("Inside DemFilesManager.removeFileFromQueue");
 		return mediator.send(new CmdRemoveDemFileFromQueue(filename));
 	}
 
 	@GetMapping()
+	@ApiOperation(value = "It returns a list the available DEM files in the system")
 	public Mono<ResponseEntity<RestGetFilesResponse>> getListFiles() {
 		_LOGGER.trace("Inside DemFilesManager.getListFiles");
+
+		/*
+		 * Construct the GET single file URL, in this way we can return the URL that the
+		 * client can use to download the desired file
+		 */
 		String url = MvcUriComponentsBuilder.fromMethodName(ControllerDemFilesManager.class, "getListFiles").build().toString();
 		return mediator.send(new CmdGetDemFilesList()).map(resp -> {
 			resp.getBody().getFiles().forEach((k, v) -> {

@@ -25,6 +25,13 @@ import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import io.swagger.annotations.ApiOperation;
 import reactor.core.publisher.Mono;
 
+/**
+ * Controller used to expose the APIs to access the data extracted from the DEM
+ * files
+ * 
+ * @author marco
+ *
+ */
 @RestController
 @RequestMapping("/demdata")
 public class ControllerDemData {
@@ -63,7 +70,7 @@ public class ControllerDemData {
 	 * @return
 	 */
 	@GetMapping("/usersscores")
-	@ApiOperation(value = "It will return the users scores for the last \"numberOfMatches\" played for at least \"minPercPlayed\"")
+	@ApiOperation(value = "It will return the users scores for the last \"numberOfMatches\" where the players have played for at least \"minPercPlayed\" of the the match")
 	// @formatter:off
     public Mono<ResponseEntity<RestUsersScores>> getUsersLastScores(
             @RequestParam(name = "numberOfMatches", defaultValue = "50") Integer numberOfMatches,

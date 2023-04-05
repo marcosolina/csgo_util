@@ -3,6 +3,11 @@ package com.ixigo.demmanager.constants;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+/**
+ * Constants to define the output column values of the Dem Parser tool
+ * @author marco
+ *
+ */
 public class RoundParserUtils{
 	/*
      * DEM PARSER CSV COLUMNS

@@ -8,6 +8,12 @@ import org.springframework.context.annotation.Configuration;
 import com.ixigo.demmanager.enums.ParserEnvironment;
 import com.ixigo.demmanager.enums.ParserExecutionType;
 
+/**
+ * Properties files of the dem manager micro service
+ * 
+ * @author marco
+ *
+ */
 @Configuration
 @ConfigurationProperties(prefix = "ixigo.dem-manager.dem-file-props")
 public class DemFileManagerProps {

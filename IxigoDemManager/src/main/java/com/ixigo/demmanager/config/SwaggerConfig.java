@@ -34,7 +34,7 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("Ixigo DEM manager")
                 .description("Service which will manage the CSGO GOTV DEM files")
-                .contact(new Contact("Marco Solina", "marco.selfip.net", "marcosolina@gmail.com"))
+                .contact(new Contact("Marco Solina", "https://marco.selfip.net", "marcosolina@gmail.com"))
                 .version(appVersion)
                 .build();
         // @formatter:on

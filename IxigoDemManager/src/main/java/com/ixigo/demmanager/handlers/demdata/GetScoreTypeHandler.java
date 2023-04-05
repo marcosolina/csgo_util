@@ -14,6 +14,12 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Handler use to retrieve the list of available score types in the DEM files
+ * 
+ * @author marco
+ *
+ */
 @Component
 public class GetScoreTypeHandler implements WebCommandHandler<CmdGetScoreType, RestScoreTypes> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(GetScoreTypeHandler.class);
@@ -23,7 +29,7 @@ public class GetScoreTypeHandler implements WebCommandHandler<CmdGetScoreType, R
 	@Override
 	public Mono<ResponseEntity<RestScoreTypes>> handle(CmdGetScoreType request) {
 		_LOGGER.trace("Inside GetScoreTypeHandler.handle");
-		
+
 		return service.mapOfAvailableScores().map(m -> {
 			RestScoreTypes resp = new RestScoreTypes();
 			resp.setTypes(m);

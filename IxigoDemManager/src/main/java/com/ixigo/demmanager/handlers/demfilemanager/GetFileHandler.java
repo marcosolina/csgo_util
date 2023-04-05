@@ -13,6 +13,12 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Handler used to manage the request to retrieve a DEM file
+ * 
+ * @author marco
+ *
+ */
 @Component
 public class GetFileHandler implements WebCommandHandler<CmdGetDemFile, Resource> {
 	@Autowired
@@ -20,7 +26,7 @@ public class GetFileHandler implements WebCommandHandler<CmdGetDemFile, Resource
 
 	@Override
 	public Mono<ResponseEntity<Resource>> handle(CmdGetDemFile request) {
-		
+
 		// @formatter:off
 		return service.load(request.getFileName())
 			.map(resource -> {

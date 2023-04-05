@@ -55,14 +55,4 @@ public interface RepoUserScore {
      * @return
      */
     public Flux<Users_scoresDto> getLastXMatchesScoresForUser(Integer numberOfMatches, String steamID, BigDecimal minPercPlayed);
-
-    /**
-     * It returns the most "counter" recent scores (Long values) available for the
-     * selected user
-     * 
-     * @param counter
-     * @param steamID
-     * @return public List<BigDecimal> getLastXUserScoresValue(Integer counter,
-     *         String steamID);
-     */
 }

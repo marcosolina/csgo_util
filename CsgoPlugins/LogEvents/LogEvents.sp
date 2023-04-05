@@ -3,7 +3,7 @@
 #define DEBUG
 
 #define PLUGIN_AUTHOR "Marco Solina"
-#define PLUGIN_VERSION "0.0.1"
+#define PLUGIN_VERSION "1.0.0"
 
 #include <sourcemod>
 #include <sdktools>
@@ -17,7 +17,7 @@ public Plugin myinfo =
 {
 	name = "Log Events", 
 	author = PLUGIN_AUTHOR, 
-	description = "Testing CsGO plugins", 
+	description = "It will write in the event.txt file the CSGO event that has occured", 
 	version = PLUGIN_VERSION, 
 	url = "https://github.com/marcosolina/csgo_util/blob/main/CsgoPlugins/LogEvents/LogEvents.sp"
 };

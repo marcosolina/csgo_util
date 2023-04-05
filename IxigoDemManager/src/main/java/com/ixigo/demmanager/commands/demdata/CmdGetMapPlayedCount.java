@@ -3,6 +3,12 @@ package com.ixigo.demmanager.commands.demdata;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapsPlayed;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 
-public class CmdGetMapPlayedCount implements WebCommandRequest<RestMapsPlayed>{
+/**
+ * Command dispatched to retrieve the number of times the maps where played
+ * 
+ * @author marco
+ *
+ */
+public class CmdGetMapPlayedCount implements WebCommandRequest<RestMapsPlayed> {
 
 }

@@ -18,7 +18,7 @@ import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.demmanager.services.interfaces.NotificationService;
 
 /**
- * Service layer bean configuration file
+ * Configuration of the beans used for the service layer
  * 
  * @author Marco
  *
@@ -27,34 +27,34 @@ import com.ixigo.demmanager.services.interfaces.NotificationService;
 public class Services {
 	@Autowired
 	public DemFileManagerProps props;
-	
+
 	@Bean
 	public DemFileManager getDemFileManager() {
 		return new DemFileManagerImp();
 	}
-	
+
 	@Bean
 	public DemFileParser getDemFileParser() {
 		return new DemFileParserImp();
 	}
-	
+
 	@Bean
-    public NotificationService getNotificationService() {
-        return new TelegramNotificationService();
-    }
-	
+	public NotificationService getNotificationService() {
+		return new TelegramNotificationService();
+	}
+
 	@Bean
 	public CmdExecuter getCmdExecuter() {
 		return new CmdExecuterImpl();
 	}
-	
+
 	@Bean
-    public DemProcessor getDemProcessor() {
-        switch (props.getParserEnvironment()) {
-        case RASP:
-            return new DemProcessorRasp();
-        default:
-            return new DemProcessorWindows();
-        }
-    }
+	public DemProcessor getDemProcessor() {
+		switch (props.getParserEnvironment()) {
+		case RASP:
+			return new DemProcessorRasp();
+		default:
+			return new DemProcessorWindows();
+		}
+	}
 }

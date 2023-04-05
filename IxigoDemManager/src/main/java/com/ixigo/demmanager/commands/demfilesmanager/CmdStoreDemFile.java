@@ -4,7 +4,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 
-public class CmdStoreDemFile implements WebCommandRequest<Void>{
+/**
+ * Command dispatched to store a new DEM file
+ * 
+ * @author marco
+ *
+ */
+public class CmdStoreDemFile implements WebCommandRequest<Void> {
 	private MultipartFile file;
 
 	public CmdStoreDemFile(MultipartFile file) {

@@ -12,6 +12,12 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Handler used to trigger the process that will analyse the queued DEM files
+ * 
+ * @author marco
+ *
+ */
 @Component
 public class CmdProcessQueuedFilesHandler implements WebCommandHandler<CmdProcessQueuedFiles, Void> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(CmdProcessQueuedFilesHandler.class);

@@ -1,7 +1,7 @@
 package com.ixigo.demmanager.models.svc.demdata;
 
 /**
- * Number of times the map was played
+ * Service layer model which has the number of times the map was played
  * 
  * @author Marco
  *

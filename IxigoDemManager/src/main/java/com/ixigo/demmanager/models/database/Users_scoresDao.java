@@ -15,11 +15,18 @@ import com.ixigo.library.dao.IxigoDao;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
+/**
+ * DAO representing the DB table which contains the info extracted from the DEM
+ * files
+ * 
+ * @author marco
+ *
+ */
 public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(Users_scoresDao.class);
 
 	private static final long serialVersionUID = 1L;
-	public static final String tableName="users_scores";
+	public static final String tableName = "users_scores";
 	private Users_scoresDto dto = null;
 
 	public Users_scoresDao() {
@@ -78,10 +85,11 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 		// @formatter:on
 		this.dto = new Users_scoresDto();
 	}
+
 	@Override
 	public Users_scoresDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		Users_scoresDto dto = new Users_scoresDto();
-		
+
 		Arrays.asList(this.getSqlFields()).forEach(field -> {
 			try {
 				Method[] m = dto.getClass().getMethods();
@@ -99,404 +107,362 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 				}
 			}
 		});
-		
-		//dto.setFile_name(row.get(Dem_process_queueDto.Fields.file_name, String.class));
-		
+
+		// dto.setFile_name(row.get(Dem_process_queueDto.Fields.file_name,
+		// String.class));
+
 		return dto;
 	}
 
-	public Long getKills(){
+	public Long getKills() {
 		return dto.getKills();
 	}
 
-	public void setKills(Long kills){
+	public void setKills(Long kills) {
 		this.dto.setKills(kills);
 	}
 
-
-	public Long getFf(){
+	public Long getFf() {
 		return dto.getFf();
 	}
 
-	public void setFf(Long ff){
+	public void setFf(Long ff) {
 		this.dto.setFf(ff);
 	}
 
-
-	public Long getBd(){
+	public Long getBd() {
 		return dto.getBd();
 	}
 
-	public void setBd(Long bd){
+	public void setBd(Long bd) {
 		this.dto.setBd(bd);
 	}
 
-
-	public BigDecimal getHsp(){
+	public BigDecimal getHsp() {
 		return dto.getHsp();
 	}
 
-	public void setHsp(BigDecimal hsp){
+	public void setHsp(BigDecimal hsp) {
 		this.dto.setHsp(hsp);
 	}
 
-
-	public Long get_1v3(){
+	public Long get_1v3() {
 		return dto.get_1v3();
 	}
 
-	public void set_1v3(Long _1v3){
+	public void set_1v3(Long _1v3) {
 		this.dto.set_1v3(_1v3);
 	}
 
-
-	public Long get_1v2(){
+	public Long get_1v2() {
 		return dto.get_1v2();
 	}
 
-	public void set_1v2(Long _1v2){
+	public void set_1v2(Long _1v2) {
 		this.dto.set_1v2(_1v2);
 	}
 
-
-	public Long get_1v1(){
+	public Long get_1v1() {
 		return dto.get_1v1();
 	}
 
-	public void set_1v1(Long _1v1){
+	public void set_1v1(Long _1v1) {
 		this.dto.set_1v1(_1v1);
 	}
 
-
-	public Long getHed(){
+	public Long getHed() {
 		return dto.getHed();
 	}
 
-	public void setHed(Long hed){
+	public void setHed(Long hed) {
 		this.dto.setHed(hed);
 	}
 
-
-	public Long getHs(){
+	public Long getHs() {
 		return dto.getHs();
 	}
 
-	public void setHs(Long hs){
+	public void setHs(Long hs) {
 		this.dto.setHs(hs);
 	}
 
-
-	public Long getFlashes(){
+	public Long getFlashes() {
 		return dto.getFlashes();
 	}
 
-	public void setFlashes(Long flashes){
+	public void setFlashes(Long flashes) {
 		this.dto.setFlashes(flashes);
 	}
 
-
-	public Long getBp(){
+	public Long getBp() {
 		return dto.getBp();
 	}
 
-	public void setBp(Long bp){
+	public void setBp(Long bp) {
 		this.dto.setBp(bp);
 	}
 
-
-	public BigDecimal getRws(){
+	public BigDecimal getRws() {
 		return dto.getRws();
 	}
 
-	public void setRws(BigDecimal rws){
+	public void setRws(BigDecimal rws) {
 		this.dto.setRws(rws);
 	}
 
-
-	public Long getScore(){
+	public Long getScore() {
 		return dto.getScore();
 	}
 
-	public void setScore(Long score){
+	public void setScore(Long score) {
 		this.dto.setScore(score);
 	}
 
-
-	public Long getGrenades(){
+	public Long getGrenades() {
 		return dto.getGrenades();
 	}
 
-	public void setGrenades(Long grenades){
+	public void setGrenades(Long grenades) {
 		this.dto.setGrenades(grenades);
 	}
 
-
-	public Long getAssists(){
+	public Long getAssists() {
 		return dto.getAssists();
 	}
 
-	public void setAssists(Long assists){
+	public void setAssists(Long assists) {
 		this.dto.setAssists(assists);
 	}
 
-
-	public Long getSmokes(){
+	public Long getSmokes() {
 		return dto.getSmokes();
 	}
 
-	public void setSmokes(Long smokes){
+	public void setSmokes(Long smokes) {
 		this.dto.setSmokes(smokes);
 	}
 
-
-	public Long get_4k(){
+	public Long get_4k() {
 		return dto.get_4k();
 	}
 
-	public void set_4k(Long _4k){
+	public void set_4k(Long _4k) {
 		this.dto.set_4k(_4k);
 	}
 
-
-	public Long get_2k(){
+	public Long get_2k() {
 		return dto.get_2k();
 	}
 
-	public void set_2k(Long _2k){
+	public void set_2k(Long _2k) {
 		this.dto.set_2k(_2k);
 	}
 
-
-	public Long getFire(){
+	public Long getFire() {
 		return dto.getFire();
 	}
 
-	public void setFire(Long fire){
+	public void setFire(Long fire) {
 		this.dto.setFire(fire);
 	}
 
-
-	public Long get_1v5(){
+	public Long get_1v5() {
 		return dto.get_1v5();
 	}
 
-	public void set_1v5(Long _1v5){
+	public void set_1v5(Long _1v5) {
 		this.dto.set_1v5(_1v5);
 	}
 
-
-	public Long get_1v4(){
+	public Long get_1v4() {
 		return dto.get_1v4();
 	}
 
-	public void set_1v4(Long _1v4){
+	public void set_1v4(Long _1v4) {
 		this.dto.set_1v4(_1v4);
 	}
 
-
-	public String getMap(){
+	public String getMap() {
 		return dto.getMap();
 	}
 
-	public void setMap(String map){
+	public void setMap(String map) {
 		this.dto.setMap(map);
 	}
 
-
-	public Long getDeaths(){
+	public Long getDeaths() {
 		return dto.getDeaths();
 	}
 
-	public void setDeaths(Long deaths){
+	public void setDeaths(Long deaths) {
 		this.dto.setDeaths(deaths);
 	}
 
-
-	public BigDecimal getApr(){
+	public BigDecimal getApr() {
 		return dto.getApr();
 	}
 
-	public void setApr(BigDecimal apr){
+	public void setApr(BigDecimal apr) {
 		this.dto.setApr(apr);
 	}
 
-
-	public BigDecimal getMp(){
+	public BigDecimal getMp() {
 		return dto.getMp();
 	}
 
-	public void setMp(BigDecimal mp){
+	public void setMp(BigDecimal mp) {
 		this.dto.setMp(mp);
 	}
 
-
-	public String getFile_name(){
+	public String getFile_name() {
 		return dto.getFile_name();
 	}
 
-	public void setFile_name(String file_name){
+	public void setFile_name(String file_name) {
 		this.dto.setFile_name(file_name);
 	}
 
-
-	public Long getEk(){
+	public Long getEk() {
 		return dto.getEk();
 	}
 
-	public void setEk(Long ek){
+	public void setEk(Long ek) {
 		this.dto.setEk(ek);
 	}
 
-
-	public Long getMvp(){
+	public Long getMvp() {
 		return dto.getMvp();
 	}
 
-	public void setMvp(Long mvp){
+	public void setMvp(Long mvp) {
 		this.dto.setMvp(mvp);
 	}
 
-
-	public BigDecimal getDpr(){
+	public BigDecimal getDpr() {
 		return dto.getDpr();
 	}
 
-	public void setDpr(BigDecimal dpr){
+	public void setDpr(BigDecimal dpr) {
 		this.dto.setDpr(dpr);
 	}
 
-
-	public BigDecimal getKpr(){
+	public BigDecimal getKpr() {
 		return dto.getKpr();
 	}
 
-	public void setKpr(BigDecimal kpr){
+	public void setKpr(BigDecimal kpr) {
 		this.dto.setKpr(kpr);
 	}
 
-
-	public BigDecimal getAdr(){
+	public BigDecimal getAdr() {
 		return dto.getAdr();
 	}
 
-	public void setAdr(BigDecimal adr){
+	public void setAdr(BigDecimal adr) {
 		this.dto.setAdr(adr);
 	}
 
-
-	public Long getTd(){
+	public Long getTd() {
 		return dto.getTd();
 	}
 
-	public void setTd(Long td){
+	public void setTd(Long td) {
 		this.dto.setTd(td);
 	}
 
-
-	public Long getTda(){
+	public Long getTda() {
 		return dto.getTda();
 	}
 
-	public void setTda(Long tda){
+	public void setTda(Long tda) {
 		this.dto.setTda(tda);
 	}
 
-
-	public Long get_5k(){
+	public Long get_5k() {
 		return dto.get_5k();
 	}
 
-	public void set_5k(Long _5k){
+	public void set_5k(Long _5k) {
 		this.dto.set_5k(_5k);
 	}
 
-
-	public BigDecimal getHltv(){
+	public BigDecimal getHltv() {
 		return dto.getHltv();
 	}
 
-	public void setHltv(BigDecimal hltv){
+	public void setHltv(BigDecimal hltv) {
 		this.dto.setHltv(hltv);
 	}
 
-
-	public Long get_3k(){
+	public Long get_3k() {
 		return dto.get_3k();
 	}
 
-	public void set_3k(Long _3k){
+	public void set_3k(Long _3k) {
 		this.dto.set_3k(_3k);
 	}
 
-
-	public String getSteam_id(){
+	public String getSteam_id() {
 		return dto.getSteam_id();
 	}
 
-	public void setSteam_id(String steam_id){
+	public void setSteam_id(String steam_id) {
 		this.dto.setSteam_id(steam_id);
 	}
 
-
-	public Long getTk(){
+	public Long getTk() {
 		return dto.getTk();
 	}
 
-	public void setTk(Long tk){
+	public void setTk(Long tk) {
 		this.dto.setTk(tk);
 	}
 
-
-	public BigDecimal getKdr(){
+	public BigDecimal getKdr() {
 		return dto.getKdr();
 	}
 
-	public void setKdr(BigDecimal kdr){
+	public void setKdr(BigDecimal kdr) {
 		this.dto.setKdr(kdr);
 	}
 
-
-	public Long get_1k(){
+	public Long get_1k() {
 		return dto.get_1k();
 	}
 
-	public void set_1k(Long _1k){
+	public void set_1k(Long _1k) {
 		this.dto.set_1k(_1k);
 	}
 
-
-	public Long getTdh(){
+	public Long getTdh() {
 		return dto.getTdh();
 	}
 
-	public void setTdh(Long tdh){
+	public void setTdh(Long tdh) {
 		this.dto.setTdh(tdh);
 	}
 
-
-	public LocalDateTime getGame_date(){
+	public LocalDateTime getGame_date() {
 		return dto.getGame_date();
 	}
 
-	public void setGame_date(LocalDateTime game_date){
+	public void setGame_date(LocalDateTime game_date) {
 		this.dto.setGame_date(game_date);
 	}
 
-
-	public Long getFd(){
+	public Long getFd() {
 		return dto.getFd();
 	}
 
-	public void setFd(Long fd){
+	public void setFd(Long fd) {
 		this.dto.setFd(fd);
 	}
 
-
-	public Users_scoresDto getDto(){
+	public Users_scoresDto getDto() {
 		return this.dto;
 	}
 
-	public void setDto(Users_scoresDto dto){
+	public void setDto(Users_scoresDto dto) {
 		this.dto = dto;
 	}
 }

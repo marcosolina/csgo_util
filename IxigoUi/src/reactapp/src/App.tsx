@@ -9,6 +9,7 @@ import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { RconContentProvider } from "./contents/rcon/indext";
 import { BrowserRouter } from "react-router-dom";
+import { PlayersContentProvider } from "./contents/players/indext";
 
 const darkTheme = createTheme({
   palette: {
@@ -46,7 +47,9 @@ const App = () => {
             <CssBaseline />
             <QueryClientProvider client={queryClient}>
               <RconContentProvider>
-                <BaseLayout />
+                <PlayersContentProvider>
+                  <BaseLayout />
+                </PlayersContentProvider>
               </RconContentProvider>
             </QueryClientProvider>
           </ThemeProvider>

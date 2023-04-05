@@ -10,7 +10,6 @@ import ct from "../../assets/bots/counterterrorist.jpg";
 import terr from "../../assets/bots/terrorist.jpg";
 import Loading from "./Loading";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { usePlayersContent } from "./usePlayersContent";
 import IxigoSwitch from "../../common/switch/IxigoSwitch";
 import IxigoTeam from "./IxigoTeam";
 import { useGetTeams } from "../../services/players-manager";
@@ -18,6 +17,7 @@ import SendIcon from "@mui/icons-material/Send";
 import { useRconContentProvider } from "../rcon/useRconContentProvider";
 import { useTranslation } from "react-i18next";
 import IxigoFloatingButton from "../../common/floating-button/IxigoFloatingButton";
+import { usePlayersContentProvider } from "./usePlayersContetProvider";
 
 const XS = 12;
 const SM = 12;
@@ -32,7 +32,7 @@ let timeOut = setTimeout(() => {}, 100);
 
 const PlayersContent = () => {
   const { t } = useTranslation();
-  const pContent = usePlayersContent();
+  const pContent = usePlayersContentProvider();
 
   const { getTeams, status: getTeamsStatus, response: getTeamsResp } = useGetTeams();
   const { request, queryState, sendCommand } = useRconContentProvider();
@@ -82,7 +82,7 @@ const PlayersContent = () => {
         <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoText
-              label={t(`${BASE_LANGUAGE_PATH}.labels.lblRoundToConsider`) as string}
+              label={t(`${BASE_LANGUAGE_PATH}.labels.lblMatchesToConsider`) as string}
               value={`${pContent.matchesToConsider}`}
               type={IxigoTextType.number}
               step={1}

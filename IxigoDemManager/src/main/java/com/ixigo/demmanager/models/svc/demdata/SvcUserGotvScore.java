@@ -1,5 +1,12 @@
 package com.ixigo.demmanager.models.svc.demdata;
 
+/**
+ * Service layer model which has the statistic extracted from a DEM file for a
+ * single match
+ * 
+ * @author marco
+ *
+ */
 public class SvcUserGotvScore {
 	private String userName;
 	private String steamID;

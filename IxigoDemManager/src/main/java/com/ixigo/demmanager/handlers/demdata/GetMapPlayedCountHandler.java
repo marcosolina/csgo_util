@@ -15,6 +15,13 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Handler used to manage request to retrieve the number of types the maps where
+ * played
+ * 
+ * @author marco
+ *
+ */
 @Component
 public class GetMapPlayedCountHandler implements WebCommandHandler<CmdGetMapPlayedCount, RestMapsPlayed> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(GetMapPlayedCountHandler.class);
@@ -22,16 +29,21 @@ public class GetMapPlayedCountHandler implements WebCommandHandler<CmdGetMapPlay
 	private DemFileParser service;
 	@Autowired
 	private RestMapper mapper;
-	
+
 	@Override
 	public Mono<ResponseEntity<RestMapsPlayed>> handle(CmdGetMapPlayedCount request) {
 		_LOGGER.trace("Inside GetMapPlayedCountHandler.handle");
-		
-		return service.countGamesOnAMap().collectList().map(l -> {
-			RestMapsPlayed resp = new RestMapsPlayed();
-			resp.setMaps(mapper.fromSvcToRestMapPlayedList(l));
-			return new ResponseEntity<>(resp, HttpStatus.OK);
-		});
+
+		// @formatter:off
+		return service.countGamesOnAMap()
+				.collectList()
+				.map(mapper::fromSvcToRestMapPlayedList)
+				.map(list -> {
+					RestMapsPlayed resp = new RestMapsPlayed();
+					resp.setMaps(list);
+					return new ResponseEntity<>(resp, HttpStatus.OK);
+				});
+		// @formatter:on
 	}
 
 }

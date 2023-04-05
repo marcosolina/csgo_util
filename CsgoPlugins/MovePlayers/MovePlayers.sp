@@ -3,7 +3,7 @@
 #define DEBUG
 
 #define PLUGIN_AUTHOR "Marco Solina"
-#define PLUGIN_VERSION "0.0.1"
+#define PLUGIN_VERSION "1.0.0"
 
 #include <sourcemod>
 #include <sdktools>
@@ -18,7 +18,7 @@ public Plugin myinfo =
 {
 	name = "Move Players", 
 	author = PLUGIN_AUTHOR, 
-	description = "Testing CsGO plugins", 
+	description = "Il will move the players to the specified team", 
 	version = PLUGIN_VERSION, 
 	url = "https://github.com/marcosolina/csgo_util/blob/main/CsgoPlugins/MovePlayers/MovePlayers.sp"
 };

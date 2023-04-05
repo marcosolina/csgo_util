@@ -15,6 +15,12 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Handler used to retrieve the list of users seen in the DEM files
+ * 
+ * @author marco
+ *
+ */
 @Component
 public class GetUsersHandler implements WebCommandHandler<CmdGetUsers, RestUsers> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(GetUsersHandler.class);
@@ -26,11 +32,16 @@ public class GetUsersHandler implements WebCommandHandler<CmdGetUsers, RestUsers
 	@Override
 	public Mono<ResponseEntity<RestUsers>> handle(CmdGetUsers request) {
 		_LOGGER.trace("Inside GetUsersHandler.handle");
-		
-		return service.getListOfUsers().collectList().map(list -> {
-			RestUsers resp = new RestUsers();
-			resp.setUsers(mapper.fromSvcToRestUserList(list));
-			return new ResponseEntity<>(resp, HttpStatus.OK);
-		});
+
+		// @formatter:off
+		return service.getListOfUsers()
+				.collectList()
+				.map(mapper::fromSvcToRestUserList)
+				.map(list -> {
+					RestUsers resp = new RestUsers();
+					resp.setUsers(list);
+					return new ResponseEntity<>(resp, HttpStatus.OK);
+				});
+		// @formatter:on
 	}
 }

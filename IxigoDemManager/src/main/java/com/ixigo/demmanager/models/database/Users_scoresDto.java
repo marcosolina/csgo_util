@@ -9,6 +9,12 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.FieldNameConstants;
 
+/**
+ * DTO model of the table which contains the data extracted from the DEM files
+ * 
+ * @author marco
+ *
+ */
 @FieldNameConstants
 @Getter
 @Setter

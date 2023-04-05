@@ -3,7 +3,7 @@
 #define DEBUG
 
 #define PLUGIN_AUTHOR "Marco Solina"
-#define PLUGIN_VERSION "0.0.1"
+#define PLUGIN_VERSION "1.0.0"
 
 #include <sourcemod>
 #include <sdktools>
@@ -18,7 +18,7 @@ public Plugin myinfo =
 {
 	name = "List Players", 
 	author = PLUGIN_AUTHOR, 
-	description = "Testing CsGO plugins", 
+	description = "It will return a list of the active players on the CSGO server", 
 	version = PLUGIN_VERSION, 
 	url = "https://github.com/marcosolina/csgo_util/blob/main/CsgoPlugins/ListPlayers/ListPlayers.sp"
 };
@@ -50,6 +50,7 @@ public Action movePlayer(int client, int args)
 			
 			if (GetClientAuthId(i, AuthId_SteamID64, playerSteamID, maxNameLength))
 			{
+				// Print only the Terrorist players
 				if(GetClientTeam(i) == CS_TEAM_T){
 					ReplyToCommand(client, playerSteamID);
 				}
@@ -69,6 +70,7 @@ public Action movePlayer(int client, int args)
 			
 			if (GetClientAuthId(i, AuthId_SteamID64, playerSteamID, maxNameLength))
 			{
+				// Print only the CT players
 				if(GetClientTeam(i) == CS_TEAM_CT){
 					ReplyToCommand(client, playerSteamID);
 				}

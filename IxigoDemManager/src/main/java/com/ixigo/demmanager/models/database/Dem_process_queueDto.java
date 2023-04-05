@@ -7,6 +7,12 @@ import com.ixigo.library.dto.IxigoDto;
 
 import lombok.experimental.FieldNameConstants;
 
+/**
+ * DTO model of the DEM queue table
+ * 
+ * @author marco
+ *
+ */
 @FieldNameConstants
 public class Dem_process_queueDto implements IxigoDto {
 

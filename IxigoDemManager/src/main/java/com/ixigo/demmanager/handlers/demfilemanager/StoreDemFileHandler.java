@@ -11,6 +11,12 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Handler used to store a new DEM file
+ * 
+ * @author marco
+ *
+ */
 @Component
 public class StoreDemFileHandler implements WebCommandHandler<CmdStoreDemFile, Void> {
 

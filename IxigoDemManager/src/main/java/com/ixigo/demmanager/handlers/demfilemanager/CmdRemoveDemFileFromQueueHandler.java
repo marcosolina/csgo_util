@@ -11,6 +11,12 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Handler used to manage the request to delete a DEM file
+ * 
+ * @author marco
+ *
+ */
 @Component
 public class CmdRemoveDemFileFromQueueHandler implements WebCommandHandler<CmdRemoveDemFileFromQueue, Void> {
 	@Autowired

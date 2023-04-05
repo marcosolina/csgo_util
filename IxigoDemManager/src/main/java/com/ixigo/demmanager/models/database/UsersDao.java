@@ -5,6 +5,12 @@ import com.ixigo.library.dao.IxigoDao;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
+/**
+ * DAO representing the DB table which contains the Steam Players info
+ * 
+ * @author marco
+ *
+ */
 public class UsersDao extends IxigoDao<UsersDto> {
 
 	private static final long serialVersionUID = 1L;

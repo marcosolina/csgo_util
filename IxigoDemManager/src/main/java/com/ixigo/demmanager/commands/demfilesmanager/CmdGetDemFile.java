@@ -4,6 +4,12 @@ import org.springframework.core.io.Resource;
 
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 
+/**
+ * Command dispatched to retrieve (download) a DEM file
+ * 
+ * @author marco
+ *
+ */
 public class CmdGetDemFile implements WebCommandRequest<Resource> {
 	private String fileName;
 

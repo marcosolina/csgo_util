@@ -82,7 +82,7 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
     if (qCsgoPlayers.data) {
       checkRespFunc.current(qCsgoPlayers.data);
     }
-  }, [combinedState, qMapping.data, qMapping.data, qMembers.data, qCsgoPlayers.data]);
+  }, [combinedState, qMapping.data, qMembers.data, qCsgoPlayers.data]);
 
   return {
     state: combinedState,

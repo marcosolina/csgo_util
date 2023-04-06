@@ -19,6 +19,12 @@ import io.r2dbc.spi.RowMetadata;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+/**
+ * Postgres implementation for @RepoUserScore
+ * 
+ * @author marco
+ *
+ */
 public class RepoUserScorePostgres implements RepoUserScore {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(RepoUserScorePostgres.class);
 

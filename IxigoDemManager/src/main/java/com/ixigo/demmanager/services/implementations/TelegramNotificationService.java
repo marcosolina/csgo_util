@@ -19,6 +19,12 @@ import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Telgram implementation of the @NotificationService
+ * 
+ * @author marco
+ *
+ */
 public class TelegramNotificationService implements NotificationService {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(TelegramNotificationService.class);
 	@Autowired

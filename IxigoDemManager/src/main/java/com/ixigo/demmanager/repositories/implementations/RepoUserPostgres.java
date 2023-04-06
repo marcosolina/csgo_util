@@ -13,7 +13,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * Postgres implementation of the Users repository
+ * Postgres implementation for @RepoUser
  * 
  * @author Marco
  *

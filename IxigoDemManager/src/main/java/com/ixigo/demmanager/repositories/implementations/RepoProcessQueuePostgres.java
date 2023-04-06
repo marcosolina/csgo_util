@@ -14,7 +14,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 /**
- * Repo implementation used for Postgres DB
+ * Postgres implementation for @RepoProcessQueue
  * 
  * @author Marco
  *

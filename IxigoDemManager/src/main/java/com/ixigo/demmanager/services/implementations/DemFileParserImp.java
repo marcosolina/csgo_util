@@ -52,6 +52,11 @@ import reactor.core.scheduler.Schedulers;
 import reactor.util.function.Tuple2;
 import reactor.util.function.Tuples;
 
+/**
+ * My implementation of the @DemFileParser
+ * @author marco
+ *
+ */
 public class DemFileParserImp implements DemFileParser {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemFileParserImp.class);
 
@@ -75,21 +80,32 @@ public class DemFileParserImp implements DemFileParser {
 	@Override
 	public Mono<HttpStatus> processQueuedFiles() throws IxigoException {
 		_LOGGER.trace("Inside DemFileParserImp.processQueuedFiles");
-		return repoQueue.getNotProcessedDemFiles().collectList().flatMap(list -> {
-			List<File> filesToProcess = list.stream().map(e -> new File(e.getFile_name())).collect(Collectors.toList());
-			
-			switch (props.getParserExecutionType()) {
-			case SYNC:
-				return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
-			case ASYNC:
-				new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
-					_LOGGER.debug("Async queue process completed");
-				})).start();
-				return Mono.just(HttpStatus.ACCEPTED);
-			default:
-				return Mono.just(HttpStatus.ACCEPTED);
-			}
-		});
+		// @formatter:off
+		return 
+			repoQueue.getNotProcessedDemFiles()
+				.collectList()
+				.flatMap(list -> {
+					List<File> filesToProcess = list.stream().map(e -> new File(e.getFile_name())).collect(Collectors.toList());
+					
+					/*
+					 * When testing locally I can configure this to run synchronously 
+					 * as I will usually process one or two DEM files.
+					 * When running on the Raspberry PI I will process them
+					 * synchronously as I will have a lot of DEM files to process. 
+					 */
+					switch (props.getParserExecutionType()) {
+					case SYNC:
+						return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
+					case ASYNC:
+						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
+							_LOGGER.debug("Async queue process completed");
+						})).start();
+						return Mono.just(HttpStatus.ACCEPTED);
+					default:
+						return Mono.just(HttpStatus.ACCEPTED);
+					}
+				});
+		// @formatter:on
 	}
 
 	@Override
@@ -97,20 +113,21 @@ public class DemFileParserImp implements DemFileParser {
 
 		try {
 			// @formatter:off
-			return Flux.fromStream(Files.walk(props.getRootFolder()))
-					.filter(path -> path.toFile().getName().endsWith(".dem"))
+			return Flux.fromStream(Files.walk(props.getRootFolder()))// Get all the files in the folder
+					.filter(path -> path.toFile().getName().endsWith(".dem")) // select only the DEM files
 					.flatMap(path ->
 					{
+						// Check if the DEM file is already saved in the DB queue
 						String absPath = path.toFile().getAbsolutePath();
 						return repoQueue.findById(absPath)
 								.defaultIfEmpty(new Dem_process_queueDto().setFile_name(absPath));
 					})
-					.filter(dto -> dto.getProcessed_on() == null)
-					.flatMap(dto -> {
+					.filter(dto -> dto.getProcessed_on() == null) // Remove already queued files
+					.flatMap(dto -> { // Add the new files to the queue
 						dto.setQueued_on(DateUtils.getCurrentUtcDateTime());
 						dto.setProcess_status(DemProcessStatus.NOT_PROCESSED);
 						return repoQueue.insertOrUpdate(dto);
-					}).then(processQueuedFiles());
+					}).then(processQueuedFiles()); // Process all the new files
 			// @formatter:on
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -147,7 +164,7 @@ public class DemFileParserImp implements DemFileParser {
 		
 		// https://stackoverflow.com/questions/70704314/how-to-return-a-reactive-flux-that-contains-a-reactive-mono-and-flux
 		return Flux.fromIterable(usersIDs)
-			.flatMap(steamId -> repoUser.findById(steamId).defaultIfEmpty(new UsersDto().setSteam_id(steamId)))
+			.flatMap(steamId -> repoUser.findById(steamId).defaultIfEmpty(new UsersDto().setSteam_id(steamId)))// Get the user definition
 			.map(dto -> {
 				var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, dto.getSteam_id(), minPercPlayed)
 						.map(dtoScore -> fromUsersScoreDtoToSvcMapStata(dto, dtoScore))
@@ -197,7 +214,8 @@ public class DemFileParserImp implements DemFileParser {
 	private synchronized Mono<Void>  processFiles(List<File> files) {
 		AtomicInteger countProcessedFiles = new AtomicInteger(0);
 		
-		Function<? super File, ? extends Publisher<? extends Tuple2<String, SvcMapStats>>> function = f -> { // Extracting info from DEM file 
+		// Function to used to extract the data from the DEM file
+		Function<? super File, ? extends Publisher<? extends Tuple2<String, SvcMapStats>>> function = f -> { 
 			return generateMapStatFromFile(f).map(stats -> {
 				return Tuples.of(f.getAbsolutePath(), stats);
 			})

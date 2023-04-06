@@ -12,6 +12,12 @@ import com.ixigo.library.errors.IxigoException;
 
 import reactor.core.publisher.Mono;
 
+/**
+ * Interface to manage (save, get, list) the DEM files
+ * 
+ * @author marco
+ *
+ */
 public interface DemFileManager {
 	/**
 	 * It saves the file and return the path of the saved file

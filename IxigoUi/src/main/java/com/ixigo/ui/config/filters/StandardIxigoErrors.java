@@ -9,7 +9,7 @@ import com.ixigo.library.messages.IxigoMessageResource;
 public class StandardIxigoErrors extends IxigoServiceExceptionHandler {
 
     public StandardIxigoErrors(IxigoMessageResource msgSource) {
-        super(msgSource, "UI0000");
+        super(msgSource, "UI00000");
     }
 
 }

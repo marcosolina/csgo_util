@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriBuilder;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,6 +29,7 @@ import com.ixigo.ui.constants.ErrorCodes;
 import com.ixigo.ui.controllers.Forward;
 
 import reactor.core.publisher.Mono;
+import reactor.netty.http.client.HttpClient;
 
 @Component
 public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpReqCmd, Object> {
@@ -37,14 +40,15 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 	private IxigoWebClientUtils webClient;
 	@Autowired
 	private IxigoEndPoints endPoints;
-	
-	private final int size = 16 * 1024 * 1024 * 100;
+
+	private final static WebClient.Builder builderForFileDownload = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true)));
+	private final int size = 100 * 1024 * 1024; // 100MB
 	private final ExchangeStrategies strategies = ExchangeStrategies.builder().codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size)).build();
-	
+
 	@Override
 	public Mono<ResponseEntity<Object>> handle(ForwardHttpReqCmd cmd) {
 		_LOGGER.trace("Inside ForwardHttpReqCmdHandler.handle");
-		
+
 		try {
 			// Update the URI to let it point to the proxy Service
 			var stringUri = cmd.getRequestedUri().replace(cmd.getContextPath() + Forward.REQUEST_MAPPING, endPoints.getEndPoints().get("gateway").get("base-url"));
@@ -52,26 +56,25 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 			_LOGGER.debug(cmd.getContextPath());
 			_LOGGER.debug(stringUri);
 			var tmpBody = Serializable.class.cast(cmd.getBody());
-			if(tmpBody != null) {
+			if (tmpBody != null) {
 				var objectMapper = new ObjectMapper();
 				try {
 					_LOGGER.debug(objectMapper.writeValueAsString(tmpBody));
 				} catch (JsonProcessingException e) {
-					
+
 				}
 			}
 			var url = new URL(stringUri);
-			
+
 			Mono<ResponseEntity<Object>> resp = null;
-			
+
 			/*
-			 * Dem files requires more http cache, hence I'll use
-			 * a custom strategy to allow the request to manage
-			 * multiple Megabytes of data
+			 * Dem files requires more http cache, hence I'll use a custom strategy to allow
+			 * the request to manage multiple Megabytes of data
 			 */
-			if(stringUri.endsWith(".dem")) { 
+			if (stringUri.endsWith(".dem")) {
 				// @formatter:off
-				resp = webClient.getWebBuilder()
+				resp = builderForFileDownload
 						.exchangeStrategies(strategies)
 						.build()
 						.get()
@@ -91,14 +94,15 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 							return new ResponseEntity<Object>(demFileObj, r.getStatusCode());
 						});
 				// @formatter:on
+			} else {
+				resp = webClient.performRequest(Object.class, cmd.getHttpMethod(), url, Optional.empty(), Optional.ofNullable(cmd.getQueryParams()), Optional.empty(), Optional.ofNullable(tmpBody));
 			}
-			resp = webClient.performRequest(Object.class, cmd.getHttpMethod(), url, Optional.empty(), Optional.ofNullable(cmd.getQueryParams()), Optional.empty(), Optional.ofNullable(tmpBody));
-			
+
 			return resp.map(r -> {
 				_LOGGER.debug(String.format("Forwarded http resp status: %s", r.getStatusCode().toString()));
 				return r;
 			});
-		}catch (MalformedURLException ex) {
+		} catch (MalformedURLException ex) {
 			_LOGGER.error(ex.getMessage());
 			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MALFORMAT_URI), ErrorCodes.MALFORMAT_URI);
 		}

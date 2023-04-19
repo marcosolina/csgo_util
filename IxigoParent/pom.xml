@@ -86,12 +86,6 @@
 			<scope>provided</scope>
 		</dependency>
 
-		<dependency>
-			<groupId>org.mapstruct</groupId>
-			<artifactId>mapstruct</artifactId>
-			<version>${org.mapstruct.version}</version>
-		</dependency>
-
 		<!-- Custom libraries -->
 		<dependency>
 			<groupId>com.ixigo</groupId>

@@ -1,12 +1,10 @@
 ﻿
 
-using DemoInfo;
 using DemParser.Analyzer;
 using DemParser.Core.Models;
 using DemParser.Core.Models.Source;
 using DemParser.Core.Models.Events;
 using System;
-using System.IO;
 
 namespace DemParser
 {

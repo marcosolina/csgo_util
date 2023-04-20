@@ -1,5 +1,5 @@
 export const PROXY_BASE_PATH =
-  (window as { [key: string]: any })["srvContextPath"] || "https://marco.selfip.net/ixigoproxy"; //"http://localhost:8763/ixigoproxy";
+  (window as { [key: string]: any })["srvContextPath"] || "http://localhost:8763/ixigoproxy"; //"https://marco.selfip.net/ixigoproxy";
 export const UI_CONTEXT_PATH = (window as { [key: string]: any })["uiContextPath"] || "";
 
 export const SERVICES_URLS = {
@@ -13,9 +13,9 @@ export const SERVICES_URLS = {
     "post-parse-queued-files": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/parse/queued",
     "post-parse-all-files": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/parse/all",
     "get-dem-data-scores-type": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/scorestype",
-    "get-dem-data-maps-played": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/mapsplayed",
     "get-dem-data-users": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/users",
     "get-dem-data-users-scores": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/usersscores",
+    "get-charts-data-maps-played": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/mapsplayed",
   },
   "event-dispatcher": {
     "gateway-path": "ixigo-event-dispatcher",

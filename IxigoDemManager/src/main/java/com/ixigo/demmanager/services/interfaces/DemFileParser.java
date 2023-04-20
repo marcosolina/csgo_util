@@ -6,7 +6,6 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
-import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserStatsForLastXGames;
 import com.ixigo.library.errors.IxigoException;
@@ -31,13 +30,6 @@ public interface DemFileParser {
      * @return
      */
     public Mono<Map<String, String>> mapOfAvailableScores();
-
-    /**
-     * It returns the number of time we played the different maps
-     * 
-     * @return
-     */
-    public Flux<SvcMapPlayedCounter> countGamesOnAMap();
 
     /**
      * It will return a list of all the known users

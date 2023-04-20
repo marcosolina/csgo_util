@@ -27,10 +27,8 @@ import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.mappers.SvcMapper;
 import com.ixigo.demmanager.models.database.Dem_process_queueDto;
-import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
 import com.ixigo.demmanager.models.database.UsersDto;
 import com.ixigo.demmanager.models.database.Users_scoresDto;
-import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
@@ -143,17 +141,6 @@ public class DemFileParserImp implements DemFileParser {
 	}
 
 	@Override
-	public Flux<SvcMapPlayedCounter> countGamesOnAMap() {
-		Flux<DtoMapPlayedCounter> maps = repoUserScore.getMapsPlayed();
-		return maps.map(dto -> {
-			SvcMapPlayedCounter mp = new SvcMapPlayedCounter();
-			mp.setCount(dto.getCount());
-			mp.setMapName(dto.getMapName());
-			return mp;
-		});
-	}
-
-	@Override
 	public Flux<SvcUser> getListOfUsers() throws IxigoException {
 		return repoUser.getUsers().map(mapper::fromDtoToSvc);
 	}
@@ -204,11 +191,23 @@ public class DemFileParserImp implements DemFileParser {
 	 */
 	private SvcMapStats setMapNameAndTime(File f) {
 		String[] tmp = f.getName().split("-");
-		LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(tmp[1] + "_" + tmp[2], DateFormats.FILE_NAME);
+		String date = tmp[1];
+		String time = tmp[2];
+		String mapName = tmp[4];
+		
+		LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(date + "_" + time, DateFormats.FILE_NAME);
 		SvcMapStats ms = new SvcMapStats();
 		ms.setPlayedOn(ldt);
-		ms.setMapName(tmp[4]);
+		ms.setMapName(cleanMapName(mapName));
 		return ms;
+	}
+	
+	private String cleanMapName(String dirtyMapName) {
+		if(dirtyMapName.toLowerCase().contains("workshop")) {
+			int secondUnderscoreIndex = dirtyMapName.indexOf('_', dirtyMapName.indexOf('_') + 1);
+			return dirtyMapName.substring(secondUnderscoreIndex + 1);
+		}
+		return dirtyMapName;
 	}
 
 	private synchronized Mono<Void>  processFiles(List<File> files) {

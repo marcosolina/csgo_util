@@ -12,11 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.demmanager.commands.demdata.CmdGetMapPlayedCount;
 import com.ixigo.demmanager.commands.demdata.CmdGetScoreType;
 import com.ixigo.demmanager.commands.demdata.CmdGetUsers;
 import com.ixigo.demmanager.commands.demdata.CmdGetUsersLastScores;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestMapsPlayed;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
@@ -45,13 +43,6 @@ public class ControllerDemData {
 	public Mono<ResponseEntity<RestScoreTypes>> getScoreType() {
 		_LOGGER.trace("Inside ControllerDemData.getScoreType");
 		return mediator.send(new CmdGetScoreType());
-	}
-
-	@GetMapping("/mapsplayed")
-	@ApiOperation(value = "It will returns how many times we played a map")
-	public Mono<ResponseEntity<RestMapsPlayed>> getMapPlayedCount() {
-		_LOGGER.trace("Inside ControllerDemData.getMapPlayedCount");
-		return mediator.send(new CmdGetMapPlayedCount());
 	}
 
 	@GetMapping("/users")

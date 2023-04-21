@@ -70,7 +70,7 @@ public class DemDataSteps {
 	@When("I perform a GET request to retrieve maps played counters")
 	public void i_perform_a_get_request_to_retrieve_maps_played_counters() {
 		try {
-			URL url = new URL(endPoints.getGetDemDataMapsPlayed());
+			URL url = new URL(endPoints.getGetChartsDataMapsPlayed());
 			_LOGGER.debug(url.toString());
 			var resp = webClient.performGetRequestNoExceptions(RestMapsPlayed.class, url, Optional.empty(), Optional.empty()).block();
 			assertNotNull(resp);

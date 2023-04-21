@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.commands.demdata;
+package com.ixigo.demmanager.commands.charts;
 
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapsPlayed;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;

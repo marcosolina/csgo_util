@@ -14,9 +14,10 @@ public class DemManagersEndPoints {
 	private String postParseAllFiles;
 	
 	private String getDemDataScoresType; 
-	private String getDemDataMapsPlayed;
 	private String getDemDataUsers;
 	private String getDemDataUsersScores;
+	
+	private String getChartsDataMapsPlayed;
 
 	public String getGetDemDataScoresType() {
 		return getDemDataScoresType;
@@ -26,16 +27,16 @@ public class DemManagersEndPoints {
 		this.getDemDataScoresType = getDemDataScoresType;
 	}
 
-	public String getGetDemDataMapsPlayed() {
-		return getDemDataMapsPlayed;
-	}
-
-	public void setGetDemDataMapsPlayed(String getDemDataMapsPlayed) {
-		this.getDemDataMapsPlayed = getDemDataMapsPlayed;
-	}
-
 	public String getGetDemDataUsers() {
 		return getDemDataUsers;
+	}
+
+	public String getGetChartsDataMapsPlayed() {
+		return getChartsDataMapsPlayed;
+	}
+
+	public void setGetChartsDataMapsPlayed(String getChartsDataMapsPlayed) {
+		this.getChartsDataMapsPlayed = getChartsDataMapsPlayed;
 	}
 
 	public void setGetDemDataUsers(String getDemDataUsers) {

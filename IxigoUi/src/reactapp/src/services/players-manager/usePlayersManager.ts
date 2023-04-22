@@ -18,7 +18,6 @@ export const useGetTeams = (): IGetTeamsResult => {
 
   useEffect(() => {
     if (mutation.status === QueryStatus.error && data && data.data) {
-      console.log("mutation", data);
       checkRespRef.current(data);
     }
   }, [mutation.status, data, checkRespRef]);

@@ -1,4 +1,4 @@
-import { IAvgScorePerMap, useGetAvgScoresPerMap, useGetCsgoPlayers } from "../../../services";
+import { IAvgScorePerMap } from "../../../services";
 import { ChartData, ChartOptions, registerables, Chart } from "chart.js";
 import { Radar } from "react-chartjs-2";
 import { QueryStatus } from "../../../lib/http-requests";
@@ -9,7 +9,6 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { COLOR_PALETTE, DEFAULT_SPACING, generateRgbaString } from "../../../lib/constants";
-import { combineQueryStatuses } from "../../../lib/queries";
 import { useAvgScoresPerMapData } from "./useAvgScoresPerMapData";
 import IxigoSwitch from "../../../common/switch/IxigoSwitch";
 import IxigoSelect from "../../../common/select/IxigoSelect";
@@ -107,7 +106,7 @@ const AvgScorePerMap = () => {
         datasets: Object.keys(scores).map((steamId, index) => {
           const avgs = fillMissingMaps(maps, scores[steamId], steamId);
           avgs.sort((a, b) => a.map_name.localeCompare(b.map_name));
-          console.log(avgs);
+
           return {
             label: usersDef.find((u) => u.steam_id === steamId)?.user_name, //Steam ID
             data: avgs.map((avg) => avg.avg_score), // avg
@@ -119,7 +118,7 @@ const AvgScorePerMap = () => {
       };
       setData(newData);
     }
-  }, [status]);
+  }, [status, avgScores, steamIds, users]);
 
   return (
     <>

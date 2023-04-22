@@ -97,7 +97,7 @@ const AvgScorePerMap = () => {
       const mapsWithDuplicates = Object.keys(scores)
         .map((k) => scores[k].map((list) => list.map_name))
         .flat();
-      const maps = Array.from(new Set(mapsWithDuplicates));
+      const maps = Array.from(new Set(mapsWithDuplicates)).sort((a, b) => a.localeCompare(b));
 
       const colors = steamIds.map((id, index) => COLOR_PALETTE[index % COLOR_PALETTE.length]);
       const usersDef = users;
@@ -106,7 +106,8 @@ const AvgScorePerMap = () => {
         labels: maps,
         datasets: Object.keys(scores).map((steamId, index) => {
           const avgs = fillMissingMaps(maps, scores[steamId], steamId);
-          avgs.sort((a, b) => (a.map_name > b.map_name ? 1 : b.map_name > a.map_name ? -1 : 0));
+          avgs.sort((a, b) => a.map_name.localeCompare(b.map_name));
+          console.log(avgs);
           return {
             label: usersDef.find((u) => u.steam_id === steamId)?.user_name, //Steam ID
             data: avgs.map((avg) => avg.avg_score), // avg

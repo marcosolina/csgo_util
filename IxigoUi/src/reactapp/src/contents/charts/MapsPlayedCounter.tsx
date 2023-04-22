@@ -56,15 +56,16 @@ const MapsPlayedCounter = () => {
 
   useEffect(() => {
     if (status === QueryStatus.success) {
-      const newData = { ...data };
       const count = ixigoResp.data?.maps || [];
+      const newData: ChartData<"bar", (number | [number, number] | null)[], unknown> = {
+        labels: count.map((m) => m.map_name),
+        datasets: [
+          {
+            data: count.map((m) => m.count),
+          },
+        ],
+      };
 
-      newData.labels = count.map((m) => m.map_name);
-      newData.datasets = [
-        {
-          data: count.map((m) => m.count),
-        },
-      ];
       setData(newData);
       setChartHeight(count.length * 20);
     }

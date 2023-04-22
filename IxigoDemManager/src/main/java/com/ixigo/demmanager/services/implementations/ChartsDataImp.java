@@ -1,11 +1,17 @@
 package com.ixigo.demmanager.services.implementations;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
-import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
+import com.ixigo.demmanager.models.database.DtoUserAvgScorePerMap;
+import com.ixigo.demmanager.models.svc.charts.SvcMapPlayedCounter;
+import com.ixigo.demmanager.models.svc.charts.SvcUserAvgScorePerMap;
 import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
 import com.ixigo.demmanager.services.interfaces.ChartsData;
 
@@ -30,6 +36,19 @@ public class ChartsDataImp implements ChartsData{
 			mp.setCount(dto.getCount());
 			mp.setMapName(dto.getMapName());
 			return mp;
+		});
+	}
+
+	@Override
+	public Flux<SvcUserAvgScorePerMap> getUserAverageScorePerMap(String steamId, ScoreType scoreType) {
+		_LOGGER.trace("Inside: ChartsDataImp.getUserAverageScorePerMap");
+		Flux<DtoUserAvgScorePerMap> scores = repoUserScore.getUserAveragaScorePerMap(steamId, scoreType);
+		return scores.map(dto -> {
+			var svc = new SvcUserAvgScorePerMap();
+			svc.setAvgScore(BigDecimal.valueOf(dto.getAvgScore()).setScale(3, RoundingMode.DOWN));
+			svc.setMapName(dto.getMapName());
+			svc.setSteamId(dto.getSteamId());
+			return svc;
 		});
 	}
 }

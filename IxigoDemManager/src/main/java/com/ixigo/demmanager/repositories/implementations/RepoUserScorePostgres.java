@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.DatabaseClient.GenericExecuteSpec;
 
+import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
+import com.ixigo.demmanager.models.database.DtoUserAvgScorePerMap;
 import com.ixigo.demmanager.models.database.Users_scoresDao;
 import com.ixigo.demmanager.models.database.Users_scoresDto;
 import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
@@ -84,7 +86,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		sql.append(" ) as a");
 		sql.append(" GROUP BY ");
 		sql.append(Users_scoresDto.Fields.map);
-		sql.append(" order by " + Users_scoresDto.Fields.map);
+		sql.append(" order by count desc ");
 		GenericExecuteSpec ges = client.sql(sql.toString());
 
 		return ges.map((Row row, RowMetadata rowMetaData) -> {
@@ -130,6 +132,34 @@ public class RepoUserScorePostgres implements RepoUserScore {
 			.bind("limit", numberOfMatches)
 			.map(dao::mappingFunction)
 			.all();
+		// @formatter:on
+	}
+
+	@Override
+	public Flux<DtoUserAvgScorePerMap> getUserAveragaScorePerMap(String steamId, ScoreType scoreType) {
+		_LOGGER.trace("Inside RepoUserScorePostgres.getUserAveragaScorePerMap");
+		String avgFieldName = "average_score";
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT " + Users_scoresDto.Fields.map + "," + Users_scoresDto.Fields.steam_id + ", avg(" + scoreType.toString().toLowerCase() + ") as " + avgFieldName);
+		sql.append(" FROM ");
+		sql.append(Users_scoresDao.tableName);
+		sql.append(" WHERE ");
+		sql.append(Users_scoresDto.Fields.steam_id);
+		sql.append(" =:" + Users_scoresDto.Fields.steam_id);
+		sql.append(" group by " + Users_scoresDto.Fields.map + ", " + Users_scoresDto.Fields.steam_id );
+		sql.append(" order by " + Users_scoresDto.Fields.map);
+
+		// @formatter:off
+		GenericExecuteSpec ges = client.sql(sql.toString())
+				.bind(Users_scoresDto.Fields.steam_id, steamId);
+		
+		return ges.map((Row row, RowMetadata rowMetaData) -> {
+			return new DtoUserAvgScorePerMap(
+					row.get(Users_scoresDto.Fields.steam_id, String.class),
+				row.get(Users_scoresDto.Fields.map, String.class),
+				row.get(avgFieldName, Double.class))
+			;
+		}).all();
 		// @formatter:on
 	}
 

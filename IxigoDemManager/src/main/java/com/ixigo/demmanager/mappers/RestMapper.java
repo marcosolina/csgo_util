@@ -6,10 +6,12 @@ import java.util.Map;
 import org.mapstruct.Mapper;
 
 import com.ixigo.demmanager.models.svc.SvcFileInfo;
-import com.ixigo.demmanager.models.svc.demdata.SvcMapPlayedCounter;
+import com.ixigo.demmanager.models.svc.charts.SvcMapPlayedCounter;
+import com.ixigo.demmanager.models.svc.charts.SvcUserAvgScorePerMap;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestMapPlayed;
+import com.ixigo.demmanagercontract.models.rest.charts.RestAvgScorePerMap;
+import com.ixigo.demmanagercontract.models.rest.charts.RestMapPlayed;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
 import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestFileInfo;
@@ -33,6 +35,8 @@ public interface RestMapper {
 	public RestMapPlayed fromSvcToRest(SvcMapPlayedCounter svc);
 
 	public List<RestMapPlayed> fromSvcToRestMapPlayedList(List<SvcMapPlayedCounter> svc);
+	
+	public List<RestAvgScorePerMap> fromSvcToRestAvgScorePerMapList(List<SvcUserAvgScorePerMap> svc);
 
 	public RestUser fromSvcToRest(SvcUser svc);
 

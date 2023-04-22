@@ -39,6 +39,11 @@
         "loading": "Sorry something went wrong"
       }
     },
+    "charts": {
+      "mapPlayedCount": {
+        "title": "Number of times a map was played"
+      }
+    },
     "serverInfo": {
       "pictures": {
         "1": {

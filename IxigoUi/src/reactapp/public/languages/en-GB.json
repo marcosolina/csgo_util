@@ -39,6 +39,15 @@
         "loading": "Sorry something went wrong"
       }
     },
+    "charts": {
+      "mapPlayedCount": {
+        "title": "Number of times a map was played"
+      },
+      "avgScorePerMap": {
+        "title": "Number of times a map was played",
+        "lblScoreTypes": "Score type"
+      }
+    },
     "serverInfo": {
       "pictures": {
         "1": {

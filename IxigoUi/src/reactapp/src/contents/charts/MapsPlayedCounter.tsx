@@ -1,12 +1,13 @@
 import { Bar } from "react-chartjs-2";
-import { Box, Skeleton } from "@mui/material";
-import { ChartData, ChartOptions, registerables, Chart, ChartDataset } from "chart.js";
+import { Box, Skeleton, Typography } from "@mui/material";
+import { ChartData, ChartOptions, registerables, Chart } from "chart.js";
 import { useGetMapsPlayedCount } from "../../services/charts";
 import { useEffect, useState } from "react";
 import { QueryStatus } from "../../lib/http-requests";
 import Switch from "../../common/switch-case/Switch";
 import Case from "../../common/switch-case/Case";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import { useTranslation } from "react-i18next";
 
 Chart.register(...registerables);
 
@@ -26,8 +27,7 @@ const OPTIONS: ChartOptions<"bar"> = {
       display: false,
     },
     title: {
-      display: true,
-      text: "Number of times a map was played",
+      display: false,
     },
   },
   scales: {
@@ -48,6 +48,7 @@ const OPTIONS: ChartOptions<"bar"> = {
 };
 
 const MapsPlayedCounter = () => {
+  const { t } = useTranslation();
   const [data, setData] = useState<ChartData<"bar", (number | [number, number] | null)[], unknown>>(DATA);
   const [chartHeight, setChartHeight] = useState<number>(0);
 
@@ -72,8 +73,11 @@ const MapsPlayedCounter = () => {
   return (
     <Switch value={status}>
       <Case case={QueryStatus.success}>
-        <Box sx={{ width: "100%", height: `${chartHeight}px` }}>
-          <Bar data={data} options={OPTIONS} />
+        <Typography align="center">{t("page.charts.mapPlayedCount.title")}</Typography>
+        <Box sx={{ width: "100%", height: `400px`, overflowY: "auto" }}>
+          <Box sx={{ width: "100%", height: `${chartHeight}px` }}>
+            <Bar data={data} options={OPTIONS} />
+          </Box>
         </Box>
       </Case>
       <Case case={QueryStatus.loading}>

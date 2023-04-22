@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.models.svc.demdata;
+package com.ixigo.demmanager.models.svc.charts;
 
 /**
  * Service layer model which has the number of times the map was played

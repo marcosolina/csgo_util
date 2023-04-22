@@ -1,4 +1,4 @@
-package com.ixigo.demmanagercontract.models.rest.demdata;
+package com.ixigo.demmanagercontract.models.rest.charts;
 
 import java.io.Serializable;
 

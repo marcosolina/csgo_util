@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.ixigo.demmanager.commands.charts.CmdGetMapPlayedCount;
 import com.ixigo.demmanager.mappers.RestMapper;
 import com.ixigo.demmanager.services.interfaces.ChartsData;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestMapsPlayed;
+import com.ixigo.demmanagercontract.models.rest.charts.RestMapsPlayed;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;

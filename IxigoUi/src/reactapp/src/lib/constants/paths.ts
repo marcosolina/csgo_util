@@ -16,6 +16,7 @@ export const SERVICES_URLS = {
     "get-dem-data-users": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/users",
     "get-dem-data-users-scores": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/usersscores",
     "get-charts-data-maps-played": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/mapsplayed",
+    "get-charts-avg-scores-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/avgscore",
   },
   "event-dispatcher": {
     "gateway-path": "ixigo-event-dispatcher",

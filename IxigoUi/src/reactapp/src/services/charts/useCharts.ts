@@ -1,8 +1,9 @@
 import { UseQueryResult, useQuery } from "react-query";
-import { IxigoResponse } from "../../lib/http-requests";
-import { IMapsPlayed } from "./interfaces";
+import { IxigoResponse, QueryParamType } from "../../lib/http-requests";
+import { IAvgScoresPerMap, IGetAvgScoresPerMapRequest, IMapsPlayed } from "./interfaces";
 import { performGet } from "../../lib/http-requests/httpRequests";
 import { SERVICES_URLS } from "../../lib/constants";
+import { createQueryParamString } from "../../lib/http-requests/httpRequests";
 
 /**
  * It returns the number of times the maps were played
@@ -12,5 +13,21 @@ export const useGetMapsPlayedCount = (): UseQueryResult<IxigoResponse<IMapsPlaye
   return useQuery(
     "getMapsPlayedCount",
     async () => await performGet<IMapsPlayed>(SERVICES_URLS["dem-manager"]["get-charts-data-maps-played"])
+  );
+};
+
+export const useGetAvgScoresPerMap = (
+  request: IGetAvgScoresPerMapRequest
+): UseQueryResult<IxigoResponse<IAvgScoresPerMap>, unknown> => {
+  const queryParam = createQueryParamString(request as unknown as Record<string, QueryParamType>);
+  return useQuery(
+    ["getAvgScorePerMap", queryParam],
+    async () =>
+      await performGet<IAvgScoresPerMap>(
+        `${SERVICES_URLS["dem-manager"]["get-charts-avg-scores-per-map"]}${queryParam}`
+      ),
+    {
+      enabled: request.steamIds.length > 0,
+    }
   );
 };

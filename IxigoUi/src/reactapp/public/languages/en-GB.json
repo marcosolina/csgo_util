@@ -42,6 +42,10 @@
     "charts": {
       "mapPlayedCount": {
         "title": "Number of times a map was played"
+      },
+      "avgScorePerMap": {
+        "title": "Number of times a map was played",
+        "lblScoreTypes": "Score type"
       }
     },
     "serverInfo": {

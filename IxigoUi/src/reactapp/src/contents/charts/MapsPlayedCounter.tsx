@@ -1,13 +1,12 @@
 import { Bar } from "react-chartjs-2";
 import { Box, Skeleton, Typography } from "@mui/material";
-import { ChartData, ChartOptions, registerables, Chart, ChartDataset } from "chart.js";
+import { ChartData, ChartOptions, registerables, Chart } from "chart.js";
 import { useGetMapsPlayedCount } from "../../services/charts";
 import { useEffect, useState } from "react";
 import { QueryStatus } from "../../lib/http-requests";
 import Switch from "../../common/switch-case/Switch";
 import Case from "../../common/switch-case/Case";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { use } from "i18next";
 import { useTranslation } from "react-i18next";
 
 Chart.register(...registerables);

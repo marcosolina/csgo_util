@@ -63,7 +63,9 @@ public class GetAvgScorePerMapHandler implements WebCommandHandler<CmdGetAvgScor
 	        .map(list -> {
 	        	Map<String, List<RestAvgScorePerMap>> map = new HashMap<>();
 	        	list.forEach(l -> {
-	        		map.put(l.get(0).getSteamId(), mapper.fromSvcToRestAvgScorePerMapList(l));
+	        		if(l != null && !l.isEmpty()) {
+	        			map.put(l.get(0).getSteamId(), mapper.fromSvcToRestAvgScorePerMapList(l));
+	        		}
 	        	});
 	        	return map;
 	        })

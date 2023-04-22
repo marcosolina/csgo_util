@@ -44,7 +44,7 @@
         "title": "Number of times a map was played"
       },
       "avgScorePerMap": {
-        "title": "Number of times a map was played",
+        "title": "Average score per map",
         "lblScoreTypes": "Score type"
       }
     },

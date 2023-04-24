@@ -20,11 +20,17 @@ public class CmdGetAvgScorePerMap implements WebCommandRequest<RestAvgScoresPerM
 	private List<String> steamIds;
 	@JsonProperty("scoreType")
 	private String scoreType;
+	@JsonProperty("maps")
+	private List<String> maps;
+	@JsonProperty("matchesToConsider")
+	private String matchesToConsider;
 
-	public CmdGetAvgScorePerMap(List<String> steamIds, String scoreType) {
+	public CmdGetAvgScorePerMap(List<String> steamIds, String scoreType, List<String> maps, String matchesToConsider) {
 		super();
 		this.steamIds = steamIds;
 		this.scoreType = scoreType;
+		this.maps = maps;
+		this.matchesToConsider = matchesToConsider;
 	}
 
 	public List<String> getSteamIds() {
@@ -41,6 +47,22 @@ public class CmdGetAvgScorePerMap implements WebCommandRequest<RestAvgScoresPerM
 
 	public void setScoreType(String scoreType) {
 		this.scoreType = scoreType;
+	}
+
+	public List<String> getMaps() {
+		return maps;
+	}
+
+	public void setMaps(List<String> maps) {
+		this.maps = maps;
+	}
+
+	public String getMatchesToConsider() {
+		return matchesToConsider;
+	}
+
+	public void setMatchesToConsider(String matchesToConsider) {
+		this.matchesToConsider = matchesToConsider;
 	}
 
 }

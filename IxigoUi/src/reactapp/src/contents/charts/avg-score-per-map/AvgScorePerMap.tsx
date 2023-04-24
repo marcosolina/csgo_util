@@ -10,8 +10,10 @@ import { useTranslation } from "react-i18next";
 import { useEffect, useState } from "react";
 import { COLOR_PALETTE, DEFAULT_SPACING, generateRgbaString } from "../../../lib/constants";
 import { useAvgScoresPerMapData } from "./useAvgScoresPerMapData";
-import IxigoSwitch from "../../../common/switch/IxigoSwitch";
 import IxigoSelect from "../../../common/select/IxigoSelect";
+import IxigoSelectMultiple from "../../../common/select/IxigoSelectMultiple";
+import IxigoText from "../../../common/input/IxigoText";
+import { IxigoTextType } from "../../../common";
 
 Chart.register(...registerables);
 
@@ -66,29 +68,27 @@ const OPTIONS: ChartOptions<"radar"> = {
   },
 };
 
+const XS = 12;
+const SM = 6;
+const MD = 4;
+const LG = 3;
+const XL = 3;
+
 const AvgScorePerMap = () => {
   const { t } = useTranslation();
 
   const [steamIds, setSteamIds] = useState<string[]>([]);
-  const [data, setData] = useState<ChartData<"radar", number[], string>>(DATA);
+  const [scoresForMaps, setScoresForMaps] = useState<string[]>([]);
   const [scoreType, setScoreType] = useState<string>("HLTV");
+  const [matchesToConsider, setMatchesToConsider] = useState<string>("0");
+  const [data, setData] = useState<ChartData<"radar", number[], string>>(DATA);
 
-  const { status, users, avgScores, scoreTypes } = useAvgScoresPerMapData({ steamIds, scoreType });
-
-  const onSelectedPlayer = (stramId: string, addUser: boolean) => {
-    const players = [...steamIds];
-
-    const index = players.indexOf(stramId);
-    if (addUser && index < 0) {
-      players.push(stramId);
-    }
-
-    if (index >= 0) {
-      players.splice(index, 1);
-    }
-
-    setSteamIds(players);
-  };
+  const { status, users, avgScores, scoreTypes, mapsPlayed } = useAvgScoresPerMapData({
+    steamIds,
+    scoreType,
+    maps: scoresForMaps,
+    matchesToConsider,
+  });
 
   useEffect(() => {
     if (status === QueryStatus.success && !!avgScores && users) {
@@ -124,23 +124,41 @@ const AvgScorePerMap = () => {
     <>
       <Typography align="center">{t("page.charts.avgScorePerMap.title")}</Typography>
       <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
-        {users.map((player) => (
-          <Grid item xs={6} sm={4} md={3} lg={3} xl={3} key={player.steam_id}>
-            <IxigoSwitch
-              label={player.user_name}
-              value={player.steam_id}
-              checked={steamIds.includes(player.steam_id)}
-              onChange={onSelectedPlayer}
-            />
-          </Grid>
-        ))}
+        <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+          <IxigoSelect
+            label={t("page.charts.avgScorePerMap.lblScoreTypes") as string}
+            possibleValues={scoreTypes}
+            selectedValue={scoreType}
+            onChange={(v) => setScoreType(v)}
+          />
+        </Grid>
+        <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+          <IxigoSelectMultiple
+            label={t("page.charts.avgScorePerMap.lblDpUsers") as string}
+            selectedValues={steamIds}
+            possibleValues={users.map((u) => ({ label: u.user_name, value: u.steam_id }))}
+            onChange={setSteamIds}
+          />
+        </Grid>
+        <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+          <IxigoSelectMultiple
+            label={t("page.charts.avgScorePerMap.lblDpMaps") as string}
+            selectedValues={scoresForMaps}
+            possibleValues={mapsPlayed.map((m) => ({ value: m.map_name, label: m.map_name }))}
+            onChange={setScoresForMaps}
+            helperText={t("page.charts.avgScorePerMap.txtHelpDpMaps") as string}
+          />
+        </Grid>
+        <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+          <IxigoText
+            label={t("page.charts.avgScorePerMap.lblMatchCount") as string}
+            type={IxigoTextType.number}
+            value={matchesToConsider}
+            onChange={setMatchesToConsider}
+            helperText={t("page.charts.avgScorePerMap.txtHelpMatchCount") as string}
+          />
+        </Grid>
       </Grid>
-      <IxigoSelect
-        label={t("page.charts.avgScorePerMap.lblScoreTypes") as string}
-        possibleValues={scoreTypes}
-        selectedValue={scoreType}
-        onChange={(v) => setScoreType(v)}
-      />
       <Switch value={status}>
         <Case case={QueryStatus.success}>
           <Box sx={{ width: "100%", height: "100%" }}>

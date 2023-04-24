@@ -34,6 +34,39 @@ public class ValidatorCmdGetAvgScorePerMap extends IxigoValidator<CmdGetAvgScore
 	        .withAttempedValue(CmdGetAvgScorePerMap::getScoreType)
 	        .withFieldName(this.getJsonPropertyName(CmdGetAvgScorePerMap.Fields.scoreType));
 		
+		ruleFor(CmdGetAvgScorePerMap::getMatchesToConsider)
+	        .must(number -> {
+	        	try {
+	        		Integer.parseInt(number);
+	        	}catch (NumberFormatException e) {
+	        		return false;
+	        	}
+	        	return true;
+	        })
+	        .when(not(stringEmptyOrNull()))
+	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_MUST_BE_AN_INTEGER))
+	        .withCode(ErrorCodes.ERROR_MUST_BE_AN_INTEGER)
+	        .withAttempedValue(CmdGetAvgScorePerMap::getMatchesToConsider)
+	        .withFieldName(this.getJsonPropertyName(CmdGetAvgScorePerMap.Fields.matchesToConsider));
+		
+		ruleFor(CmdGetAvgScorePerMap::getMatchesToConsider)
+	        .must(number -> Integer.parseInt(number) > -1)
+	        .when(number -> {
+	        	if(number != null && !number.trim().isEmpty()) {
+	        		try {
+		        		Integer.parseInt(number);
+		        	}catch (NumberFormatException e) {
+		        		return false;
+		        	}
+		        	return true;
+	        	}
+	        	return false;
+	        })
+	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_MUST_NOT_BE_NEGATIVE))
+	        .withCode(ErrorCodes.ERROR_MUST_NOT_BE_NEGATIVE)
+	        .withAttempedValue(CmdGetAvgScorePerMap::getMatchesToConsider)
+	        .withFieldName(this.getJsonPropertyName(CmdGetAvgScorePerMap.Fields.matchesToConsider));
+		
 		ruleFor(CmdGetAvgScorePerMap::getScoreType)
 	        .must(strScoreType -> {
 	        	try {

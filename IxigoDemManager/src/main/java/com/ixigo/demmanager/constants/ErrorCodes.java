@@ -13,4 +13,6 @@ public class ErrorCodes {
 	public static String ERROR_READING_DEM_FILE = "DEM0003";
 	public static String ERROR_MANDATORY = "DEM0004";
 	public static String ERROR_SCORE_TYPE_INVALID = "DEM0005";
+	public static String ERROR_MUST_BE_AN_INTEGER = "DEM0006";
+	public static String ERROR_MUST_NOT_BE_NEGATIVE = "DEM0007";
 }

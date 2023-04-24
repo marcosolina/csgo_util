@@ -1,4 +1,5 @@
 import {
+  Checkbox,
   FilledInput,
   FormControl,
   FormHelperText,
@@ -9,9 +10,9 @@ import {
   Select,
   SelectChangeEvent,
 } from "@mui/material";
-import { IIxigoSelectProps, IxigoSelectState, IxigoSelectVariant, IxigoSelectWidth } from "./interfaces";
+import { IIxigoMultipleSelectProps, IxigoSelectState, IxigoSelectVariant, IxigoSelectWidth } from "./interfaces";
 
-const IxigoSelect: React.FC<IIxigoSelectProps> = (props) => {
+const IxigoSelectMultiple: React.FC<IIxigoMultipleSelectProps> = (props) => {
   const width = props.width === IxigoSelectWidth.fitContent ? "" : "100%";
   let variantElement = undefined;
   let variantText = props.variant;
@@ -28,12 +29,12 @@ const IxigoSelect: React.FC<IIxigoSelectProps> = (props) => {
       break;
   }
 
-  const onChange = (event: SelectChangeEvent<string>) => {
+  const onChange = (event: SelectChangeEvent<string[]>) => {
     const {
       target: { value },
     } = event;
     if (props.onChange) {
-      props.onChange(value);
+      props.onChange(typeof value === "string" ? value.split(",") : value);
     }
   };
 
@@ -47,20 +48,27 @@ const IxigoSelect: React.FC<IIxigoSelectProps> = (props) => {
       error={props.isError}
       focused
     >
-      {props.label && <InputLabel id="demo-multiple-checkbox-label">{props.label}</InputLabel>}
+      <InputLabel id="demo-multiple-checkbox-label">{props.label}</InputLabel>
       <Select
         labelId="demo-multiple-checkbox-label"
         id="demo-multiple-checkbox"
-        value={props.possibleValues.find((e) => props.selectedValue === e.value)?.value || ""}
+        multiple
+        value={props.selectedValues}
         onChange={onChange}
         input={variantElement}
-        renderValue={(selected) => props.possibleValues.filter((e) => selected === e.value).map((e) => e.label)}
+        renderValue={(selected) =>
+          props.possibleValues
+            .filter((e) => selected.includes(e.value))
+            .map((e) => e.label)
+            .join(", ")
+        }
         inputProps={{
           readOnly: props.state === IxigoSelectState.readonly,
         }}
       >
         {props.possibleValues.map((arrVal) => (
           <MenuItem key={arrVal.value} value={arrVal.value}>
+            <Checkbox checked={props.selectedValues.indexOf(arrVal.value) > -1} />
             <ListItemText primary={arrVal.label} />
           </MenuItem>
         ))}
@@ -70,4 +78,4 @@ const IxigoSelect: React.FC<IIxigoSelectProps> = (props) => {
   );
 };
 
-export default IxigoSelect;
+export default IxigoSelectMultiple;

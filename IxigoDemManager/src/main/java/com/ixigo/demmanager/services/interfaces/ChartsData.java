@@ -1,5 +1,8 @@
 package com.ixigo.demmanager.services.interfaces;
 
+import java.util.List;
+import java.util.Optional;
+
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.models.svc.charts.SvcMapPlayedCounter;
 import com.ixigo.demmanager.models.svc.charts.SvcUserAvgScorePerMap;
@@ -20,5 +23,5 @@ public interface ChartsData {
      * @param scoreType
      * @return
      */
-    public Flux<SvcUserAvgScorePerMap> getUserAverageScorePerMap(String steamId, ScoreType scoreType);
+    public Flux<SvcUserAvgScorePerMap> getUserAverageScorePerMap(String steamId, ScoreType scoreType, Optional<List<String>> maps, Optional<Integer> lastMatchesToConsider);
 }

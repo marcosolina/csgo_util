@@ -2,6 +2,8 @@ package com.ixigo.demmanager.repositories.interfaces;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
@@ -53,7 +55,7 @@ public interface RepoUserScore {
 	 * @param steamId
 	 * @return
 	 */
-	public Flux<DtoUserAvgScorePerMap> getUserAveragaScorePerMap(String steamId, ScoreType scoreType);
+	public Flux<DtoUserAvgScorePerMap> getUserAveragaScorePerMap(String steamId, ScoreType scoreType, Optional<List<String>> maps, Optional<Integer> lastMatchesToConsider);
 
 	/**
 	 * It returns the user scores for the last "numberOfMatches" he has played for

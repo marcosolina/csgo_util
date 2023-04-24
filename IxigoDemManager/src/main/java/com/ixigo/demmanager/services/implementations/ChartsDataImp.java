@@ -2,6 +2,8 @@ package com.ixigo.demmanager.services.implementations;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,9 +42,9 @@ public class ChartsDataImp implements ChartsData{
 	}
 
 	@Override
-	public Flux<SvcUserAvgScorePerMap> getUserAverageScorePerMap(String steamId, ScoreType scoreType) {
+	public Flux<SvcUserAvgScorePerMap> getUserAverageScorePerMap(String steamId, ScoreType scoreType, Optional<List<String>> maps, Optional<Integer> lastMatchesToConsider) {
 		_LOGGER.trace("Inside: ChartsDataImp.getUserAverageScorePerMap");
-		Flux<DtoUserAvgScorePerMap> scores = repoUserScore.getUserAveragaScorePerMap(steamId, scoreType);
+		Flux<DtoUserAvgScorePerMap> scores = repoUserScore.getUserAveragaScorePerMap(steamId, scoreType, maps, lastMatchesToConsider);
 		return scores.map(dto -> {
 			var svc = new SvcUserAvgScorePerMap();
 			svc.setAvgScore(BigDecimal.valueOf(dto.getAvgScore()).setScale(3, RoundingMode.DOWN));

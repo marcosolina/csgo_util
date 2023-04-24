@@ -10,6 +10,8 @@ export interface IMapsPlayed {
 export interface IGetAvgScoresPerMapRequest {
   steamIds: string[];
   scoreType: string;
+  maps: string[];
+  matchesToConsider: string;
 }
 
 export interface IAvgScoresPerMap {

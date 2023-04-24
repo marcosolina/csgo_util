@@ -1,5 +1,5 @@
 import { Grid, List, ListItem, ListSubheader } from "@mui/material";
-import { IxigoMultipleSelectVariant, IxigoTextState, IxigoTextType, IxigoTextVariant } from "../../common";
+import { IxigoSelectVariant, IxigoTextState, IxigoTextType, IxigoTextVariant } from "../../common";
 import IxigoText from "../../common/input/IxigoText";
 import IxigoSwitch from "../../common/switch/IxigoSwitch";
 import { DEFAULT_SPACING } from "../../lib/constants";
@@ -123,7 +123,7 @@ const DiscordBotContent = () => {
               {hook.discord_channel_members.map((discord) => (
                 <ListItem key={discord.value}>
                   <IxigoSelect
-                    variant={IxigoMultipleSelectVariant.standard}
+                    variant={IxigoSelectVariant.standard}
                     possibleValues={hook.steam_users}
                     selectedValue={
                       mappedPlayers.find((mUser) => discord.value === mUser.discord_details.discord_id)?.steam_details

@@ -45,7 +45,12 @@
       },
       "avgScorePerMap": {
         "title": "Average score per map",
-        "lblScoreTypes": "Score type"
+        "lblScoreTypes": "Score type",
+        "lblDpUsers": "Players",
+        "lblDpMaps": "Maps",
+        "lblMatchCount": "Last matches to consider",
+        "txtHelpMatchCount": "Zero means all available",
+        "txtHelpDpMaps": "No selection means all maps available"
       }
     },
     "serverInfo": {

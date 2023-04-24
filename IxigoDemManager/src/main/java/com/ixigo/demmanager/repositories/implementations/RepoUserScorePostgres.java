@@ -2,6 +2,9 @@ package com.ixigo.demmanager.repositories.implementations;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -134,24 +137,49 @@ public class RepoUserScorePostgres implements RepoUserScore {
 			.all();
 		// @formatter:on
 	}
-
+	
 	@Override
-	public Flux<DtoUserAvgScorePerMap> getUserAveragaScorePerMap(String steamId, ScoreType scoreType) {
+	public Flux<DtoUserAvgScorePerMap> getUserAveragaScorePerMap(String steamId, ScoreType scoreType, Optional<List<String>> maps, Optional<Integer> lastMatchesToConsider) {
+		if(!maps.isPresent() || maps.get().isEmpty()) {
+			return this.getMapsPlayed().map(m -> m.getMapName()).collectList().flatMap(list -> {
+				return getUserAveragaScorePerMaps(steamId, scoreType, Optional.of(list), lastMatchesToConsider).collectList();
+			}).flatMapMany(l -> Flux.fromIterable(l));			
+		}
+		return getUserAveragaScorePerMaps(steamId, scoreType, maps, lastMatchesToConsider);
+	}
+	
+	private Flux<DtoUserAvgScorePerMap> getUserAveragaScorePerMaps(String steamId, ScoreType scoreType, Optional<List<String>> maps, Optional<Integer> lastMatchesToConsider) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.getUserAveragaScorePerMap");
 		String avgFieldName = "average_score";
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT " + Users_scoresDto.Fields.map + "," + Users_scoresDto.Fields.steam_id + ", avg(" + scoreType.toString().toLowerCase() + ") as " + avgFieldName);
-		sql.append(" FROM ");
-		sql.append(Users_scoresDao.tableName);
-		sql.append(" WHERE ");
-		sql.append(Users_scoresDto.Fields.steam_id);
-		sql.append(" =:" + Users_scoresDto.Fields.steam_id);
-		sql.append(" group by " + Users_scoresDto.Fields.map + ", " + Users_scoresDto.Fields.steam_id );
-		sql.append(" order by " + Users_scoresDto.Fields.map);
+		StringBuilder sqlFrom = new StringBuilder();
+		
+		
+		
+		boolean isUnion = lastMatchesToConsider.isPresent() && lastMatchesToConsider.get() > 0 && maps.isPresent(); 
+		if(isUnion) {			
+			List<StringBuilder> limits = new ArrayList<>();
+			maps.get().forEach(m -> limits.add(prepareQueryForUnion(scoreType, steamId, m, lastMatchesToConsider.get())));
+			sqlFrom.append(" ( " + String.join(" UNION ", limits) + " ) x ");
+		}else {			
+			sqlFrom.append(Users_scoresDao.tableName);
+		}
+		
+		
+		StringBuilder sql = queryMapsNoLimit(sqlFrom, scoreType, steamId, maps.orElse(new ArrayList<>()), avgFieldName);
 
 		// @formatter:off
 		GenericExecuteSpec ges = client.sql(sql.toString())
 				.bind(Users_scoresDto.Fields.steam_id, steamId);
+		
+		if(maps.isPresent()) {
+			ges = ges.bind(Users_scoresDto.Fields.map, maps.get());
+			if (isUnion) {
+				for (String map : maps.get()) {
+					ges = ges.bind(String.format("%s_%s", steamId, map), map);
+				}
+			}
+		}
+		
 		
 		return ges.map((Row row, RowMetadata rowMetaData) -> {
 			return new DtoUserAvgScorePerMap(
@@ -161,6 +189,51 @@ public class RepoUserScorePostgres implements RepoUserScore {
 			;
 		}).all();
 		// @formatter:on
+	}
+	
+	private StringBuilder queryMapsNoLimit(StringBuilder from, ScoreType scoreType, String steamId, List<String> maps, String avgFieldName) {
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT " + Users_scoresDto.Fields.map + "," + Users_scoresDto.Fields.steam_id + ", avg(" + scoreType.toString().toLowerCase() + ") as " + avgFieldName);
+		sql.append(" FROM ");
+		sql.append(from);
+		
+		sql.append(" WHERE ");
+		sql.append(Users_scoresDto.Fields.steam_id);
+		sql.append(" =:" + Users_scoresDto.Fields.steam_id);
+		
+		if(!maps.isEmpty()) {
+			sql.append(" AND ");
+			sql.append(Users_scoresDto.Fields.map + " IN ");
+			sql.append(" (:" + Users_scoresDto.Fields.map + ") ");
+		}
+		
+		sql.append(" group by " + Users_scoresDto.Fields.map + ", " + Users_scoresDto.Fields.steam_id );
+		sql.append(" order by " + Users_scoresDto.Fields.map);
+		
+		return sql;
+	}
+	
+	private StringBuilder prepareQueryForUnion(ScoreType scoreType, String steamId, String mapName, Integer limit ) {
+		StringBuilder innerQuery = new StringBuilder();
+		innerQuery.append(" ( SELECT " + Users_scoresDto.Fields.map + "," + Users_scoresDto.Fields.steam_id + ", " + scoreType.toString().toLowerCase());
+		innerQuery.append(" FROM ");
+		innerQuery.append(Users_scoresDao.tableName);
+		innerQuery.append(" WHERE ");
+		innerQuery.append(Users_scoresDto.Fields.steam_id);
+		innerQuery.append(" =:" + Users_scoresDto.Fields.steam_id);
+		
+		innerQuery.append(" AND ");
+		innerQuery.append(Users_scoresDto.Fields.map + " = ");
+		innerQuery.append(String.format(":%s_%s", steamId, mapName));
+		
+		
+		innerQuery.append(" ORDER BY ");
+		innerQuery.append(Users_scoresDto.Fields.game_date);
+		innerQuery.append(" DESC ");
+		innerQuery.append(" LIMIT " + limit);
+		innerQuery.append(" ) ");
+		
+		return innerQuery;
 	}
 
 }

@@ -3,6 +3,7 @@ package com.ixigo.demmanager.handlers.charts;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,9 +56,12 @@ public class GetAvgScorePerMapHandler implements WebCommandHandler<CmdGetAvgScor
 		
         var scoreType = ScoreType.valueOf(request.getScoreType());
         
+        Optional<List<String>> maps = request.getMaps() != null && !request.getMaps().isEmpty() ? Optional.ofNullable(request.getMaps()) : Optional.empty();
+        Optional<Integer> lastMatchesToConsider = request.getMatchesToConsider() != null ? Optional.of(Integer.parseInt(request.getMatchesToConsider())): Optional.empty();
+        
         // @formatter:off
         return Flux.fromIterable(request.getSteamIds())
-	        .flatMap(steamId -> service.getUserAverageScorePerMap(steamId, scoreType).collectList())
+	        .flatMap(steamId -> service.getUserAverageScorePerMap(steamId, scoreType, maps, lastMatchesToConsider).collectList())
 	        .collectList()
 	        .filter(l -> l != null && !l.isEmpty())
 	        .map(list -> {

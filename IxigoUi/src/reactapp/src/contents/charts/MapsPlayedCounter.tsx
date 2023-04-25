@@ -57,6 +57,7 @@ const MapsPlayedCounter = () => {
   useEffect(() => {
     if (status === QueryStatus.success) {
       const count = ixigoResp.data?.maps || [];
+      count.sort((a, b) => b.count - a.count);
       const newData: ChartData<"bar", (number | [number, number] | null)[], unknown> = {
         labels: count.map((m) => m.map_name),
         datasets: [

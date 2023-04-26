@@ -1076,12 +1076,12 @@ namespace Core.Models
 
             _teamCt = new Team
             {
-                Name = "Team 1",
+                Name = Side.CounterTerrorist.AsString(),
                 CurrentSide = Side.CounterTerrorist,
             };
             _teamT = new Team
             {
-                Name = "Team 2",
+                Name = Side.Terrorist.AsString(),
                 CurrentSide = Side.Terrorist,
             };
         }

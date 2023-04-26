@@ -80,7 +80,8 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 			Users_scoresDto.Fields._1k,
 			Users_scoresDto.Fields.tdh,
 			Users_scoresDto.Fields.game_date,
-			Users_scoresDto.Fields.fd
+			Users_scoresDto.Fields.fd,
+			Users_scoresDto.Fields.side
 		});
 		// @formatter:on
 		this.dto = new Users_scoresDto();
@@ -96,15 +97,19 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 				for (int j = 0; j < m.length; j++) {
 					String setterName = "set" + StringUtils.capitalize(field);
 					if (m[j].getName().equals(setterName) && m[j].getParameterTypes().length == 1) {
-						Object value = row.get(field, m[j].getParameterTypes()[0]);
+						Object value = null;
+						if(m[j].getReturnType().isEnum()) {
+							var enumMethod = m[j].getReturnType().getMethod("valueOf", String.class);
+							value = m[j].getReturnType().cast(enumMethod.invoke(null, row.get(field, m[j].getParameterTypes()[0])));
+						}else {
+							value = row.get(field, m[j].getParameterTypes()[0]);
+						}
 						m[j].invoke(dto, new Object[] { value });
 					}
 				}
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchMethodException e) {
 				_LOGGER.error(e.getMessage());
-				if (_LOGGER.isTraceEnabled()) {
-					e.printStackTrace();
-				}
+				e.printStackTrace();
 			}
 		});
 

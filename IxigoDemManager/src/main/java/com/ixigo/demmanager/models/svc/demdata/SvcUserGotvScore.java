@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.svc.demdata;
 
+import com.ixigo.demmanager.enums.PlayerSide;
+
 /**
  * Service layer model which has the statistic extracted from a DEM file for a
  * single match
@@ -49,6 +51,7 @@ public class SvcUserGotvScore {
 	private Long highExplosiveDamage;
 	private Long fireDamage;
 	private Double matchPlayed;
+	private PlayerSide playerSide;
 
 	public String getUserName() {
 		return userName;
@@ -376,5 +379,13 @@ public class SvcUserGotvScore {
 
 	public void setMatchPlayed(Double matchPlayed) {
 		this.matchPlayed = matchPlayed;
+	}
+
+	public PlayerSide getPlayerSide() {
+		return playerSide;
+	}
+
+	public void setPlayerSide(PlayerSide playerSide) {
+		this.playerSide = playerSide;
 	}
 }

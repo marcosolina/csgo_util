@@ -371,6 +371,7 @@ public class DemFileParserImp implements DemFileParser {
 		ums.setMvp(userScore.getMostValuablePlayer());
 		ums.setScore(userScore.getScore());
 		ums.setHs(userScore.getHeadShots());
+		ums.setSide(userScore.getPlayerSide());
 
 		ums.setRws(RoundParserUtils.doubleToBigDecimal(userScore.getRoundWinShare(), 2));
 		ums.setKdr(RoundParserUtils.doubleToBigDecimal(userScore.getKillDeathRation(), 2));
@@ -423,6 +424,7 @@ public class DemFileParserImp implements DemFileParser {
 		gotvScore.setMostValuablePlayer(userScore.getMvp());
 		gotvScore.setScore(userScore.getScore());
 		gotvScore.setHeadShots(userScore.getHs());
+		gotvScore.setPlayerSide(userScore.getSide());
 
 		gotvScore.setRoundWinShare(RoundParserUtils.bigDecimalToDouble(userScore.getRws(), 2));
 		gotvScore.setKillDeathRation(RoundParserUtils.bigDecimalToDouble(userScore.getKdr(), 2));

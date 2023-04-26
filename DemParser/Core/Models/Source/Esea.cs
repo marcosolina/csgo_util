@@ -1,13 +1,13 @@
-namespace DemParser.Core.Models.Source
+namespace Core.Models.Source
 {
-	public class Esea : Source
-	{
-		public const string NAME = "esea";
+    public class Esea : Source
+    {
+        public const string NAME = "esea";
 
-		public Esea()
-		{
-			Name = NAME;
-			Label = "ESEA";
-		} 
-	}
+        public Esea()
+        {
+            Name = NAME;
+            Label = "ESEA";
+        }
+    }
 }

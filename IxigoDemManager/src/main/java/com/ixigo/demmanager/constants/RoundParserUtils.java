@@ -53,6 +53,7 @@ public class RoundParserUtils{
     public static final int DEM_COL_HIGH_EXPLOSIVE_DAMAGE = 38;
     public static final int DEM_COL_FIRE_DAMAGE = 39;
     public static final int DEM_COL_MATCH_PLAYED = 40;
+    public static final int DEM_COL_PLAYER_SIDE = 41;
 
     public static BigDecimal doubleToBigDecimal(Double d, int decimals) {
         return BigDecimal.valueOf(d).setScale(decimals, RoundingMode.DOWN);

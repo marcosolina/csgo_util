@@ -1,8 +1,9 @@
-﻿
-namespace DemParser.Core.Models.Events
+﻿namespace Core.Models.Events
 {
-	public class SmokeNadeStartedEvent : NadeBaseEvent
-	{
-		public SmokeNadeStartedEvent(int tick, float seconds) : base(tick, seconds) { }
-	}
+    public class SmokeNadeStartedEvent : NadeBaseEvent
+    {
+        public SmokeNadeStartedEvent(int tick, float seconds) : base(tick, seconds)
+        {
+        }
+    }
 }

@@ -2,52 +2,97 @@ package com.ixigo.demmanagercontract.models.rest.demdata;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.ToString;
 
 @ToString
 public class RestUserGotvScore implements Serializable {
 	private static final long serialVersionUID = 1L;
+	@JsonProperty("user_name")
 	private String userName;
+	@JsonProperty("steam_id")
 	private String steamID;
+	@JsonProperty("round_win_share")
 	private Double roundWinShare;
+	@JsonProperty("kills")
 	private Long kills;
+	@JsonProperty("assists")
 	private Long assists;
+	@JsonProperty("deaths")
 	private Long deaths;
+	@JsonProperty("kill_death_ration")
 	private Double killDeathRation;
+	@JsonProperty("head_shots")
 	private Long headShots;
+	@JsonProperty("head_shots_percentage")
 	private Double headShotsPercentage;
+	@JsonProperty("team_kill_friendly_fire")
 	private Long teamKillFriendlyFire;
+	@JsonProperty("entry_kill")
 	private Long entryKill;
+	@JsonProperty("bomb_planted")
 	private Long bombPLanted;
+	@JsonProperty("bomb_defused")
 	private Long bombDefused;
+	@JsonProperty("most_valuable_player")
 	private Long mostValuablePlayer;
+	@JsonProperty("score")
 	private Long score;
+	@JsonProperty("half_life_television_rating")
 	private Double halfLifeTelevisionRating;
+	@JsonProperty("five_kills")
 	private Long fiveKills;
+	@JsonProperty("four_kills")
 	private Long fourKills;
+	@JsonProperty("three_kills")
 	private Long threeKills;
+	@JsonProperty("two_kills")
 	private Long twoKills;
+	@JsonProperty("one_kill")
 	private Long oneKill;
+	@JsonProperty("trade_kill")
 	private Long tradeKill;
+	@JsonProperty("trade_death")
 	private Long tradeDeath;
+	@JsonProperty("kill_per_round")
 	private Double killPerRound;
+	@JsonProperty("assists_per_round")
 	private Double assistsPerRound;
+	@JsonProperty("death_per_round")
 	private Double deathPerRound;
+	@JsonProperty("average_damage_per_round")
 	private Double averageDamagePerRound;
+	@JsonProperty("total_damage_health")
 	private Long totalDamageHealth;
+	@JsonProperty("total_damage_armor")
 	private Long totalDamageArmor;
+	@JsonProperty("one_versus_one")
 	private Long oneVersusOne;
+	@JsonProperty("one_versus_two")
 	private Long oneVersusTwo;
+	@JsonProperty("one_versus_three")
 	private Long oneVersusThree;
+	@JsonProperty("one_versus_four")
 	private Long oneVersusFour;
+	@JsonProperty("one_versus_five")
 	private Long oneVersusFive;
+	@JsonProperty("grenades_thrown_count")
 	private Long grenadesThrownCount;
+	@JsonProperty("flashes_thrown_count")
 	private Long flashesThrownCount;
+	@JsonProperty("smokes_thrown_count")
 	private Long smokesThrownCount;
+	@JsonProperty("fire_thrown_count")
 	private Long fireThrownCount;
+	@JsonProperty("high_explosive_damage")
 	private Long highExplosiveDamage;
+	@JsonProperty("fire_damage")
 	private Long fireDamage;
+	@JsonProperty("match_played")
 	private Double matchPlayed;
+	@JsonProperty("side")
+	private String side;
 
 	public String getUserName() {
 		return userName;
@@ -379,6 +424,14 @@ public class RestUserGotvScore implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	public String getSide() {
+		return side;
+	}
+
+	public void setSide(String side) {
+		this.side = side;
 	}
 
 }

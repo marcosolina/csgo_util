@@ -10,10 +10,12 @@ import com.ixigo.demmanager.models.svc.charts.SvcMapPlayedCounter;
 import com.ixigo.demmanager.models.svc.charts.SvcUserAvgScorePerMap;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
+import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
 import com.ixigo.demmanagercontract.models.rest.charts.RestAvgScorePerMap;
 import com.ixigo.demmanagercontract.models.rest.charts.RestMapPlayed;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUserGotvScore;
 import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestFileInfo;
 
 /**
@@ -43,5 +45,9 @@ public interface RestMapper {
 	public List<RestUser> fromSvcToRestUserList(List<SvcUser> svc);
 
 	public List<RestMapStats> fromSvcToRestMapStats(List<SvcMapStats> svc);
+	
+	public RestUserGotvScore fromSvcToRest(SvcUserGotvScore svc);
+	
+	public List<RestUserGotvScore> fromSvcToRestGoTvList(List<SvcUserGotvScore> svc);
 
 }

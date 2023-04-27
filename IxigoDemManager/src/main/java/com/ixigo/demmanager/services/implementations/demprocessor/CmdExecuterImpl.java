@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 
 import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.constants.RoundParserUtils;
-import com.ixigo.demmanager.enums.PlayerSide;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
 import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.library.errors.IxigoException;
@@ -100,7 +99,7 @@ public class CmdExecuterImpl implements CmdExecuter {
 					ums.setDeathPerRound(parseDouble(tmp[RoundParserUtils.DEM_COL_DEATH_PER_ROUND]));
 					ums.setAverageDamagePerRound(parseDouble(tmp[RoundParserUtils.DEM_COL_AVERAGE_DAMAGE_PER_ROUND]));
 					ums.setMatchPlayed(parseDouble(tmp[RoundParserUtils.DEM_COL_MATCH_PLAYED]));
-					ums.setPlayerSide(PlayerSide.valueOf(tmp[RoundParserUtils.DEM_COL_PLAYER_SIDE]));
+					ums.setSide(tmp[RoundParserUtils.DEM_COL_PLAYER_SIDE]);
 
 					usersStats.add(ums);
 					dataAvailableInTheFile = true;

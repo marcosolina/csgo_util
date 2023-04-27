@@ -13,8 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ixigo.demmanager.commands.charts.CmdGetAvgScorePerMap;
 import com.ixigo.demmanager.commands.charts.CmdGetMapPlayedCount;
+import com.ixigo.demmanager.commands.charts.CmdGetTeamsScorePerMap;
 import com.ixigo.demmanagercontract.models.rest.charts.RestAvgScoresPerMap;
 import com.ixigo.demmanagercontract.models.rest.charts.RestMapsPlayed;
+import com.ixigo.demmanagercontract.models.rest.charts.RestTeamScorePerMap;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import io.swagger.annotations.ApiOperation;
@@ -51,5 +53,13 @@ public class ControllerCharts {
 			){
 		_LOGGER.trace("Inside ControllerCharts.getAverageScorePerMap");
 		return mediator.send(new CmdGetAvgScorePerMap(steamIds, scoreType, maps, matchesToConsider));
+	}
+	
+	@GetMapping("/scorepermap")
+	@ApiOperation(value = "It will returnthe average score per map of the players")
+	public Mono<ResponseEntity<RestTeamScorePerMap>> getTeamsScorePerMap(
+			@RequestParam(name = "map", required = false) String mapName){
+		_LOGGER.trace("Inside ControllerCharts.getTeamsScorePerMap");
+		return mediator.send(new CmdGetTeamsScorePerMap(mapName));
 	}
 }

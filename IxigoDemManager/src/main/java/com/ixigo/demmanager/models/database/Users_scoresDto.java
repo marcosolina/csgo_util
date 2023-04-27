@@ -3,7 +3,6 @@ package com.ixigo.demmanager.models.database;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import com.ixigo.demmanager.enums.PlayerSide;
 import com.ixigo.library.dto.IxigoDto;
 
 import lombok.Getter;
@@ -329,6 +328,6 @@ public class Users_scoresDto implements IxigoDto {
 	/**
 	 * In which team the player has played the match
 	 */
-	private PlayerSide side;
+	private String side;
 
 }

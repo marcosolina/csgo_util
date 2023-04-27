@@ -236,4 +236,16 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		return innerQuery;
 	}
 
+	@Override
+	public Flux<Users_scoresDto> getUserScoresPerMap(String mapName) {
+		_LOGGER.trace("Inside RepoUserScorePostgres.getUserScoresPerMap");
+		Users_scoresDao dao = new Users_scoresDao();
+		dao.addSqlWhereAndClauses(Users_scoresDto.Fields.map);
+		dao.addSqlParams(mapName);
+		dao.addSqlOrderFields(Users_scoresDto.Fields.game_date);
+		dao.addSqlOrderFields(Users_scoresDto.Fields.side);
+
+		return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
+	}
+
 }

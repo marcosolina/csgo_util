@@ -97,17 +97,11 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 				for (int j = 0; j < m.length; j++) {
 					String setterName = "set" + StringUtils.capitalize(field);
 					if (m[j].getName().equals(setterName) && m[j].getParameterTypes().length == 1) {
-						Object value = null;
-						if(m[j].getReturnType().isEnum()) {
-							var enumMethod = m[j].getReturnType().getMethod("valueOf", String.class);
-							value = m[j].getReturnType().cast(enumMethod.invoke(null, row.get(field, m[j].getParameterTypes()[0])));
-						}else {
-							value = row.get(field, m[j].getParameterTypes()[0]);
-						}
+						Object value = row.get(field, m[j].getParameterTypes()[0]);
 						m[j].invoke(dto, new Object[] { value });
 					}
 				}
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException | NoSuchMethodException e) {
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 				_LOGGER.error(e.getMessage());
 				e.printStackTrace();
 			}
@@ -461,6 +455,14 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 
 	public void setFd(Long fd) {
 		this.dto.setFd(fd);
+	}
+	
+	public String getSide() {
+		return dto.getSide();
+	}
+
+	public void setSide(String side) {
+		this.dto.setSide(side);
 	}
 
 	public Users_scoresDto getDto() {

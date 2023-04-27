@@ -32,7 +32,7 @@ public class RepoUserPostgres implements RepoUser {
 	}
 
 	@Override
-	public Mono<Boolean> insertUpdateUser(UsersDto user) {
+	public synchronized Mono<Boolean> insertUpdateUser(UsersDto user) {
 		_LOGGER.trace("Inside RepoUserPostgres.insertUpdateUser");
 		
 		UsersDao dao = new UsersDao();
@@ -52,7 +52,7 @@ public class RepoUserPostgres implements RepoUser {
 	}
 
 	@Override
-	public Mono<UsersDto> findById(String steamID) {
+	public synchronized Mono<UsersDto> findById(String steamID) {
 		_LOGGER.trace("Inside RepoUserPostgres.findById");
 
 		UsersDao dao = new UsersDao();

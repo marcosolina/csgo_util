@@ -1074,12 +1074,12 @@ namespace DemParser.Core.Models
 
 			_teamCt = new Team
 			{
-				Name = "Team 1",
+				Name = Side.CounterTerrorist.AsString(),
 				CurrentSide = Side.CounterTerrorist,
 			};
 			_teamT = new Team
 			{
-				Name = "Team 2",
+				Name = Side.Terrorist.AsString(),
 				CurrentSide = Side.Terrorist,
 			};
 			Kills.CollectionChanged += OnKillsCollectionChanged;

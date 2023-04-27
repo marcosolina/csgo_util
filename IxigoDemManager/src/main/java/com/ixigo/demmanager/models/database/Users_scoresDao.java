@@ -80,7 +80,8 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 			Users_scoresDto.Fields._1k,
 			Users_scoresDto.Fields.tdh,
 			Users_scoresDto.Fields.game_date,
-			Users_scoresDto.Fields.fd
+			Users_scoresDto.Fields.fd,
+			Users_scoresDto.Fields.side
 		});
 		// @formatter:on
 		this.dto = new Users_scoresDto();
@@ -102,9 +103,7 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 				}
 			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 				_LOGGER.error(e.getMessage());
-				if (_LOGGER.isTraceEnabled()) {
-					e.printStackTrace();
-				}
+				e.printStackTrace();
 			}
 		});
 
@@ -456,6 +455,14 @@ public class Users_scoresDao extends IxigoDao<Users_scoresDto> {
 
 	public void setFd(Long fd) {
 		this.dto.setFd(fd);
+	}
+	
+	public String getSide() {
+		return dto.getSide();
+	}
+
+	public void setSide(String side) {
+		this.dto.setSide(side);
 	}
 
 	public Users_scoresDto getDto() {

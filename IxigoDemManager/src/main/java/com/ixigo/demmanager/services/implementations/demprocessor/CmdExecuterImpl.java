@@ -99,6 +99,7 @@ public class CmdExecuterImpl implements CmdExecuter {
 					ums.setDeathPerRound(parseDouble(tmp[RoundParserUtils.DEM_COL_DEATH_PER_ROUND]));
 					ums.setAverageDamagePerRound(parseDouble(tmp[RoundParserUtils.DEM_COL_AVERAGE_DAMAGE_PER_ROUND]));
 					ums.setMatchPlayed(parseDouble(tmp[RoundParserUtils.DEM_COL_MATCH_PLAYED]));
+					ums.setSide(tmp[RoundParserUtils.DEM_COL_PLAYER_SIDE]);
 
 					usersStats.add(ums);
 					dataAvailableInTheFile = true;

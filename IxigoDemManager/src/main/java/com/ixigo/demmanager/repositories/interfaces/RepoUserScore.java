@@ -50,6 +50,14 @@ public interface RepoUserScore {
 	public Flux<Users_scoresDto> getUserScores(String steamID);
 
 	/**
+	 * It returns the list of scores per map
+	 * 
+	 * @param mapName
+	 * @return
+	 */
+	public Flux<Users_scoresDto> getUserScoresPerMap(String mapName);
+
+	/**
 	 * It returns the average score type of a single user per map
 	 * 
 	 * @param steamId

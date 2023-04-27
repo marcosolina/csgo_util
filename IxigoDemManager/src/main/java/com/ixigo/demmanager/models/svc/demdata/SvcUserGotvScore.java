@@ -49,6 +49,7 @@ public class SvcUserGotvScore {
 	private Long highExplosiveDamage;
 	private Long fireDamage;
 	private Double matchPlayed;
+	private String side;
 
 	public String getUserName() {
 		return userName;
@@ -376,5 +377,13 @@ public class SvcUserGotvScore {
 
 	public void setMatchPlayed(Double matchPlayed) {
 		this.matchPlayed = matchPlayed;
+	}
+
+	public String getSide() {
+		return side;
+	}
+
+	public void setSide(String side) {
+		this.side = side;
 	}
 }

@@ -22,7 +22,6 @@ import org.springframework.http.HttpStatus;
 
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.constants.ErrorCodes;
-import com.ixigo.demmanager.constants.RoundParserUtils;
 import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.mappers.SvcMapper;
@@ -31,7 +30,6 @@ import com.ixigo.demmanager.models.database.UsersDto;
 import com.ixigo.demmanager.models.database.Users_scoresDto;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
-import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserStatsForLastXGames;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
@@ -154,7 +152,7 @@ public class DemFileParserImp implements DemFileParser {
 			.flatMap(steamId -> repoUser.findById(steamId).defaultIfEmpty(new UsersDto().setSteam_id(steamId)))// Get the user definition
 			.map(dto -> {
 				var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, dto.getSteam_id(), minPercPlayed)
-						.map(dtoScore -> fromUsersScoreDtoToSvcMapStata(dto, dtoScore))
+						.map(dtoScore -> mapper.fromUsersScoreDtoToSvcMapStata(dto, dtoScore))
 						.collectList();
 				return Tuples.of(dto.getSteam_id(), list);
 			})
@@ -257,7 +255,7 @@ public class DemFileParserImp implements DemFileParser {
 						user.setSteam_id(score.getSteamID());
 						user.setUser_name(score.getUserName());
 						
-						Users_scoresDto userScore = fromUserMapStatsToEntityUserScore(stats, score);
+						Users_scoresDto userScore = mapper.fromUserMapStatsToEntityUserScore(stats, score);
 						userScore.setFile_name(fileName);
 						
 						scoreList.add(userScore);
@@ -308,7 +306,8 @@ public class DemFileParserImp implements DemFileParser {
 				if(statusOk) {
 					countProcessedFiles.incrementAndGet();
 				}else {
-					f.delete();
+					_LOGGER.error(String.format("Deleting: %s", fileName));
+					//f.delete();
 				}
 				return setFileProcessed(f, statusOk ? DemProcessStatus.PROCESSED : DemProcessStatus.DELETED).thenReturn(fileName);
 			}).map(fileName ->{ // Simple info
@@ -334,107 +333,5 @@ public class DemFileParserImp implements DemFileParser {
 		});
 	}
 
-	private Users_scoresDto fromUserMapStatsToEntityUserScore(SvcMapStats ms, SvcUserGotvScore userScore) {
-		Users_scoresDto ums = new Users_scoresDto();
-
-		ums.setGame_date(ms.getPlayedOn());
-		ums.setMap(ms.getMapName());
-		ums.setSteam_id(userScore.getSteamID());
-
-		ums.setKills(userScore.getKills());
-		ums.setAssists(userScore.getAssists());
-		ums.setDeaths(userScore.getDeaths());
-		ums.setTdh(userScore.getTotalDamageHealth());
-		ums.setTda(userScore.getTotalDamageArmor());
-		ums.set_1v1(userScore.getOneVersusOne());
-		ums.set_1v2(userScore.getOneVersusTwo());
-		ums.set_1v3(userScore.getOneVersusThree());
-		ums.set_1v4(userScore.getOneVersusFour());
-		ums.set_1v5(userScore.getOneVersusFive());
-		ums.setGrenades(userScore.getGrenadesThrownCount());
-		ums.setFlashes(userScore.getFlashesThrownCount());
-		ums.setSmokes(userScore.getSmokesThrownCount());
-		ums.setFire(userScore.getFireThrownCount());
-		ums.setHed(userScore.getHighExplosiveDamage());
-		ums.setFd(userScore.getFireDamage());
-		ums.set_5k(userScore.getFiveKills());
-		ums.set_4k(userScore.getFourKills());
-		ums.set_3k(userScore.getThreeKills());
-		ums.set_2k(userScore.getTwoKills());
-		ums.set_1k(userScore.getOneKill());
-		ums.setTk(userScore.getTradeKill());
-		ums.setTd(userScore.getTradeDeath());
-		ums.setFf(userScore.getTeamKillFriendlyFire());
-		ums.setEk(userScore.getEntryKill());
-		ums.setBp(userScore.getBombPLanted());
-		ums.setBd(userScore.getBombDefused());
-		ums.setMvp(userScore.getMostValuablePlayer());
-		ums.setScore(userScore.getScore());
-		ums.setHs(userScore.getHeadShots());
-
-		ums.setRws(RoundParserUtils.doubleToBigDecimal(userScore.getRoundWinShare(), 2));
-		ums.setKdr(RoundParserUtils.doubleToBigDecimal(userScore.getKillDeathRation(), 2));
-		ums.setHsp(RoundParserUtils.doubleToBigDecimal(userScore.getHeadShotsPercentage(), 2));
-		ums.setHltv(RoundParserUtils.doubleToBigDecimal(userScore.getHalfLifeTelevisionRating(), 3));
-		ums.setKpr(RoundParserUtils.doubleToBigDecimal(userScore.getKillPerRound(), 2));
-		ums.setApr(RoundParserUtils.doubleToBigDecimal(userScore.getAssistsPerRound(), 2));
-		ums.setDpr(RoundParserUtils.doubleToBigDecimal(userScore.getDeathPerRound(), 2));
-		ums.setAdr(RoundParserUtils.doubleToBigDecimal(userScore.getAverageDamagePerRound(), 2));
-		ums.setMp(RoundParserUtils.doubleToBigDecimal(userScore.getMatchPlayed(), 2));
-		return ums;
-	}
-
-	private SvcMapStats fromUsersScoreDtoToSvcMapStata(UsersDto userDto, Users_scoresDto userScore) {
-		SvcMapStats mapStats = new SvcMapStats();
-		mapStats.setMapName(userScore.getMap());
-		mapStats.setPlayedOn(userScore.getGame_date());
-
-		SvcUserGotvScore gotvScore = new SvcUserGotvScore();
-
-		gotvScore.setUserName(userDto.getUser_name());
-		gotvScore.setSteamID(userDto.getSteam_id());
-		gotvScore.setKills(userScore.getKills());
-		gotvScore.setAssists(userScore.getAssists());
-		gotvScore.setDeaths(userScore.getDeaths());
-		gotvScore.setTotalDamageHealth(userScore.getTdh());
-		gotvScore.setTotalDamageArmor(userScore.getTda());
-		gotvScore.setOneVersusOne(userScore.get_1v1());
-		gotvScore.setOneVersusTwo(userScore.get_1v2());
-		gotvScore.setOneVersusThree(userScore.get_1v3());
-		gotvScore.setOneVersusFour(userScore.get_1v4());
-		gotvScore.setOneVersusFive(userScore.get_1v5());
-		gotvScore.setGrenadesThrownCount(userScore.getGrenades());
-		gotvScore.setFlashesThrownCount(userScore.getFlashes());
-		gotvScore.setSmokesThrownCount(userScore.getSmokes());
-		gotvScore.setFireThrownCount(userScore.getFire());
-		gotvScore.setHighExplosiveDamage(userScore.getHed());
-		gotvScore.setFireDamage(userScore.getFd());
-		gotvScore.setFiveKills(userScore.get_5k());
-		gotvScore.setFourKills(userScore.get_4k());
-		gotvScore.setThreeKills(userScore.get_3k());
-		gotvScore.setTwoKills(userScore.get_2k());
-		gotvScore.setOneKill(userScore.get_1k());
-		gotvScore.setTradeKill(userScore.getTk());
-		gotvScore.setTradeDeath(userScore.getTd());
-		gotvScore.setTeamKillFriendlyFire(userScore.getFf());
-		gotvScore.setEntryKill(userScore.getEk());
-		gotvScore.setBombPLanted(userScore.getBp());
-		gotvScore.setBombDefused(userScore.getBd());
-		gotvScore.setMostValuablePlayer(userScore.getMvp());
-		gotvScore.setScore(userScore.getScore());
-		gotvScore.setHeadShots(userScore.getHs());
-
-		gotvScore.setRoundWinShare(RoundParserUtils.bigDecimalToDouble(userScore.getRws(), 2));
-		gotvScore.setKillDeathRation(RoundParserUtils.bigDecimalToDouble(userScore.getKdr(), 2));
-		gotvScore.setHeadShotsPercentage(RoundParserUtils.bigDecimalToDouble(userScore.getHsp(), 2));
-		gotvScore.setHalfLifeTelevisionRating(RoundParserUtils.bigDecimalToDouble(userScore.getHltv(), 3));
-		gotvScore.setKillPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getKpr(), 2));
-		gotvScore.setAssistsPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getApr(), 2));
-		gotvScore.setDeathPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getDpr(), 2));
-		gotvScore.setAverageDamagePerRound(RoundParserUtils.bigDecimalToDouble(userScore.getAdr(), 2));
-		gotvScore.setMatchPlayed(RoundParserUtils.bigDecimalToDouble(userScore.getMp(), 2));
-
-		mapStats.addUserMapStats(gotvScore);
-		return mapStats;
-	}
+	
 }

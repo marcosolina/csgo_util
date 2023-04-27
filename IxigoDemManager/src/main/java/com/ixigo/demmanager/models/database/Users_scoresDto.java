@@ -325,4 +325,9 @@ public class Users_scoresDto implements IxigoDto {
 	 */
 	private Long fd = null;
 
+	/**
+	 * In which team the player has played the match
+	 */
+	private String side;
+
 }

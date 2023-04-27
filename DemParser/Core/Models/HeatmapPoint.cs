@@ -1,9 +1,10 @@
 ﻿using Newtonsoft.Json;
 
-namespace Core.Models
+namespace DemParser.Core.Models
 {
-    public class HeatmapPoint : MapPoint
-    {
-        [JsonIgnore] public byte Intensity { get; set; } = 100;
-    }
+	public class HeatmapPoint : MapPoint
+	{
+		[JsonIgnore]
+		public byte Intensity { get; set; } = 100;
+	}
 }

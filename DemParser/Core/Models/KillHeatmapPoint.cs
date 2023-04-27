@@ -1,47 +1,36 @@
 ﻿using Newtonsoft.Json;
 
-namespace Core.Models
+namespace DemParser.Core.Models
 {
-    public class KillHeatmapPoint : HeatmapPoint
-    {
-        [JsonProperty("killer_x")]
-        public float KillerX { get; set; }
+	public class KillHeatmapPoint : HeatmapPoint
+	{
+		[JsonProperty("killer_x")]
+		public float KillerX { get; set; }
 
-        [JsonProperty("killer_y")]
-        public float KillerY { get; set; }
+		[JsonProperty("killer_y")]
+		public float KillerY { get; set; }
 
-        [JsonProperty("killer_z")]
-        public float KillerZ { get; set; }
+		[JsonProperty("victim_x")]
+		public float VictimX { get; set; }
 
-        [JsonProperty("victim_x")]
-        public float VictimX { get; set; }
+		[JsonProperty("victim_y")]
+		public float VictimY { get; set; }
 
-        [JsonProperty("victim_y")]
-        public float VictimY { get; set; }
+		public override bool Equals(object obj)
+		{
+			var item = (KillHeatmapPoint)obj;
 
-        [JsonProperty("victim_z")]
-        public float VictimZ { get; set; }
+			if (item == null) return false;
 
-        public override bool Equals(object obj)
-        {
-            var item = (KillHeatmapPoint)obj;
+			return KillerX.Equals(item.KillerX)
+				&& KillerY.Equals(item.KillerY)
+				&& VictimX.Equals(item.VictimX)
+				&& VictimY.Equals(item.VictimY);
+		}
 
-            if (item == null)
-            {
-                return false;
-            }
-
-            return KillerX.Equals(item.KillerX)
-                   && KillerY.Equals(item.KillerY)
-                   && KillerZ.Equals(item.KillerZ)
-                   && VictimX.Equals(item.VictimX)
-                   && VictimY.Equals(item.VictimY)
-                   && VictimZ.Equals(item.VictimZ);
-        }
-
-        public override int GetHashCode()
-        {
-            return base.GetHashCode();
-        }
-    }
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
+		}
+	}
 }

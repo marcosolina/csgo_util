@@ -308,7 +308,8 @@ public class DemFileParserImp implements DemFileParser {
 				if(statusOk) {
 					countProcessedFiles.incrementAndGet();
 				}else {
-					f.delete();
+					_LOGGER.error(String.format("Deleting: %s", fileName));
+					//f.delete();
 				}
 				return setFileProcessed(f, statusOk ? DemProcessStatus.PROCESSED : DemProcessStatus.DELETED).thenReturn(fileName);
 			}).map(fileName ->{ // Simple info

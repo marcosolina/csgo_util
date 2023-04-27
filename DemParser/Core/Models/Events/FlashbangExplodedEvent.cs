@@ -1,19 +1,18 @@
 ﻿using System.Collections.Generic;
-using Core.Models.Serialization;
+using DemParser.Core.Models.Serialisation;
 using Newtonsoft.Json;
 
-namespace Core.Models.Events
+namespace DemParser.Core.Models.Events
 {
-    public class FlashbangExplodedEvent : NadeBaseEvent
-    {
-        [JsonProperty("flashed_players_steamid")]
-        [JsonConverter(typeof(LongListToStringListConverter))]
-        public List<long> FlashedPlayerSteamIdList { get; set; } = new List<long>();
+	public class FlashbangExplodedEvent : NadeBaseEvent
+	{
+		[JsonProperty("flashed_players_steamid")]
+		[JsonConverter(typeof(LongListToStringListConverter))]
+		public List<long> FlashedPlayerSteamIdList { get; set; } = new List<long>();
 
-        [JsonIgnore] public override string Message => "Flashbang exploded";
+		[JsonIgnore]
+		public override string Message => "Flashbang exploded";
 
-        public FlashbangExplodedEvent(int tick, float seconds) : base(tick, seconds)
-        {
-        }
-    }
+		public FlashbangExplodedEvent(int tick, float seconds) : base(tick, seconds) { }
+	}
 }

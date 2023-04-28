@@ -80,7 +80,7 @@ public class ChartsDataImp implements ChartsData{
 					statsMap.compute(score.getGame_date(), (k,v) -> {
 						SvcUser user = listOfUsers.stream().filter(u -> u.getSteamId().equals(score.getSteam_id())).findFirst().get();
 						if (v == null) {
-			                v = mapper.fromUsersScoreDtoToSvcMapStata(mapper.fromSvcToDto(user), score);
+			                return mapper.fromUsersScoreDtoToSvcMapStata(mapper.fromSvcToDto(user), score);
 			            }
 			            v.addUserMapStats(mapper.fromUsersScoreDtoToSvcMapStata(mapper.fromSvcToDto(user), score).getUsersStats().get(0)); 
 			            return v;

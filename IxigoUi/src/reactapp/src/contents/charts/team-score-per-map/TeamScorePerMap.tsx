@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { COLOR_PALETTE, DEFAULT_SPACING, generateRgbaString } from "../../../lib/constants";
 import { useTeamScorePerMap } from "./useTeamScorePerMap";
@@ -110,6 +110,7 @@ const TeamScorePerMap = () => {
   const [chartData, setChartData] = useState<ChartData<"bar", number[], string>>(DATA);
 
   const { mapsPlayed, matches, users } = useTeamScorePerMap({ map, matchesToConsider });
+  const steamUsers = useRef(users);
 
   useEffect(() => {
     const dates = Object.keys(matches);
@@ -153,7 +154,7 @@ const TeamScorePerMap = () => {
         tScores.push(p.side === "T" ? p.half_life_television_rating : 0);
       });
 
-      const playerName = users.find((p) => p.steam_id === steamId)?.user_name as string;
+      const playerName = steamUsers.current.find((p) => p.steam_id === steamId)?.user_name as string;
 
       CTs.push({
         label: playerName,

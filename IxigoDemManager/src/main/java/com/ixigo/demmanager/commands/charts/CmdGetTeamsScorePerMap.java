@@ -16,10 +16,13 @@ import lombok.experimental.FieldNameConstants;
 public class CmdGetTeamsScorePerMap implements WebCommandRequest<RestTeamScorePerMap> {
 	@JsonProperty("map")
 	private String map;
+	@JsonProperty("matchesToConsider")
+	private String matchesToConsider;
 
-	public CmdGetTeamsScorePerMap(String map) {
+	public CmdGetTeamsScorePerMap(String map, String matchesToConsider) {
 		super();
 		this.map = map;
+		this.matchesToConsider = matchesToConsider;
 	}
 
 	public String getMap() {
@@ -28,6 +31,14 @@ public class CmdGetTeamsScorePerMap implements WebCommandRequest<RestTeamScorePe
 
 	public void setMap(String map) {
 		this.map = map;
+	}
+
+	public String getMatchesToConsider() {
+		return matchesToConsider;
+	}
+
+	public void setMatchesToConsider(String matchesToConsider) {
+		this.matchesToConsider = matchesToConsider;
 	}
 
 }

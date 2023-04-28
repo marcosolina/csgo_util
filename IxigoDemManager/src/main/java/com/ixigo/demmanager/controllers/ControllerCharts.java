@@ -58,8 +58,9 @@ public class ControllerCharts {
 	@GetMapping("/scorepermap")
 	@ApiOperation(value = "It will returnthe average score per map of the players")
 	public Mono<ResponseEntity<RestTeamScorePerMap>> getTeamsScorePerMap(
-			@RequestParam(name = "map", required = false) String mapName){
+			@RequestParam(name = "map", required = false) String mapName,
+			@RequestParam(name = "matchesToConsider", required = false) String matchesToConsider){
 		_LOGGER.trace("Inside ControllerCharts.getTeamsScorePerMap");
-		return mediator.send(new CmdGetTeamsScorePerMap(mapName));
+		return mediator.send(new CmdGetTeamsScorePerMap(mapName, matchesToConsider));
 	}
 }

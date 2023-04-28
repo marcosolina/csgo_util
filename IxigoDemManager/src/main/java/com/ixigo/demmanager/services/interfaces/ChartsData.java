@@ -36,5 +36,5 @@ public interface ChartsData {
 	 * @param mapName
 	 * @return
 	 */
-	public Mono<Map<LocalDateTime, SvcMapStats>> getTeamsScorePerMap(String mapName);
+	public Mono<Map<LocalDateTime, SvcMapStats>> getTeamsScorePerMap(String mapName, Optional<Integer> lastXMatchedToConsider);
 }

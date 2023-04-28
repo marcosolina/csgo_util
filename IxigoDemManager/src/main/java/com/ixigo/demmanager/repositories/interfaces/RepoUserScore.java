@@ -55,7 +55,7 @@ public interface RepoUserScore {
 	 * @param mapName
 	 * @return
 	 */
-	public Flux<Users_scoresDto> getUserScoresPerMap(String mapName);
+	public Flux<Users_scoresDto> getUserScoresPerMap(String mapName, Optional<Integer> lastXMatchedToConsider);
 
 	/**
 	 * It returns the average score type of a single user per map

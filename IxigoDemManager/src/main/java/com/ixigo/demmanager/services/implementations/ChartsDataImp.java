@@ -67,9 +67,9 @@ public class ChartsDataImp implements ChartsData{
 	}
 
 	@Override
-	public Mono<Map<LocalDateTime, SvcMapStats>> getTeamsScorePerMap(String mapName) {
+	public Mono<Map<LocalDateTime, SvcMapStats>> getTeamsScorePerMap(String mapName, Optional<Integer> lastXMatchedToConsider) {
 		var users = demService.getListOfUsers().collectList();
-		var scores = repoUserScore.getUserScoresPerMap(mapName).collectList();
+		var scores = repoUserScore.getUserScoresPerMap(mapName, lastXMatchedToConsider).collectList();
 		// @formatter:off 
 		return Mono.zip(users, scores)
 			.map(tuple -> {

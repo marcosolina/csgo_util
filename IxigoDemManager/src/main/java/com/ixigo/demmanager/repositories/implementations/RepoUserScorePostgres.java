@@ -237,15 +237,50 @@ public class RepoUserScorePostgres implements RepoUserScore {
 	}
 
 	@Override
-	public Flux<Users_scoresDto> getUserScoresPerMap(String mapName) {
+	public Flux<Users_scoresDto> getUserScoresPerMap(String mapName, Optional<Integer> lastXMatchedToConsider) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.getUserScoresPerMap");
+		
+		boolean addLimit = lastXMatchedToConsider.isPresent() && lastXMatchedToConsider.get() > 0;
+		StringBuilder innerQuery = new StringBuilder();
+		
+		innerQuery.append(" SELECT * FROM ");
+		innerQuery.append(Users_scoresDao.tableName);
+		innerQuery.append(" WHERE ");
+		innerQuery.append(Users_scoresDto.Fields.map);
+		innerQuery.append(" =:" + Users_scoresDto.Fields.map);
+		
+		if(addLimit) {
+			innerQuery.append(" AND ");
+			innerQuery.append(Users_scoresDto.Fields.game_date);
+			innerQuery.append(" IN ( ");
+			innerQuery.append(" SELECT ");
+			innerQuery.append(Users_scoresDto.Fields.game_date);
+			innerQuery.append(" FROM ");
+			innerQuery.append(Users_scoresDao.tableName);
+			innerQuery.append(" WHERE ");
+			innerQuery.append(Users_scoresDto.Fields.map);
+			innerQuery.append(" =:" + Users_scoresDto.Fields.map);
+			innerQuery.append(" GROUP BY ");
+			innerQuery.append(Users_scoresDto.Fields.game_date);
+			innerQuery.append(" ORDER BY ");
+			innerQuery.append(Users_scoresDto.Fields.game_date);
+			innerQuery.append(" DESC ");
+			innerQuery.append(" LIMIT ");
+			innerQuery.append(lastXMatchedToConsider.get());
+			innerQuery.append(" ) ");
+		}
+		
+		innerQuery.append(" ORDER BY ");
+		innerQuery.append(Users_scoresDto.Fields.game_date);
+		innerQuery.append(" DESC ");
+		innerQuery.append("");
+		
 		Users_scoresDao dao = new Users_scoresDao();
-		dao.addSqlWhereAndClauses(Users_scoresDto.Fields.map);
-		dao.addSqlParams(mapName);
-		dao.addSqlOrderFields(Users_scoresDto.Fields.game_date);
-		dao.addSqlOrderFields(Users_scoresDto.Fields.side);
-
-		return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
+		
+		//// @formatter:off
+		return client.sql(innerQuery.toString())
+				.bind(Users_scoresDto.Fields.map, mapName)
+				.map(dao::mappingFunction).all();
+		// @formatter:on
 	}
-
 }

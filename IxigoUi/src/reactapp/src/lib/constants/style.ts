@@ -41,7 +41,6 @@ export const COLOR_PALETTE: IColor[] = [
   { red: 182, green: 176, blue: 53 }, // Oliva
   { red: 79, green: 255, blue: 0 }, // Verde evidenziatore
   { red: 255, green: 169, blue: 90 }, // Arancio chiaro
-  { red: 255, green: 169, blue: 90 }, // Arancio chiaro
   { red: 222, green: 212, blue: 22 }, // Senape
   { red: 90, green: 163, blue: 57 }, // Verde
   { red: 183, green: 0, blue: 255 }, // Viola

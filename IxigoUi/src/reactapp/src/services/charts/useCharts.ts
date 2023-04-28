@@ -1,6 +1,12 @@
 import { UseQueryResult, useQuery } from "react-query";
 import { IxigoResponse, QueryParamType } from "../../lib/http-requests";
-import { IAvgScoresPerMap, IGetAvgScoresPerMapRequest, IMapsPlayed } from "./interfaces";
+import {
+  IAvgScoresPerMap,
+  IGetAvgScoresPerMapRequest,
+  IMapsPlayed,
+  ITeamScorePerMapRequest,
+  ITeamScorePerMapResponse,
+} from "./interfaces";
 import { performGet } from "../../lib/http-requests/httpRequests";
 import { SERVICES_URLS } from "../../lib/constants";
 import { createQueryParamString } from "../../lib/http-requests/httpRequests";
@@ -28,6 +34,22 @@ export const useGetAvgScoresPerMap = (
       ),
     {
       enabled: request.steamIds.length > 0,
+    }
+  );
+};
+
+export const useGetTeamScorePerMap = (
+  request: ITeamScorePerMapRequest
+): UseQueryResult<IxigoResponse<ITeamScorePerMapResponse>, unknown> => {
+  const queryParam = createQueryParamString(request as unknown as Record<string, QueryParamType>);
+  return useQuery(
+    ["getTeamScorePerMap", queryParam],
+    async () =>
+      await performGet<ITeamScorePerMapResponse>(
+        `${SERVICES_URLS["dem-manager"]["get-charts-team-score-per-map"]}${queryParam}`
+      ),
+    {
+      enabled: !!request.map,
     }
   );
 };

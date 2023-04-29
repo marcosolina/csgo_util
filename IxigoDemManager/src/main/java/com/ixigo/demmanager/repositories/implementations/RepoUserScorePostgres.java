@@ -14,6 +14,7 @@ import org.springframework.r2dbc.core.DatabaseClient.GenericExecuteSpec;
 
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
+import com.ixigo.demmanager.models.database.DtoTeamAvgScorePerMap;
 import com.ixigo.demmanager.models.database.DtoUserAvgScorePerMap;
 import com.ixigo.demmanager.models.database.Users_scoresDao;
 import com.ixigo.demmanager.models.database.Users_scoresDto;
@@ -148,6 +149,55 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		return getUserAveragaScorePerMaps(steamId, scoreType, maps, lastMatchesToConsider);
 	}
 	
+	@Override
+	public Flux<DtoTeamAvgScorePerMap> getAvgTeamScorePerMap(String mapName, ScoreType scoreType, Optional<Integer> lastMatchesToConsider) {
+
+		String avgFieldName = "avg_score";
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT " + Users_scoresDto.Fields.side + "," + Users_scoresDto.Fields.map + ", avg(" + scoreType.toString().toLowerCase() + ") as " + avgFieldName);
+		sql.append(" FROM ");
+		sql.append(Users_scoresDao.tableName);
+		
+		sql.append(" WHERE ");
+		sql.append(Users_scoresDto.Fields.map + " = :" + Users_scoresDto.Fields.map);
+		
+		boolean addLimit = lastMatchesToConsider.isPresent() && lastMatchesToConsider.get() > 0;
+		if(addLimit) {
+			sql.append(" AND ");
+			sql.append(Users_scoresDto.Fields.game_date + " IN ");
+			
+			sql.append(" ( SELECT " + Users_scoresDto.Fields.game_date);
+			sql.append(" FROM ");
+			sql.append(Users_scoresDao.tableName);
+			sql.append(" WHERE ");
+			sql.append(Users_scoresDto.Fields.map + " = :" + Users_scoresDto.Fields.map);
+			
+			sql.append(" GROUP BY ");
+			sql.append(Users_scoresDto.Fields.game_date);
+			sql.append(" ORDER BY ");
+			sql.append(Users_scoresDto.Fields.game_date);
+			sql.append(" DESC ");
+			sql.append(" LIMIT " + lastMatchesToConsider.get());
+			sql.append(" ) ");
+		}
+		
+		sql.append(" group by " + Users_scoresDto.Fields.side + ", " + Users_scoresDto.Fields.map );
+		sql.append(" order by " + Users_scoresDto.Fields.map);
+		
+		// @formatter:off
+		GenericExecuteSpec ges = client.sql(sql.toString())
+				.bind(Users_scoresDto.Fields.map, mapName);
+		
+		return ges.map((Row row, RowMetadata rowMetaData) -> {
+			return new DtoTeamAvgScorePerMap(
+				row.get(Users_scoresDto.Fields.side, String.class),
+				row.get(Users_scoresDto.Fields.map, String.class),
+				row.get(avgFieldName, Double.class))
+			;
+		}).all();
+		// @formatter:on
+	}
+	
 	private Flux<DtoUserAvgScorePerMap> getUserAveragaScorePerMaps(String steamId, ScoreType scoreType, Optional<List<String>> maps, Optional<Integer> lastMatchesToConsider) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.getUserAveragaScorePerMap");
 		String avgFieldName = "average_score";
@@ -158,7 +208,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		boolean isUnion = lastMatchesToConsider.isPresent() && lastMatchesToConsider.get() > 0 && maps.isPresent(); 
 		if(isUnion) {			
 			List<StringBuilder> limits = new ArrayList<>();
-			maps.get().forEach(m -> limits.add(prepareQueryForUnion(scoreType, steamId, m, lastMatchesToConsider.get())));
+			maps.get().forEach(m -> limits.add(prepareQueryForUnionFilterBySteamIdAndMap(scoreType, steamId, m, lastMatchesToConsider.get())));
 			sqlFrom.append(" ( " + String.join(" UNION ", limits) + " ) x ");
 		}else {			
 			sqlFrom.append(Users_scoresDao.tableName);
@@ -213,7 +263,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		return sql;
 	}
 	
-	private StringBuilder prepareQueryForUnion(ScoreType scoreType, String steamId, String mapName, Integer limit ) {
+	private StringBuilder prepareQueryForUnionFilterBySteamIdAndMap(ScoreType scoreType, String steamId, String mapName, Integer limit ) {
 		StringBuilder innerQuery = new StringBuilder();
 		innerQuery.append(" ( SELECT " + Users_scoresDto.Fields.map + "," + Users_scoresDto.Fields.steam_id + ", " + scoreType.toString().toLowerCase());
 		innerQuery.append(" FROM ");
@@ -235,7 +285,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		
 		return innerQuery;
 	}
-
+	
 	@Override
 	public Flux<Users_scoresDto> getUserScoresPerMap(String mapName, Optional<Integer> lastXMatchedToConsider) {
 		_LOGGER.trace("Inside RepoUserScorePostgres.getUserScoresPerMap");

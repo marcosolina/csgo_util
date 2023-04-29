@@ -12,16 +12,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author marco
  *
  */
-public class RestAvgScoresPerMap implements Serializable {
+public class RestTeamsAvgScoresPerMap implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@JsonProperty("scores")
-	private Map<String, List<RestAvgScorePerMap>> scores;
+	private Map<String, List<RestTeamAvgScorePerMap>> scores;
 
-	public Map<String, List<RestAvgScorePerMap>> getScores() {
+	public Map<String, List<RestTeamAvgScorePerMap>> getScores() {
 		return scores;
 	}
 
-	public void setScores(Map<String, List<RestAvgScorePerMap>> scores) {
+	public void setScores(Map<String, List<RestTeamAvgScorePerMap>> scores) {
 		this.scores = scores;
 	}
 

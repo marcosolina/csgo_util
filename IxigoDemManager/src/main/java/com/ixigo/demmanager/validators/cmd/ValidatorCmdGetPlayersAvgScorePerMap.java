@@ -6,35 +6,35 @@ import static br.com.fluentvalidator.predicate.StringPredicate.stringEmptyOrNull
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.ixigo.demmanager.commands.charts.CmdGetAvgScorePerMap;
+import com.ixigo.demmanager.commands.charts.CmdGetPlayersAvgScorePerMap;
 import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.validators.IxigoValidator;
 
 @Component
-public class ValidatorCmdGetAvgScorePerMap extends IxigoValidator<CmdGetAvgScorePerMap>{
+public class ValidatorCmdGetPlayersAvgScorePerMap extends IxigoValidator<CmdGetPlayersAvgScorePerMap>{
 	@Autowired
     private IxigoMessageResource msgSource;
 
 	@Override
 	public void rules() {
 		// @formatter:off
-		ruleFor(CmdGetAvgScorePerMap::getSteamIds)
+		ruleFor(CmdGetPlayersAvgScorePerMap::getSteamIds)
 	        .must(list -> list != null && !list.isEmpty())
 	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_MANDATORY))
 	        .withCode(ErrorCodes.ERROR_MANDATORY)
-	        .withAttempedValue(CmdGetAvgScorePerMap::getSteamIds)
-	        .withFieldName(this.getJsonPropertyName(CmdGetAvgScorePerMap.Fields.steamIds));
+	        .withAttempedValue(CmdGetPlayersAvgScorePerMap::getSteamIds)
+	        .withFieldName(this.getJsonPropertyName(CmdGetPlayersAvgScorePerMap.Fields.steamIds));
 		
-		ruleFor(CmdGetAvgScorePerMap::getScoreType)
+		ruleFor(CmdGetPlayersAvgScorePerMap::getScoreType)
 	        .must(not(stringEmptyOrNull()))
 	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_MANDATORY))
 	        .withCode(ErrorCodes.ERROR_MANDATORY)
-	        .withAttempedValue(CmdGetAvgScorePerMap::getScoreType)
-	        .withFieldName(this.getJsonPropertyName(CmdGetAvgScorePerMap.Fields.scoreType));
+	        .withAttempedValue(CmdGetPlayersAvgScorePerMap::getScoreType)
+	        .withFieldName(this.getJsonPropertyName(CmdGetPlayersAvgScorePerMap.Fields.scoreType));
 		
-		ruleFor(CmdGetAvgScorePerMap::getMatchesToConsider)
+		ruleFor(CmdGetPlayersAvgScorePerMap::getMatchesToConsider)
 	        .must(number -> {
 	        	try {
 	        		Integer.parseInt(number);
@@ -46,10 +46,10 @@ public class ValidatorCmdGetAvgScorePerMap extends IxigoValidator<CmdGetAvgScore
 	        .when(not(stringEmptyOrNull()))
 	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_MUST_BE_AN_INTEGER))
 	        .withCode(ErrorCodes.ERROR_MUST_BE_AN_INTEGER)
-	        .withAttempedValue(CmdGetAvgScorePerMap::getMatchesToConsider)
-	        .withFieldName(this.getJsonPropertyName(CmdGetAvgScorePerMap.Fields.matchesToConsider));
+	        .withAttempedValue(CmdGetPlayersAvgScorePerMap::getMatchesToConsider)
+	        .withFieldName(this.getJsonPropertyName(CmdGetPlayersAvgScorePerMap.Fields.matchesToConsider));
 		
-		ruleFor(CmdGetAvgScorePerMap::getMatchesToConsider)
+		ruleFor(CmdGetPlayersAvgScorePerMap::getMatchesToConsider)
 	        .must(number -> Integer.parseInt(number) > -1)
 	        .when(number -> {
 	        	if(number != null && !number.trim().isEmpty()) {
@@ -64,10 +64,10 @@ public class ValidatorCmdGetAvgScorePerMap extends IxigoValidator<CmdGetAvgScore
 	        })
 	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_MUST_NOT_BE_NEGATIVE))
 	        .withCode(ErrorCodes.ERROR_MUST_NOT_BE_NEGATIVE)
-	        .withAttempedValue(CmdGetAvgScorePerMap::getMatchesToConsider)
-	        .withFieldName(this.getJsonPropertyName(CmdGetAvgScorePerMap.Fields.matchesToConsider));
+	        .withAttempedValue(CmdGetPlayersAvgScorePerMap::getMatchesToConsider)
+	        .withFieldName(this.getJsonPropertyName(CmdGetPlayersAvgScorePerMap.Fields.matchesToConsider));
 		
-		ruleFor(CmdGetAvgScorePerMap::getScoreType)
+		ruleFor(CmdGetPlayersAvgScorePerMap::getScoreType)
 	        .must(strScoreType -> {
 	        	try {
 		        	ScoreType.valueOf(strScoreType);
@@ -79,8 +79,8 @@ public class ValidatorCmdGetAvgScorePerMap extends IxigoValidator<CmdGetAvgScore
 	        .when(not(stringEmptyOrNull()))
 	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_SCORE_TYPE_INVALID))
 	        .withCode(ErrorCodes.ERROR_SCORE_TYPE_INVALID)
-	        .withAttempedValue(CmdGetAvgScorePerMap::getScoreType)
-	        .withFieldName(this.getJsonPropertyName(CmdGetAvgScorePerMap.Fields.scoreType));
+	        .withAttempedValue(CmdGetPlayersAvgScorePerMap::getScoreType)
+	        .withFieldName(this.getJsonPropertyName(CmdGetPlayersAvgScorePerMap.Fields.scoreType));
 		// @formatter:on
 		
 	}

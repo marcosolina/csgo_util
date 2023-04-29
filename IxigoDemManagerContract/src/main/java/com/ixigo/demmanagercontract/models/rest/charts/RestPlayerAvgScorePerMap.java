@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * @author marco
  *
  */
-public class RestAvgScorePerMap implements Serializable {
+public class RestPlayerAvgScorePerMap implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@JsonProperty("steam_id")
 	private String steamId;

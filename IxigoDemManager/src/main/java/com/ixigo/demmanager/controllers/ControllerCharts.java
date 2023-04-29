@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.demmanager.commands.charts.CmdGetAvgScorePerMap;
 import com.ixigo.demmanager.commands.charts.CmdGetMapPlayedCount;
+import com.ixigo.demmanager.commands.charts.CmdGetPlayersAvgScorePerMap;
+import com.ixigo.demmanager.commands.charts.CmdGetTeamsAvgScorePerMap;
 import com.ixigo.demmanager.commands.charts.CmdGetTeamsScorePerMap;
-import com.ixigo.demmanagercontract.models.rest.charts.RestAvgScoresPerMap;
 import com.ixigo.demmanagercontract.models.rest.charts.RestMapsPlayed;
+import com.ixigo.demmanagercontract.models.rest.charts.RestPlayersAvgScoresPerMap;
 import com.ixigo.demmanagercontract.models.rest.charts.RestTeamScorePerMap;
+import com.ixigo.demmanagercontract.models.rest.charts.RestTeamsAvgScoresPerMap;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import io.swagger.annotations.ApiOperation;
@@ -45,14 +47,25 @@ public class ControllerCharts {
 	
 	@GetMapping("/avgscore")
 	@ApiOperation(value = "It will returnthe average score per map of the players")
-	public Mono<ResponseEntity<RestAvgScoresPerMap>> getAverageScorePerMap(
+	public Mono<ResponseEntity<RestPlayersAvgScoresPerMap>> getAverageScorePerMap(
 			@RequestParam(name = "steamIds", required = false) List<String> steamIds,
 			@RequestParam(name = "scoreType", required = false) String scoreType,
 			@RequestParam(name = "maps", required = false) List<String> maps,
 			@RequestParam(name = "matchesToConsider", required = false) String matchesToConsider
 			){
 		_LOGGER.trace("Inside ControllerCharts.getAverageScorePerMap");
-		return mediator.send(new CmdGetAvgScorePerMap(steamIds, scoreType, maps, matchesToConsider));
+		return mediator.send(new CmdGetPlayersAvgScorePerMap(steamIds, scoreType, maps, matchesToConsider));
+	}
+	
+	@GetMapping("/avgteamscore")
+	@ApiOperation(value = "It will returnthe average score per map of the players")
+	public Mono<ResponseEntity<RestTeamsAvgScoresPerMap>> getAverageTeamScorePerMap(
+			@RequestParam(name = "scoreType", required = false) String scoreType,
+			@RequestParam(name = "maps", required = false) List<String> maps,
+			@RequestParam(name = "matchesToConsider", required = false) String matchesToConsider
+			){
+		_LOGGER.trace("Inside ControllerCharts.getAverageScorePerMap");
+		return mediator.send(new CmdGetTeamsAvgScorePerMap(maps, scoreType,  matchesToConsider));
 	}
 	
 	@GetMapping("/scorepermap")

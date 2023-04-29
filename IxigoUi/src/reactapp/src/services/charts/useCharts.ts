@@ -1,8 +1,10 @@
 import { UseQueryResult, useQuery } from "react-query";
 import { IxigoResponse, QueryParamType } from "../../lib/http-requests";
 import {
-  IAvgScoresPerMap,
-  IGetAvgScoresPerMapRequest,
+  IAvgPlayersScoresPerMap,
+  IAvgTeamsScoresPerMap,
+  IGetAvgPlayersScoresPerMapRequest,
+  IGetAvgTeamsScoresPerMapRequest,
   IMapsPlayed,
   ITeamScorePerMapRequest,
   ITeamScorePerMapResponse,
@@ -22,18 +24,34 @@ export const useGetMapsPlayedCount = (): UseQueryResult<IxigoResponse<IMapsPlaye
   );
 };
 
-export const useGetAvgScoresPerMap = (
-  request: IGetAvgScoresPerMapRequest
-): UseQueryResult<IxigoResponse<IAvgScoresPerMap>, unknown> => {
+export const useGetPlayersAvgScoresPerMap = (
+  request: IGetAvgPlayersScoresPerMapRequest
+): UseQueryResult<IxigoResponse<IAvgPlayersScoresPerMap>, unknown> => {
   const queryParam = createQueryParamString(request as unknown as Record<string, QueryParamType>);
   return useQuery(
-    ["getAvgScorePerMap", queryParam],
+    ["getAvgPlayersScorePerMap", queryParam],
     async () =>
-      await performGet<IAvgScoresPerMap>(
-        `${SERVICES_URLS["dem-manager"]["get-charts-avg-scores-per-map"]}${queryParam}`
+      await performGet<IAvgPlayersScoresPerMap>(
+        `${SERVICES_URLS["dem-manager"]["get-charts-avg-players-scores-per-map"]}${queryParam}`
       ),
     {
       enabled: request.steamIds.length > 0,
+    }
+  );
+};
+
+export const useGetTeamssAvgScoresPerMap = (
+  request: IGetAvgTeamsScoresPerMapRequest
+): UseQueryResult<IxigoResponse<IAvgTeamsScoresPerMap>, unknown> => {
+  const queryParam = createQueryParamString(request as unknown as Record<string, QueryParamType>);
+  return useQuery(
+    ["getAvgTeamsScorePerMap", queryParam],
+    async () =>
+      await performGet<IAvgTeamsScoresPerMap>(
+        `${SERVICES_URLS["dem-manager"]["get-charts-avg-teams-scores-per-map"]}${queryParam}`
+      ),
+    {
+      enabled: request.maps.length > 0,
     }
   );
 };

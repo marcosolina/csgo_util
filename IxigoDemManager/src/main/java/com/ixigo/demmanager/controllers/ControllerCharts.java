@@ -45,8 +45,8 @@ public class ControllerCharts {
 		return mediator.send(new CmdGetMapPlayedCount());
 	}
 	
-	@GetMapping("/avgscore")
-	@ApiOperation(value = "It will returnthe average score per map of the players")
+	@GetMapping("/avgplayersscore")
+	@ApiOperation(value = "It will return the average score per map of the players")
 	public Mono<ResponseEntity<RestPlayersAvgScoresPerMap>> getAverageScorePerMap(
 			@RequestParam(name = "steamIds", required = false) List<String> steamIds,
 			@RequestParam(name = "scoreType", required = false) String scoreType,
@@ -58,7 +58,7 @@ public class ControllerCharts {
 	}
 	
 	@GetMapping("/avgteamscore")
-	@ApiOperation(value = "It will returnthe average score per map of the players")
+	@ApiOperation(value = "It will return the average score per map of the players")
 	public Mono<ResponseEntity<RestTeamsAvgScoresPerMap>> getAverageTeamScorePerMap(
 			@RequestParam(name = "scoreType", required = false) String scoreType,
 			@RequestParam(name = "maps", required = false) List<String> maps,
@@ -69,7 +69,7 @@ public class ControllerCharts {
 	}
 	
 	@GetMapping("/scorepermap")
-	@ApiOperation(value = "It will returnthe average score per map of the players")
+	@ApiOperation(value = "It will return the average score per map of the players")
 	public Mono<ResponseEntity<RestTeamScorePerMap>> getTeamsScorePerMap(
 			@RequestParam(name = "map", required = false) String mapName,
 			@RequestParam(name = "matchesToConsider", required = false) String matchesToConsider){

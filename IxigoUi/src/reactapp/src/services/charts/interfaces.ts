@@ -7,8 +7,14 @@ export interface IMapsPlayed {
   maps: IMapPlayed[];
 }
 
-export interface IGetAvgScoresPerMapRequest {
+export interface IGetAvgPlayersScoresPerMapRequest {
   steamIds: string[];
+  scoreType: string;
+  maps: string[];
+  matchesToConsider: string;
+}
+
+export interface IGetAvgTeamsScoresPerMapRequest {
   scoreType: string;
   maps: string[];
   matchesToConsider: string;
@@ -68,12 +74,22 @@ export interface IUserGotvScore {
   side: string;
 }
 
-export interface IAvgScoresPerMap {
-  scores: Record<string, IAvgScorePerMap[]>;
+export interface IAvgPlayersScoresPerMap {
+  scores: Record<string, IAvgPlayerScorePerMap[]>;
 }
 
-export interface IAvgScorePerMap {
+export interface IAvgPlayerScorePerMap {
   steam_id: string;
+  map_name: string;
+  avg_score: number;
+}
+
+export interface IAvgTeamsScoresPerMap {
+  scores: Record<string, IAvgTeamScorePerMap[]>;
+}
+
+export interface IAvgTeamScorePerMap {
+  team: string;
   map_name: string;
   avg_score: number;
 }

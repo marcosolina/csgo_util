@@ -1,5 +1,5 @@
 export const PROXY_BASE_PATH =
-  (window as { [key: string]: any })["srvContextPath"] || "https://marco.selfip.net/ixigoproxy"; //"http://localhost:8763/ixigoproxy";
+  (window as { [key: string]: any })["srvContextPath"] || "http://localhost:8763/ixigoproxy"; //"https://marco.selfip.net/ixigoproxy";;
 export const UI_CONTEXT_PATH = (window as { [key: string]: any })["uiContextPath"] || "";
 
 export const SERVICES_URLS = {
@@ -16,8 +16,9 @@ export const SERVICES_URLS = {
     "get-dem-data-users": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/users",
     "get-dem-data-users-scores": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/usersscores",
     "get-charts-data-maps-played": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/mapsplayed",
-    "get-charts-avg-scores-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/avgscore",
+    "get-charts-avg-players-scores-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/avgplayersscore",
     "get-charts-team-score-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/scorepermap",
+    "get-charts-avg-teams-scores-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/avgteamscore",
   },
   "event-dispatcher": {
     "gateway-path": "ixigo-event-dispatcher",

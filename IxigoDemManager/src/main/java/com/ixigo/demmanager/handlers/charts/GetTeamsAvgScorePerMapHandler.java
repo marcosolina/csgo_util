@@ -56,10 +56,11 @@ public class GetTeamsAvgScorePerMapHandler implements WebCommandHandler<CmdGetTe
 		
         var scoreType = ScoreType.valueOf(request.getScoreType());
         
+        var mapsFlux = request.getMaps() != null && !request.getMaps().isEmpty() ? Flux.fromIterable(request.getMaps()): service.countGamesOnAMap().map(c -> c.getMapName());
         Optional<Integer> lastMatchesToConsider = request.getMatchesToConsider() != null ? Optional.of(Integer.parseInt(request.getMatchesToConsider())): Optional.empty();
         
         // @formatter:off
-        return Flux.fromIterable(request.getMaps())
+        return mapsFlux
 	        .flatMap(mapName -> service.getTeamAverageScorePerMap(mapName, scoreType, lastMatchesToConsider).collectList())
 	        .collectList()
 	        .filter(l -> l != null && !l.isEmpty())

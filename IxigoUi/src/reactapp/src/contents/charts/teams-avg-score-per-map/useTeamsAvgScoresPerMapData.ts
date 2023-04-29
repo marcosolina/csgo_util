@@ -4,7 +4,7 @@ import { useGetScoreTypes } from "../../../services";
 import {
   IGetAvgTeamsScoresPerMapRequest,
   useGetMapsPlayedCount,
-  useGetTeamssAvgScoresPerMap,
+  useGetTeamsAvgScoresPerMap,
 } from "../../../services/charts";
 import { IUseTeamsAvgScoresPerMapDataResult } from "./interfaces";
 import { IxigoPossibleValue } from "../../../common";
@@ -12,7 +12,7 @@ import { IxigoPossibleValue } from "../../../common";
 export const useTeamsAvgScoresPerMapData = (
   request: IGetAvgTeamsScoresPerMapRequest
 ): IUseTeamsAvgScoresPerMapDataResult => {
-  const qAvgScores = useGetTeamssAvgScoresPerMap(request);
+  const qAvgScores = useGetTeamsAvgScoresPerMap(request);
   const qScoreTypes = useGetScoreTypes();
   const qMapsPlayed = useGetMapsPlayedCount();
 

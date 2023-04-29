@@ -182,7 +182,7 @@ public class RepoUserScorePostgres implements RepoUserScore {
 		}
 		
 		sql.append(" group by " + Users_scoresDto.Fields.side + ", " + Users_scoresDto.Fields.map );
-		sql.append(" order by " + Users_scoresDto.Fields.map);
+		sql.append(" order by " + Users_scoresDto.Fields.map + ", " + Users_scoresDto.Fields.side);
 		
 		// @formatter:off
 		GenericExecuteSpec ges = client.sql(sql.toString())

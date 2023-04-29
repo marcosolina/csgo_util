@@ -40,7 +40,7 @@ export const useGetPlayersAvgScoresPerMap = (
   );
 };
 
-export const useGetTeamssAvgScoresPerMap = (
+export const useGetTeamsAvgScoresPerMap = (
   request: IGetAvgTeamsScoresPerMapRequest
 ): UseQueryResult<IxigoResponse<IAvgTeamsScoresPerMap>, unknown> => {
   const queryParam = createQueryParamString(request as unknown as Record<string, QueryParamType>);
@@ -51,7 +51,7 @@ export const useGetTeamssAvgScoresPerMap = (
         `${SERVICES_URLS["dem-manager"]["get-charts-avg-teams-scores-per-map"]}${queryParam}`
       ),
     {
-      enabled: request.maps.length > 0,
+      enabled: !!request.scoreType,
     }
   );
 };

@@ -20,14 +20,7 @@ public class ValidatorCmdGetTeamsAvgScorePerMap extends IxigoValidator<CmdGetTea
 
 	@Override
 	public void rules() {
-		// @formatter:off
-		ruleFor(CmdGetTeamsAvgScorePerMap::getMaps)
-	        .must(list -> list != null && !list.isEmpty())
-	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_MANDATORY))
-	        .withCode(ErrorCodes.ERROR_MANDATORY)
-	        .withAttempedValue(CmdGetTeamsAvgScorePerMap::getMaps)
-	        .withFieldName(this.getJsonPropertyName(CmdGetTeamsAvgScorePerMap.Fields.maps));
-		
+		// @formatter:off		
 		ruleFor(CmdGetTeamsAvgScorePerMap::getScoreType)
 	        .must(not(stringEmptyOrNull()))
 	        .withMessage(msgSource.getMessage(ErrorCodes.ERROR_MANDATORY))

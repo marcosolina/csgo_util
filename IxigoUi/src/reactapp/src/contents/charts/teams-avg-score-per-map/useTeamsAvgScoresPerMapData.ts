@@ -1,22 +1,22 @@
 import { useMemo } from "react";
 import { combineQueryStatuses } from "../../../lib/queries";
-import { useGetCsgoPlayers, useGetScoreTypes } from "../../../services";
-import { useGetAvgScoresPerMap, useGetMapsPlayedCount } from "../../../services/charts";
-import { IUseAvgScoresPerMapDataRequest, IUseAvgScoresPerMapDataResult } from "./interfaces";
+import { useGetScoreTypes } from "../../../services";
+import {
+  IGetAvgTeamsScoresPerMapRequest,
+  useGetMapsPlayedCount,
+  useGetTeamssAvgScoresPerMap,
+} from "../../../services/charts";
+import { IUseTeamsAvgScoresPerMapDataResult } from "./interfaces";
 import { IxigoPossibleValue } from "../../../common";
 
-export const useAvgScoresPerMapData = (request: IUseAvgScoresPerMapDataRequest): IUseAvgScoresPerMapDataResult => {
-  const qAvgScores = useGetAvgScoresPerMap({
-    steamIds: request.steamIds,
-    scoreType: request.scoreType,
-    maps: request.maps,
-    matchesToConsider: request.matchesToConsider,
-  });
-  const qCsgoPlayers = useGetCsgoPlayers();
+export const useTeamsAvgScoresPerMapData = (
+  request: IGetAvgTeamsScoresPerMapRequest
+): IUseTeamsAvgScoresPerMapDataResult => {
+  const qAvgScores = useGetTeamssAvgScoresPerMap(request);
   const qScoreTypes = useGetScoreTypes();
   const qMapsPlayed = useGetMapsPlayedCount();
 
-  const status = combineQueryStatuses([qAvgScores, qCsgoPlayers, qScoreTypes, qMapsPlayed]);
+  const status = combineQueryStatuses([qAvgScores, qScoreTypes, qMapsPlayed]);
 
   const scoreTypes = qScoreTypes.data?.data?.types;
   const possibleScoreTypesValues = useMemo(() => {
@@ -34,15 +34,11 @@ export const useAvgScoresPerMapData = (request: IUseAvgScoresPerMapDataRequest):
     return arr;
   }, [scoreTypes]);
 
-  const users = qCsgoPlayers.data?.data?.users || [];
-  users.sort((a, b) => a.user_name.localeCompare(b.user_name));
-
   const mapsPlayed = qMapsPlayed.data?.data?.maps || [];
   mapsPlayed.sort((a, b) => a.map_name.localeCompare(b.map_name));
 
   return {
     status,
-    users,
     avgScores: qAvgScores.data?.data,
     scoreTypes: possibleScoreTypesValues,
     mapsPlayed,

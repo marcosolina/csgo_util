@@ -43,7 +43,7 @@
       "mapPlayedCount": {
         "title": "Number of times a map was played"
       },
-      "avgScorePerMap": {
+      "avgPlayersScorePerMap": {
         "title": "Average score per map",
         "lblScoreTypes": "Score type",
         "lblDpUsers": "Players",
@@ -55,6 +55,13 @@
       "teamScorePerMap": {
         "title": "HLTV Team score per map",
         "lblDpMap": "Map",
+        "lblMatchCount": "Last matches to consider",
+        "txtHelpMatchCount": "Zero means all available"
+      },
+      "avgTeamsScorePerMap": {
+        "title": "Teams average score per map",
+        "lblScoreTypes": "Score type",
+        "lblDpMaps": "Maps",
         "lblMatchCount": "Last matches to consider",
         "txtHelpMatchCount": "Zero means all available"
       }

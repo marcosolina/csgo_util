@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.models.svc.charts.SvcMapPlayedCounter;
+import com.ixigo.demmanager.models.svc.charts.SvcTeamAvgScorePerMap;
 import com.ixigo.demmanager.models.svc.charts.SvcUserAvgScorePerMap;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 
@@ -29,6 +30,15 @@ public interface ChartsData {
 	 * @return
 	 */
 	public Flux<SvcUserAvgScorePerMap> getUserAverageScorePerMap(String steamId, ScoreType scoreType, Optional<List<String>> maps, Optional<Integer> lastMatchesToConsider);
+	
+	/**
+	 * It returns the average score of the teams per map
+	 * @param map
+	 * @param scoreType
+	 * @param lastMatchesToConsider
+	 * @return
+	 */
+	public Flux<SvcTeamAvgScorePerMap> getTeamAverageScorePerMap(String map, ScoreType scoreType, Optional<Integer> lastMatchesToConsider);
 
 	/**
 	 * It returns a list of scores for the specific map;

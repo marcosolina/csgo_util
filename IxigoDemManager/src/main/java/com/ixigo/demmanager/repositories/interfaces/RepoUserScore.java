@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
+import com.ixigo.demmanager.models.database.DtoTeamAvgScorePerMap;
 import com.ixigo.demmanager.models.database.DtoUserAvgScorePerMap;
 import com.ixigo.demmanager.models.database.Users_scoresDto;
 
@@ -64,6 +65,15 @@ public interface RepoUserScore {
 	 * @return
 	 */
 	public Flux<DtoUserAvgScorePerMap> getUserAveragaScorePerMap(String steamId, ScoreType scoreType, Optional<List<String>> maps, Optional<Integer> lastMatchesToConsider);
+	
+	/**
+	 * It returns the Team average score per map
+	 * @param mapName
+	 * @param scoreType
+	 * @param lastMatchesToConsider
+	 * @return
+	 */
+	public Flux<DtoTeamAvgScorePerMap> getAvgTeamScorePerMap(String mapName, ScoreType scoreType, Optional<Integer> lastMatchesToConsider);
 
 	/**
 	 * It returns the user scores for the last "numberOfMatches" he has played for

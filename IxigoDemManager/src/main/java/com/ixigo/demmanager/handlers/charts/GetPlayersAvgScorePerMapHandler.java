@@ -12,12 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import com.ixigo.demmanager.commands.charts.CmdGetAvgScorePerMap;
+import com.ixigo.demmanager.commands.charts.CmdGetPlayersAvgScorePerMap;
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.mappers.RestMapper;
 import com.ixigo.demmanager.services.interfaces.ChartsData;
-import com.ixigo.demmanagercontract.models.rest.charts.RestAvgScorePerMap;
-import com.ixigo.demmanagercontract.models.rest.charts.RestAvgScoresPerMap;
+import com.ixigo.demmanagercontract.models.rest.charts.RestPlayerAvgScorePerMap;
+import com.ixigo.demmanagercontract.models.rest.charts.RestPlayersAvgScoresPerMap;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 import com.ixigo.library.validators.IxigoValidator;
 import com.ixigo.library.validators.IxigoValidatorUtils;
@@ -34,18 +34,18 @@ import reactor.core.publisher.Mono;
  *
  */
 @Component
-public class GetAvgScorePerMapHandler implements WebCommandHandler<CmdGetAvgScorePerMap, RestAvgScoresPerMap> {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(GetAvgScorePerMapHandler.class);
+public class GetPlayersAvgScorePerMapHandler implements WebCommandHandler<CmdGetPlayersAvgScorePerMap, RestPlayersAvgScoresPerMap> {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(GetPlayersAvgScorePerMapHandler.class);
 	@Autowired
 	private ChartsData service;
 	@Autowired
 	private RestMapper mapper;
 	
 	@Autowired
-    private IxigoValidator<CmdGetAvgScorePerMap> validator;
+    private IxigoValidator<CmdGetPlayersAvgScorePerMap> validator;
 
 	@Override
-	public Mono<ResponseEntity<RestAvgScoresPerMap>> handle(CmdGetAvgScorePerMap request) {
+	public Mono<ResponseEntity<RestPlayersAvgScoresPerMap>> handle(CmdGetPlayersAvgScorePerMap request) {
 		_LOGGER.trace("Inside GetAvgScorePerMapHandler.handle");
 
 		ValidationResult result = validator.validate(request);
@@ -65,7 +65,7 @@ public class GetAvgScorePerMapHandler implements WebCommandHandler<CmdGetAvgScor
 	        .collectList()
 	        .filter(l -> l != null && !l.isEmpty())
 	        .map(list -> {
-	        	Map<String, List<RestAvgScorePerMap>> map = new HashMap<>();
+	        	Map<String, List<RestPlayerAvgScorePerMap>> map = new HashMap<>();
 	        	list.forEach(l -> {
 	        		if(l != null && !l.isEmpty()) {
 	        			map.put(l.get(0).getSteamId(), mapper.fromSvcToRestAvgScorePerMapList(l));
@@ -74,7 +74,7 @@ public class GetAvgScorePerMapHandler implements WebCommandHandler<CmdGetAvgScor
 	        	return map;
 	        })
 	        .map(m -> {
-	        	RestAvgScoresPerMap resp = new RestAvgScoresPerMap();
+	        	RestPlayersAvgScoresPerMap resp = new RestPlayersAvgScoresPerMap();
 				resp.setScores(m);
 				return new ResponseEntity<>(resp, HttpStatus.OK);
 	        })

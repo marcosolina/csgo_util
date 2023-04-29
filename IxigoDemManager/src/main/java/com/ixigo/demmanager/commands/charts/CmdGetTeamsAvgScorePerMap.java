@@ -3,7 +3,7 @@ package com.ixigo.demmanager.commands.charts;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.ixigo.demmanagercontract.models.rest.charts.RestAvgScoresPerMap;
+import com.ixigo.demmanagercontract.models.rest.charts.RestTeamsAvgScoresPerMap;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 
 import lombok.experimental.FieldNameConstants;
@@ -15,9 +15,7 @@ import lombok.experimental.FieldNameConstants;
  *
  */
 @FieldNameConstants
-public class CmdGetAvgScorePerMap implements WebCommandRequest<RestAvgScoresPerMap> {
-	@JsonProperty("steamIds")
-	private List<String> steamIds;
+public class CmdGetTeamsAvgScorePerMap implements WebCommandRequest<RestTeamsAvgScoresPerMap> {
 	@JsonProperty("scoreType")
 	private String scoreType;
 	@JsonProperty("maps")
@@ -25,20 +23,11 @@ public class CmdGetAvgScorePerMap implements WebCommandRequest<RestAvgScoresPerM
 	@JsonProperty("matchesToConsider")
 	private String matchesToConsider;
 
-	public CmdGetAvgScorePerMap(List<String> steamIds, String scoreType, List<String> maps, String matchesToConsider) {
+	public CmdGetTeamsAvgScorePerMap(List<String> maps, String scoreType, String matchesToConsider) {
 		super();
-		this.steamIds = steamIds;
 		this.scoreType = scoreType;
 		this.maps = maps;
 		this.matchesToConsider = matchesToConsider;
-	}
-
-	public List<String> getSteamIds() {
-		return steamIds;
-	}
-
-	public void setSteamIds(List<String> steamIds) {
-		this.steamIds = steamIds;
 	}
 
 	public String getScoreType() {

@@ -18,6 +18,7 @@ import com.ixigo.demmanager.models.database.DtoMapPlayedCounter;
 import com.ixigo.demmanager.models.database.DtoUserAvgScorePerMap;
 import com.ixigo.demmanager.models.database.Users_scoresDto;
 import com.ixigo.demmanager.models.svc.charts.SvcMapPlayedCounter;
+import com.ixigo.demmanager.models.svc.charts.SvcTeamAvgScorePerMap;
 import com.ixigo.demmanager.models.svc.charts.SvcUserAvgScorePerMap;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
@@ -65,9 +66,23 @@ public class ChartsDataImp implements ChartsData{
 			return svc;
 		});
 	}
+	
+	@Override
+	public Flux<SvcTeamAvgScorePerMap> getTeamAverageScorePerMap(String map, ScoreType scoreType, Optional<Integer> lastMatchesToConsider) {
+		_LOGGER.trace("Inside: ChartsDataImp.getTeamAverageScorePerMap");
+		var scores = repoUserScore.getAvgTeamScorePerMap(map, scoreType, lastMatchesToConsider);
+		return scores.map(dto -> {
+			var svc = new SvcTeamAvgScorePerMap();
+			svc.setAvgScore(BigDecimal.valueOf(dto.getAvgScore()).setScale(3, RoundingMode.DOWN));
+			svc.setMapName(dto.getMapName());
+			svc.setTeamName(dto.getTeamName());
+			return svc;
+		});
+	}
 
 	@Override
 	public Mono<Map<LocalDateTime, SvcMapStats>> getTeamsScorePerMap(String mapName, Optional<Integer> lastXMatchedToConsider) {
+		_LOGGER.trace("Inside: ChartsDataImp.getTeamsScorePerMap");
 		var users = demService.getListOfUsers().collectList();
 		var scores = repoUserScore.getUserScoresPerMap(mapName, lastXMatchedToConsider).collectList();
 		// @formatter:off 

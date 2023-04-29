@@ -53,7 +53,7 @@
         "txtHelpDpMaps": "No selection means all maps available"
       },
       "teamScorePerMap": {
-        "title": "Team score per map",
+        "title": "HLTV Team score per map",
         "lblDpMap": "Map",
         "lblMatchCount": "Last matches to consider",
         "txtHelpMatchCount": "Zero means all available"

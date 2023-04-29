@@ -1,4 +1,4 @@
-import { Box, Grid, Typography } from "@mui/material";
+import { Box, Grid, Skeleton, Typography } from "@mui/material";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { COLOR_PALETTE, DEFAULT_SPACING, generateRgbaString } from "../../../lib/constants";
@@ -9,6 +9,10 @@ import IxigoText from "../../../common/input/IxigoText";
 import { ChartData, ChartOptions, registerables, Chart, ChartDataset, LegendItem } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { IUserGotvScore } from "../../../services/charts";
+import Switch from "../../../common/switch-case/Switch";
+import Case from "../../../common/switch-case/Case";
+import { QueryStatus } from "../../../lib/http-requests";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 Chart.register(...registerables);
 
@@ -21,6 +25,13 @@ const OPTIONS: ChartOptions<"bar"> = {
   plugins: {
     title: {
       display: false,
+    },
+    tooltip: {
+      callbacks: {
+        title: (tooltipITem) => {
+          return tooltipITem[0].dataset.stack === "T" ? "Terrorists" : "Counter terrorists";
+        },
+      },
     },
     legend: {
       labels: {
@@ -109,7 +120,7 @@ const TeamScorePerMap = () => {
   const [matchesToConsider, setMatchesToConsider] = useState<string>("0");
   const [chartData, setChartData] = useState<ChartData<"bar", number[], string>>(DATA);
 
-  const { mapsPlayed, matches, users } = useTeamScorePerMap({ map, matchesToConsider });
+  const { mapsPlayed, matches, users, status } = useTeamScorePerMap({ map, matchesToConsider });
   const steamUsers = useRef(users);
 
   useEffect(() => {
@@ -205,9 +216,21 @@ const TeamScorePerMap = () => {
           />
         </Grid>
         <Grid item xs={XS}>
-          <Box sx={{ width: "100%", height: "100%" }}>
-            <Bar data={chartData} options={OPTIONS} />
-          </Box>
+          <Switch value={status}>
+            <Case case={QueryStatus.success}>
+              <Box sx={{ width: "100%", height: "100%" }}>
+                <Bar data={chartData} options={OPTIONS} />
+              </Box>
+            </Case>
+            <Case case={QueryStatus.loading}>
+              <Skeleton animation="wave" height={200} />
+            </Case>
+            <Case case={QueryStatus.error}>
+              <Box textAlign={"center"}>
+                <ErrorOutlineIcon color="error" fontSize="large" />
+              </Box>
+            </Case>
+          </Switch>
         </Grid>
       </Grid>
     </>

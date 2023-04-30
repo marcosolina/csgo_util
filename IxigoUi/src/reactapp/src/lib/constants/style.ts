@@ -30,6 +30,7 @@ export enum TypographyVariants {
   overline = "overline",
 }
 
+/*
 export const COLOR_PALETTE: IColor[] = [
   { red: 0, green: 54, blue: 255 }, // Blu
   { red: 255, green: 0, blue: 223 }, // Rosa
@@ -52,6 +53,32 @@ export const COLOR_PALETTE: IColor[] = [
   { red: 101, green: 46, blue: 122 }, // Viola Scuro
   { red: 255, green: 0, blue: 0 }, // Rosso
   { red: 0, green: 0, blue: 0 }, // Nero
+];
+*/
+
+export const COLOR_PALETTE: IColor[] = [
+  { red: 0, green: 54, blue: 255 }, // Blu
+  { red: 255, green: 0, blue: 223 }, // Rosa
+  { red: 255, green: 102, blue: 102 },
+  { red: 255, green: 204, blue: 51 },
+  { red: 255, green: 255, blue: 102 },
+  { red: 153, green: 255, blue: 51 },
+  { red: 102, green: 255, blue: 153 },
+  { red: 51, green: 255, blue: 204 },
+  { red: 102, green: 204, blue: 255 },
+  { red: 153, green: 102, blue: 255 },
+  { red: 204, green: 51, blue: 255 },
+  { red: 255, green: 102, blue: 204 },
+  { red: 255, green: 153, blue: 153 },
+  { red: 204, green: 255, blue: 153 },
+  { red: 153, green: 255, blue: 204 },
+  { red: 102, green: 153, blue: 255 },
+  { red: 153, green: 102, blue: 204 },
+  { red: 204, green: 153, blue: 255 },
+  { red: 255, green: 204, blue: 204 },
+  { red: 204, green: 255, blue: 255 },
+  { red: 255, green: 255, blue: 153 },
+  { red: 153, green: 204, blue: 102 },
 ];
 
 export const generateRgbaString = (color: IColor, alpha: number): string => {

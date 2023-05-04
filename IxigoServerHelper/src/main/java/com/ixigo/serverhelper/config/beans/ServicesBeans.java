@@ -8,11 +8,13 @@ import com.ixigo.serverhelper.config.properties.EventProperties;
 import com.ixigo.serverhelper.enums.EventFileReaderImplementations;
 import com.ixigo.serverhelper.services.implementations.CsgoServerConfigManagerImp;
 import com.ixigo.serverhelper.services.implementations.DemFilesServiceImp;
+import com.ixigo.serverhelper.services.implementations.DyndnsUpdater;
 import com.ixigo.serverhelper.services.implementations.IxiGoEventMonitorImp;
 import com.ixigo.serverhelper.services.implementations.IxigoEventFileReaderPowerShell;
 import com.ixigo.serverhelper.services.implementations.IxigoEventFileReaderTail;
 import com.ixigo.serverhelper.services.interfaces.CsgoServerConfigManager;
 import com.ixigo.serverhelper.services.interfaces.DemFilesService;
+import com.ixigo.serverhelper.services.interfaces.DnsUpdater;
 import com.ixigo.serverhelper.services.interfaces.IxiGoEventMonitor;
 import com.ixigo.serverhelper.services.interfaces.IxigoEventFileReader;
 
@@ -42,5 +44,10 @@ public class ServicesBeans {
 	@Bean
 	public CsgoServerConfigManager getCsgoServerConfigManager() {
 		return new CsgoServerConfigManagerImp();
+	}
+	
+	@Bean
+	public DnsUpdater getDnsUpdater() {
+		return new DyndnsUpdater();
 	}
 }

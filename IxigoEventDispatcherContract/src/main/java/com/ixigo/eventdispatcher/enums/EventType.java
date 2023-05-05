@@ -17,6 +17,7 @@ public enum EventType {
     AZ_START_CONFIGURING_VM("start_configuring_vm"),
     AZ_START_INSTALLING_CSGO("start_installing_csgo"),
     AZ_START_CSGO("start_csgo"),
+    AZ_START_DELETE_RESOURCE("start_delete_resources"),
     SHUT_DOWN("shutdown"),
     // @formatter:on
 

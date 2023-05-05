@@ -12,6 +12,15 @@
 	<version>2.0.0</version>
 	<description>Dem Manager service</description>
 
+	<properties>
+		<discord.api>5.0.0-beta.8</discord.api>
+		<contract.eventdispatcher>2.0.0</contract.eventdispatcher>
+		<contract.demmanager>2.0.0</contract.demmanager>
+		<contract.playersmanager>2.0.0</contract.playersmanager>
+		<contract.rcon>2.0.0</contract.rcon>
+		<contract.discordbot>2.0.0</contract.discordbot>
+	</properties>
+
 	<dependencies>
 		<!-- START Database Stuff -->
 		<dependency>
@@ -36,6 +45,11 @@
 			<groupId>com.ixigo</groupId>
 			<artifactId>IxigoDemManagerContract</artifactId>
 			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoEventDispatcherContract</artifactId>
+			<version>${contract.eventdispatcher}</version>
 		</dependency>
 	</dependencies>
 

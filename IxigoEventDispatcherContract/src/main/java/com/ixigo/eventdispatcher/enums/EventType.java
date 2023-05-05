@@ -13,6 +13,10 @@ public enum EventType {
     CS_WIN_PANEL_MATCH("End Map"),
     WARMUP_START("round_announce_warmup"),
     WARMUP_END("xxx"),
+    AZ_START_DEPLOY_VM("start_deploy_vm"),
+    AZ_START_CONFIGURING_VM("start_configuring_vm"),
+    AZ_START_INSTALLING_CSGO("start_installing_csgo"),
+    AZ_START_CSGO("start_csgo"),
     SHUT_DOWN("shutdown"),
     // @formatter:on
 

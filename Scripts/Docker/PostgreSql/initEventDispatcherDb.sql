@@ -19,7 +19,7 @@ CREATE DATABASE EVENT_DISPATCHER;
  */
 CREATE TABLE EVENT_LISTENERS (
     URL_LISTENER           VARCHAR(1000)        DEFAULT ''	NOT NULL, -- Where to send the event
-    EVENT_TYPE             VARCHAR(20)  		DEFAULT ''	NOT NULL, -- The type of event to dispatch
+    EVENT_TYPE             VARCHAR(50)  		DEFAULT ''	NOT NULL, -- The type of event to dispatch
     LAST_SUCCESSFUL        TIMESTAMP,                                 -- The last time that this service was able to dispatch the event
     LAST_FAILURE           TIMESTAMP,                                 -- The last time that this service was NOT able to dispatch the event
     CONSECUTIVE_FAILURE    INTEGER              DEFAULT 0   NOT NULL, -- Number of consecutive failed attempts to dispatch the event
@@ -49,6 +49,16 @@ INSERT INTO EVENT_LISTENERS VALUES
 ('https://marco.selfip.net/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_START',         NULL, NULL, 0, 'Y'),
 ('https://marco.selfip.net/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'WARMUP_START',         NULL, NULL, 0, 'Y'),
 ('https://marco.selfip.net/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'SHUT_DOWN',            NULL, NULL, 0, 'Y'),
+
+/*
+ * Azure
+ */
+('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_DEPLOY_VM',      NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_CONFIGURING_VM', NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_INSTALLING_CSGO',NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_CSGO',           NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_DELETE_RESOURCE',NULL, NULL, 0, 'Y'),
+
 
 /*
 * Docker

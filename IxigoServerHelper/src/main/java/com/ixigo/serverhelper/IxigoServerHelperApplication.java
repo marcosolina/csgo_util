@@ -1,9 +1,15 @@
 package com.ixigo.serverhelper;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.Bean;
 import org.springframework.scheduling.annotation.EnableScheduling;
+
+import com.ixigo.serverhelper.services.interfaces.DnsUpdater;
 
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -13,5 +19,16 @@ public class IxigoServerHelperApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(IxigoServerHelperApplication.class, args);
 	}
+	@Autowired
+    private DnsUpdater updater;
 
+    @Bean
+    public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
+        return new CommandLineRunner() {
+            @Override
+            public void run(String... args) throws Exception {
+            	updater.updateDnsEntry();
+            }
+        };
+    }
 }

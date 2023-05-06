@@ -28,7 +28,7 @@ public class DyndnsUpdater implements DnsUpdater {
 	private IxigoWebClientUtils webClient;
 
 	@Override
-	@Scheduled(cron = "0 */5 * * * *") // Every 5 minutes
+	@Scheduled(cron = "0 */10 * * * *") // Every 5 minutes
 	public void updateDnsEntry() {
 		if (props.isEnabled()) {
 			try {

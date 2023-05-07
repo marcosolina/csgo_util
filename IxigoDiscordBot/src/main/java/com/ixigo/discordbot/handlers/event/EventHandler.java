@@ -1,5 +1,7 @@
 package com.ixigo.discordbot.handlers.event;
 
+import java.time.DayOfWeek;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +12,9 @@ import org.springframework.stereotype.Component;
 import com.ixigo.discordbot.commands.events.EventReceivedCmd;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.enums.BotConfigKey;
+import com.ixigo.eventdispatcher.enums.EventType;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
+import com.ixigo.library.utils.DateUtils;
 
 import reactor.core.publisher.Mono;
 
@@ -24,6 +28,13 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 	public Mono<ResponseEntity<Void>> handle(EventReceivedCmd cmd) {
 		_LOGGER.trace("Inside EventHandler.handle");
 
+		_LOGGER.info(String.format("Received event: %s", cmd.getEventReceived().getEventType().getDesc()));
+		
+		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
+			new Thread(() -> botService.sendMessageToGeneralChat("Automatic message: starting CSGO server, have fun!!!")).start();
+			return Mono.just(new ResponseEntity<Void>(HttpStatus.OK));
+		}
+		
 		var mono = botService.getBotConfig(BotConfigKey.AUTOBALANCE).map(config -> {
 			if (!Boolean.parseBoolean(config.getConfigVal())) {
 				return new ResponseEntity<Void>(HttpStatus.OK);

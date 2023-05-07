@@ -47,8 +47,10 @@ INSERT INTO EVENT_LISTENERS VALUES
 ('https://marco.selfip.net/ixigoproxy/ixigo-discord-bot/discordbot/events',    'CS_WIN_PANEL_MATCH',   NULL, NULL, 0, 'Y'),
 ('https://marco.selfip.net/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_END',           NULL, NULL, 0, 'Y'),
 ('https://marco.selfip.net/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_START',         NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-discord-bot/discordbot/events',    'AZ_START_CSGO',        NULL, NULL, 0, 'Y'),
 ('https://marco.selfip.net/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'WARMUP_START',         NULL, NULL, 0, 'Y'),
 ('https://marco.selfip.net/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'SHUT_DOWN',            NULL, NULL, 0, 'Y'),
+
 
 /*
  * Azure

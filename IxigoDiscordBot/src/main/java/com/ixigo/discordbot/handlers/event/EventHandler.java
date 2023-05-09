@@ -30,7 +30,7 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 
 		_LOGGER.info(String.format("Received event: %s", cmd.getEventReceived().getEventType().getDesc()));
 		
-		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO) {// && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
+		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
 			
 			new Thread(() -> {
 				StringBuilder sb = new StringBuilder();

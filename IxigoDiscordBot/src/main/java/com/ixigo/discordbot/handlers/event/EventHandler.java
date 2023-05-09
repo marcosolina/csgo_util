@@ -1,7 +1,5 @@
 package com.ixigo.discordbot.handlers.event;
 
-import java.time.DayOfWeek;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +8,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.ixigo.discordbot.commands.events.EventReceivedCmd;
+import com.ixigo.discordbot.config.properties.CsgoServerProps;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.enums.BotConfigKey;
 import com.ixigo.eventdispatcher.enums.EventType;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
-import com.ixigo.library.utils.DateUtils;
 
 import reactor.core.publisher.Mono;
 
@@ -23,6 +21,8 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(EventHandler.class);
 	@Autowired
 	private IxigoBot botService;
+	@Autowired
+	private CsgoServerProps csgoServerProps;
 
 	@Override
 	public Mono<ResponseEntity<Void>> handle(EventReceivedCmd cmd) {
@@ -30,8 +30,16 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 
 		_LOGGER.info(String.format("Received event: %s", cmd.getEventReceived().getEventType().getDesc()));
 		
-		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
-			new Thread(() -> botService.sendMessageToGeneralChat("Automatic message: starting CSGO server, have fun!!!")).start();
+		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO) {// && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
+			
+			new Thread(() -> {
+				StringBuilder sb = new StringBuilder();
+				sb.append("Automatic message:\n\n");
+				sb.append("The CSGO server is starting...\n");
+				sb.append("Click on the following link to join the game, have fun!!!\n\n");
+				sb.append("steam://connect/ixigo.selfip.net/" + csgoServerProps.getRconPassword());
+				botService.sendMessageToGeneralChat(sb.toString());
+			}).start();
 			return Mono.just(new ResponseEntity<Void>(HttpStatus.OK));
 		}
 		

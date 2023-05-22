@@ -47,7 +47,7 @@ for i in ${!apps[@]}; do
   scp $WORKSPACE_FOLDER/$APP_NAME/Scripts/startStop.sh $SSH_ADDRESS_1:$DEPLOY_APP_FOLDER
   ssh $SSH_ADDRESS_1 chmod +x $DEPLOY_APP_FOLDER/startStop.sh
   ssh $SSH_ADDRESS_1 $DEPLOY_APP_FOLDER/startStop.sh stop
-  sleep 20
+  sleep 5
 
   scp $WORKSPACE_FOLDER/$APP_NAME/target/$APP_NAME*.jar $SSH_ADDRESS_1:$DEPLOY_APP_FOLDER/$APP_NAME.jar
   ssh -t -t $SSH_ADDRESS_1 << EOF
@@ -68,7 +68,7 @@ for i in ${!apps[@]}; do
   scp $WORKSPACE_FOLDER/$APP_NAME/Scripts/startStop.sh $SSH_ADDRESS_2:$DEPLOY_APP_FOLDER
   ssh $SSH_ADDRESS_2 chmod +x $DEPLOY_APP_FOLDER/startStop.sh
   ssh $SSH_ADDRESS_2 $DEPLOY_APP_FOLDER/startStop.sh stop
-  sleep 20
+  sleep 5
 
   scp $WORKSPACE_FOLDER/$APP_NAME/target/$APP_NAME*.jar $SSH_ADDRESS_2:$DEPLOY_APP_FOLDER/$APP_NAME.jar
   ssh -t -t $SSH_ADDRESS_2 << EOF
@@ -94,7 +94,7 @@ for i in ${!apps[@]}; do
   scp $WORKSPACE_FOLDER/$APP_NAME/Scripts/startStop.sh $SSH_ADDRESS_3:$DEPLOY_APP_FOLDER
   ssh $SSH_ADDRESS_3 chmod +x $DEPLOY_APP_FOLDER/startStop.sh
   ssh $SSH_ADDRESS_3 $DEPLOY_APP_FOLDER/startStop.sh stop
-  sleep 20
+  sleep 5
 
   scp $WORKSPACE_FOLDER/$APP_NAME/target/$APP_NAME*.jar $SSH_ADDRESS_3:$DEPLOY_APP_FOLDER/$APP_NAME.jar
   ssh -t -t $SSH_ADDRESS_3 << EOF

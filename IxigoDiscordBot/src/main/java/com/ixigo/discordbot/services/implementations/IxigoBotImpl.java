@@ -37,10 +37,12 @@ import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.validators.ValidationException;
 import com.netflix.servo.util.Strings;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.channel.concrete.VoiceChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.requests.RestAction;
@@ -306,7 +308,16 @@ public class IxigoBotImpl implements IxigoBot {
 		getGuild().subscribe(guidl -> {
 			guidl.getTextChannelById(discordProps.getTextChannels().getGeneral()).sendMessage(msg).queue();
 		});
-
+	}
+	
+	@Override
+	public void sendEmbedMessageToGeneralChat(String title, String msg) {
+		getGuild().subscribe(guidl -> {
+			MessageEmbed me = new EmbedBuilder()
+					.addField(title, msg, true)
+					.build();
+			guidl.getTextChannelById(discordProps.getTextChannels().getGeneral()).sendMessageEmbeds(me).queue();
+		});
 	}
 
 	private void moveUsersToAppropriateVoiceChannel(List<Member> members) {

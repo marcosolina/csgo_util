@@ -52,4 +52,5 @@ public interface IxigoBot {
 	public abstract Flux<SvcBotConfig> getBotConfigAll() throws IxigoException;
 	
 	public abstract void sendMessageToGeneralChat(String msg);
+	public abstract void sendEmbedMessageToGeneralChat(String title, String msg);
 }

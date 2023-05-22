@@ -35,10 +35,10 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 			new Thread(() -> {
 				StringBuilder sb = new StringBuilder();
 				sb.append("Automatic message:\n\n");
-				sb.append("The CSGO server is starting...\n");
-				sb.append("Click on the following link to join the game, have fun!!!\n\n");
+				sb.append("The CSGO server is starting in Azure\n\n");
+				sb.append("Copy and paste the link below in your browsers to join the game, have fun!!!\n\n");
 				sb.append("steam://connect/ixigo.selfip.net/" + csgoServerProps.getRconPassword());
-				botService.sendMessageToGeneralChat(sb.toString());
+				botService.sendEmbedMessageToGeneralChat("Starting the server", sb.toString());
 			}).start();
 			return Mono.just(new ResponseEntity<Void>(HttpStatus.OK));
 		}

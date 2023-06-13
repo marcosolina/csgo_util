@@ -1,4 +1,4 @@
-import { ImageList, ImageListItem, ImageListItemBar, ListSubheader } from "@mui/material";
+import { ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import { useTranslation } from "react-i18next";
 import { QUERY_PARAMS, UI_CONTEXT_PATH } from "../../lib/constants";
 import { useSearchParams } from "react-router-dom";
@@ -25,7 +25,7 @@ const clickHandler = (name: string) => {
 
 const ServerInfoContent = () => {
   const { t } = useTranslation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (

@@ -18,7 +18,7 @@ const LANG_BASE_PATH = "page.home";
 const BaseLayout = () => {
   const { t } = useTranslation();
   const [value, setValue] = useState(0);
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (searchParams.has(QUERY_PARAMS.TAB) && parseInt(searchParams.get(QUERY_PARAMS.TAB) as string) < 6) {

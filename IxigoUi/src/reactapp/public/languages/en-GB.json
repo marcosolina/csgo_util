@@ -14,7 +14,7 @@
         "2": "Charts",
         "3": "Rcon",
         "4": "Discord Bot",
-        "5": "Join The Server"
+        "5": "Join us"
       }
     },
     "discord": {
@@ -91,6 +91,18 @@
         "6": {
           "title": "Type the password and click \"connect\"",
           "subtitle": "You can ask for the password in the discord channel"
+        },
+        "ixigo-logo": {
+          "title": "CSGO Server",
+          "subtitle": "Click here to play with us on our dedicated server"
+        },
+        "discord-logo": {
+          "title": "Discord",
+          "subtitle": "Click here to join our voice channels"
+        },
+        "telegram-logo": {
+          "title": "Telegram",
+          "subtitle": "Click here to join the technical channel"
         }
       }
     },

@@ -1,26 +1,56 @@
 import { ImageList, ImageListItem, ImageListItemBar, ListSubheader } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { UI_CONTEXT_PATH } from "../../lib/constants";
+import { QUERY_PARAMS, UI_CONTEXT_PATH } from "../../lib/constants";
+import { useSearchParams } from "react-router-dom";
+import { useEffect } from "react";
 
 const IMG_INFO_PREFIX = `${UI_CONTEXT_PATH}/jointheserver`;
 
 const TRANSLATIONS_BASE_PATH = "page.serverInfo.pictures";
+const ARR = ["ixigo-logo", "discord-logo", "telegram-logo"];
+
+const clickHandler = (name: string) => {
+  switch (name) {
+    case "ixigo-logo":
+      window.open("steam://connect/ixigo.selfip.net", "_blank");
+      break;
+    case "discord-logo":
+      window.open("https://discord.gg/8Rxu2xRxc", "_blank");
+      break;
+    case "telegram-logo":
+      window.open("https://t.me/+pCBbGwP78UkwZDI0", "_blank");
+      break;
+  }
+};
 
 const ServerInfoContent = () => {
   const { t } = useTranslation();
-  const arr = [1, 2, 3, 4, 5, 6];
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  useEffect(() => {
+    if (
+      searchParams.has(QUERY_PARAMS.TAB) &&
+      searchParams.has(QUERY_PARAMS.TAB) &&
+      parseInt(searchParams.get(QUERY_PARAMS.TAB) as string) === 5 &&
+      searchParams.get(QUERY_PARAMS.JOIN_IXIGO) === "true"
+    ) {
+      clickHandler("ixigo-logo");
+    }
+  }, [searchParams]);
 
   return (
-    <ImageList gap={30} cols={1}>
-      <ImageListItem key="Subheader" cols={1}>
-        <ListSubheader component="div">Steps to join the server</ListSubheader>
-      </ImageListItem>
-      {arr.map((number) => (
-        <ImageListItem cols={1} key={number}>
-          <img src={`${IMG_INFO_PREFIX}/${number}.png`} width={"100%"} alt="" />
+    <ImageList gap={8} cols={3}>
+      {ARR.map((name) => (
+        <ImageListItem cols={1} key={name} style={{ cursor: "pointer" }} onClick={() => clickHandler(name)}>
+          <img
+            src={`${IMG_INFO_PREFIX}/${name}.png`}
+            width={"100%"}
+            alt=""
+            style={{ backgroundColor: "#FFFFFF", borderRadius: "5px" }}
+          />
           <ImageListItemBar
-            title={t(`${TRANSLATIONS_BASE_PATH}.${number}.title`)}
-            subtitle={t(`${TRANSLATIONS_BASE_PATH}.${number}.subtitle`)}
+            title={t(`${TRANSLATIONS_BASE_PATH}.${name}.title`)}
+            subtitle={t(`${TRANSLATIONS_BASE_PATH}.${name}.subtitle`)}
           />
         </ImageListItem>
       ))}

@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import com.ixigo.discordbot.commands.events.EventReceivedCmd;
-import com.ixigo.discordbot.config.properties.CsgoServerProps;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.enums.BotConfigKey;
 import com.ixigo.eventdispatcher.enums.EventType;
@@ -21,8 +20,6 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(EventHandler.class);
 	@Autowired
 	private IxigoBot botService;
-	@Autowired
-	private CsgoServerProps csgoServerProps;
 
 	@Override
 	public Mono<ResponseEntity<Void>> handle(EventReceivedCmd cmd) {
@@ -36,8 +33,7 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 				StringBuilder sb = new StringBuilder();
 				sb.append("Automatic message:\n\n");
 				sb.append("The CSGO server is starting in Azure\n\n");
-				sb.append("Copy and paste the link below in your browsers to join the game, have fun!!!\n\n");
-				sb.append("steam://connect/ixigo.selfip.net/" + csgoServerProps.getRconPassword());
+				sb.append("[Click here to join the server](https://marco.selfip.net/ixigoui/?tab=5&joinIxigo=true)");
 				botService.sendEmbedMessageToGeneralChat("Starting the server", sb.toString());
 			}).start();
 			return Mono.just(new ResponseEntity<Void>(HttpStatus.OK));

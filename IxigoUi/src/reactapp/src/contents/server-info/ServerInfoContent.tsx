@@ -39,9 +39,20 @@ const ServerInfoContent = () => {
   }, [searchParams]);
 
   return (
-    <ImageList gap={8} cols={3}>
+    <ImageList
+      gap={8}
+      sx={{
+        gridTemplateColumns: {
+          xs: "repeat(1, 1fr) !important",
+          sm: "repeat(2, 1fr) !important",
+          md: "repeat(3, 1fr) !important",
+          lg: "repeat(3, 1fr) !important",
+          xl: "repeat(3, 1fr) !important",
+        },
+      }}
+    >
       {ARR.map((name) => (
-        <ImageListItem cols={1} key={name} style={{ cursor: "pointer" }} onClick={() => clickHandler(name)}>
+        <ImageListItem key={name} style={{ cursor: "pointer" }} onClick={() => clickHandler(name)}>
           <img
             src={`${IMG_INFO_PREFIX}/${name}.png`}
             width={"100%"}

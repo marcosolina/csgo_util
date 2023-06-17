@@ -2,12 +2,13 @@ package com.ixigo.discordbot.services.interfaces;
 
 import java.util.List;
 
-import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
+import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcPlayer;
 import com.ixigo.enums.BotConfigKey;
 import com.ixigo.library.errors.IxigoException;
 
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -52,5 +53,5 @@ public interface IxigoBot {
 	public abstract Flux<SvcBotConfig> getBotConfigAll() throws IxigoException;
 	
 	public abstract void sendMessageToGeneralChat(String msg);
-	public abstract void sendEmbedMessageToGeneralChat(String title, String msg);
+	public abstract void sendEmbedMessageToGeneralChat(MessageEmbed me);
 }

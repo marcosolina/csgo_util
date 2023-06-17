@@ -37,7 +37,6 @@ import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.validators.ValidationException;
 import com.netflix.servo.util.Strings;
 
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -311,11 +310,8 @@ public class IxigoBotImpl implements IxigoBot {
 	}
 	
 	@Override
-	public void sendEmbedMessageToGeneralChat(String title, String msg) {
+	public void sendEmbedMessageToGeneralChat(MessageEmbed me) {
 		getGuild().subscribe(guidl -> {
-			MessageEmbed me = new EmbedBuilder()
-					.addField(title, msg, true)
-					.build();
 			guidl.getTextChannelById(discordProps.getTextChannels().getGeneral()).sendMessageEmbeds(me).queue();
 		});
 	}

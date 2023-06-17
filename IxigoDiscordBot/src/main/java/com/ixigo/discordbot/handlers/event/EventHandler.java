@@ -1,6 +1,6 @@
 package com.ixigo.discordbot.handlers.event;
 
-import java.time.DayOfWeek;
+import java.awt.Color;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,8 +14,9 @@ import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.enums.BotConfigKey;
 import com.ixigo.eventdispatcher.enums.EventType;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
-import com.ixigo.library.utils.DateUtils;
 
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import reactor.core.publisher.Mono;
 
 @Component
@@ -30,14 +31,21 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 
 		_LOGGER.info(String.format("Received event: %s", cmd.getEventReceived().getEventType().getDesc()));
 		
-		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
+		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO) {// && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
 			
 			new Thread(() -> {
-				StringBuilder sb = new StringBuilder();
-				sb.append("Automatic message:\n\n");
-				sb.append("The CSGO server is starting in Azure\n\n");
-				sb.append("[Click here to join the server](https://marco.selfip.net/ixigoui/?tab=5&joinIxigo=true)");
-				botService.sendEmbedMessageToGeneralChat("Starting the server", sb.toString());
+				StringBuilder msg = new StringBuilder();
+				msg.append("The CSGO server is starting in Azure\n\n");
+				msg.append("[Click here to join the server](https://marco.selfip.net/ixigoui/?tab=5&joinIxigo=true)");
+				
+				MessageEmbed me = new EmbedBuilder()
+						.setTitle("Automatic message")
+						.setDescription(msg)
+						.setColor(new Color(42, 255, 137))
+						.addField(new MessageEmbed.Field("", "Don't forget to allow the popups, have fun!!!", false))
+						.setImage("https://marco.selfip.net/ixigoui/jointheserver/blocked-popup.png")
+						.build();
+				botService.sendEmbedMessageToGeneralChat(me);
 			}).start();
 			return Mono.just(new ResponseEntity<Void>(HttpStatus.OK));
 		}

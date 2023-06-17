@@ -41,9 +41,10 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 				MessageEmbed me = new EmbedBuilder()
 						.setTitle("Automatic message")
 						.setDescription(msg)
+						.setThumbnail("https://marco.selfip.net/ixigoui/jointheserver/ixigo-logo.png")
 						.setColor(new Color(42, 255, 137))
 						.addField(new MessageEmbed.Field("", "Don't forget to allow the popups, have fun!!!", false))
-						.setImage("https://marco.selfip.net/ixigoui/jointheserver/blocked-popup.png")
+						.setImage("https://marco.selfip.net/ixigoui/jointheserver/popup-blocked.png")
 						.build();
 				botService.sendEmbedMessageToGeneralChat(me);
 			}).start();

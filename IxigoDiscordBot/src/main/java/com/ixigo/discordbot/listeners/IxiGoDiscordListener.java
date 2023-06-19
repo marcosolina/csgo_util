@@ -65,6 +65,10 @@ public class IxiGoDiscordListener extends ListenerAdapter {
 			ixigoBot.moveAllMembersIntoGeneralChannel();
 			channel.sendMessage("On it").queue();
 			break;
+		case RESTART_MATCH:
+			channel.sendMessage("On it").queue();
+			ixigoBot.restartCsgoMatch().subscribe(b -> channel.sendMessage(b ? "Done" : "Sorry, I was not able to do that").queue());
+			break;
 		case MOVE_TO_CHANNEL:
 			ixigoBot.moveDiscordUsersInTheAppropriateChannel();
 			channel.sendMessage("On it").queue();
@@ -105,6 +109,7 @@ public class IxiGoDiscordListener extends ListenerAdapter {
 		sb.append(String.format("%s- %s -> I will monitor the game, balance the teams and move the users in the appropriate voice channels", System.lineSeparator(), DiscordChatCommands.AUTO_BALANCE_ON.getDesc()));
 		sb.append(String.format("%s- %s -> Turn off the auto balance", System.lineSeparator(), DiscordChatCommands.AUTO_BALANCE_OFF.getDesc()));
 		sb.append(String.format("%s- %s -> It tells you if the auto balance is On or Off", System.lineSeparator(), DiscordChatCommands.AUTO_BALANCE_SATUS.getDesc()));
+		sb.append(String.format("%s- %s -> Restart the map", System.lineSeparator(), DiscordChatCommands.RESTART_MATCH.getDesc()));
 		sb.append(String.format("%s- %s -> Print this message again", System.lineSeparator(), DiscordChatCommands.HELP.getDesc()));
 		return sb;
 	}

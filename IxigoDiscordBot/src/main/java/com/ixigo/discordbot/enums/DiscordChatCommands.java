@@ -10,6 +10,7 @@ public enum DiscordChatCommands {
     AUTO_BALANCE_ON("!autoBalanceOn"),
     AUTO_BALANCE_OFF("!autoBalanceOff"),
     AUTO_BALANCE_SATUS("!autoBalanceStatus"),
+    RESTART_MATCH("!restart"),
     NO_ACTION(""),
     // @formatter:on
     ;

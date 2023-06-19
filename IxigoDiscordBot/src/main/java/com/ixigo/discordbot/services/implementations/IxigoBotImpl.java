@@ -224,7 +224,14 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> kickTheBots() throws IxigoException {
-		return getBotConfig(BotConfigKey.KICK_BOTS).map(config -> Boolean.parseBoolean(config.getConfigVal()));
+		return getBotConfig(BotConfigKey.KICK_BOTS)
+				.map(config -> Boolean.parseBoolean(config.getConfigVal()))
+				.map(configActive -> {
+					if(configActive) {
+						rconService.kickTheBots();
+					}
+					return configActive;
+				});
 	}
 
 	@Override

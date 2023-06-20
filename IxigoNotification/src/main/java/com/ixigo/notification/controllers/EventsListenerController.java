@@ -9,17 +9,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.discordbot.commands.events.EventReceivedCmd;
 import com.ixigo.eventdispatcher.models.rest.DispatchedEventMessage;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
+import com.ixigo.notification.commands.events.EventReceivedCmd;
 
 import io.swagger.annotations.ApiOperation;
 import reactor.core.publisher.Mono;
 
 @RestController
 @RequestMapping("/event")
-public class EventsController {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(EventsController.class);
+public class EventsListenerController {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(EventsListenerController.class);
 	
 	@Autowired
 	private WebMediator mediator;

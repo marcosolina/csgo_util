@@ -7,6 +7,7 @@ $toInstall = @(
     "IxigoPlayersManagerContract"
     "IxigoRconApiContract"
     "IxigoServerHelperContract"
+    "IxigoNotificationContract"
 )
 
 $toPackage = @(
@@ -19,6 +20,7 @@ $toPackage = @(
     "IxigoProxy"
     "IxigoRconApi"
     "IxigoServerHelper"
+    "IxigoNotification"
 )
 
 foreach ($project in $toInstall) {

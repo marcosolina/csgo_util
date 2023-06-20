@@ -13,12 +13,18 @@
 	<url>http://maven.apache.org</url>
 	<properties>
 		<contract.notification>2.0.0</contract.notification>
+		<contract.eventdispatcher>2.0.0</contract.eventdispatcher>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.ixigo</groupId>
 			<artifactId>IxigoNotificationContract</artifactId>
 			<version>${contract.notification}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoEventDispatcherContract</artifactId>
+			<version>${contract.eventdispatcher}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

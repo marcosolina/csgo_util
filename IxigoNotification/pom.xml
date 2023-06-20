@@ -6,7 +6,6 @@
 		<artifactId>IxigoParent</artifactId>
 		<version>1.0.0</version>
 	</parent>
-	<groupId>com.ixigo</groupId>
 	<artifactId>IxigoNotification</artifactId>
 	<packaging>jar</packaging>
 	<version>2.0.0</version>

@@ -1,0 +1,17 @@
+logging:
+  file:
+    name: ./logs/ixigo-notification.log
+  level:
+    com:
+      ixigo:
+        notification: DEBUG
+
+server:
+  servlet:
+    context-path: /notification                                                                     # Do not change this
+    
+com:
+  ixigo:
+    notification:
+      version: ^project.version^
+

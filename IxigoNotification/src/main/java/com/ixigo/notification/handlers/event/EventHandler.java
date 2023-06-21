@@ -27,29 +27,37 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 
 		_LOGGER.info(String.format("Received event: %s", cmd.getEventReceived().getEventType().getDesc()));
 
-		Runnable r = null;
+		Mono<Boolean> mono = null;
 		switch (cmd.getEventReceived().getEventType()) {
 		case AZ_START_DEPLOY_VM:
-			r = () -> service.sendNotification(TITLE, "Starting to create the Linux VM");
+			mono = service.sendNotification(TITLE, "Starting to create the Linux VM");
 			break;
 		case AZ_START_CONFIGURING_VM:
-			r = () -> service.sendNotification(TITLE, "Installing software on the Linux VM");
+			mono = service.sendNotification(TITLE, "Installing software on the Linux VM");
 			break;
 		case AZ_START_INSTALLING_CSGO:
-			r = () -> service.sendNotification(TITLE, "Updating CSGO");
+			mono = service.sendNotification(TITLE, "Updating CSGO");
 			break;
 		case AZ_START_DELETE_RESOURCE:
-			r = () -> service.sendNotification(TITLE, "Deleting the VM");
+			mono = service.sendNotification(TITLE, "Deleting the VM");
 			break;
 		default:
 			break;
 		}
 
-		if (r != null) {
+		Mono<Boolean> monoToExecute = mono;
+		
+		if (monoToExecute != null) {
+			Runnable r = () -> monoToExecute.subscribe(this::subscriberToSendNotification); 
 			new Thread(r).start();
 		}
 
 		return Mono.just(new ResponseEntity<Void>(HttpStatus.OK));
 	}
+	
+	private void subscriberToSendNotification(boolean status) {
+		_LOGGER.debug(status ? "Notification sent" : "Notification not sent");
+	}
 
+	
 }

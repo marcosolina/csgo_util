@@ -55,11 +55,11 @@ INSERT INTO EVENT_LISTENERS VALUES
 /*
  * Azure
  */
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_DEPLOY_VM',      NULL, NULL, 0, 'Y'),
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_CONFIGURING_VM', NULL, NULL, 0, 'Y'),
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_INSTALLING_CSGO',NULL, NULL, 0, 'Y'),
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_CSGO',           NULL, NULL, 0, 'Y'),
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_DELETE_RESOURCE',NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_DEPLOY_VM',      NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_CONFIGURING_VM', NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_INSTALLING_CSGO',NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_CSGO',           NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_DELETE_RESOURCE',NULL, NULL, 0, 'Y'),
 
 
 /*

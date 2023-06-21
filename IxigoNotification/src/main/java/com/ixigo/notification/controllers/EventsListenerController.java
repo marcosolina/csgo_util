@@ -17,7 +17,7 @@ import io.swagger.annotations.ApiOperation;
 import reactor.core.publisher.Mono;
 
 @RestController
-@RequestMapping("/event")
+@RequestMapping("/events")
 public class EventsListenerController {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(EventsListenerController.class);
 	

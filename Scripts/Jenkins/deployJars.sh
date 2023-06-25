@@ -83,6 +83,7 @@ apps=(
 "IxigoPlayersManager"
 "IxigoRconApi"
 "IxigoUi"
+"IxigoNotification"
 )
 
 

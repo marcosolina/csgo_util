@@ -35,11 +35,16 @@ INSERT INTO EVENT_LISTENERS VALUES
 /*
 * Local developmnet
 */
-('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'CS_WIN_PANEL_MATCH',   NULL, NULL, 0, 'Y'),
-('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_END',           NULL, NULL, 0, 'Y'),
-('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',    'WARMUP_START',         NULL, NULL, 0, 'Y'),
-('http://localhost:8763/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'WARMUP_START',         NULL, NULL, 0, 'Y'),
-('http://localhost:8763/ixigoproxy/ixigo-server-helper/ixigohelper/event',  'SHUT_DOWN',            NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',     'CS_WIN_PANEL_MATCH',       NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',     'WARMUP_END',              NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-discord-bot/discordbot/events',     'WARMUP_START',            NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-server-helper/ixigohelper/event',   'WARMUP_START',            NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-server-helper/ixigohelper/event',   'SHUT_DOWN',               NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_DEPLOY_VM',      NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_CONFIGURING_VM', NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_INSTALLING_CSGO',NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_CSGO',           NULL, NULL, 0, 'Y'),
+('http://localhost:8763/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_DELETE_RESOURCE',NULL, NULL, 0, 'Y'),
 
 /*
  * Rasp
@@ -55,11 +60,11 @@ INSERT INTO EVENT_LISTENERS VALUES
 /*
  * Azure
  */
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_DEPLOY_VM',      NULL, NULL, 0, 'Y'),
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_CONFIGURING_VM', NULL, NULL, 0, 'Y'),
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_INSTALLING_CSGO',NULL, NULL, 0, 'Y'),
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_CSGO',           NULL, NULL, 0, 'Y'),
-('https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/events',  'AZ_START_DELETE_RESOURCE',NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_DEPLOY_VM',      NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_CONFIGURING_VM', NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_INSTALLING_CSGO',NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_CSGO',           NULL, NULL, 0, 'Y'),
+('https://marco.selfip.net/ixigoproxy/ixigo-notification/notification/events',  'AZ_START_DELETE_RESOURCE',NULL, NULL, 0, 'Y'),
 
 
 /*

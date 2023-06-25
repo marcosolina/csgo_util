@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.controllers;
+package com.ixigo.notification.controllers;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.demmanager.commands.events.EventReceivedCmd;
 import com.ixigo.eventdispatcher.models.rest.DispatchedEventMessage;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
+import com.ixigo.notification.commands.events.EventReceivedCmd;
 
 import io.swagger.annotations.ApiOperation;
 import reactor.core.publisher.Mono;
@@ -23,7 +23,7 @@ public class EventsListenerController {
 	
 	@Autowired
 	private WebMediator mediator;
-
+	
 	@PostMapping
 	@ApiOperation(value = "Endpoint used to receives the CSGO Events")
 	public Mono<ResponseEntity<Void>> ixigoEventListener(@RequestBody DispatchedEventMessage event) {

@@ -11,6 +11,10 @@
 	<name>IxigoEventDispatcher</name>
 	<version>2.0.0</version>
 	<description>Event dispatcher service</description>
+	
+	<properties>
+		<contract.notification>2.0.0</contract.notification>
+	</properties>
 
 	<dependencies>
 		<!-- START Database Stuff -->
@@ -36,6 +40,11 @@
 			<groupId>com.ixigo</groupId>
 			<artifactId>IxigoEventDispatcherContract</artifactId>
 			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoNotificationContract</artifactId>
+			<version>${contract.notification}</version>
 		</dependency>
 	</dependencies>
 

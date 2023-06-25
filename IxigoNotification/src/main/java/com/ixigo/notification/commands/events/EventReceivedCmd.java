@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.commands.events;
+package com.ixigo.notification.commands.events;
 
 import com.ixigo.eventdispatcher.models.rest.DispatchedEventMessage;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;

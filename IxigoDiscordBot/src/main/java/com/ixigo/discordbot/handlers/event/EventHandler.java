@@ -1,6 +1,7 @@
 package com.ixigo.discordbot.handlers.event;
 
 import java.awt.Color;
+import java.time.DayOfWeek;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +15,7 @@ import com.ixigo.discordbot.services.interfaces.IxigoBot;
 import com.ixigo.enums.BotConfigKey;
 import com.ixigo.eventdispatcher.enums.EventType;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
+import com.ixigo.library.utils.DateUtils;
 
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.MessageEmbed;
@@ -31,7 +33,7 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 
 		_LOGGER.info(String.format("Received event: %s", cmd.getEventReceived().getEventType().getDesc()));
 		
-		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO) {// && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
+		if(cmd.getEventReceived().getEventType() == EventType.AZ_START_CSGO && DateUtils.getCurrentUtcDate().getDayOfWeek() == DayOfWeek.MONDAY) {
 			
 			new Thread(() -> {
 				StringBuilder msg = new StringBuilder();

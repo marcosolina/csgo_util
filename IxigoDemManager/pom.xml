@@ -19,6 +19,7 @@
 		<contract.playersmanager>2.0.0</contract.playersmanager>
 		<contract.rcon>2.0.0</contract.rcon>
 		<contract.discordbot>2.0.0</contract.discordbot>
+		<contract.notification>2.0.0</contract.notification>
 	</properties>
 
 	<dependencies>
@@ -50,6 +51,11 @@
 			<groupId>com.ixigo</groupId>
 			<artifactId>IxigoEventDispatcherContract</artifactId>
 			<version>${contract.eventdispatcher}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoNotificationContract</artifactId>
+			<version>${contract.notification}</version>
 		</dependency>
 	</dependencies>
 

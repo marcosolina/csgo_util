@@ -11,35 +11,34 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.ixigo.eventdispatcher.config.properties.TelegramProperties;
+import com.ixigo.eventdispatcher.config.properties.NotificationEndpoints;
 import com.ixigo.eventdispatcher.constants.ErrorCodes;
 import com.ixigo.eventdispatcher.services.interfaces.NotificationService;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
+import com.ixigo.notification.model.rest.telegram.RestTelegramMessage;
 
 import reactor.core.publisher.Mono;
 
 public class TelegramNotificationService implements NotificationService {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(TelegramNotificationService.class);
 	@Autowired
-	private TelegramProperties props;
+	private NotificationEndpoints props;
 	@Autowired
 	private IxigoWebClientUtils webClient;
 
 	@Override
 	public Mono<Boolean> sendEventServiceError(String title, String message) {
-		if (!props.isEnabled()) {
-			_LOGGER.info("Telegram notifications disabled");
-			return Mono.just(true);
-		}
 
 		try {
-			URL url = new URL(String.format("https://api.telegram.org/bot%s/sendMessage", props.getToken()));
-			Map<String, String> queryParam = new HashMap<>();
-			queryParam.put("chat_id", props.getChatGroupId());
-			queryParam.put("text", String.format("%s%n%n%s", title, message));
+			URL url = new URL(props.getPostTelegram());
+
+			RestTelegramMessage msg = new RestTelegramMessage();
+			msg.setTitle(title);
+			msg.setMessage(message);
+			
 			// @formatter:off
-			return webClient.performGetRequestNoExceptions(Void.class, url, Optional.empty(), Optional.of(queryParam))
+			return webClient.performPostRequest(Void.class, url, Optional.of(msg))
 					.map(resp -> resp.getStatusCode().is2xxSuccessful());
 			// @formatter:on
 		} catch (MalformedURLException e) {

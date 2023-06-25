@@ -30,6 +30,7 @@ public class TelegramNotification implements NotificationService {
 	public Mono<Boolean> sendNotification(String title, String message) {
 		if (!props.isEnabled()) {
 			_LOGGER.info("Telegram notifications disabled");
+			_LOGGER.info(String.format("Title: %s Message: %s", title, message));
 			return Mono.just(true);
 		}
 

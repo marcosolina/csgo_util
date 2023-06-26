@@ -104,6 +104,9 @@
           "title": "Telegram",
           "subtitle": "Click here to join the technical channel"
         }
+      },
+      "modalPopup": {
+        "title": "Please allow the popups"
       }
     },
     "players": {

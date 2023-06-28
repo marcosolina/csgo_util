@@ -29,12 +29,14 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
   const { checkResp } = useCheckErrorsInResponse();
   const checkRespFunc = useRef(checkResp);
 
+  const refQAllConfig = useRef(qAllConfigs);
+
   useEffect(() => {
     if (mutateConfig.status === QueryStatus.success) {
       enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
-      qAllConfigs.refetch();
+      refQAllConfig.current.refetch();
     }
-  }, [mutateConfig.status, t, enqueueSnackbar, qAllConfigs]);
+  }, [mutateConfig.status, t, enqueueSnackbar, refQAllConfig]);
 
   useEffect(() => {
     if (mutateMapping.status === QueryStatus.success) {

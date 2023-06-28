@@ -34,7 +34,7 @@ export const useDiscordBotContent = (): IDiscordBotContentResult => {
       enqueueSnackbar(t("page.discord.notifications.configSaved"), { variant: NotistackVariant.success });
       qAllConfigs.refetch();
     }
-  }, [mutateConfig.status, t, enqueueSnackbar]);
+  }, [mutateConfig.status, t, enqueueSnackbar, qAllConfigs]);
 
   useEffect(() => {
     if (mutateMapping.status === QueryStatus.success) {

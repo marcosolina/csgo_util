@@ -6,16 +6,17 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ## Technologies Utilised
 
-| | | |
-|---|---|---|
-| [Java](https://www.oracle.com/java/) | [Spring Boot](https://spring.io/projects/spring-boot) | [Spring Cloud](https://spring.io/projects/spring-cloud) |
-| [Thymeleaf](https://www.thymeleaf.org/) | [HTML](https://en.wikipedia.org/wiki/HTML) | [Javascript](https://en.wikipedia.org/wiki/JavaScript) |
-| [jQuery](https://jquery.com/) | [Bootstrap](https://getbootstrap.com/) | [Docker](https://www.docker.com/) |
-| [PostgreSQL](https://www.postgresql.org/) |[JPA](https://en.wikipedia.org/wiki/Jakarta_Persistence) | [C#](https://en.wikipedia.org/wiki/C_Sharp_(programming_language)) |
+|                                           |                                                          |                                                                      |
+| ----------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------- |
+| [Java](https://www.oracle.com/java/)      | [Spring Boot](https://spring.io/projects/spring-boot)    | [Spring Cloud](https://spring.io/projects/spring-cloud)              |
+| [Thymeleaf](https://www.thymeleaf.org/)   | [HTML](https://en.wikipedia.org/wiki/HTML)               | [Javascript](https://en.wikipedia.org/wiki/JavaScript)               |
+| [jQuery](https://jquery.com/)             | [Bootstrap](https://getbootstrap.com/)                   | [Docker](https://www.docker.com/)                                    |
+| [PostgreSQL](https://www.postgresql.org/) | [JPA](https://en.wikipedia.org/wiki/Jakarta_Persistence) | [C#](<https://en.wikipedia.org/wiki/C_Sharp_(programming_language)>) |
+| [React JS](https://react.dev/)            |                                                          |                                                                      |
 
 ## Requirements
 
-- Java >= 8
+- Java >= 11
 - .NET Core
 - PostgreSQL
 - [IxiGo Dedicated Server](https://github.com/marcosolina/ixi_go)
@@ -38,6 +39,7 @@ This is a personal project that I made to simplify few things that I do when pla
   - [IxigoDiscordBot](./IxigoDiscordBot/): This Spring Boot service is used to automate some taks while we play on our CSGO dedicated server. For example it will listen for either CSGO events or messages in the chat and then it can move the players to the appropriate channel, retrieve the Players statistic to balance the teams. Type "!help" in the discord chat to see a full list of tasks that you can trigger
   - [IxigoDiscovery](./IxigoDiscovery/): This Spring Boot service is used to register all the services and simplify the S2S calls. It can be usefull for load balancing, either client side or server side load balancing
   - [IxigoEventDispatcher](./IxigoEventDispatcher/): This Spring Boot service receives the event fired by the Ixigo Server Helper and forwards these events to all the registered event listeners
+  - [IxigoNotification](./IxigoNotification/): This Spring Boot service it is used to send notifications, for example via Telegram
   - [IxigoPlayersManager](./IxigoPlayersManager/): This Spring Boot service uses the players stats to perform some calculation. For example, this service is used to generate balanced CSGO teams when we play on our CSGO dedicated server
   - [IxigoProxy](./IxigoProxy/): This Spring Boot service is a proxy service that it is used to simplify the S2S calls. It is usesfull to perform the service side load balancing and to have a central point to call all the services. It can also help when you have CORS issues
   - [IxigoRconApiService](./IxigoRconApiService/): This Spring Boot service it is used to send RCON commands to our CSGO dedicated server via REST APIs
@@ -48,6 +50,10 @@ This is a personal project that I made to simplify few things that I do when pla
     - **Docker**: Contains the scripts that I used to generate the required containers
     - **jenkins**: Contains the script/s that are used by Jenkins in the CI/CD pipeline
 
+## Services flow
+
+![Services flow](./misc/pictures/Services_Flow_Diagram.png)
+
 ## Start With Docker Compose
 
 ![Docker Compose](./misc/pictures/docker_logo200.png)
@@ -56,9 +62,9 @@ The script it will use a [Docker Compose](https://docs.docker.com/compose/) yml 
 
 **Simply copy and paste the follwing command in your terminal and follow the instruction on the screen.**
 
-~~~~bash
+```bash
 bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/main/Scripts/Docker/setup.sh?$(date +%s))
-~~~~
+```
 
 ## Open API Documentation
 
@@ -76,6 +82,6 @@ Replace the IP with your machine/s IP/s
 
 ## Utils
 
-~~~~bash
+```bash
 mvn archetype:generate -DgroupId=com.ixigo -DartifactId=IxigoPlayersManagerContract -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
-~~~~
+```

@@ -683,6 +683,7 @@ demoFile.gameEvents.on("round_end", e => {
     const teamRounds = stats.teamRounds.get(teamNum) || 0;
     stats.teamRounds.set(teamNum, teamRounds + 1);
     stats.lastTeam = player.teamNumber;
+    stats.score = player.score;
   }
 });
 
@@ -767,8 +768,6 @@ demoFile.on("end", e => {
         ? (stats.totalDamageHealth + stats.totalDamageArmor) /
           stats.roundsPlayed
         : 0;
-
-    stats.score = player.score;
 
     // Format clutch data
     let clutchData = "";

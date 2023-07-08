@@ -2,6 +2,8 @@
 
 import * as ansiStyles from "ansi-styles";
 import * as fs from "fs";
+import * as os from 'os';
+import * as path from 'path';
 
 import {
   DemoFile,
@@ -759,8 +761,10 @@ function finalTeam(playerStats: PlayerStats): string {
   return playerStats.lastTeam === TeamNumber.Terrorists ? "T" : "CT";
 }
 
-function writeToFile(name: string, obj: any) {
-  fs.writeFileSync(`/tmp/${name}.json`, JSON.stringify(obj, null, 2), "utf-8");
+function writeToFile(name: string, obj: any): void {
+  const tmpdir: string = os.tmpdir();
+  const filePath: string = path.join(tmpdir, `${name}.json`);
+  fs.writeFileSync(filePath, JSON.stringify(obj, null, 2), "utf-8");
 }
 
 demoFile.on("end", e => {
@@ -864,52 +868,45 @@ demoFile.on("end", e => {
       TDAr: stats.totalDamageArmor,
       BP: stats.bombsPlanted,
       BD: stats.bombsDefused,
-      MVPs: stats.mvps,
-      Score: stats.score,
-      "HLTV rating": HLTVRating,
-      RWS: averageRWS.toFixed(2)
-    };
-
-    const playerGrenStatsTable = {
-      "Player Name": stats.name,
-      SteamId: stats.steamid,
       "Opponents Flashed": stats.opponentsFlashed,
       "Flashbang Throws": stats.grenadeThrows.get("flashbang") || 0,
       "HE Grenade Throws": stats.grenadeThrows.get("hegrenade") || 0,
       "Inferno Throws": stats.grenadeThrows.get("inferno") || 0,
       "Smoke Grenade Throws": stats.grenadeThrows.get("smokegrenade") || 0,
       "HE Grenade Damage": stats.grenadeDamage.get("hegrenade") || 0,
-      "Inferno Damage": stats.grenadeDamage.get("inferno") || 0
+      "Inferno Damage": stats.grenadeDamage.get("inferno") || 0,
+      MVPs: stats.mvps,
+      Score: stats.score,
+      "HLTV rating": HLTVRating,
+      RWS: averageRWS.toFixed(2)
     };
 
     allPlayerStats.push(playerStatsTable);
-    allPlayerGrenStats.push(playerGrenStatsTable);
   }
 
   console.table(allPlayerStats);
-  console.table(allPlayerGrenStats);
   writeToFile("allPlayerStats", allPlayerStats);
-  writeToFile("allPlayerGrenStats", allPlayerGrenStats);
+
+  const headers = [
+    "Player Name",
+    "SteamId",
+    "Weapon",
+    "Total Kills",
+    "Total Damage",
+    "Kills per Round",
+    "Damage per Round",
+    "Shots fired",
+    "Damage per Shot",
+    "Hits",
+    "Damage per Hit",
+    "Accuracy %",
+    "Headshot %"
+  ];
+  const table: any[] = [];
 
   for (const [playerName, stats] of playerStats) {
-    console.log(
-      `Player: ${stats.name}, SteamId: ${stats.steamid}, Rounds Played: ${stats.roundsPlayed}`
-    );
 
-    const headers = [
-      "Weapon",
-      "Total Kills",
-      "Total Damage",
-      "Kills per Round",
-      "Damage per Round",
-      "Shots fired",
-      "Damage per Shot",
-      "Hits",
-      "Damage per Hit",
-      "Accuracy %",
-      "Headshot %"
-    ];
-    const table: any[] = [];
+
     const weaponKills = calculateTotalWeaponKills(stats);
     const weaponDamage = calculateTotalWeaponDamage(stats);
     const totalShotsFired = calculateTotalShotsFired(stats);
@@ -929,6 +926,8 @@ demoFile.on("end", e => {
       );
 
       table.push({
+        "Player Name": stats.name,
+        SteamId: stats.steamid,
         Weapon: weapon,
         "Total Kills": totalKills,
         "Total Damage": totalDamage,
@@ -943,46 +942,18 @@ demoFile.on("end", e => {
       });
     }
 
-    console.table(table, headers);
-    writeToFile(`player_stats_${playerName}`, table);
+    
   }
+  console.table(table, headers);
+  writeToFile(`player_stats`, table);
 
-  type MatrixObject = {
-    [key: string]: {
-      [key: string]: number;
-    };
-  };
 
-  let killerVictimMatrix: Map<string, Map<string, number>> = new Map();
+  let killEvents: KillEvent[] = [];
 
-  playerStats.forEach((playerStat, steamid) => {
-    const killer = steamIdToName.get(steamid) || "Unknown Player"; // Default to 'Unknown Player' if the name is not found
-    playerStat.roundVictimKills.forEach((victimWeaponMap, round) => {
-      victimWeaponMap.forEach((weapon, victimSteamId) => {
-        const victim = steamIdToName.get(victimSteamId) || "Unknown Player";
-        let victimMap = killerVictimMatrix.get(killer) || new Map();
-        victimMap.set(victim, (victimMap.get(victim) || 0) + 1);
-        killerVictimMatrix.set(killer, victimMap);
-      });
-    });
-  });
-
-  // Now that we have our killer-victim matrix (a Map of Maps), we need to transform it into an object of objects to use console.table:
-
-  let killerVictimMatrixObject: MatrixObject = {};
-
-  killerVictimMatrix.forEach((victimMap, killer) => {
-    let victimObject: { [key: string]: number } = {};
-    victimMap.forEach((kills, victim) => {
-      victimObject[victim] = kills;
-    });
-    killerVictimMatrixObject[killer] = victimObject;
-  });
-  console.log("Kills Matrix");
-  console.table(killerVictimMatrixObject);
-  writeToFile("killerVictimMatrixObject", killerVictimMatrixObject);
 
   type KillEvent = {
+    killer: string,
+    steamid: string,
     round: number;
     weapon: string;
     victim: string;
@@ -990,22 +961,21 @@ demoFile.on("end", e => {
 
   playerStats.forEach((playerStat, steamid) => {
     const killer = steamIdToName.get(steamid) || "Unknown Player"; // Default to 'Unknown Player' if the name is not found
-    let killEvents: KillEvent[] = [];
-
+    
     playerStat.roundVictimKills.forEach((victimWeaponMap, round) => {
       victimWeaponMap.forEach((weapon, victimSteamId) => {
         const victim = steamIdToName.get(victimSteamId) || "Unknown Player";
-        killEvents.push({ round, weapon, victim });
+        killEvents.push({ killer, steamid, round, weapon, victim });
       });
     });
 
     // Sort the kill events by round
     killEvents.sort((a, b) => a.round - b.round);
 
-    console.log(`\nPlayer: ${killer}`);
-    console.table(killEvents);
-    writeToFile("killEvents", killEvents);
+    
   });
+  console.table(killEvents);
+  writeToFile("killEvents", killEvents);
 });
 
 demoFile.parseStream(stream);

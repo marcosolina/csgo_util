@@ -265,15 +265,15 @@ demoFile.entities.on("create", e => {
     return;
   }
   playerNames.set(player.userId, player.name);
-  playerSteamIds.set(player.userId, player.steamId);
-  if (!playerStats.has(player.steamId)) {
+  playerSteamIds.set(player.userId, player.steam64Id);
+  if (!playerStats.has(player.steam64Id)) {
     playerStats.set(
-      player.steamId,
-      new PlayerStats(player.userId, player.steamId, player.name)
+      player.steam64Id,
+      new PlayerStats(player.userId, player.steam64Id, player.name)
     );
   }
-  playerStats.get(player.steamId)!.roundStart.set(currentRound, false); // Players that join mid-round did not start the round
-  players.set(player.steamId, player);
+  playerStats.get(player.steam64Id)!.roundStart.set(currentRound, false); // Players that join mid-round did not start the round
+  players.set(player.steam64Id, player);
 });
 
 demoFile.gameEvents.on("round_start", e => {
@@ -283,7 +283,7 @@ demoFile.gameEvents.on("round_start", e => {
   lastKill = null;
   currentRound++;
   for (const player of demoFile.entities.players) {
-    const playerStat = playerStats.get(player.steamId);
+    const playerStat = playerStats.get(player.steam64Id);
     if (playerStat) {
       playerStat.roundStart.set(currentRound, true);
       playerStat.roundKills.set(currentRound, 0);
@@ -310,14 +310,14 @@ demoFile.conVars.on("change", e => {
         continue;
       }
       playerNames.set(player.userId, player.name);
-      playerSteamIds.set(player.userId, player.steamId);
-      if (!playerStats.has(player.steamId)) {
+      playerSteamIds.set(player.userId, player.steam64Id);
+      if (!playerStats.has(player.steam64Id)) {
         playerStats.set(
-          player.steamId,
-          new PlayerStats(player.userId, player.steamId, player.name)
+          player.steam64Id,
+          new PlayerStats(player.userId, player.steam64Id, player.name)
         );
       }
-      const playerStat = playerStats.get(player.steamId)!;
+      const playerStat = playerStats.get(player.steam64Id)!;
       playerStat.roundStart.set(currentRound, true);
       playerStat.roundKills.set(currentRound, 0);
     }
@@ -332,14 +332,14 @@ demoFile.gameEvents.on("weapon_fire", e => {
 
   if (shooter) {
     const weaponName = e.weapon;
-    const stats = playerStats.get(shooter.steamId);
+    const stats = playerStats.get(shooter.steam64Id);
 
     if (stats) {
       stats.weaponShotsFired.set(
         weaponName,
         (stats.weaponShotsFired.get(weaponName) || 0) + 1
       );
-      lastWeaponFired.set(shooter.steamId, {
+      lastWeaponFired.set(shooter.steam64Id, {
         weapon: weaponName,
         time: demoFile.currentTime
       });
@@ -350,7 +350,7 @@ demoFile.gameEvents.on("weapon_fire", e => {
 demoFile.gameEvents.on("flashbang_detonate", e => {
   const thrower = demoFile.entities.getByUserId(e.userid);
   if (thrower) {
-    const stats = playerStats.get(thrower.steamId);
+    const stats = playerStats.get(thrower.steam64Id);
     if (stats) {
       stats.grenadeThrows.set(
         "flashbang",
@@ -363,11 +363,11 @@ demoFile.gameEvents.on("flashbang_detonate", e => {
 demoFile.gameEvents.on("hegrenade_detonate", e => {
   const thrower = demoFile.entities.getByUserId(e.userid);
   if (thrower) {
-    lastWeaponFired.set(thrower.steamId, {
+    lastWeaponFired.set(thrower.steam64Id, {
       weapon: "hegrenade",
       time: demoFile.currentTime
     });
-    const stats = playerStats.get(thrower.steamId);
+    const stats = playerStats.get(thrower.steam64Id);
     if (stats) {
       stats.grenadeThrows.set(
         "hegrenade",
@@ -380,11 +380,11 @@ demoFile.gameEvents.on("hegrenade_detonate", e => {
 demoFile.on("molotovDetonate", e => {
   const thrower = e.thrower;
   if (thrower) {
-    lastWeaponFired.set(thrower.steamId, {
+    lastWeaponFired.set(thrower.steam64Id, {
       weapon: "inferno",
       time: demoFile.currentTime
     });
-    const stats = playerStats.get(thrower.steamId);
+    const stats = playerStats.get(thrower.steam64Id);
     if (stats) {
       stats.grenadeThrows.set(
         "inferno",
@@ -397,7 +397,7 @@ demoFile.on("molotovDetonate", e => {
 demoFile.gameEvents.on("smokegrenade_detonate", e => {
   const thrower = demoFile.entities.getByUserId(e.userid);
   if (thrower) {
-    const stats = playerStats.get(thrower.steamId);
+    const stats = playerStats.get(thrower.steam64Id);
     if (stats) {
       stats.grenadeThrows.set(
         "smokegrenade",
@@ -412,7 +412,7 @@ demoFile.gameEvents.on("player_blind", e => {
   const victim = demoFile.entities.getByUserId(e.userid);
   if (attacker && victim) {
     if (attacker.teamNumber !== victim.teamNumber) {
-      const stats = playerStats.get(attacker.steamId);
+      const stats = playerStats.get(attacker.steam64Id);
       if (stats) {
         stats.opponentsFlashed += 1;
       }
@@ -423,9 +423,9 @@ demoFile.gameEvents.on("player_blind", e => {
 demoFile.gameEvents.on("player_hurt", e => {
   const attacker = demoFile.entities.getByUserId(e.attacker);
   if (attacker) {
-    const lastWeaponFiredByAttacker = lastWeaponFired.get(attacker.steamId);
+    const lastWeaponFiredByAttacker = lastWeaponFired.get(attacker.steam64Id);
     if (lastWeaponFiredByAttacker) {
-      const stats = playerStats.get(attacker.steamId)!;
+      const stats = playerStats.get(attacker.steam64Id)!;
       if (stats) {
         const weaponName = lastWeaponFiredByAttacker.weapon;
 
@@ -519,7 +519,7 @@ demoFile.gameEvents.on("player_death", e => {
   }
 
   if (attacker) {
-    const stats = playerStats.get(attacker.steamId)!;
+    const stats = playerStats.get(attacker.steam64Id)!;
     if (stats) {
       stats.kills++;
       const roundKills = stats.weaponKills.get(currentRound) || new Map();
@@ -536,7 +536,7 @@ demoFile.gameEvents.on("player_death", e => {
       if (victim) {
         const roundVictimKills =
           stats.roundVictimKills.get(currentRound) || new Map();
-        roundVictimKills.set(victim.steamId, weapon);
+        roundVictimKills.set(victim.steam64Id, weapon);
         stats.roundVictimKills.set(currentRound, roundVictimKills);
       }
 
@@ -551,7 +551,7 @@ demoFile.gameEvents.on("player_death", e => {
         lastKill.killer === victim
       ) {
         stats.tradeKills += 1;
-        const lastKillerStats = playerStats.get(lastKill.killer.steamId)!;
+        const lastKillerStats = playerStats.get(lastKill.killer.steam64Id)!;
         if (lastKillerStats) {
           lastKillerStats.tradeDeaths += 1;
         }
@@ -571,12 +571,12 @@ demoFile.gameEvents.on("player_death", e => {
     }
   }
 
-  if (victim && playerStats.get(victim.steamId)) {
-    playerStats.get(victim.steamId)!.deaths++;
+  if (victim && playerStats.get(victim.steam64Id)) {
+    playerStats.get(victim.steam64Id)!.deaths++;
   }
 
-  if (assister && playerStats.get(assister.steamId)) {
-    playerStats.get(assister.steamId)!.assists++;
+  if (assister && playerStats.get(assister.steam64Id)) {
+    playerStats.get(assister.steam64Id)!.assists++;
   }
 });
 
@@ -584,7 +584,7 @@ demoFile.gameEvents.on("bomb_planted", e => {
   const planter = demoFile.entities.getByUserId(e.userid);
 
   if (planter) {
-    const stats = playerStats.get(planter.steamId)!;
+    const stats = playerStats.get(planter.steam64Id)!;
     stats.bombsPlanted += 1;
   }
 });
@@ -593,7 +593,7 @@ demoFile.gameEvents.on("bomb_defused", e => {
   const defuser = demoFile.entities.getByUserId(e.userid);
 
   if (defuser) {
-    const stats = playerStats.get(defuser.steamId)!;
+    const stats = playerStats.get(defuser.steam64Id)!;
     stats.bombsDefused += 1;
   }
 });
@@ -602,7 +602,7 @@ demoFile.gameEvents.on("round_mvp", e => {
   const mvp = demoFile.entities.getByUserId(e.userid);
 
   if (mvp) {
-    const stats = playerStats.get(mvp.steamId)!;
+    const stats = playerStats.get(mvp.steam64Id)!;
 
     // Increment MVPs
     stats.mvps++;
@@ -662,7 +662,7 @@ demoFile.gameEvents.on("round_end", e => {
   for (const clutch of potentialClutchPlayers) {
     // If the clutch player is still alive, increment the successful clutches
     if (clutch.player.isAlive) {
-      const stats = playerStats.get(clutch.player.steamId)!;
+      const stats = playerStats.get(clutch.player.steam64Id)!;
       stats.successfulClutches[clutch.clutchSize - 1]++;
     }
   }
@@ -671,15 +671,15 @@ demoFile.gameEvents.on("round_end", e => {
   roundDamage = {};
 
   for (const player of demoFile.entities.players) {
-    if (!player || player.name === "GOTV" || !playerStats.get(player.steamId)) {
+    if (!player || player.name === "GOTV" || !playerStats.get(player.steam64Id)) {
       continue;
     }
-    if (playerStats.get(player.steamId)!.roundStart.get(currentRound)) {
-      playerStats.get(player.steamId)!.roundsPlayed++;
+    if (playerStats.get(player.steam64Id)!.roundStart.get(currentRound)) {
+      playerStats.get(player.steam64Id)!.roundsPlayed++;
     }
 
     const teamNum = player.teamNumber;
-    const stats = playerStats.get(player.steamId)!;
+    const stats = playerStats.get(player.steam64Id)!;
     const teamRounds = stats.teamRounds.get(teamNum) || 0;
     stats.teamRounds.set(teamNum, teamRounds + 1);
     stats.lastTeam = player.teamNumber;
@@ -691,7 +691,7 @@ demoFile.gameEvents.on("round_officially_ended", () => {
     if (!player || player.name === "GOTV") {
       continue;
     }
-    const stats = playerStats.get(player.steamId);
+    const stats = playerStats.get(player.steam64Id);
     if (stats) {
       const roundKills = stats.roundKills.get(currentRound) || 0;
 

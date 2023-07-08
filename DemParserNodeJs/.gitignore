@@ -1,0 +1,12 @@
+.clinic/
+.vscode/
+.protoc/
+coverage/
+demos/
+GameTracking-CSGO/
+node_modules/
+*.log
+*.ignore
+*.tgz
+examples/*.js
+*.tsbuildinfo

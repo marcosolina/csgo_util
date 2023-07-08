@@ -2,8 +2,6 @@
 
 import * as ansiStyles from "ansi-styles";
 import * as fs from "fs";
-import * as os from 'os';
-import * as path from 'path';
 
 import {
   DemoFile,
@@ -148,23 +146,6 @@ let mapStats = new MapStats(filePath);
 const stream = fs.createReadStream(filePath);
 const demoFile = new DemoFile();
 
-function logTeamScores() {
-  const teams = demoFile.teams;
-
-  const terrorists = teams[TeamNumber.Terrorists]!;
-  const cts = teams[TeamNumber.CounterTerrorists]!;
-
-  console.log(
-    "\t%s: %s score %d\n\t%s: %s score %d",
-    terrorists.teamName,
-    terrorists.clanName,
-    terrorists.score,
-    cts.teamName,
-    cts.clanName,
-    cts.score
-  );
-}
-
 function computeHltvOrgRating(
   roundCount: number,
   kills: number,
@@ -266,7 +247,6 @@ enum EHitGroup {
 }
 
 demoFile.on("start", () => {
-  console.log("Demo header:", demoFile.header);
   mapStats.mapName = demoFile.header.mapName;
   // Reset all stats if the game is restarted
   playerStats.clear();
@@ -287,7 +267,6 @@ demoFile.entities.on("create", e => {
   playerNames.set(player.userId, player.name);
   playerSteamIds.set(player.userId, player.steamId);
   if (!playerStats.has(player.steamId)) {
-    console.log("create PlayerStats created for %s", player.name);
     playerStats.set(
       player.steamId,
       new PlayerStats(player.userId, player.steamId, player.name)
@@ -295,7 +274,6 @@ demoFile.entities.on("create", e => {
   }
   playerStats.get(player.steamId)!.roundStart.set(currentRound, false); // Players that join mid-round did not start the round
   players.set(player.steamId, player);
-  console.log("%s (%s) joined the game", e.entity.name, e.entity.steamId);
 });
 
 demoFile.gameEvents.on("round_start", e => {
@@ -304,7 +282,6 @@ demoFile.gameEvents.on("round_start", e => {
   firstKillInRound = null;
   lastKill = null;
   currentRound++;
-  console.log("Round Start %s", currentRound);
   for (const player of demoFile.entities.players) {
     const playerStat = playerStats.get(player.steamId);
     if (playerStat) {
@@ -335,7 +312,6 @@ demoFile.conVars.on("change", e => {
       playerNames.set(player.userId, player.name);
       playerSteamIds.set(player.userId, player.steamId);
       if (!playerStats.has(player.steamId)) {
-        console.log("change PlayerStats created for %s", player.name);
         playerStats.set(
           player.steamId,
           new PlayerStats(player.userId, player.steamId, player.name)
@@ -347,7 +323,6 @@ demoFile.conVars.on("change", e => {
     }
   }
 
-  console.log("%s: %s -> %s", e.name, e.oldValue, e.value);
 });
 
 let lastWeaponFired: Map<string, { weapon: string; time: number }> = new Map();
@@ -529,9 +504,6 @@ demoFile.gameEvents.on("player_death", e => {
     }
   }
 
-  console.log(
-    `${attackerColour}${attackerName}${ansiStyles.reset.open} [${e.weapon}${headshotText}] ${victimColour}${victimName}${ansiStyles.reset.open}`
-  );
 });
 
 demoFile.gameEvents.on("player_death", e => {
@@ -639,7 +611,6 @@ demoFile.gameEvents.on("round_mvp", e => {
 
 demoFile.gameEvents.on("round_end", e => {
   const winnerSide = e.winner;
-  console.log("Round %s won by %s", currentRound, winnerSide);
   if (currentRound <= 7) {
     // First half
     if (winnerSide === TeamNumber.Terrorists) {
@@ -691,11 +662,6 @@ demoFile.gameEvents.on("round_end", e => {
   for (const clutch of potentialClutchPlayers) {
     // If the clutch player is still alive, increment the successful clutches
     if (clutch.player.isAlive) {
-      console.log(
-        "1v%s clutch completed for %s",
-        clutch.clutchSize,
-        clutch.player.name
-      );
       const stats = playerStats.get(clutch.player.steamId)!;
       stats.successfulClutches[clutch.clutchSize - 1]++;
     }
@@ -703,13 +669,6 @@ demoFile.gameEvents.on("round_end", e => {
 
   allRoundsDamage.push(roundDamage);
   roundDamage = {};
-  console.log(
-    "*** Round ended '%s' (reason: %s, tick: %d, time: %d secs)",
-    demoFile.gameRules.phase,
-    e.reason,
-    demoFile.currentTick,
-    demoFile.currentTime | 0
-  );
 
   for (const player of demoFile.entities.players) {
     if (!player || player.name === "GOTV" || !playerStats.get(player.steamId)) {
@@ -728,7 +687,6 @@ demoFile.gameEvents.on("round_end", e => {
 });
 
 demoFile.gameEvents.on("round_officially_ended", () => {
-  console.log(`End of round ${currentRound}`);
   for (const player of demoFile.entities.players) {
     if (!player || player.name === "GOTV") {
       continue;
@@ -742,8 +700,6 @@ demoFile.gameEvents.on("round_officially_ended", () => {
       }
     }
   }
-
-  logTeamScores();
 });
 
 demoFile.entities.on("beforeremove", e => {
@@ -754,27 +710,13 @@ demoFile.entities.on("beforeremove", e => {
   if (player.isFakePlayer) {
     return;
   }
-  console.log("%s left the game", player.name);
 });
 
 function finalTeam(playerStats: PlayerStats): string {
   return playerStats.lastTeam === TeamNumber.Terrorists ? "T" : "CT";
 }
 
-function writeToFile(name: string, obj: any): void {
-  const tmpdir: string = os.tmpdir();
-  const filePath: string = path.join(tmpdir, `${name}.json`);
-  fs.writeFileSync(filePath, JSON.stringify(obj, null, 2), "utf-8");
-}
-
 demoFile.on("end", e => {
-  if (e.error) {
-    console.error("Error during parsing:", e.error);
-  } else {
-    logTeamScores();
-  }
-
-  console.log("Finished.");
 
   // Print map stats first
   let mapStatsTable = {
@@ -788,9 +730,6 @@ demoFile.on("end", e => {
     "Terrorist Round Wins (Second Half)": mapStats.terroristRoundWinsSecondHalf,
     "CT Round Wins (Second Half)": mapStats.ctRoundWinsSecondHalf
   };
-
-  console.table(mapStatsTable);
-  writeToFile("mapStats", mapStats);
 
   let allPlayerStats = [];
   let allPlayerGrenStats = [];
@@ -893,9 +832,6 @@ demoFile.on("end", e => {
     allPlayerStats.push(playerStatsTable);
   }
 
-  console.table(allPlayerStats);
-  writeToFile("allPlayerStats", allPlayerStats);
-
   const headers = [
     "Player Name",
     "SteamId",
@@ -953,9 +889,6 @@ demoFile.on("end", e => {
 
     
   }
-  console.table(table, headers);
-  writeToFile(`player_stats`, table);
-
 
   let killEvents: KillEvent[] = [];
 
@@ -982,8 +915,15 @@ demoFile.on("end", e => {
 
     
   });
-  console.table(killEvents);
-  writeToFile("killEvents", killEvents);
+
+  const mergedStats = {
+    allPlayerStats: allPlayerStats,
+    mapStats: mapStats,
+    weaponStats: table,
+    killEvents: killEvents
+  };
+  console.log(JSON.stringify(mergedStats, null, 2));
+
 });
 
 demoFile.parseStream(stream);

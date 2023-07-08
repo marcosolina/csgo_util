@@ -759,6 +759,10 @@ function finalTeam(playerStats: PlayerStats): string {
   return playerStats.lastTeam === TeamNumber.Terrorists ? "T" : "CT";
 }
 
+function writeToFile(name: string, obj: any) {
+  fs.writeFileSync(`/tmp/${name}.json`, JSON.stringify(obj, null, 2), "utf-8");
+}
+
 demoFile.on("end", e => {
   if (e.error) {
     console.error("Error during parsing:", e.error);
@@ -782,6 +786,7 @@ demoFile.on("end", e => {
   };
 
   console.table(mapStatsTable);
+  writeToFile("mapStats", mapStats);
 
   let allPlayerStats = [];
   let allPlayerGrenStats = [];
@@ -883,6 +888,8 @@ demoFile.on("end", e => {
 
   console.table(allPlayerStats);
   console.table(allPlayerGrenStats);
+  writeToFile("allPlayerStats", allPlayerStats);
+  writeToFile("allPlayerGrenStats", allPlayerGrenStats);
 
   for (const [playerName, stats] of playerStats) {
     console.log(
@@ -937,6 +944,7 @@ demoFile.on("end", e => {
     }
 
     console.table(table, headers);
+    writeToFile(`player_stats_${playerName}`, table);
   }
 
   type MatrixObject = {
@@ -972,6 +980,7 @@ demoFile.on("end", e => {
   });
   console.log("Kills Matrix");
   console.table(killerVictimMatrixObject);
+  writeToFile("killerVictimMatrixObject", killerVictimMatrixObject);
 
   type KillEvent = {
     round: number;
@@ -995,6 +1004,7 @@ demoFile.on("end", e => {
 
     console.log(`\nPlayer: ${killer}`);
     console.table(killEvents);
+    writeToFile("killEvents", killEvents);
   });
 });
 

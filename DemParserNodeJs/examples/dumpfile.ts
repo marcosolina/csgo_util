@@ -1,11 +1,8 @@
 /* eslint-disable no-console */
 
-// This file is an advanced example of how to log player kills,
-// team scores, chat text and server cvar changes from a demo file.
-
 import * as ansiStyles from "ansi-styles";
 import * as fs from "fs";
-import * as util from "util";
+
 import {
   DemoFile,
   extractPublicEncryptionKey,
@@ -13,24 +10,120 @@ import {
   TeamNumber
 } from "demofile";
 
-const colourReplacements = [
-  { pattern: /\x01/g, ansi: ansiStyles.whiteBright.open }, // Default
-  { pattern: /\x02/g, ansi: ansiStyles.red.open }, // Dark Red
-  { pattern: /\x03/g, ansi: ansiStyles.magenta.open }, // Light purple
-  { pattern: /\x04/g, ansi: ansiStyles.greenBright.open }, // Bright Green
-  { pattern: /\x05/g, ansi: ansiStyles.green.open }, // Pale Green
-  { pattern: /\x06/g, ansi: ansiStyles.greenBright.open }, // Green
-  { pattern: /\x07/g, ansi: ansiStyles.redBright.open }, // Pale Red
-  { pattern: /\x08/g, ansi: ansiStyles.gray.open }, // Grey
-  { pattern: /\x09/g, ansi: ansiStyles.yellowBright.open }, // Yellow
-  { pattern: /\x0A/g, ansi: ansiStyles.white.open }, // Silver
-  { pattern: /\x0B/g, ansi: ansiStyles.blueBright.open }, // Blue
-  { pattern: /\x0C/g, ansi: ansiStyles.blue.open }, // Dark Blue
-  { pattern: /\x0D/g, ansi: ansiStyles.magenta.open }, // Blue Grey for SayText2, Purple for SayText
-  { pattern: /\x0E/g, ansi: ansiStyles.magentaBright.open }, // Magenta
-  { pattern: /\x0F/g, ansi: ansiStyles.red.open }, // Dull Red
-  { pattern: /\x10/g, ansi: ansiStyles.yellow.open } // Orange
-];
+// Create the currentRound variable
+let currentRound = 0;
+let roundDamage = {};
+let allRoundsDamage = [];
+let firstKillInRound: Player | null = null;
+let potentialClutchPlayers: { player: any; clutchSize: number }[] = [];
+
+// Create a map to hold player statistics
+const playerStats = new Map<string, PlayerStats>();
+
+class MapStats {
+  date: Date | null;
+  mapName: string;
+  fileName: string;
+  terroristRoundWins: number;
+  ctRoundWins: number;
+  terroristRoundWinsFirstHalf: number;
+  ctRoundWinsFirstHalf: number;
+  terroristRoundWinsSecondHalf: number;
+  ctRoundWinsSecondHalf: number;
+
+  constructor(fileName: string) {
+    this.date = null;
+    this.mapName = "";
+    this.fileName = fileName;
+    this.terroristRoundWins = 0;
+    this.ctRoundWins = 0;
+    this.terroristRoundWinsFirstHalf = 0;
+    this.ctRoundWinsFirstHalf = 0;
+    this.terroristRoundWinsSecondHalf = 0;
+    this.ctRoundWinsSecondHalf = 0;
+  }
+}
+
+let steamIdToName: Map<string, string> = new Map();
+
+class PlayerStats {
+  userid: number;
+  steamid: string;
+  name: string;
+  kills: number;
+  deaths: number;
+  nKills!: number[];
+  roundKills: Map<number, number>;
+  assists: number;
+  roundsPlayed: number;
+  teamRounds: Map<TeamNumber, number>;
+  roundStart: Map<number, boolean>;
+  lastTeam: TeamNumber | null;
+  roundDamage: Map<number, number>;
+  roundRWS: Map<number, number>;
+  headshots: number;
+  teamKills: number;
+  entryKills: number;
+  bombsPlanted: number;
+  bombsDefused: number;
+  mvps: number;
+  score: number;
+  tradeKills: number;
+  tradeDeaths: number;
+  totalDamageHealth: number;
+  totalDamageArmor: number;
+  lastManAttempts: number[];
+  successfulClutches: number[];
+  weaponDamage: Map<number, Map<string, number>>;
+  weaponKills: Map<number, Map<string, number>>;
+  weaponShotsFired: Map<string, number>;
+  weaponHitGroups: Map<string, Map<number, number>>;
+  roundVictimKills: Map<number, Map<string, string>>;
+  roundWins: number;
+  grenadeThrows: Map<string, number>;
+  grenadeDamage: Map<string, number>;
+  opponentsFlashed: number;
+
+  constructor(userid: number, steamid: string, name: string) {
+    this.userid = userid;
+    this.steamid = steamid;
+    this.name = name;
+    this.kills = 0;
+    this.deaths = 0;
+    this.assists = 0;
+    this.roundsPlayed = 0;
+    this.nKills = [0, 0, 0, 0, 0];
+    this.roundKills = new Map();
+    this.teamRounds = new Map();
+    this.roundStart = new Map();
+    this.lastTeam = null;
+    this.roundDamage = new Map();
+    this.roundRWS = new Map();
+    this.headshots = 0;
+    this.teamKills = 0;
+    this.entryKills = 0;
+    this.bombsPlanted = 0;
+    this.bombsDefused = 0;
+    this.mvps = 0;
+    this.score = 0;
+    this.tradeKills = 0;
+    this.tradeDeaths = 0;
+    this.totalDamageHealth = 0;
+    this.totalDamageArmor = 0;
+    this.lastManAttempts = [0, 0, 0, 0, 0];
+    this.successfulClutches = [0, 0, 0, 0, 0];
+    this.weaponDamage = new Map();
+    this.weaponKills = new Map();
+    this.weaponShotsFired = new Map();
+    this.weaponHitGroups = new Map();
+    this.roundVictimKills = new Map();
+    this.roundWins = 0;
+    this.grenadeThrows = new Map();
+    this.grenadeDamage = new Map();
+    this.opponentsFlashed = 0;
+    steamIdToName.set(steamid, name);
+  }
+}
 
 const standardMessages: { [message: string]: string | undefined } = {
   Cstrike_Chat_All: "\x03%s\x01 : %s",
@@ -49,16 +142,9 @@ function teamNumberToAnsi(teamNum: TeamNumber) {
 }
 
 const filePath = process.argv[2]!;
+let mapStats = new MapStats(filePath);
 const stream = fs.createReadStream(filePath);
 const demoFile = new DemoFile();
-
-// Read the match info from a '.info' file if one exists alongside the demo.
-if (fs.existsSync(filePath + ".info")) {
-  const encryptionKey = extractPublicEncryptionKey(
-    fs.readFileSync(filePath + ".info")
-  );
-  demoFile.setEncryptionKey(encryptionKey);
-}
 
 function logTeamScores() {
   const teams = demoFile.teams;
@@ -77,28 +163,601 @@ function logTeamScores() {
   );
 }
 
-function formatSayText(entityIndex: number, text: string) {
-  text = "\x01" + text;
+function computeHltvOrgRating(
+  roundCount: number,
+  kills: number,
+  deaths: number,
+  nKills: number[]
+): number {
+  const AVERAGE_KPR = 0.679;
+  const AVERAGE_SPR = 0.317;
+  const AVERAGE_RMK = 1.277;
+  const killRating = kills / roundCount / AVERAGE_KPR;
+  const survivalRating = (roundCount - deaths) / roundCount / AVERAGE_SPR;
+  const roundsWithMultipleKillsRating =
+    ((nKills[0] || 0) +
+      4 * (nKills[1] || 0) +
+      9 * (nKills[2] || 0) +
+      16 * (nKills[3] || 0) +
+      25 * (nKills[4] || 0)) /
+    roundCount /
+    AVERAGE_RMK;
+  return Number(
+    (
+      (killRating + 0.7 * survivalRating + roundsWithMultipleKillsRating) /
+      2.7
+    ).toFixed(3)
+  );
+}
 
-  // If we have an entity index set, colour 0x03 in that entity's team colour
-  if (entityIndex > 0) {
-    const ent = demoFile.entities.entities.get(entityIndex);
-    if (ent instanceof Player) {
-      text = text.replace(/\x03/g, teamNumberToAnsi(ent.teamNumber));
+function calculateTotalWeaponKills(stats: PlayerStats): Map<string, number> {
+  const weaponKills = new Map<string, number>();
+  for (const [round, weaponStats] of stats.weaponKills.entries()) {
+    for (const [weapon, kills] of weaponStats.entries()) {
+      const currentKills = weaponKills.get(weapon) || 0;
+      weaponKills.set(weapon, currentKills + kills);
     }
   }
 
-  // Replace each colour code with its corresponding ANSI escape sequence
-  for (const r of colourReplacements) {
-    text = text.replace(r.pattern, ansiStyles.reset.open + r.ansi);
+  return weaponKills;
+}
+
+function calculateTotalWeaponDamage(stats: PlayerStats): Map<string, number> {
+  const weaponDamage = new Map<string, number>();
+  for (const [round, weaponStats] of stats.weaponDamage.entries()) {
+    for (const [weapon, damage] of weaponStats.entries()) {
+      const currentDamage = weaponDamage.get(weapon) || 0;
+      weaponDamage.set(weapon, currentDamage + damage);
+    }
   }
 
-  return text + ansiStyles.reset.open;
+  return weaponDamage;
+}
+
+function calculateTotalShotsFired(stats: PlayerStats): Map<string, number> {
+  return stats.weaponShotsFired;
+}
+
+function calculateTotalShotsHit(stats: PlayerStats): Map<string, number> {
+  const totalShotsHit = new Map<string, number>();
+
+  for (const [weapon, hitGroups] of stats.weaponHitGroups.entries()) {
+    let totalHits = 0;
+    for (const count of hitGroups.values()) {
+      totalHits += count;
+    }
+    totalShotsHit.set(weapon, totalHits);
+  }
+
+  return totalShotsHit;
+}
+
+function getWeaponHeadshotPercentage(
+  weaponName: string,
+  stats: PlayerStats
+): number {
+  const hitGroups = stats.weaponHitGroups.get(weaponName);
+  if (!hitGroups) {
+    return 0;
+  }
+
+  const headHits = hitGroups.get(EHitGroup.EHG_Head) || 0;
+  let totalHits = 0;
+  for (const count of hitGroups.values()) {
+    totalHits += count;
+  }
+
+  return (100 * headHits) / totalHits; // avoid division by zero by not calculating if totalHits is 0
+}
+
+enum EHitGroup {
+  EHG_Generic = 0,
+  EHG_Head = 1,
+  EHG_Chest = 2,
+  EHG_Stomach = 3,
+  EHG_LeftArm = 4,
+  EHG_RightArm = 5,
+  EHG_LeftLeg = 6,
+  EHG_RightLeg = 7,
+  EHG_Gear = 8,
+  EHG_Miss = 9
 }
 
 demoFile.on("start", () => {
   console.log("Demo header:", demoFile.header);
+  mapStats.mapName = demoFile.header.mapName;
+  // Reset all stats if the game is restarted
+  playerStats.clear();
 });
+
+let players = new Map();
+let playerNames = new Map();
+let playerSteamIds = new Map();
+demoFile.entities.on("create", e => {
+  if (!(e.entity instanceof Player)) {
+    return;
+  }
+
+  const player = e.entity;
+  if (player.isFakePlayer) {
+    return;
+  }
+  playerNames.set(player.userId, player.name);
+  playerSteamIds.set(player.userId, player.steamId);
+  if (!playerStats.has(player.steamId)) {
+    console.log("create PlayerStats created for %s", player.name);
+    playerStats.set(
+      player.steamId,
+      new PlayerStats(player.userId, player.steamId, player.name)
+    );
+  }
+  playerStats.get(player.steamId)!.roundStart.set(currentRound, false); // Players that join mid-round did not start the round
+  players.set(player.steamId, player);
+  console.log("%s (%s) joined the game", e.entity.name, e.entity.steamId);
+});
+
+demoFile.gameEvents.on("round_start", e => {
+  roundDamage = {};
+  potentialClutchPlayers = [];
+  firstKillInRound = null;
+  lastKill = null;
+  currentRound++;
+  console.log("Round Start %s", currentRound);
+  for (const player of demoFile.entities.players) {
+    const playerStat = playerStats.get(player.steamId);
+    if (playerStat) {
+      playerStat.roundStart.set(currentRound, true);
+      playerStat.roundKills.set(currentRound, 0);
+    }
+  }
+});
+
+demoFile.conVars.on("change", e => {
+  // Reset player stats when the game is restarted
+  if (
+    (e.name === "bot_quota" && e.value === "0") ||
+    e.name === "steamworks_sessionid_server"
+  ) {
+    playerStats.clear();
+    mapStats = new MapStats(filePath);
+    potentialClutchPlayers = [];
+    currentRound = 1;
+    roundDamage = {};
+    allRoundsDamage = [];
+    lastKill = null;
+    firstKillInRound = null;
+    for (const player of demoFile.entities.players) {
+      if (player.isFakePlayer) {
+        continue;
+      }
+      playerNames.set(player.userId, player.name);
+      playerSteamIds.set(player.userId, player.steamId);
+      if (!playerStats.has(player.steamId)) {
+        console.log("change PlayerStats created for %s", player.name);
+        playerStats.set(
+          player.steamId,
+          new PlayerStats(player.userId, player.steamId, player.name)
+        );
+      }
+      const playerStat = playerStats.get(player.steamId)!;
+      playerStat.roundStart.set(currentRound, true);
+      playerStat.roundKills.set(currentRound, 0);
+    }
+  }
+
+  console.log("%s: %s -> %s", e.name, e.oldValue, e.value);
+});
+
+let lastWeaponFired: Map<string, { weapon: string; time: number }> = new Map();
+
+demoFile.gameEvents.on("weapon_fire", e => {
+  const shooter = demoFile.entities.getByUserId(e.userid);
+
+  if (shooter) {
+    const weaponName = e.weapon;
+    const stats = playerStats.get(shooter.steamId);
+
+    if (stats) {
+      stats.weaponShotsFired.set(
+        weaponName,
+        (stats.weaponShotsFired.get(weaponName) || 0) + 1
+      );
+      lastWeaponFired.set(shooter.steamId, {
+        weapon: weaponName,
+        time: demoFile.currentTime
+      });
+    }
+  }
+});
+
+demoFile.gameEvents.on("flashbang_detonate", e => {
+  const thrower = demoFile.entities.getByUserId(e.userid);
+  if (thrower) {
+    const stats = playerStats.get(thrower.steamId);
+    if (stats) {
+      stats.grenadeThrows.set(
+        "flashbang",
+        (stats.grenadeThrows.get("flashbang") || 0) + 1
+      );
+    }
+  }
+});
+
+demoFile.gameEvents.on("hegrenade_detonate", e => {
+  const thrower = demoFile.entities.getByUserId(e.userid);
+  if (thrower) {
+    lastWeaponFired.set(thrower.steamId, {
+      weapon: "hegrenade",
+      time: demoFile.currentTime
+    });
+    const stats = playerStats.get(thrower.steamId);
+    if (stats) {
+      stats.grenadeThrows.set(
+        "hegrenade",
+        (stats.grenadeThrows.get("hegrenade") || 0) + 1
+      );
+    }
+  }
+});
+
+demoFile.on("molotovDetonate", e => {
+  const thrower = e.thrower;
+  if (thrower) {
+    lastWeaponFired.set(thrower.steamId, {
+      weapon: "inferno",
+      time: demoFile.currentTime
+    });
+    const stats = playerStats.get(thrower.steamId);
+    if (stats) {
+      stats.grenadeThrows.set(
+        "inferno",
+        (stats.grenadeThrows.get("inferno") || 0) + 1
+      );
+    }
+  }
+});
+
+demoFile.gameEvents.on("smokegrenade_detonate", e => {
+  const thrower = demoFile.entities.getByUserId(e.userid);
+  if (thrower) {
+    const stats = playerStats.get(thrower.steamId);
+    if (stats) {
+      stats.grenadeThrows.set(
+        "smokegrenade",
+        (stats.grenadeThrows.get("smokegrenade") || 0) + 1
+      );
+    }
+  }
+});
+
+demoFile.gameEvents.on("player_blind", e => {
+  const attacker = demoFile.entities.getByUserId(e.attacker);
+  const victim = demoFile.entities.getByUserId(e.userid);
+  if (attacker && victim) {
+    if (attacker.teamNumber !== victim.teamNumber) {
+      const stats = playerStats.get(attacker.steamId);
+      if (stats) {
+        stats.opponentsFlashed += 1;
+      }
+    }
+  }
+});
+
+demoFile.gameEvents.on("player_hurt", e => {
+  const attacker = demoFile.entities.getByUserId(e.attacker);
+  if (attacker) {
+    const lastWeaponFiredByAttacker = lastWeaponFired.get(attacker.steamId);
+    if (lastWeaponFiredByAttacker) {
+      const stats = playerStats.get(attacker.steamId)!;
+      if (stats) {
+        const weaponName = lastWeaponFiredByAttacker.weapon;
+
+        // Handle grenade and flame damage
+        if (weaponName === "hegrenade" || weaponName === "inferno") {
+          const grenadeDamage = stats.grenadeDamage.get(weaponName) || 0;
+          stats.grenadeDamage.set(weaponName, grenadeDamage + e.dmg_health);
+        }
+
+        // record hit group stats
+        let hitGroups = stats.weaponHitGroups.get(weaponName);
+        if (!hitGroups) {
+          hitGroups = new Map();
+          stats.weaponHitGroups.set(weaponName, hitGroups);
+        }
+        hitGroups.set(e.hitgroup, (hitGroups.get(e.hitgroup) || 0) + 1);
+
+        const roundDamage = stats.weaponDamage.get(currentRound) || new Map();
+        roundDamage.set(
+          weaponName,
+          (roundDamage.get(weaponName) || 0) + e.dmg_health
+        );
+        stats.weaponDamage.set(currentRound, roundDamage);
+
+        stats.roundDamage.set(
+          currentRound,
+          (stats.roundDamage.get(currentRound) || 0) + e.dmg_health
+        );
+
+        stats.totalDamageHealth += e.dmg_health;
+        stats.totalDamageArmor += e.dmg_armor;
+      }
+    }
+  }
+});
+
+let lastKill: { killer: Player; victim: Player; time: number } | null = null;
+
+demoFile.gameEvents.on("player_death", e => {
+  const victim = demoFile.entities.getByUserId(e.userid);
+  const victimColour = teamNumberToAnsi(
+    victim ? victim.teamNumber : TeamNumber.Spectator
+  );
+  const victimName = victim ? victim.name : "unnamed";
+  const attacker = demoFile.entities.getByUserId(e.attacker);
+  const attackerColour = teamNumberToAnsi(
+    attacker ? attacker.teamNumber : TeamNumber.Spectator
+  );
+  const attackerName = attacker ? attacker.name : "unnamed";
+  const headshotText = e.headshot ? " HS" : "";
+
+  const teams = demoFile.teams;
+  for (const team of teams) {
+    const alivePlayers = team.members.filter(player => player.isAlive);
+    if (alivePlayers.length === 1) {
+      const lastMan = alivePlayers[0]!;
+
+      const opposingTeam = teams.find(
+        t =>
+          t.teamNumber !== team.teamNumber &&
+          (t.teamNumber === TeamNumber.CounterTerrorists ||
+            t.teamNumber === TeamNumber.Terrorists)
+      );
+      const aliveOpponents = opposingTeam
+        ? opposingTeam.members.filter(player => player.isAlive).length
+        : 0;
+      if (
+        aliveOpponents > 0 &&
+        !potentialClutchPlayers.some(clutch => clutch.player === lastMan)
+      ) {
+        potentialClutchPlayers.push({
+          player: lastMan,
+          clutchSize: aliveOpponents
+        });
+      }
+    }
+  }
+
+  console.log(
+    `${attackerColour}${attackerName}${ansiStyles.reset.open} [${e.weapon}${headshotText}] ${victimColour}${victimName}${ansiStyles.reset.open}`
+  );
+});
+
+demoFile.gameEvents.on("player_death", e => {
+  const victim = demoFile.entities.getByUserId(e.userid);
+  const attacker = demoFile.entities.getByUserId(e.attacker);
+  const weapon = e.weapon;
+  const assister = e.assister
+    ? demoFile.entities.getByUserId(e.assister)
+    : null;
+
+  if (attacker == victim) {
+    return;
+  }
+
+  if (attacker) {
+    const stats = playerStats.get(attacker.steamId)!;
+    if (stats) {
+      stats.kills++;
+      const roundKills = stats.weaponKills.get(currentRound) || new Map();
+      roundKills.set(weapon, (roundKills.get(weapon) || 0) + 1);
+      stats.weaponKills.set(currentRound, roundKills);
+      if (e.headshot) {
+        stats.headshots! += 1;
+      }
+
+      if (victim && victim.teamNumber === attacker.teamNumber) {
+        stats.teamKills += 1;
+      }
+
+      if (victim) {
+        const roundVictimKills =
+          stats.roundVictimKills.get(currentRound) || new Map();
+        roundVictimKills.set(victim.steamId, weapon);
+        stats.roundVictimKills.set(currentRound, roundVictimKills);
+      }
+
+      if (!firstKillInRound) {
+        firstKillInRound = attacker;
+        stats.entryKills += 1;
+      }
+
+      if (
+        lastKill &&
+        demoFile.currentTime - lastKill.time <= 5 &&
+        lastKill.killer === victim
+      ) {
+        stats.tradeKills += 1;
+        const lastKillerStats = playerStats.get(lastKill.killer.steamId)!;
+        if (lastKillerStats) {
+          lastKillerStats.tradeDeaths += 1;
+        }
+      }
+      stats.roundKills.set(
+        currentRound,
+        (stats.roundKills.get(currentRound) || 0) + 1
+      );
+    }
+
+    if (attacker && victim) {
+      lastKill = {
+        killer: attacker,
+        victim: victim,
+        time: demoFile.currentTime
+      };
+    }
+  }
+
+  if (victim && playerStats.get(victim.steamId)) {
+    playerStats.get(victim.steamId)!.deaths++;
+  }
+
+  if (assister && playerStats.get(assister.steamId)) {
+    playerStats.get(assister.steamId)!.assists++;
+  }
+});
+
+demoFile.gameEvents.on("bomb_planted", e => {
+  const planter = demoFile.entities.getByUserId(e.userid);
+
+  if (planter) {
+    const stats = playerStats.get(planter.steamId)!;
+    stats.bombsPlanted += 1;
+  }
+});
+
+demoFile.gameEvents.on("bomb_defused", e => {
+  const defuser = demoFile.entities.getByUserId(e.userid);
+
+  if (defuser) {
+    const stats = playerStats.get(defuser.steamId)!;
+    stats.bombsDefused += 1;
+  }
+});
+
+demoFile.gameEvents.on("round_mvp", e => {
+  const mvp = demoFile.entities.getByUserId(e.userid);
+
+  if (mvp) {
+    const stats = playerStats.get(mvp.steamId)!;
+
+    // Increment MVPs
+    stats.mvps++;
+  }
+});
+
+demoFile.gameEvents.on("round_end", e => {
+  const winnerSide = e.winner;
+  console.log("Round %s won by %s", currentRound, winnerSide);
+  if (currentRound <= 7) {
+    // First half
+    if (winnerSide === TeamNumber.Terrorists) {
+      mapStats.terroristRoundWinsFirstHalf++;
+    } else if (winnerSide === TeamNumber.CounterTerrorists) {
+      mapStats.ctRoundWinsFirstHalf++;
+    }
+  } else {
+    // Second half
+    if (winnerSide === TeamNumber.Terrorists) {
+      mapStats.terroristRoundWinsSecondHalf++;
+    } else if (winnerSide === TeamNumber.CounterTerrorists) {
+      mapStats.ctRoundWinsSecondHalf++;
+    }
+  }
+
+  if (winnerSide === TeamNumber.Terrorists) {
+    mapStats.terroristRoundWins++;
+  } else if (winnerSide === TeamNumber.CounterTerrorists) {
+    mapStats.ctRoundWins++;
+  }
+
+  let totalDamageByWinningTeam = 0;
+
+  for (const [playerid, stats] of playerStats.entries()) {
+    const player = players.get(playerid);
+    if (player) {
+      if (player.teamNumber === winnerSide) {
+        stats.roundWins++;
+        totalDamageByWinningTeam += stats.roundDamage.get(currentRound) || 0;
+      }
+    }
+  }
+
+  for (const [playerid, stats] of playerStats.entries()) {
+    const player = players.get(playerid);
+    if (player) {
+      if (player.teamNumber === winnerSide) {
+        const damage = stats.roundDamage.get(currentRound) || 0;
+        const rws =
+          totalDamageByWinningTeam > 0
+            ? (damage / totalDamageByWinningTeam) * 100
+            : 0;
+        stats.roundRWS.set(currentRound, rws);
+      }
+    }
+  }
+
+  for (const clutch of potentialClutchPlayers) {
+    // If the clutch player is still alive, increment the successful clutches
+    if (clutch.player.isAlive) {
+      console.log(
+        "1v%s clutch completed for %s",
+        clutch.clutchSize,
+        clutch.player.name
+      );
+      const stats = playerStats.get(clutch.player.steamId)!;
+      stats.successfulClutches[clutch.clutchSize - 1]++;
+    }
+  }
+
+  allRoundsDamage.push(roundDamage);
+  roundDamage = {};
+  console.log(
+    "*** Round ended '%s' (reason: %s, tick: %d, time: %d secs)",
+    demoFile.gameRules.phase,
+    e.reason,
+    demoFile.currentTick,
+    demoFile.currentTime | 0
+  );
+
+  for (const player of demoFile.entities.players) {
+    if (!player || player.name === "GOTV" || !playerStats.get(player.steamId)) {
+      continue;
+    }
+    if (playerStats.get(player.steamId)!.roundStart.get(currentRound)) {
+      playerStats.get(player.steamId)!.roundsPlayed++;
+    }
+
+    const teamNum = player.teamNumber;
+    const stats = playerStats.get(player.steamId)!;
+    const teamRounds = stats.teamRounds.get(teamNum) || 0;
+    stats.teamRounds.set(teamNum, teamRounds + 1);
+    stats.lastTeam = player.teamNumber;
+  }
+});
+
+demoFile.gameEvents.on("round_officially_ended", () => {
+  console.log(`End of round ${currentRound}`);
+  for (const player of demoFile.entities.players) {
+    if (!player || player.name === "GOTV") {
+      continue;
+    }
+    const stats = playerStats.get(player.steamId);
+    if (stats) {
+      const roundKills = stats.roundKills.get(currentRound) || 0;
+
+      if (roundKills > 0 && roundKills <= 5) {
+        stats.nKills[roundKills - 1]++;
+      }
+    }
+  }
+
+  logTeamScores();
+});
+
+demoFile.entities.on("beforeremove", e => {
+  if (!(e.entity instanceof Player)) {
+    return;
+  }
+  const player = e.entity;
+  if (player.isFakePlayer) {
+    return;
+  }
+  console.log("%s left the game", player.name);
+});
+
+function finalTeam(playerStats: PlayerStats): string {
+  return playerStats.lastTeam === TeamNumber.Terrorists ? "T" : "CT";
+}
 
 demoFile.on("end", e => {
   if (e.error) {
@@ -108,88 +767,235 @@ demoFile.on("end", e => {
   }
 
   console.log("Finished.");
-});
 
-demoFile.conVars.on("change", e => {
-  console.log("%s: %s -> %s", e.name, e.oldValue, e.value);
-});
+  // Print map stats first
+  let mapStatsTable = {
+    Date: mapStats.date ? mapStats.date.toISOString() : "N/A",
+    "Map Name": mapStats.mapName,
+    "File Name": mapStats.fileName,
+    "Terrorist Round Wins": mapStats.terroristRoundWins,
+    "CT Round Wins": mapStats.ctRoundWins,
+    "Terrorist Round Wins (First Half)": mapStats.terroristRoundWinsFirstHalf,
+    "CT Round Wins (First Half)": mapStats.ctRoundWinsFirstHalf,
+    "Terrorist Round Wins (Second Half)": mapStats.terroristRoundWinsSecondHalf,
+    "CT Round Wins (Second Half)": mapStats.ctRoundWinsSecondHalf
+  };
 
-demoFile.gameEvents.on("player_death", e => {
-  const victim = demoFile.entities.getByUserId(e.userid);
-  const victimColour = teamNumberToAnsi(
-    victim ? victim.teamNumber : TeamNumber.Spectator
-  );
-  const victimName = victim ? victim.name : "unnamed";
+  console.table(mapStatsTable);
 
-  const attacker = demoFile.entities.getByUserId(e.attacker);
-  const attackerColour = teamNumberToAnsi(
-    attacker ? attacker.teamNumber : TeamNumber.Spectator
-  );
-  const attackerName = attacker ? attacker.name : "unnamed";
+  let allPlayerStats = [];
+  let allPlayerGrenStats = [];
 
-  const headshotText = e.headshot ? " HS" : "";
+  for (const [playerid, stats] of playerStats.entries()) {
+    const player = players.get(playerid);
+    // Ignore bots in the final output
+    if (!player || player.name === "GOTV" || stats.roundsPlayed == 0) {
+      continue;
+    }
+    const HLTVRating = computeHltvOrgRating(
+      stats.roundsPlayed,
+      stats.kills,
+      stats.deaths,
+      stats.nKills
+    );
 
-  console.log(
-    `${attackerColour}${attackerName}${ansiStyles.reset.open} [${e.weapon}${headshotText}] ${victimColour}${victimName}${ansiStyles.reset.open}`
-  );
-});
+    // Calculate average RWS
+    let totalRWS = 0;
+    for (const rws of stats.roundRWS.values()) {
+      totalRWS += rws;
+    }
+    const averageRWS = totalRWS / stats.roundsPlayed;
 
-demoFile.userMessages.on("TextMsg", e => {
-  const params = e.params
-    .map(param =>
-      param[0] === "#" ? standardMessages[param.substring(1)] || param : param
-    )
-    .filter(s => s.length) as [string, ...string[]];
+    const team = finalTeam(stats);
 
-  const formatted = util.format.apply(null, params);
-  console.log(formatSayText(0, formatted));
-});
+    const KDR = stats.deaths > 0 ? stats.kills / stats.deaths : stats.kills;
+    const HSP = stats.kills > 0 ? (stats.headshots / stats.kills) * 100 : 0;
 
-demoFile.userMessages.on("SayText", e => {
-  console.log(formatSayText(0, e.text));
-});
+    const KPR = stats.roundsPlayed > 0 ? stats.kills / stats.roundsPlayed : 0;
+    const APR = stats.roundsPlayed > 0 ? stats.assists / stats.roundsPlayed : 0;
+    const DPR = stats.roundsPlayed > 0 ? stats.deaths / stats.roundsPlayed : 0;
+    const ADR =
+      stats.roundsPlayed > 0
+        ? (stats.totalDamageHealth + stats.totalDamageArmor) /
+          stats.roundsPlayed
+        : 0;
 
-demoFile.userMessages.on("SayText2", e => {
-  const nonEmptyParams = e.params.filter(s => s.length);
-  const msgText = standardMessages[e.msgName];
-  const formatted = msgText
-    ? util.format.apply(null, [msgText, ...nonEmptyParams])
-    : `${e.msgName} ${nonEmptyParams.join(" ")}`;
+    stats.score = player.score;
 
-  console.log(formatSayText(e.entIdx, formatted));
-});
+    // Format clutch data
+    let clutchData = "";
+    for (let i = 0; i < stats.successfulClutches.length; i++) {
+      if (stats.successfulClutches[i]! > 0) {
+        clutchData += `1v${i + 1}: ${stats.successfulClutches[i]}, `;
+      }
+    }
+    // Remove trailing comma and space
+    if (clutchData.length > 0) {
+      clutchData = clutchData.slice(0, -2);
+    }
 
-demoFile.gameEvents.on("round_end", e => {
-  console.log(
-    "*** Round ended '%s' (reason: %s, tick: %d, time: %d secs)",
-    demoFile.gameRules.phase,
-    e.reason,
-    demoFile.currentTick,
-    demoFile.currentTime | 0
-  );
+    const playerStatsTable = {
+      "Player Name": stats.name,
+      SteamId: stats.steamid,
+      Team: team,
+      Rounds: stats.roundsPlayed,
+      RoundsWon: stats.roundWins,
+      Kills: stats.kills,
+      Deaths: stats.deaths,
+      Assists: stats.assists,
+      KDR: KDR.toFixed(2),
+      Headshots: stats.headshots,
+      "HSP(%)": HSP.toFixed(2),
+      KPR: KPR.toFixed(2),
+      APR: APR.toFixed(2),
+      DPR: DPR.toFixed(2),
+      ADR: ADR.toFixed(2),
+      TK: stats.teamKills,
+      EK: stats.entryKills,
+      TRK: stats.tradeKills,
+      TRD: stats.tradeDeaths,
+      Clutches: clutchData,
+      TDH: stats.totalDamageHealth,
+      TDAr: stats.totalDamageArmor,
+      BP: stats.bombsPlanted,
+      BD: stats.bombsDefused,
+      MVPs: stats.mvps,
+      Score: stats.score,
+      "HLTV rating": HLTVRating,
+      RWS: averageRWS.toFixed(2)
+    };
 
-  // We can't print the team scores here as they haven't been updated yet.
-  // See round_officially_ended below.
-});
+    const playerGrenStatsTable = {
+      "Player Name": stats.name,
+      SteamId: stats.steamid,
+      "Opponents Flashed": stats.opponentsFlashed,
+      "Flashbang Throws": stats.grenadeThrows.get("flashbang") || 0,
+      "HE Grenade Throws": stats.grenadeThrows.get("hegrenade") || 0,
+      "Inferno Throws": stats.grenadeThrows.get("inferno") || 0,
+      "Smoke Grenade Throws": stats.grenadeThrows.get("smokegrenade") || 0,
+      "HE Grenade Damage": stats.grenadeDamage.get("hegrenade") || 0,
+      "Inferno Damage": stats.grenadeDamage.get("inferno") || 0
+    };
 
-demoFile.gameEvents.on("round_officially_ended", logTeamScores);
-
-demoFile.entities.on("create", e => {
-  // We're only interested in player entities being created.
-  if (!(e.entity instanceof Player)) {
-    return;
+    allPlayerStats.push(playerStatsTable);
+    allPlayerGrenStats.push(playerGrenStatsTable);
   }
 
-  console.log("%s (%s) joined the game", e.entity.name, e.entity.steamId);
-});
+  console.table(allPlayerStats);
+  console.table(allPlayerGrenStats);
 
-demoFile.entities.on("beforeremove", e => {
-  if (!(e.entity instanceof Player)) {
-    return;
+  for (const [playerName, stats] of playerStats) {
+    console.log(
+      `Player: ${stats.name}, SteamId: ${stats.steamid}, Rounds Played: ${stats.roundsPlayed}`
+    );
+
+    const headers = [
+      "Weapon",
+      "Total Kills",
+      "Total Damage",
+      "Kills per Round",
+      "Damage per Round",
+      "Shots fired",
+      "Damage per Shot",
+      "Hits",
+      "Damage per Hit",
+      "Accuracy %",
+      "Headshot %"
+    ];
+    const table: any[] = [];
+    const weaponKills = calculateTotalWeaponKills(stats);
+    const weaponDamage = calculateTotalWeaponDamage(stats);
+    const totalShotsFired = calculateTotalShotsFired(stats);
+    const totalShotsHit = calculateTotalShotsHit(stats);
+
+    for (const [weapon, totalKills] of weaponKills) {
+      const totalDamage = weaponDamage.get(`weapon_${weapon}`) || 0;
+      const killsPerRound = totalKills / stats.roundsPlayed;
+      const damagePerRound = totalDamage / stats.roundsPlayed;
+
+      const shotsFired = totalShotsFired.get(`weapon_${weapon}`) || 0;
+      const shotsHit = totalShotsHit.get(`weapon_${weapon}`) || 0;
+      const accuracy = ((shotsHit / (shotsFired || 1)) * 100).toFixed(2);
+      const headshotPercentage = getWeaponHeadshotPercentage(
+        `weapon_${weapon}`,
+        stats
+      );
+
+      table.push({
+        Weapon: weapon,
+        "Total Kills": totalKills,
+        "Total Damage": totalDamage,
+        "Kills per Round": killsPerRound.toFixed(2),
+        "Damage per Round": damagePerRound.toFixed(2),
+        "Shots fired": shotsFired,
+        "Damage per Shot": (totalDamage / shotsFired).toFixed(2),
+        Hits: shotsHit,
+        "Damage per Hit": (totalDamage / shotsHit).toFixed(2),
+        "Accuracy %": accuracy,
+        "Headshot %": headshotPercentage.toFixed(2)
+      });
+    }
+
+    console.table(table, headers);
   }
 
-  console.log("%s left the game", e.entity.name);
+  type MatrixObject = {
+    [key: string]: {
+      [key: string]: number;
+    };
+  };
+
+  let killerVictimMatrix: Map<string, Map<string, number>> = new Map();
+
+  playerStats.forEach((playerStat, steamid) => {
+    const killer = steamIdToName.get(steamid) || "Unknown Player"; // Default to 'Unknown Player' if the name is not found
+    playerStat.roundVictimKills.forEach((victimWeaponMap, round) => {
+      victimWeaponMap.forEach((weapon, victimSteamId) => {
+        const victim = steamIdToName.get(victimSteamId) || "Unknown Player";
+        let victimMap = killerVictimMatrix.get(killer) || new Map();
+        victimMap.set(victim, (victimMap.get(victim) || 0) + 1);
+        killerVictimMatrix.set(killer, victimMap);
+      });
+    });
+  });
+
+  // Now that we have our killer-victim matrix (a Map of Maps), we need to transform it into an object of objects to use console.table:
+
+  let killerVictimMatrixObject: MatrixObject = {};
+
+  killerVictimMatrix.forEach((victimMap, killer) => {
+    let victimObject: { [key: string]: number } = {};
+    victimMap.forEach((kills, victim) => {
+      victimObject[victim] = kills;
+    });
+    killerVictimMatrixObject[killer] = victimObject;
+  });
+  console.log("Kills Matrix");
+  console.table(killerVictimMatrixObject);
+
+  type KillEvent = {
+    round: number;
+    weapon: string;
+    victim: string;
+  };
+
+  playerStats.forEach((playerStat, steamid) => {
+    const killer = steamIdToName.get(steamid) || "Unknown Player"; // Default to 'Unknown Player' if the name is not found
+    let killEvents: KillEvent[] = [];
+
+    playerStat.roundVictimKills.forEach((victimWeaponMap, round) => {
+      victimWeaponMap.forEach((weapon, victimSteamId) => {
+        const victim = steamIdToName.get(victimSteamId) || "Unknown Player";
+        killEvents.push({ round, weapon, victim });
+      });
+    });
+
+    // Sort the kill events by round
+    killEvents.sort((a, b) => a.round - b.round);
+
+    console.log(`\nPlayer: ${killer}`);
+    console.table(killEvents);
+  });
 });
 
-// Start parsing the stream now that we've added our event listeners
 demoFile.parseStream(stream);

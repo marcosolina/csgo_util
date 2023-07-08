@@ -41,6 +41,7 @@
     "big-integer": "^1.6.51",
     "bit-buffer": "0.0.3",
     "bytebuffer": "^5.0.1",
+    "demofile": "^2.10.0",
     "immutable": "^4.1.0",
     "iter-tools": "^7.5.0",
     "long": "^3.0.3",

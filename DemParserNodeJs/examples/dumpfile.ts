@@ -863,16 +863,25 @@ demoFile.on("end", e => {
       EK: stats.entryKills,
       TRK: stats.tradeKills,
       TRD: stats.tradeDeaths,
-      Clutches: clutchData,
+      Kill1: stats.nKills[0],
+      Kill2: stats.nKills[1],
+      Kill3: stats.nKills[2],
+      Kill4: stats.nKills[3],
+      Kill5: stats.nKills[4],
+      Clutch1v1: stats.successfulClutches[0],
+      Clutch1v2: stats.successfulClutches[1],
+      Clutch1v3: stats.successfulClutches[2],
+      Clutch1v4: stats.successfulClutches[3],
+      Clutch1v5: stats.successfulClutches[4],
       TDH: stats.totalDamageHealth,
       TDAr: stats.totalDamageArmor,
       BP: stats.bombsPlanted,
       BD: stats.bombsDefused,
-      "Opponents Flashed": stats.opponentsFlashed,
       "Flashbang Throws": stats.grenadeThrows.get("flashbang") || 0,
       "HE Grenade Throws": stats.grenadeThrows.get("hegrenade") || 0,
       "Inferno Throws": stats.grenadeThrows.get("inferno") || 0,
       "Smoke Grenade Throws": stats.grenadeThrows.get("smokegrenade") || 0,
+      "Opponents Flashed": stats.opponentsFlashed,
       "HE Grenade Damage": stats.grenadeDamage.get("hegrenade") || 0,
       "Inferno Damage": stats.grenadeDamage.get("inferno") || 0,
       MVPs: stats.mvps,
@@ -952,20 +961,19 @@ demoFile.on("end", e => {
 
 
   type KillEvent = {
-    killer: string,
-    steamid: string,
+    killerSteamId: string,
     round: number;
     weapon: string;
-    victim: string;
+    victimSteamId: string;
   };
 
-  playerStats.forEach((playerStat, steamid) => {
-    const killer = steamIdToName.get(steamid) || "Unknown Player"; // Default to 'Unknown Player' if the name is not found
+  playerStats.forEach((playerStat, killerSteamId) => {
+    const killer = steamIdToName.get(killerSteamId) || "Unknown Player"; // Default to 'Unknown Player' if the name is not found
     
     playerStat.roundVictimKills.forEach((victimWeaponMap, round) => {
       victimWeaponMap.forEach((weapon, victimSteamId) => {
         const victim = steamIdToName.get(victimSteamId) || "Unknown Player";
-        killEvents.push({ killer, steamid, round, weapon, victim });
+        killEvents.push({ killerSteamId, round, weapon, victimSteamId });
       });
     });
 

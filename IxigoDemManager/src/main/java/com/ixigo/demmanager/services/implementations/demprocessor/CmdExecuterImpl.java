@@ -84,14 +84,14 @@ public class CmdExecuterImpl implements CmdExecuter {
 					ums.setTradeDeath(Long.parseLong(tmp[RoundParserUtils.DEM_COL_TRADE_DEATH]));
 					ums.setTeamKillFriendlyFire(Long.parseLong(tmp[RoundParserUtils.DEM_COL_TEAM_KILL_FRIENDLY_FIRE]));
 					ums.setEntryKill(Long.parseLong(tmp[RoundParserUtils.DEM_COL_ENTRY_KILL]));
-					ums.setBombPLanted(Long.parseLong(tmp[RoundParserUtils.DEM_COL_BOMB_PLANTED]));
+					ums.setBombPlanted(Long.parseLong(tmp[RoundParserUtils.DEM_COL_BOMB_PLANTED]));
 					ums.setBombDefused(Long.parseLong(tmp[RoundParserUtils.DEM_COL_BOMB_DEFUSED]));
 					ums.setMostValuablePlayer(Long.parseLong(tmp[RoundParserUtils.DEM_COL_MOST_VALUABLE_PLAYER]));
 					ums.setScore(Long.parseLong(tmp[RoundParserUtils.DEM_COL_SCORE]));
 					ums.setHeadShots(Long.parseLong(tmp[RoundParserUtils.DEM_COL_HEAD_SHOTS]));
 
 					ums.setRoundWinShare(parseDouble(tmp[RoundParserUtils.DEM_COL_ROUND_WIN_SHARE]));
-					ums.setKillDeathRation(parseDouble(tmp[RoundParserUtils.DEM_COL_KILL_DEATH_RATION]));
+					ums.setKillDeathRatio(parseDouble(tmp[RoundParserUtils.DEM_COL_KILL_DEATH_RATION]));
 					ums.setHeadShotsPercentage(parseDouble(tmp[RoundParserUtils.DEM_COL_HEAD_SHOTS_PERC]));
 					ums.setHalfLifeTelevisionRating(parseDouble(tmp[RoundParserUtils.DEM_COL_HALF_LIVE_TELEVISION_RATING]));
 					ums.setKillPerRound(parseDouble(tmp[RoundParserUtils.DEM_COL_KILL_PER_ROUND]));

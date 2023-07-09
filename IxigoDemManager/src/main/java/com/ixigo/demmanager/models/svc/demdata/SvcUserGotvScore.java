@@ -14,12 +14,12 @@ public class SvcUserGotvScore {
 	private Long kills;
 	private Long assists;
 	private Long deaths;
-	private Double killDeathRation;
+	private Double killDeathRatio;
 	private Long headShots;
 	private Double headShotsPercentage;
 	private Long teamKillFriendlyFire;
 	private Long entryKill;
-	private Long bombPLanted;
+	private Long bombPlanted;
 	private Long bombDefused;
 	private Long mostValuablePlayer;
 	private Long score;
@@ -99,12 +99,12 @@ public class SvcUserGotvScore {
 		this.deaths = deaths;
 	}
 
-	public Double getKillDeathRation() {
-		return killDeathRation;
+	public Double getKillDeathRatio() {
+		return killDeathRatio;
 	}
 
-	public void setKillDeathRation(Double killDeathRation) {
-		this.killDeathRation = killDeathRation;
+	public void setKillDeathRatio(Double killDeathRatio) {
+		this.killDeathRatio = killDeathRatio;
 	}
 
 	public Long getHeadShots() {
@@ -139,12 +139,12 @@ public class SvcUserGotvScore {
 		this.entryKill = entryKill;
 	}
 
-	public Long getBombPLanted() {
-		return bombPLanted;
+	public Long getBombPlanted() {
+		return bombPlanted;
 	}
 
-	public void setBombPLanted(Long bombPLanted) {
-		this.bombPLanted = bombPLanted;
+	public void setBombPlanted(Long bombPlanted) {
+		this.bombPlanted = bombPlanted;
 	}
 
 	public Long getBombDefused() {

@@ -58,7 +58,7 @@ public interface SvcMapper {
 		ums.setTd(userScore.getTradeDeath());
 		ums.setFf(userScore.getTeamKillFriendlyFire());
 		ums.setEk(userScore.getEntryKill());
-		ums.setBp(userScore.getBombPLanted());
+		ums.setBp(userScore.getBombPlanted());
 		ums.setBd(userScore.getBombDefused());
 		ums.setMvp(userScore.getMostValuablePlayer());
 		ums.setScore(userScore.getScore());
@@ -66,7 +66,7 @@ public interface SvcMapper {
 		ums.setSide(userScore.getSide());
 
 		ums.setRws(RoundParserUtils.doubleToBigDecimal(userScore.getRoundWinShare(), 2));
-		ums.setKdr(RoundParserUtils.doubleToBigDecimal(userScore.getKillDeathRation(), 2));
+		ums.setKdr(RoundParserUtils.doubleToBigDecimal(userScore.getKillDeathRatio(), 2));
 		ums.setHsp(RoundParserUtils.doubleToBigDecimal(userScore.getHeadShotsPercentage(), 2));
 		ums.setHltv(RoundParserUtils.doubleToBigDecimal(userScore.getHalfLifeTelevisionRating(), 3));
 		ums.setKpr(RoundParserUtils.doubleToBigDecimal(userScore.getKillPerRound(), 2));
@@ -111,7 +111,7 @@ public interface SvcMapper {
 		gotvScore.setTradeDeath(userScore.getTd());
 		gotvScore.setTeamKillFriendlyFire(userScore.getFf());
 		gotvScore.setEntryKill(userScore.getEk());
-		gotvScore.setBombPLanted(userScore.getBp());
+		gotvScore.setBombPlanted(userScore.getBp());
 		gotvScore.setBombDefused(userScore.getBd());
 		gotvScore.setMostValuablePlayer(userScore.getMvp());
 		gotvScore.setScore(userScore.getScore());
@@ -119,7 +119,7 @@ public interface SvcMapper {
 		gotvScore.setSide(userScore.getSide());
 
 		gotvScore.setRoundWinShare(RoundParserUtils.bigDecimalToDouble(userScore.getRws(), 2));
-		gotvScore.setKillDeathRation(RoundParserUtils.bigDecimalToDouble(userScore.getKdr(), 2));
+		gotvScore.setKillDeathRatio(RoundParserUtils.bigDecimalToDouble(userScore.getKdr(), 2));
 		gotvScore.setHeadShotsPercentage(RoundParserUtils.bigDecimalToDouble(userScore.getHsp(), 2));
 		gotvScore.setHalfLifeTelevisionRating(RoundParserUtils.bigDecimalToDouble(userScore.getHltv(), 3));
 		gotvScore.setKillPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getKpr(), 2));

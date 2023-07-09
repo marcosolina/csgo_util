@@ -10,6 +10,70 @@ import {
   TeamNumber
 } from "demofile";
 
+interface IPlayerStats {
+  userName: string;
+  steamID: string;
+  roundWinShare: number;
+  kills: number;
+  assists: number;
+  deaths: number;
+  killDeathRatio: number;
+  headShots: number;
+  headShotsPercentage: number;
+  teamKillFriendlyFire: number;
+  entryKill: number;
+  bombPlanted: number;
+  bombDefused: number;
+  mostValuablePLayer: number;
+  score: number;
+  halfLifeTelevisionRating: number;
+  fiveKills: number;
+  fourKills: number;
+  threeKills: number;
+  twoKills: number;
+  oneKill: number;
+  tradeKill: number;
+  tradeDeath: number;
+  killPerRound: number;
+  assistsPerRound: number;
+  deathPerRound: number;
+  averageDamagePerRound: number;
+  totalDamageHealth: number;
+  totalDamageArmor: number;
+  oneVersusOne: number;
+  oneVersusTwo: number;
+  oneVersusThree: number;
+  oneVersusFour: number;
+  oneVersusFive: number;
+  grenadesThrownCount: number;
+  flashesThrownCount: number;
+  smokesThrownCount: number;
+  fireThrownCount: number;
+  highExplosiveDamage: number;
+  fireDamage: number;
+  side: string;
+  // New info
+  roundsPlayed: number;
+  roundsWon: number;
+  opponentsFlashed: number;
+}
+
+interface IWeaponStats {
+  userName: string;
+  steamID: string;
+  weapon: string;
+  totalKills: number;
+  totalDamage: number;
+  killsPerRound: number;
+  damagePerRound: number;
+  shotsFired: number;
+  damagePerShot: number;
+  hits: number;
+  danagePerHit: number;
+  accuracyPerc: number;
+  headshotPerc: number;
+}
+
 // Create the currentRound variable
 let currentRound = 0;
 let roundDamage = {};
@@ -322,7 +386,6 @@ demoFile.conVars.on("change", e => {
       playerStat.roundKills.set(currentRound, 0);
     }
   }
-
 });
 
 let lastWeaponFired: Map<string, { weapon: string; time: number }> = new Map();
@@ -503,7 +566,6 @@ demoFile.gameEvents.on("player_death", e => {
       }
     }
   }
-
 });
 
 demoFile.gameEvents.on("player_death", e => {
@@ -585,7 +647,7 @@ demoFile.gameEvents.on("bomb_planted", e => {
 
   if (planter) {
     const stats = playerStats.get(planter.steam64Id);
-    if(stats){
+    if (stats) {
       stats.bombsPlanted += 1;
     }
   }
@@ -605,7 +667,7 @@ demoFile.gameEvents.on("round_mvp", e => {
 
   if (mvp) {
     const stats = playerStats.get(mvp.steam64Id)!;
-    if(stats){
+    if (stats) {
       stats.mvps++;
     }
   }
@@ -673,7 +735,11 @@ demoFile.gameEvents.on("round_end", e => {
   roundDamage = {};
 
   for (const player of demoFile.entities.players) {
-    if (!player || player.name === "GOTV" || !playerStats.get(player.steam64Id)) {
+    if (
+      !player ||
+      player.name === "GOTV" ||
+      !playerStats.get(player.steam64Id)
+    ) {
       continue;
     }
     if (playerStats.get(player.steam64Id)!.roundStart.get(currentRound)) {
@@ -720,7 +786,6 @@ function finalTeam(playerStats: PlayerStats): string {
 }
 
 demoFile.on("end", e => {
-
   // Print map stats first
   let mapStatsTable = {
     Date: mapStats.date ? mapStats.date.toISOString() : "N/A",
@@ -734,7 +799,7 @@ demoFile.on("end", e => {
     "CT Round Wins (Second Half)": mapStats.ctRoundWinsSecondHalf
   };
 
-  let allPlayerStats = [];
+  let allPlayerStats: IPlayerStats[] = [];
   let allPlayerGrenStats = [];
 
   for (const [playerid, stats] of playerStats.entries()) {
@@ -783,51 +848,51 @@ demoFile.on("end", e => {
       clutchData = clutchData.slice(0, -2);
     }
 
-    const playerStatsTable = {
-      "Player Name": stats.name,
-      SteamId: stats.steamid,
-      Team: team,
-      Rounds: stats.roundsPlayed,
-      RoundsWon: stats.roundWins,
-      Kills: stats.kills,
-      Deaths: stats.deaths,
-      Assists: stats.assists,
-      KDR: KDR.toFixed(2),
-      Headshots: stats.headshots,
-      "HSP(%)": HSP.toFixed(2),
-      KPR: KPR.toFixed(2),
-      APR: APR.toFixed(2),
-      DPR: DPR.toFixed(2),
-      ADR: ADR.toFixed(2),
-      TK: stats.teamKills,
-      EK: stats.entryKills,
-      TRK: stats.tradeKills,
-      TRD: stats.tradeDeaths,
-      Kill1: stats.nKills[0],
-      Kill2: stats.nKills[1],
-      Kill3: stats.nKills[2],
-      Kill4: stats.nKills[3],
-      Kill5: stats.nKills[4],
-      Clutch1v1: stats.successfulClutches[0],
-      Clutch1v2: stats.successfulClutches[1],
-      Clutch1v3: stats.successfulClutches[2],
-      Clutch1v4: stats.successfulClutches[3],
-      Clutch1v5: stats.successfulClutches[4],
-      TDH: stats.totalDamageHealth,
-      TDAr: stats.totalDamageArmor,
-      BP: stats.bombsPlanted,
-      BD: stats.bombsDefused,
-      "Flashbang Throws": stats.grenadeThrows.get("flashbang") || 0,
-      "HE Grenade Throws": stats.grenadeThrows.get("hegrenade") || 0,
-      "Inferno Throws": stats.grenadeThrows.get("inferno") || 0,
-      "Smoke Grenade Throws": stats.grenadeThrows.get("smokegrenade") || 0,
-      "Opponents Flashed": stats.opponentsFlashed,
-      "HE Grenade Damage": stats.grenadeDamage.get("hegrenade") || 0,
-      "Inferno Damage": stats.grenadeDamage.get("inferno") || 0,
-      MVPs: stats.mvps,
-      Score: stats.score,
-      "HLTV rating": HLTVRating,
-      RWS: averageRWS.toFixed(2)
+    const playerStatsTable: IPlayerStats = {
+      userName: stats.name,
+      steamID: stats.steamid,
+      side: team,
+      roundsPlayed: stats.roundsPlayed,
+      roundsWon: stats.roundWins,
+      kills: stats.kills,
+      deaths: stats.deaths,
+      assists: stats.assists,
+      killDeathRatio: parseFloat(KDR.toFixed(2)),
+      headShots: stats.headshots,
+      headShotsPercentage: parseFloat(HSP.toFixed(2)),
+      killPerRound: parseFloat(KPR.toFixed(2)),
+      assistsPerRound: parseFloat(APR.toFixed(2)),
+      deathPerRound: parseFloat(DPR.toFixed(2)),
+      averageDamagePerRound: parseFloat(ADR.toFixed(2)),
+      teamKillFriendlyFire: stats.teamKills,
+      entryKill: stats.entryKills,
+      tradeKill: stats.tradeKills,
+      tradeDeath: stats.tradeDeaths,
+      oneKill: stats.nKills[0] || 0,
+      twoKills: stats.nKills[1] || 0,
+      threeKills: stats.nKills[2] || 0,
+      fourKills: stats.nKills[3] || 0,
+      fiveKills: stats.nKills[4] || 0,
+      oneVersusOne: stats.successfulClutches[0] || 0,
+      oneVersusTwo: stats.successfulClutches[1] || 0,
+      oneVersusThree: stats.successfulClutches[2] || 0,
+      oneVersusFour: stats.successfulClutches[3] || 0,
+      oneVersusFive: stats.successfulClutches[4] || 0,
+      totalDamageHealth: stats.totalDamageHealth,
+      totalDamageArmor: stats.totalDamageArmor,
+      bombPlanted: stats.bombsPlanted,
+      bombDefused: stats.bombsDefused,
+      flashesThrownCount: stats.grenadeThrows.get("flashbang") || 0,
+      grenadesThrownCount: stats.grenadeThrows.get("hegrenade") || 0,
+      fireThrownCount: stats.grenadeThrows.get("inferno") || 0,
+      smokesThrownCount: stats.grenadeThrows.get("smokegrenade") || 0,
+      halfLifeTelevisionRating: HLTVRating,
+      mostValuablePLayer: stats.mvps,
+      score: stats.score,
+      roundWinShare: parseFloat(averageRWS.toFixed(2)),
+      opponentsFlashed: stats.opponentsFlashed,
+      highExplosiveDamage: stats.grenadeDamage.get("hegrenade") || 0,
+      fireDamage: stats.grenadeDamage.get("inferno") || 0
     };
 
     allPlayerStats.push(playerStatsTable);
@@ -848,11 +913,9 @@ demoFile.on("end", e => {
     "Accuracy %",
     "Headshot %"
   ];
-  const table: any[] = [];
+  const table: IWeaponStats[] = [];
 
   for (const [playerName, stats] of playerStats) {
-
-
     const weaponKills = calculateTotalWeaponKills(stats);
     const weaponDamage = calculateTotalWeaponDamage(stats);
     const totalShotsFired = calculateTotalShotsFired(stats);
@@ -872,30 +935,27 @@ demoFile.on("end", e => {
       );
 
       table.push({
-        "Player Name": stats.name,
-        SteamId: stats.steamid,
-        Weapon: weapon,
-        "Total Kills": totalKills,
-        "Total Damage": totalDamage,
-        "Kills per Round": killsPerRound.toFixed(2),
-        "Damage per Round": damagePerRound.toFixed(2),
-        "Shots fired": shotsFired,
-        "Damage per Shot": (totalDamage / shotsFired).toFixed(2),
-        Hits: shotsHit,
-        "Damage per Hit": (totalDamage / shotsHit).toFixed(2),
-        "Accuracy %": accuracy,
-        "Headshot %": headshotPercentage.toFixed(2)
+        userName: stats.name,
+        steamID: stats.steamid,
+        weapon: weapon,
+        totalKills: totalKills,
+        totalDamage: totalDamage,
+        killsPerRound: parseFloat(killsPerRound.toFixed(2)),
+        damagePerRound: parseFloat(damagePerRound.toFixed(2)),
+        shotsFired: shotsFired,
+        damagePerShot: parseFloat((totalDamage / shotsFired).toFixed(2)),
+        hits: shotsHit,
+        danagePerHit: parseFloat((totalDamage / shotsHit).toFixed(2)),
+        accuracyPerc: parseFloat(accuracy),
+        headshotPerc: parseFloat(headshotPercentage.toFixed(2))
       });
     }
-
-    
   }
 
   let killEvents: KillEvent[] = [];
 
-
   type KillEvent = {
-    killerSteamId: string,
+    killerSteamId: string;
     round: number;
     weapon: string;
     victimSteamId: string;
@@ -903,7 +963,7 @@ demoFile.on("end", e => {
 
   playerStats.forEach((playerStat, killerSteamId) => {
     const killer = steamIdToName.get(killerSteamId) || "Unknown Player"; // Default to 'Unknown Player' if the name is not found
-    
+
     playerStat.roundVictimKills.forEach((victimWeaponMap, round) => {
       victimWeaponMap.forEach((weapon, victimSteamId) => {
         const victim = steamIdToName.get(victimSteamId) || "Unknown Player";
@@ -913,8 +973,6 @@ demoFile.on("end", e => {
 
     // Sort the kill events by round
     killEvents.sort((a, b) => a.round - b.round);
-
-    
   });
 
   const mergedStats = {
@@ -924,7 +982,6 @@ demoFile.on("end", e => {
     killEvents: killEvents
   };
   console.log(JSON.stringify(mergedStats, null, 2));
-
 });
 
 demoFile.parseStream(stream);

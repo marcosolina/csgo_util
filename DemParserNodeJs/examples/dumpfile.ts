@@ -31,7 +31,7 @@ interface IPlayerStats {
   entryKill: number;
   bombPlanted: number;
   bombDefused: number;
-  mostValuablePLayer: number;
+  mostValuablePlayer: number;
   score: number;
   halfLifeTelevisionRating: number;
   fiveKills: number;
@@ -901,7 +901,7 @@ demoFile.on("end", e => {
       fireThrownCount: stats.grenadeThrows.get("inferno") || 0,
       smokesThrownCount: stats.grenadeThrows.get("smokegrenade") || 0,
       halfLifeTelevisionRating: HLTVRating,
-      mostValuablePLayer: stats.mvps,
+      mostValuablePlayer: stats.mvps,
       score: stats.score,
       roundWinShare: parseFloat(averageRWS.toFixed(2)),
       opponentsFlashed: stats.opponentsFlashed,

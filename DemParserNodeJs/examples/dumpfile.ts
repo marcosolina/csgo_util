@@ -10,6 +10,13 @@ import {
   TeamNumber
 } from "demofile";
 
+type KillEvent = {
+  killerSteamId: string;
+  round: number;
+  weapon: string;
+  victimSteamId: string;
+};
+
 interface IPlayerStats {
   userName: string;
   steamID: string;
@@ -72,6 +79,13 @@ interface IWeaponStats {
   danagePerHit: number;
   accuracyPerc: number;
   headshotPerc: number;
+}
+
+interface IMergedStats {
+  allPlayerStats: IPlayerStats[];
+  mapStats: MapStats;
+  weaponStats: IWeaponStats[];
+  killEvents: KillEvent[];
 }
 
 // Create the currentRound variable
@@ -954,13 +968,6 @@ demoFile.on("end", e => {
 
   let killEvents: KillEvent[] = [];
 
-  type KillEvent = {
-    killerSteamId: string;
-    round: number;
-    weapon: string;
-    victimSteamId: string;
-  };
-
   playerStats.forEach((playerStat, killerSteamId) => {
     const killer = steamIdToName.get(killerSteamId) || "Unknown Player"; // Default to 'Unknown Player' if the name is not found
 
@@ -975,7 +982,7 @@ demoFile.on("end", e => {
     killEvents.sort((a, b) => a.round - b.round);
   });
 
-  const mergedStats = {
+  const mergedStats: IMergedStats = {
     allPlayerStats,
     mapStats,
     weaponStats,

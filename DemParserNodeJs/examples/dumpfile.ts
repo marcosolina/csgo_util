@@ -913,7 +913,7 @@ demoFile.on("end", e => {
     "Accuracy %",
     "Headshot %"
   ];
-  const table: IWeaponStats[] = [];
+  const weaponStats: IWeaponStats[] = [];
 
   for (const [playerName, stats] of playerStats) {
     const weaponKills = calculateTotalWeaponKills(stats);
@@ -934,7 +934,7 @@ demoFile.on("end", e => {
         stats
       );
 
-      table.push({
+      weaponStats.push({
         userName: stats.name,
         steamID: stats.steamid,
         weapon: weapon,
@@ -976,10 +976,10 @@ demoFile.on("end", e => {
   });
 
   const mergedStats = {
-    allPlayerStats: allPlayerStats,
-    mapStats: mapStats,
-    weaponStats: table,
-    killEvents: killEvents
+    allPlayerStats,
+    mapStats,
+    weaponStats,
+    killEvents
   };
   console.log(JSON.stringify(mergedStats, null, 2));
 });

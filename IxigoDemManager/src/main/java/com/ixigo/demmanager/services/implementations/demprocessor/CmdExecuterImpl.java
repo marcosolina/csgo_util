@@ -134,4 +134,45 @@ public class CmdExecuterImpl implements CmdExecuter {
 		Double d = Double.parseDouble(s);
 		return d;
 	}
+
+	@Override
+	public Mono<String> runCommand(List<String> cmd) throws IxigoException {
+		var mono = Mono.fromSupplier(() -> {
+			try {
+				_LOGGER.trace(String.format("Executing command: %s", cmd.toString()));
+
+				ProcessBuilder builder = new ProcessBuilder(cmd);
+				Process p = builder.start();
+
+				BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+				BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+
+				StringBuilder sbOutput = new StringBuilder();
+				String line = null;
+				String err = null;
+				while ((line = stdInput.readLine()) != null) {
+					sbOutput.append(line);
+				}
+
+				StringBuilder sbError = new StringBuilder();
+				while ((err = stdError.readLine()) != null) {
+					sbError.append(err);
+				}
+
+				if (sbError.length() > 0) {
+					throw new IxigoException(HttpStatus.BAD_GATEWAY, sbError.toString(), ErrorCodes.GENERIC);
+				}
+				
+				int code = p.waitFor();
+				_LOGGER.info("CMD exited with status " + code);
+				
+				return sbOutput.toString();
+				
+			} catch (IOException | InterruptedException | NumberFormatException e) {
+				e.printStackTrace();
+				throw new IxigoException(HttpStatus.BAD_GATEWAY, e.getMessage(), ErrorCodes.GENERIC);
+			}
+		}).subscribeOn(Schedulers.boundedElastic());
+		return mono;
+	}
 }

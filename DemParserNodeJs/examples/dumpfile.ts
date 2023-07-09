@@ -88,8 +88,18 @@ interface IWeaponStats {
 interface IMergedStats {
   allPlayerStats: IPlayerStats[];
   mapStats: MapStats;
+  allRoundStats: IRoundStats[];
   weaponStats: IWeaponStats[];
   killEvents: KillEvent[];
+}
+interface IRoundStats {
+  roundNumber: number;
+  winnerSide: TeamNumber;
+  moneySpentTerrorists: number;
+  moneySpentCT: number;
+  deathsTerrorists: number;
+  deathsCT: number;
+  reasonEndRound: number;
 }
 
 // Create the currentRound variable
@@ -102,27 +112,37 @@ let potentialClutchPlayers: { player: any; clutchSize: number }[] = [];
 // Create a map to hold player statistics
 const playerStats = new Map<string, PlayerStats>();
 
+const roundStats = new Map<number, RoundStats>();
+
 class MapStats {
   date: Date | null;
   mapName: string;
   fileName: string;
-  terroristRoundWins: number;
-  ctRoundWins: number;
-  terroristRoundWinsFirstHalf: number;
-  ctRoundWinsFirstHalf: number;
-  terroristRoundWinsSecondHalf: number;
-  ctRoundWinsSecondHalf: number;
 
   constructor(fileName: string) {
     this.date = null;
     this.mapName = "";
     this.fileName = fileName;
-    this.terroristRoundWins = 0;
-    this.ctRoundWins = 0;
-    this.terroristRoundWinsFirstHalf = 0;
-    this.ctRoundWinsFirstHalf = 0;
-    this.terroristRoundWinsSecondHalf = 0;
-    this.ctRoundWinsSecondHalf = 0;
+  }
+}
+
+class RoundStats {
+  roundNumber: number;
+  winnerSide: TeamNumber;
+  moneySpentTerrorists: number;
+  moneySpentCT: number;
+  deathsTerrorists: number;
+  deathsCT: number;
+  reasonEndRound: number;
+
+  constructor(roundNumber:number) {
+    this.winnerSide = TeamNumber.Unassigned;
+    this.moneySpentTerrorists = 0;
+    this.moneySpentCT = 0;
+    this.deathsTerrorists = 0;
+    this.deathsCT = 0;
+    this.reasonEndRound = 0;
+    this.roundNumber = roundNumber;
   }
 }
 
@@ -338,6 +358,7 @@ demoFile.on("start", () => {
   mapStats.mapName = demoFile.header.mapName;
   // Reset all stats if the game is restarted
   playerStats.clear();
+  roundStats.clear();
 });
 
 let players = new Map();
@@ -386,6 +407,7 @@ demoFile.conVars.on("change", e => {
     e.name === "steamworks_sessionid_server"
   ) {
     playerStats.clear();
+    roundStats.clear();
     mapStats = new MapStats(filePath);
     potentialClutchPlayers = [];
     currentRound = 1;
@@ -698,40 +720,33 @@ demoFile.gameEvents.on("round_mvp", e => {
 });
 
 demoFile.gameEvents.on("round_end", e => {
+  let roundStat = new RoundStats(currentRound);
   const winnerSide = e.winner;
-  if (currentRound <= 7) {
-    // First half
-    if (winnerSide === TeamNumber.Terrorists) {
-      mapStats.terroristRoundWinsFirstHalf++;
-    } else if (winnerSide === TeamNumber.CounterTerrorists) {
-      mapStats.ctRoundWinsFirstHalf++;
-    }
-  } else {
-    // Second half
-    if (winnerSide === TeamNumber.Terrorists) {
-      mapStats.terroristRoundWinsSecondHalf++;
-    } else if (winnerSide === TeamNumber.CounterTerrorists) {
-      mapStats.ctRoundWinsSecondHalf++;
-    }
-  }
 
-  if (winnerSide === TeamNumber.Terrorists) {
-    mapStats.terroristRoundWins++;
-  } else if (winnerSide === TeamNumber.CounterTerrorists) {
-    mapStats.ctRoundWins++;
-  }
+  roundStat.winnerSide = winnerSide;
+  roundStat.reasonEndRound = e.reason;
+
 
   let totalDamageByWinningTeam = 0;
 
   for (const [playerid, stats] of playerStats.entries()) {
     const player = players.get(playerid);
     if (player) {
+      if (!player.isAlive) {
+        if (player.teamNumber === TeamNumber.Terrorists) {
+          roundStat.deathsTerrorists++;
+        } else if (player.teamNumber === TeamNumber.CounterTerrorists) {
+          roundStat.deathsCT++;
+        }
+      }
       if (player.teamNumber === winnerSide) {
         stats.roundWins++;
         totalDamageByWinningTeam += stats.roundDamage.get(currentRound) || 0;
       }
     }
   }
+
+  roundStats.set(currentRound,roundStat);
 
   for (const [playerid, stats] of playerStats.entries()) {
     const player = players.get(playerid);
@@ -769,6 +784,14 @@ demoFile.gameEvents.on("round_end", e => {
     if (playerStats.get(player.steam64Id)!.roundStart.get(currentRound)) {
       playerStats.get(player.steam64Id)!.roundsPlayed++;
     }
+    let roundStat = roundStats.get(currentRound);
+    if(roundStat){
+      if (player.teamNumber === TeamNumber.Terrorists) {
+        roundStat.moneySpentTerrorists = roundStat.moneySpentTerrorists + player.cashSpendThisRound;
+      } else if (player.teamNumber === TeamNumber.CounterTerrorists) {
+        roundStat.moneySpentCT = roundStat.moneySpentCT + player.cashSpendThisRound;
+      }
+    }
 
     const teamNum = player.teamNumber;
     const stats = playerStats.get(player.steam64Id)!;
@@ -784,6 +807,7 @@ demoFile.gameEvents.on("round_officially_ended", () => {
     if (!player || player.name === "GOTV") {
       continue;
     }
+    
     const stats = playerStats.get(player.steam64Id);
     if (stats) {
       const roundKills = stats.roundKills.get(currentRound) || 0;
@@ -810,21 +834,23 @@ function finalTeam(playerStats: PlayerStats): string {
 }
 
 demoFile.on("end", e => {
-  // Print map stats first
-  let mapStatsTable = {
-    Date: mapStats.date ? mapStats.date.toISOString() : "N/A",
-    "Map Name": mapStats.mapName,
-    "File Name": mapStats.fileName,
-    "Terrorist Round Wins": mapStats.terroristRoundWins,
-    "CT Round Wins": mapStats.ctRoundWins,
-    "Terrorist Round Wins (First Half)": mapStats.terroristRoundWinsFirstHalf,
-    "CT Round Wins (First Half)": mapStats.ctRoundWinsFirstHalf,
-    "Terrorist Round Wins (Second Half)": mapStats.terroristRoundWinsSecondHalf,
-    "CT Round Wins (Second Half)": mapStats.ctRoundWinsSecondHalf
-  };
+
+  let allRoundStats: IRoundStats[] = [];
+
+  for (const [round,roundStat] of roundStats.entries()){
+    const roundStatTable: IRoundStats ={
+      roundNumber: roundStat.roundNumber,
+      winnerSide: roundStat.winnerSide,
+      moneySpentTerrorists: roundStat.moneySpentTerrorists,
+      moneySpentCT: roundStat.moneySpentCT,
+      deathsTerrorists: roundStat.deathsTerrorists,
+      deathsCT: roundStat.deathsCT,
+      reasonEndRound: roundStat.reasonEndRound,
+    }
+    allRoundStats.push(roundStatTable);
+  }
 
   let allPlayerStats: IPlayerStats[] = [];
-  let allPlayerGrenStats = [];
 
   for (const [playerid, stats] of playerStats.entries()) {
     const player = players.get(playerid);
@@ -1008,6 +1034,7 @@ demoFile.on("end", e => {
   const mergedStats: IMergedStats = {
     allPlayerStats,
     mapStats,
+    allRoundStats,
     weaponStats,
     killEvents
   };

@@ -7,8 +7,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
+import com.ixigo.demmanager.constants.ErrorCodes;
+import com.ixigo.demmanager.models.svc.demdata.SvcNodeJsParseOutput;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
 import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
@@ -40,10 +45,17 @@ public class DemProcessorNodeJsWindows implements DemProcessor {
 		cmd.add(props.parserExecPath.toString());
 		cmd.add(demFile.getAbsolutePath());
 
-		exec.runCommand(cmd).subscribe(s -> {
-			_LOGGER.debug(s);
-		});
-		return null;
+		return exec.runCommand(cmd).map(s -> {
+			try {
+				ObjectMapper objectMapper = new ObjectMapper();
+				SvcNodeJsParseOutput output =objectMapper.readValue(s, SvcNodeJsParseOutput.class); 
+				return output.getAllPlayerStats();
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
+			}
+		})
+		.flatMapIterable(list -> list).log();
 	}
 
 }

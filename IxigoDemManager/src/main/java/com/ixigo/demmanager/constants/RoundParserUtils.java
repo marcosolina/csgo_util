@@ -56,10 +56,16 @@ public class RoundParserUtils{
     public static final int DEM_COL_PLAYER_SIDE = 41;
 
     public static BigDecimal doubleToBigDecimal(Double d, int decimals) {
+    	if(d == null) {
+    		return BigDecimal.ZERO;
+    	}
         return BigDecimal.valueOf(d).setScale(decimals, RoundingMode.DOWN);
     }
 
     public static Double bigDecimalToDouble(BigDecimal d, int decimals) {
+    	if(d == null) {
+    		return 0.0;
+    	}
         return d.setScale(decimals, RoundingMode.DOWN).doubleValue();
     }
 }

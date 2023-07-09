@@ -584,8 +584,10 @@ demoFile.gameEvents.on("bomb_planted", e => {
   const planter = demoFile.entities.getByUserId(e.userid);
 
   if (planter) {
-    const stats = playerStats.get(planter.steam64Id)!;
-    stats.bombsPlanted += 1;
+    const stats = playerStats.get(planter.steam64Id);
+    if(stats){
+      stats.bombsPlanted += 1;
+    }
   }
 });
 
@@ -603,9 +605,9 @@ demoFile.gameEvents.on("round_mvp", e => {
 
   if (mvp) {
     const stats = playerStats.get(mvp.steam64Id)!;
-
-    // Increment MVPs
-    stats.mvps++;
+    if(stats){
+      stats.mvps++;
+    }
   }
 });
 

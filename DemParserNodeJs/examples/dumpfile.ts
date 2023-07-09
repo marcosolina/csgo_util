@@ -79,6 +79,10 @@ interface IWeaponStats {
   danagePerHit: number;
   accuracyPerc: number;
   headshotPerc: number;
+  chestPerc: number;
+  stomachPerc: number;
+  armsPerc: number;
+  legsPerc: number;
 }
 
 interface IMergedStats {
@@ -293,22 +297,28 @@ function calculateTotalShotsHit(stats: PlayerStats): Map<string, number> {
   return totalShotsHit;
 }
 
-function getWeaponHeadshotPercentage(
+function getWeaponPartHitPercentage(
   weaponName: string,
-  stats: PlayerStats
+  stats: PlayerStats,
+  hitGroup1: EHitGroup,
+  hitGroup2?: EHitGroup
 ): number {
   const hitGroups = stats.weaponHitGroups.get(weaponName);
   if (!hitGroups) {
     return 0;
   }
 
-  const headHits = hitGroups.get(EHitGroup.EHG_Head) || 0;
+  let partHits = hitGroups.get(hitGroup1) || 0;
+  if (hitGroup2) {
+    partHits += hitGroups.get(hitGroup2) || 0;
+  }
+
   let totalHits = 0;
   for (const count of hitGroups.values()) {
     totalHits += count;
   }
 
-  return (100 * headHits) / totalHits; // avoid division by zero by not calculating if totalHits is 0
+  return (100 * partHits) / totalHits; // avoid division by zero by not calculating if totalHits is 0
 }
 
 enum EHitGroup {
@@ -912,21 +922,6 @@ demoFile.on("end", e => {
     allPlayerStats.push(playerStatsTable);
   }
 
-  const headers = [
-    "Player Name",
-    "SteamId",
-    "Weapon",
-    "Total Kills",
-    "Total Damage",
-    "Kills per Round",
-    "Damage per Round",
-    "Shots fired",
-    "Damage per Shot",
-    "Hits",
-    "Damage per Hit",
-    "Accuracy %",
-    "Headshot %"
-  ];
   const weaponStats: IWeaponStats[] = [];
 
   for (const [playerName, stats] of playerStats) {
@@ -943,9 +938,33 @@ demoFile.on("end", e => {
       const shotsFired = totalShotsFired.get(`weapon_${weapon}`) || 0;
       const shotsHit = totalShotsHit.get(`weapon_${weapon}`) || 0;
       const accuracy = ((shotsHit / (shotsFired || 1)) * 100).toFixed(2);
-      const headshotPercentage = getWeaponHeadshotPercentage(
+      const headshotPercentage = getWeaponPartHitPercentage(
         `weapon_${weapon}`,
-        stats
+        stats,
+        EHitGroup.EHG_Head
+      );
+
+      const chestPercentage = getWeaponPartHitPercentage(
+        `weapon_${weapon}`,
+        stats,
+        EHitGroup.EHG_Chest
+      );
+      const stomachPercentage = getWeaponPartHitPercentage(
+        `weapon_${weapon}`,
+        stats,
+        EHitGroup.EHG_Stomach
+      );
+      const armsPercentage = getWeaponPartHitPercentage(
+        `weapon_${weapon}`,
+        stats,
+        EHitGroup.EHG_LeftArm,
+        EHitGroup.EHG_RightArm
+      );
+      const legsPercentage = getWeaponPartHitPercentage(
+        `weapon_${weapon}`,
+        stats,
+        EHitGroup.EHG_LeftLeg,
+        EHitGroup.EHG_RightLeg
       );
 
       weaponStats.push({
@@ -961,7 +980,11 @@ demoFile.on("end", e => {
         hits: shotsHit,
         danagePerHit: parseFloat((totalDamage / shotsHit).toFixed(2)),
         accuracyPerc: parseFloat(accuracy),
-        headshotPerc: parseFloat(headshotPercentage.toFixed(2))
+        headshotPerc: parseFloat(headshotPercentage.toFixed(2)),
+        chestPerc: parseFloat(chestPercentage.toFixed(2)),
+        stomachPerc: parseFloat(stomachPercentage.toFixed(2)),
+        armsPerc: parseFloat(armsPercentage.toFixed(2)),
+        legsPerc: parseFloat(legsPercentage.toFixed(2))
       });
     }
   }

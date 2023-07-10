@@ -102,6 +102,8 @@ interface IRoundStats {
   reasonEndRound: number;
   equipmentValueTerrorists: number;
   equipmentValueCT: number;
+  terroristSteamIDs: string[];
+  ctSteamIDs: string[];
 }
 
 // Create the currentRound variable
@@ -138,6 +140,8 @@ class RoundStats {
   reasonEndRound: number;
   equipmentValueTerrorists: number;
   equipmentValueCT: number;
+  terroristSteamIDs: string[];
+  ctSteamIDs: string[];
 
   constructor(roundNumber:number) {
     this.winnerSide = TeamNumber.Unassigned;
@@ -149,6 +153,8 @@ class RoundStats {
     this.roundNumber = roundNumber;
     this.equipmentValueTerrorists = 0;
     this.equipmentValueCT = 0;
+    this.terroristSteamIDs = [];
+    this.ctSteamIDs = [];
   }
 }
 
@@ -795,9 +801,11 @@ demoFile.gameEvents.on("round_end", e => {
       if (player.teamNumber === TeamNumber.Terrorists) {
         roundStat.moneySpentTerrorists = roundStat.moneySpentTerrorists + player.cashSpendThisRound;
         roundStat.equipmentValueTerrorists = roundStat.equipmentValueTerrorists + player.roundStartEquipmentValue;
+        roundStat.terroristSteamIDs.push(player.steam64Id);
       } else if (player.teamNumber === TeamNumber.CounterTerrorists) {
         roundStat.moneySpentCT = roundStat.moneySpentCT + player.cashSpendThisRound;
         roundStat.equipmentValueCT = roundStat.equipmentValueCT + player.roundStartEquipmentValue;
+        roundStat.ctSteamIDs.push(player.steam64Id);
       }
     }
 
@@ -855,7 +863,9 @@ demoFile.on("end", e => {
       deathsCT: roundStat.deathsCT,
       reasonEndRound: roundStat.reasonEndRound,
       equipmentValueTerrorists: roundStat.equipmentValueTerrorists,
-      equipmentValueCT: roundStat.equipmentValueCT
+      equipmentValueCT: roundStat.equipmentValueCT,
+      terroristSteamIDs: roundStat.terroristSteamIDs,
+      ctSteamIDs: roundStat.ctSteamIDs
     }
     allRoundStats.push(roundStatTable);
   }

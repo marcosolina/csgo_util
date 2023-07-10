@@ -794,10 +794,10 @@ demoFile.gameEvents.on("round_end", e => {
     if(roundStat){
       if (player.teamNumber === TeamNumber.Terrorists) {
         roundStat.moneySpentTerrorists = roundStat.moneySpentTerrorists + player.cashSpendThisRound;
-        roundStat.equipmentValueTerrorists = roundStat.equipmentValueTerrorists + player.currentEquipmentValue;
+        roundStat.equipmentValueTerrorists = roundStat.equipmentValueTerrorists + player.roundStartEquipmentValue;
       } else if (player.teamNumber === TeamNumber.CounterTerrorists) {
         roundStat.moneySpentCT = roundStat.moneySpentCT + player.cashSpendThisRound;
-        roundStat.equipmentValueCT = roundStat.equipmentValueCT + player.currentEquipmentValue;
+        roundStat.equipmentValueCT = roundStat.equipmentValueCT + player.roundStartEquipmentValue;
       }
     }
 

@@ -19,4 +19,8 @@ public class SvcWeaponStats {
     private double danagePerHit;
     private double accuracyPerc;
     private double headshotPerc;
+    private double chestPerc;
+    private double stomachPerc;
+    private double armsPerc;
+    private double legsPerc;
 }

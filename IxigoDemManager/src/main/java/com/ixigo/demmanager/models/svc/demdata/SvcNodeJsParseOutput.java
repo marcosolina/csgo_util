@@ -7,6 +7,7 @@ public class SvcNodeJsParseOutput implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private List<SvcUserGotvScore> allPlayerStats;
 	private SvcMapFileStats mapStats;
+	private List<SvcRoundStats> allRoundStats;
     private List<SvcWeaponStats> weaponStats;
     private List<SvcKillEvent> killEvents;
 
@@ -46,4 +47,11 @@ public class SvcNodeJsParseOutput implements Serializable {
 		return serialVersionUID;
 	}
 
+	public List<SvcRoundStats> getAllRoundStats() {
+		return allRoundStats;
+	}
+
+	public void setAllRoundStats(List<SvcRoundStats> allRoundStats) {
+		this.allRoundStats = allRoundStats;
+	}
 }

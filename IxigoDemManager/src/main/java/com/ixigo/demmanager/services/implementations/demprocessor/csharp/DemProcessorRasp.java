@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.services.implementations.demprocessor;
+package com.ixigo.demmanager.services.implementations.demprocessor.csharp;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
+import com.ixigo.demmanager.services.implementations.DemFileParserImp;
 import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.library.errors.IxigoException;
@@ -17,29 +18,28 @@ import com.ixigo.library.errors.IxigoException;
 import reactor.core.publisher.Flux;
 
 /**
- * Implementation to use when processing DEM files on a Windows machine
- * 
+ * Implementation to be used to process the DEM file
+ * on a Raspberry PI
  * @author Marco
  *
  */
-public class DemProcessorWindows implements DemProcessor {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(DemProcessorWindows.class);
-
+public class DemProcessorRasp implements DemProcessor {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(DemFileParserImp.class);
+	
 	@Autowired
 	private DemFileManagerProps props;
 	@Autowired
 	private CmdExecuter exec;
-
+	
 	@Override
 	public Flux<SvcUserGotvScore> processDemFile(File demFile) throws IxigoException {
-		_LOGGER.trace("Inside DemProcessorWindows.DemProcessorWindows");
+		_LOGGER.trace("Inside DemProcessorRasp.DemProcessorWindows");
 
-		List<String> cmd = new ArrayList<>();
-		cmd.add("dotnet");
-		cmd.add(props.parserExecPath.toString());
-		cmd.add(demFile.getAbsolutePath());
+        List<String> cmd = new ArrayList<>();
+        cmd.add(props.getParserExecPath().toString());
+        cmd.add(demFile.getAbsolutePath());
 
-		return exec.extractPlayersScore(cmd);
+        return exec.extractPlayersScore(cmd);
 	}
 
 }

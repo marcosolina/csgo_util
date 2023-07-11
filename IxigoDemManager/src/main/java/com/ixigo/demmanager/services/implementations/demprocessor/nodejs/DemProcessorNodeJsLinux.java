@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.services.implementations.demprocessor;
+package com.ixigo.demmanager.services.implementations.demprocessor.nodejs;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,8 +27,8 @@ import reactor.core.publisher.Flux;
  * @author Marco
  *
  */
-public class DemProcessorNodeJsWindows implements DemProcessor {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(DemProcessorNodeJsWindows.class);
+public class DemProcessorNodeJsLinux implements DemProcessor {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(DemProcessorNodeJsLinux.class);
 
 	@Autowired
 	private DemFileManagerProps props;
@@ -40,7 +40,7 @@ public class DemProcessorNodeJsWindows implements DemProcessor {
 		_LOGGER.trace("Inside DemProcessorWindows.DemProcessorWindows");
 
 		List<String> cmd = new ArrayList<>();
-		cmd.add("npx.cmd");
+		cmd.add("npx");
 		cmd.add("ts-node");
 		cmd.add(props.parserExecPath.toString());
 		cmd.add(demFile.getAbsolutePath());

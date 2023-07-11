@@ -12,9 +12,10 @@ import com.ixigo.demmanager.services.implementations.DemFileManagerImp;
 import com.ixigo.demmanager.services.implementations.DemFileParserImp;
 import com.ixigo.demmanager.services.implementations.TelegramNotificationService;
 import com.ixigo.demmanager.services.implementations.demprocessor.CmdExecuterImpl;
-import com.ixigo.demmanager.services.implementations.demprocessor.DemProcessorNodeJsWindows;
-import com.ixigo.demmanager.services.implementations.demprocessor.DemProcessorRasp;
-import com.ixigo.demmanager.services.implementations.demprocessor.DemProcessorWindows;
+import com.ixigo.demmanager.services.implementations.demprocessor.csharp.DemProcessorRasp;
+import com.ixigo.demmanager.services.implementations.demprocessor.csharp.DemProcessorWindows;
+import com.ixigo.demmanager.services.implementations.demprocessor.nodejs.DemProcessorNodeJsLinux;
+import com.ixigo.demmanager.services.implementations.demprocessor.nodejs.DemProcessorNodeJsWindows;
 import com.ixigo.demmanager.services.interfaces.ChartsData;
 import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.demmanager.services.interfaces.DemFileManager;
@@ -67,6 +68,6 @@ public class Services {
 			return runningOnWindows ? new DemProcessorRasp() : new DemProcessorWindows();
 		}
 		
-		return new DemProcessorNodeJsWindows();
+		return runningOnWindows ? new DemProcessorNodeJsWindows() : new DemProcessorNodeJsLinux();
 	}
 }

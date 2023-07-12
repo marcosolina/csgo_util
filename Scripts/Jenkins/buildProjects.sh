@@ -10,7 +10,7 @@ npm run build
 cp -r ./build/* $WORKSPACE_FOLDER/IxigoUi/src/main/resources/static
 
 # Build the C# Dem parser
-dotnet publish $WORKSPACE_FOLDER/DemParser -r linux-arm64
+#dotnet publish $WORKSPACE_FOLDER/DemParser -r linux-arm64
 
 
 # Build the Java projects

@@ -333,7 +333,8 @@ SELECT
     COALESCE(re.hostages_rescued, 0) AS hostages_rescued,
     CASE WHEN (prs.team = rse.winnerSide AND rse.total_damage_winners>0) THEN 
         COALESCE(ROUND((he.total_damage_health + he.total_damage_armour)*100.0/rse.total_damage_winners,2), 0) 
-    ELSE 0 END AS rws
+    ELSE 0 END AS rws,
+    CASE WHEN ke.kills>0 OR ae.assists>0 OR prs.survived OR ke.trade_kills>0 THEN 1 ELSE 0 END as kast
 FROM 
     PLAYER_ROUND_STATS prs
 LEFT JOIN 
@@ -398,7 +399,9 @@ SELECT
     SUM(CASE WHEN r.clutchChance=3 AND r.clutchSuccess THEN 1 ELSE 0 END) as _1v3,
     SUM(CASE WHEN r.clutchChance=4 AND r.clutchSuccess THEN 1 ELSE 0 END) as _1v4,
     SUM(CASE WHEN r.clutchChance=5 AND r.clutchSuccess THEN 1 ELSE 0 END) as _1v5,
-    SUM(r.rws) as rwsTotal
+    SUM(r.rws) as rwsTotal,
+    SUM(r.flashassists) as fa,
+    SUM(r.kast) as kastTotal
     
 FROM
     PLAYER_STATS p
@@ -414,12 +417,16 @@ GROUP BY
 CREATE OR REPLACE VIEW PLAYER_MATCH_STATS_EXTENDED AS
 SELECT
     pms.*,
+    ROUND(pms.kills*1.0/pms.roundsPlayed,2) as kpr,
+    ROUND(pms.deaths*1.0/pms.roundsPlayed,2) as dpr,
+    ROUND(pms.tdh*1.0/pms.roundsPlayed,2) as adr,
     ROUND((
         CAST(pms.kills AS DECIMAL) / CAST(pms.roundsPlayed AS DECIMAL) / 0.679
         + 0.7 * (CAST(pms.roundsPlayed AS DECIMAL) - CAST(pms.deaths AS DECIMAL)) / CAST(pms.roundsPlayed AS DECIMAL) / 0.317
         + (CAST(pms._1k AS DECIMAL) + 4 * CAST(pms._2k AS DECIMAL) + 9 * CAST(pms._3k AS DECIMAL) + 16 * CAST(pms._4k AS DECIMAL) + 25 * CAST(pms._5k AS DECIMAL)) / CAST(pms.roundsPlayed AS DECIMAL) / 1.277
     ) / 2.7, 3) as hltv_rating,
-    ROUND(pms.rwsTotal/pms.roundsPlayed,2) AS rws
+    ROUND(pms.rwsTotal*1.0/pms.roundsPlayed,2) AS rws,
+    ROUND(pms.kastTotal*1.0/pms.roundsPlayed,2) as kast
 FROM 
     PLAYER_MATCH_STATS pms
 WHERE

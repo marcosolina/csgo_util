@@ -91,11 +91,7 @@ public class DemFileParserImp implements DemFileParser {
 					 */
 					switch (props.getParserExecutionType()) {
 					case SYNC:
-						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
-							_LOGGER.debug("Async queue process completed");
-						})).start();
-						return Mono.just(HttpStatus.ACCEPTED);
-						//return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
+						return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
 					case ASYNC:
 						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
 							_LOGGER.debug("Async queue process completed");
@@ -215,6 +211,8 @@ public class DemFileParserImp implements DemFileParser {
 	private synchronized Mono<Void>  processFiles(List<File> files) {
 		AtomicInteger countProcessedFiles = new AtomicInteger(0);
 		
+		List<ParsingError> errorLists= new ArrayList<>();
+		
 		// Function to used to extract the data from the DEM file
 		Function<? super File, ? extends Publisher<? extends Tuple2<String, SvcMapStats>>> function = f -> { 
 			return generateMapStatFromFile(f).map(stats -> {
@@ -222,6 +220,7 @@ public class DemFileParserImp implements DemFileParser {
 			})
 			.onErrorResume(error -> {
 				_LOGGER.error(String.format("Error while processing %s, msg: %s", f.getAbsolutePath(), error.getMessage()));
+				errorLists.add(new ParsingError(f.getAbsolutePath(), error.getMessage()));
 				return Mono.just(Tuples.of(f.getAbsolutePath(), setMapNameAndTime(f)));
 			});
 		};
@@ -311,7 +310,7 @@ public class DemFileParserImp implements DemFileParser {
 					countProcessedFiles.incrementAndGet();
 				}else {
 					_LOGGER.error(String.format("Deleting: %s", fileName));
-					//f.delete();
+					//f.delete(); TODO should I delete these files?
 				}
 				return setFileProcessed(f, statusOk ? DemProcessStatus.PROCESSED : DemProcessStatus.DELETED).thenReturn(fileName);
 			}).map(fileName ->{ // Simple info
@@ -324,8 +323,20 @@ public class DemFileParserImp implements DemFileParser {
 						"Dem Manager",
 						String.format("Processed %d files, %d were successfully processed",
 						files.size(),
-						countProcessedFiles.get()));
-			}).then();
+						countProcessedFiles.get()))
+						;
+			}).map(b -> {
+				if(errorLists.isEmpty()) {
+					return b;
+				}
+				String message = errorLists.stream().map(Object::toString)
+                .collect(Collectors.joining("\n\n"));
+				return notificationService.sendParsingCompleteNotification(
+						String.format("%d errors", errorLists.size()),
+						message)
+						;
+			})
+			.then();
 		// @formatter:on
 	}
 
@@ -338,4 +349,21 @@ public class DemFileParserImp implements DemFileParser {
 	}
 
 	
+	class ParsingError {
+		String fileName;
+		String error;
+		
+		public ParsingError(String fileName, String error) {
+			super();
+			this.fileName = fileName;
+			this.error = error;
+		}
+
+		@Override
+		public String toString() {
+			return "ParsingError [fileName=" + fileName + ", error=" + error + "]";
+		}
+		
+	}
 }
+

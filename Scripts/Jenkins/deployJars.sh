@@ -10,7 +10,7 @@ RASP_3=ixigoservices.lan
 BASE_FOLDER=/opt/ixigo
 USR=pi
 
-SSH_ADDRESS_1=$USR@$RASP_1
+SSH_ADDRESS_1=marco@$RASP_1
 SSH_ADDRESS_2=$USR@$RASP_2
 SSH_ADDRESS_3=marco@$RASP_3
 

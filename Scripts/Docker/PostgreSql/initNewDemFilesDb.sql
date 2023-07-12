@@ -95,34 +95,6 @@ CREATE TABLE ROUND_STATS (
     FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
 
-CREATE OR REPLACE VIEW ROUND_STATS_EXTENDED AS
-SELECT
-    rs.match_id,
-    rs.roundNumber,
-    rs.winnerSide,
-    rs.reasonEndRound,
-    SUM(CASE WHEN prd.team = rs.winnerSide THEN prd.total_damage_health + prd.total_damage_armour ELSE 0 END) as total_damage_winners
-FROM
-    ROUND_STATS rs
-LEFT JOIN
-    (SELECT
-        prs.steamID,
-        prs.match_id,
-        prs.round,
-        prs.team,
-        prds.total_damage_health,
-        prds.total_damage_armour
-    FROM
-        PLAYER_ROUND_STATS prs
-    JOIN
-        PLAYER_ROUND_DAMAGE_STATS prds ON prs.steamID = prds.steamID AND prs.match_id = prds.match_id AND prs.round = prds.round
-    ) prd ON rs.match_id = prd.match_id AND rs.roundNumber = prd.round
-GROUP BY
-    rs.match_id,
-    rs.roundNumber,
-    rs.winnerSide,
-    rs.reasonEndRound;
-
 CREATE OR REPLACE VIEW ROUND_KILL_EVENTS_EXTENDED AS
 SELECT 
     rke.*, 
@@ -270,6 +242,34 @@ GROUP BY
     prs.steamID,
     prs.match_id,
     prs.round;
+
+CREATE OR REPLACE VIEW ROUND_STATS_EXTENDED AS
+SELECT
+    rs.match_id,
+    rs.roundNumber,
+    rs.winnerSide,
+    rs.reasonEndRound,
+    SUM(CASE WHEN prd.team = rs.winnerSide THEN prd.total_damage_health + prd.total_damage_armour ELSE 0 END) as total_damage_winners
+FROM
+    ROUND_STATS rs
+LEFT JOIN
+    (SELECT
+        prs.steamID,
+        prs.match_id,
+        prs.round,
+        prs.team,
+        prds.total_damage_health,
+        prds.total_damage_armour
+    FROM
+        PLAYER_ROUND_STATS prs
+    JOIN
+        PLAYER_ROUND_DAMAGE_STATS prds ON prs.steamID = prds.steamID AND prs.match_id = prds.match_id AND prs.round = prds.round
+    ) prd ON rs.match_id = prd.match_id AND rs.roundNumber = prd.round
+GROUP BY
+    rs.match_id,
+    rs.roundNumber,
+    rs.winnerSide,
+    rs.reasonEndRound;
 
 
 CREATE OR REPLACE VIEW PLAYER_ROUND_UTILITY_STATS AS
@@ -426,3 +426,179 @@ WHERE
     pms.roundsPlayed>0;
 
 
+CREATE OR REPLACE VIEW ROUND_SHOT_STATS_EXTENDED AS 
+SELECT
+    steamID,
+    round,
+    match_id,
+    REPLACE(weapon,'weapon_','') AS weapon,
+    COALESCE(COUNT(eventType),0) AS shots_fired
+    
+FROM 
+    ROUND_SHOT_EVENTS
+WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
+GROUP BY
+    steamID,
+    round,
+    weapon,
+    match_id;
+
+CREATE OR REPLACE VIEW ROUND_HIT_STATS_EXTENDED AS
+SELECT
+    steamID,
+    round,
+    REPLACE(weapon,'weapon_','') as weapon,
+    COALESCE(COUNT(eventtime),0) AS hits,
+    SUM(damageHealth) AS total_damage,
+    SUM(CASE WHEN hitGroup = 1 THEN 1 ELSE 0 END) AS headshots,
+    SUM(CASE WHEN hitGroup IN (4, 5) THEN 1 ELSE 0 END) AS arm_hits,
+    SUM(CASE WHEN hitGroup IN (6, 7) THEN 1 ELSE 0 END) AS leg_hits,
+    SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
+    SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits,
+    match_id
+FROM 
+    ROUND_HIT_EVENTS
+WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
+GROUP BY
+    steamID,
+    round,
+    weapon,
+    match_id;
+
+CREATE OR REPLACE VIEW MATCH_SHOT_STATS_EXTENDED AS 
+SELECT
+    steamID,
+    match_id,
+    REPLACE(weapon,'weapon_','') AS weapon,
+    COALESCE(COUNT(eventType),0) AS shots_fired
+    
+FROM 
+    ROUND_SHOT_EVENTS
+WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
+GROUP BY
+    steamID,
+    weapon,
+    match_id;
+
+CREATE OR REPLACE VIEW MATCH_HIT_STATS_EXTENDED AS
+SELECT
+    steamID,
+    REPLACE(weapon,'weapon_','') as weapon,
+    COALESCE(COUNT(eventtime),0) AS hits,
+    SUM(damageHealth) AS total_damage,
+    SUM(CASE WHEN hitGroup = 1 THEN 1 ELSE 0 END) AS headshots,
+    SUM(CASE WHEN hitGroup IN (4, 5) THEN 1 ELSE 0 END) AS arm_hits,
+    SUM(CASE WHEN hitGroup IN (6, 7) THEN 1 ELSE 0 END) AS leg_hits,
+    SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
+    SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits,
+    match_id
+FROM 
+    ROUND_HIT_EVENTS
+WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
+GROUP BY
+    steamID,
+    weapon,
+    match_id;
+
+CREATE OR REPLACE VIEW OVERALL_SHOT_STATS_EXTENDED AS 
+SELECT
+    steamID,
+    REPLACE(weapon,'weapon_','') AS weapon,
+    COALESCE(COUNT(eventType),0) AS shots_fired
+    
+FROM 
+    ROUND_SHOT_EVENTS
+WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
+GROUP BY
+    steamID,
+    weapon;
+
+CREATE OR REPLACE VIEW OVERALL_HIT_STATS_EXTENDED AS
+SELECT
+    steamID,
+    REPLACE(weapon,'weapon_','') as weapon,
+    COALESCE(COUNT(eventtime),0) AS hits,
+    SUM(damageHealth) AS total_damage,
+    SUM(CASE WHEN hitGroup = 1 THEN 1 ELSE 0 END) AS headshots,
+    SUM(CASE WHEN hitGroup IN (4, 5) THEN 1 ELSE 0 END) AS arm_hits,
+    SUM(CASE WHEN hitGroup IN (6, 7) THEN 1 ELSE 0 END) AS leg_hits,
+    SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
+    SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits
+FROM 
+    ROUND_HIT_EVENTS
+WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
+GROUP BY
+    steamID,
+    weapon;
+
+CREATE OR REPLACE VIEW ROUND_PLAYER_WEAPON_STATS AS
+SELECT
+    p.steamID,
+    p.match_id,
+    p.userName,
+    s.round,
+    s.weapon,
+    s.shots_fired,
+    h.hits,
+    h.total_damage,
+    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
+    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
+    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
+    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
+    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
+    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
+    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
+    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+FROM 
+    PLAYER_STATS AS p
+LEFT JOIN
+    ROUND_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID AND p.match_id = s.match_id
+LEFT JOIN
+    ROUND_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND p.match_id = h.match_id AND s.weapon = h.weapon AND s.round = h.round;
+
+CREATE OR REPLACE VIEW MATCH_PLAYER_WEAPON_STATS AS
+SELECT
+    p.steamID,
+    p.match_id,
+    p.userName,
+    s.weapon,
+    s.shots_fired,
+    h.hits,
+    h.total_damage,
+    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
+    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
+    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
+    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
+    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
+    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
+    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
+    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+FROM 
+    PLAYER_STATS AS p
+LEFT JOIN
+    MATCH_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID AND p.match_id = s.match_id
+LEFT JOIN
+    MATCH_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND p.match_id = h.match_id AND s.weapon = h.weapon;
+
+
+CREATE OR REPLACE VIEW OVERALL_PLAYER_WEAPON_STATS AS
+SELECT DISTINCT ON (p.steamID, s.weapon)
+    p.steamID,
+    s.weapon,
+    s.shots_fired,
+    h.hits,
+    h.total_damage,
+    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
+    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
+    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
+    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
+    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
+    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
+    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
+    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+FROM 
+    PLAYER_STATS AS p
+LEFT JOIN
+    OVERALL_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID 
+LEFT JOIN
+    OVERALL_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon;

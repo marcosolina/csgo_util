@@ -609,3 +609,60 @@ LEFT JOIN
     OVERALL_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID 
 LEFT JOIN
     OVERALL_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon;
+
+CREATE OR REPLACE VIEW ROUND_SCORECARD AS
+SELECT 
+    p.match_id, 
+    p.round, 
+    p.team, 
+    p.player_count, 
+    COALESCE(d.death_count, 0) as death_count, 
+    r.winner_team, 
+    COALESCE(m.total_money_spent, 0) as total_money_spent, 
+    COALESCE(m.total_equipment_value, 0) as total_equipment_value, 
+    re.round_end_reason, 
+    CASE 
+        WHEN p.round = 1 OR p.round = 8 THEN 'pistol'
+        WHEN (COALESCE(m.total_money_spent, 0) + COALESCE(m.total_equipment_value, 0)) / p.player_count < 1000 THEN 'eco'
+        WHEN (COALESCE(m.total_money_spent, 0) + COALESCE(m.total_equipment_value, 0)) / p.player_count BETWEEN 1000 AND 4000 THEN 'force buy'
+        ELSE 'full buy'
+    END as round_type,
+    cs.t_score, 
+    cs.ct_score,
+    cs.team1_score, 
+    cs.team2_score
+FROM 
+    (SELECT match_id, round, team, COUNT(*) as player_count
+    FROM PLAYER_ROUND_STATS
+    GROUP BY match_id, round, team) p
+LEFT JOIN 
+    (SELECT match_id, round, team, COUNT(*) as death_count
+    FROM PLAYER_ROUND_STATS
+    WHERE survived = FALSE
+    GROUP BY match_id, round, team) d ON p.match_id = d.match_id AND p.round = d.round AND p.team = d.team
+LEFT JOIN 
+    (SELECT match_id, roundNumber as round, winnerSide as winner_team
+    FROM ROUND_STATS) r ON p.match_id = r.match_id AND p.round = r.round
+LEFT JOIN 
+    (SELECT match_id, round, team, SUM(moneySpent) as total_money_spent, SUM(equipmentValue) as total_equipment_value
+    FROM PLAYER_ROUND_STATS
+    GROUP BY match_id, round, team) m ON p.match_id = m.match_id AND p.round = m.round AND p.team = m.team
+LEFT JOIN 
+    (SELECT match_id, roundNumber as round, reasonEndRound as round_end_reason
+    FROM ROUND_STATS) re ON p.match_id = re.match_id AND p.round = re.round
+JOIN 
+    (SELECT 
+        rw.match_id, 
+        rw.round, 
+        SUM(CASE WHEN rw.winner_team = 2 THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as t_score,
+        SUM(CASE WHEN rw.winner_team = 3 THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as ct_score,
+        SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 2) OR ( rw.round >= 8 AND rw.winner_team = 3 ) THEN 1  ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as team1_score,
+        SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 3) OR ( rw.round >= 8 AND rw.winner_team = 2 ) THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as team2_score
+    FROM 
+        (SELECT match_id, roundNumber as round, winnerSide as winner_team
+        FROM ROUND_STATS) rw) cs ON p.match_id = cs.match_id AND p.round = cs.round;
+
+
+
+
+

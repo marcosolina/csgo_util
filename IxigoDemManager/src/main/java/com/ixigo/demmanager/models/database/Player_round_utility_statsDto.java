@@ -1,7 +1,5 @@
 package com.ixigo.demmanager.models.database;
 
-import java.time.LocalDateTime;
-
 import com.ixigo.library.dto.IxigoDto;
 
 import lombok.Getter;
@@ -11,12 +9,15 @@ import lombok.experimental.FieldNameConstants;
 @FieldNameConstants
 @Getter
 @Setter
-public class Match_statsDto implements IxigoDto {
+public class Player_round_utility_statsDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
-	private String match_filename = "";
+	private String steamid = "";
+	private Long grenades_thrown = null;
+	private Long smokes_thrown = null;
+	private Long round = null;
+	private Long flashes_thrown = null;
 	private Long match_id = null;
-	private String mapname = "";
-	private LocalDateTime match_date = null;
+	private Long inferno_thrown = null;
 
 }

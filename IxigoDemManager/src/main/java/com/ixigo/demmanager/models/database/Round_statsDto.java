@@ -16,4 +16,5 @@ public class Round_statsDto implements IxigoDto {
 	private Long match_id = null;
 	private Long roundnumber = null;
 	private Long winnerside = null;
+
 }

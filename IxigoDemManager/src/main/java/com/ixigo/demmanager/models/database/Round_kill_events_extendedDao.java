@@ -8,39 +8,41 @@ import com.ixigo.library.dao.IxigoDao;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
-public class Round_kill_eventsDao extends IxigoDao<Round_kill_eventsDto> {
+public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_extendedDto> {
 
-	private static final Logger _LOGGER = LoggerFactory.getLogger(Round_kill_eventsDao.class);
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Round_kill_events_extendedDao.class);
 	private static final long serialVersionUID = 1L;
-	public static final String tableName = "round_kill_events";
-	private Round_kill_eventsDto dto = null;
+	public static final String tableName = "round_kill_events_extended";
+	private Round_kill_events_extendedDto dto = null;
 
-	public Round_kill_eventsDao() {
+	public Round_kill_events_extendedDao() {
 		this.setSqlViewName(tableName);
 	// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
-			Round_kill_eventsDto.Fields.victimsteamid,
-			Round_kill_eventsDto.Fields.isfirstkill,
-			Round_kill_eventsDto.Fields.match_id,
-			Round_kill_eventsDto.Fields.eventtime,
-			Round_kill_eventsDto.Fields.istradekill,
-			Round_kill_eventsDto.Fields.assister,
-			Round_kill_eventsDto.Fields.steamid,
-			Round_kill_eventsDto.Fields.weapon,
-			Round_kill_eventsDto.Fields.flashassister,
-			Round_kill_eventsDto.Fields.round,
-			Round_kill_eventsDto.Fields.killerflashed,
-			Round_kill_eventsDto.Fields.headshot,
-			Round_kill_eventsDto.Fields.istradedeath,
+			Round_kill_events_extendedDto.Fields.victimsteamid,
+			Round_kill_events_extendedDto.Fields.isfirstkill,
+			Round_kill_events_extendedDto.Fields.match_id,
+			Round_kill_events_extendedDto.Fields.eventtime,
+			Round_kill_events_extendedDto.Fields.istradekill,
+			Round_kill_events_extendedDto.Fields.assister,
+			Round_kill_events_extendedDto.Fields.steamid,
+			Round_kill_events_extendedDto.Fields.weapon,
+			Round_kill_events_extendedDto.Fields.killer_team,
+			Round_kill_events_extendedDto.Fields.flashassister,
+			Round_kill_events_extendedDto.Fields.round,
+			Round_kill_events_extendedDto.Fields.killerflashed,
+			Round_kill_events_extendedDto.Fields.headshot,
+			Round_kill_events_extendedDto.Fields.victim_team,
+			Round_kill_events_extendedDto.Fields.istradedeath,
 		});
 	// @formatter:on
-		this.dto = new Round_kill_eventsDto();
+		this.dto = new Round_kill_events_extendedDto();
 	}
 
 	@Override
-	public Round_kill_eventsDto mappingFunction(Row row, RowMetadata rowMetaData) {
-		return this.genericMappingFunction(new Round_kill_eventsDto(), row, rowMetaData);
+	public Round_kill_events_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		return this.genericMappingFunction(new Round_kill_events_extendedDto(), row, rowMetaData);
 	}
 
 	public String getVictimsteamid() {
@@ -107,6 +109,14 @@ public class Round_kill_eventsDao extends IxigoDao<Round_kill_eventsDto> {
 		this.dto.setWeapon(weapon);
 	}
 
+	public Long getKiller_team() {
+		return dto.getKiller_team();
+	}
+
+	public void setKiller_team(Long killer_team) {
+		this.dto.setKiller_team(killer_team);
+	}
+
 	public String getFlashassister() {
 		return dto.getFlashassister();
 	}
@@ -139,6 +149,14 @@ public class Round_kill_eventsDao extends IxigoDao<Round_kill_eventsDto> {
 		this.dto.setHeadshot(headshot);
 	}
 
+	public Long getVictim_team() {
+		return dto.getVictim_team();
+	}
+
+	public void setVictim_team(Long victim_team) {
+		this.dto.setVictim_team(victim_team);
+	}
+
 	public Boolean getIstradedeath() {
 		return dto.getIstradedeath();
 	}
@@ -147,11 +165,11 @@ public class Round_kill_eventsDao extends IxigoDao<Round_kill_eventsDto> {
 		this.dto.setIstradedeath(istradedeath);
 	}
 
-	public Round_kill_eventsDto getDto() {
+	public Round_kill_events_extendedDto getDto() {
 		return this.dto;
 	}
 
-	public void setDto(Round_kill_eventsDto dto) {
+	public void setDto(Round_kill_events_extendedDto dto) {
 		this.dto = dto;
 	}
 

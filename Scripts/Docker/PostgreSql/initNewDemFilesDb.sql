@@ -14,6 +14,17 @@ CREATE TABLE MATCH_STATS (
     match_fileName VARCHAR(255)
 );
 
+--UPDATE MATCH_STATS 
+--SET 
+--    match_date = TO_TIMESTAMP(
+--        SUBSTRING((regexp_match(match_fileName, 'auto0-(\d{8}-\d{6})'))[1] FROM 1 FOR 8) || ' ' || 
+--        LEFT(SUBSTRING((regexp_match(match_fileName, 'auto0-(\d{8}-\d{6})'))[1] FROM 10), 2) || ':' ||
+--        SUBSTRING(SUBSTRING((regexp_match(match_fileName, 'auto0-(\d{8}-\d{6})'))[1] FROM 10), 3, 2) || ':' ||
+--        RIGHT(SUBSTRING((regexp_match(match_fileName, 'auto0-(\d{8}-\d{6})'))[1] FROM 10), 2), 
+--        'YYYYMMDD HH24:MI:SS'),
+--    mapName = (regexp_match(match_fileName, 'auto0-(\d{8}-\d{6})-.*-(.*?)-IXI'))[2];
+
+
 CREATE TABLE PLAYER_ROUND_STATS (
     userName VARCHAR(255),
     steamID VARCHAR(255),
@@ -507,6 +518,45 @@ GROUP BY
     weapon,
     match_id;
 
+CREATE OR REPLACE VIEW MAP_SHOT_STATS_EXTENDED AS 
+SELECT
+    steamID,
+    mapName,
+    REPLACE(weapon,'weapon_','') AS weapon,
+    COALESCE(COUNT(eventType),0) AS shots_fired
+    
+FROM 
+    ROUND_SHOT_EVENTS as r
+LEFT JOIN
+    MATCH_STATS as m ON r.match_id=m.match_id
+WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
+GROUP BY
+    steamID,
+    weapon,
+    mapName;
+
+CREATE OR REPLACE VIEW MAP_HIT_STATS_EXTENDED AS
+SELECT
+    steamID,
+    mapName,
+    REPLACE(weapon,'weapon_','') as weapon,
+    COALESCE(COUNT(eventtime),0) AS hits,
+    SUM(damageHealth) AS total_damage,
+    SUM(CASE WHEN hitGroup = 1 THEN 1 ELSE 0 END) AS headshots,
+    SUM(CASE WHEN hitGroup IN (4, 5) THEN 1 ELSE 0 END) AS arm_hits,
+    SUM(CASE WHEN hitGroup IN (6, 7) THEN 1 ELSE 0 END) AS leg_hits,
+    SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
+    SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits
+FROM 
+    ROUND_HIT_EVENTS as r
+LEFT JOIN
+    MATCH_STATS as m ON r.match_id=m.match_id
+WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
+GROUP BY
+    steamID,
+    weapon,
+    mapName;
+
 CREATE OR REPLACE VIEW OVERALL_SHOT_STATS_EXTENDED AS 
 SELECT
     steamID,
@@ -610,6 +660,29 @@ LEFT JOIN
 LEFT JOIN
     OVERALL_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon;
 
+CREATE OR REPLACE VIEW MAP_PLAYER_WEAPON_STATS AS
+SELECT DISTINCT ON (p.steamID, s.weapon, s.mapName)
+    p.steamID,
+    s.mapName,
+    s.weapon,
+    s.shots_fired,
+    h.hits,
+    h.total_damage,
+    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
+    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
+    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
+    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
+    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
+    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
+    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
+    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+FROM 
+    PLAYER_STATS AS p
+LEFT JOIN
+    MAP_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID 
+LEFT JOIN
+    MAP_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon AND s.mapName = h.mapName;
+
 CREATE OR REPLACE VIEW ROUND_SCORECARD AS
 SELECT 
     p.match_id, 
@@ -623,8 +696,8 @@ SELECT
     re.round_end_reason, 
     CASE 
         WHEN p.round = 1 OR p.round = 8 THEN 'pistol'
-        WHEN (COALESCE(m.total_money_spent, 0) + COALESCE(m.total_equipment_value, 0)) / p.player_count < 1000 THEN 'eco'
-        WHEN (COALESCE(m.total_money_spent, 0) + COALESCE(m.total_equipment_value, 0)) / p.player_count BETWEEN 1000 AND 4000 THEN 'force buy'
+        WHEN (COALESCE(m.total_money_spent, 0) + COALESCE(m.total_equipment_value, 0)) / p.player_count < 1500 THEN 'eco'
+        WHEN (COALESCE(m.total_money_spent, 0) + COALESCE(m.total_equipment_value, 0)) / p.player_count BETWEEN 1500 AND 4000 THEN 'force buy'
         ELSE 'full buy'
     END as round_type,
     cs.t_score, 
@@ -656,13 +729,85 @@ JOIN
         rw.round, 
         SUM(CASE WHEN rw.winner_team = 2 THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as t_score,
         SUM(CASE WHEN rw.winner_team = 3 THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as ct_score,
-        SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 2) OR ( rw.round >= 8 AND rw.winner_team = 3 ) THEN 1  ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as team1_score,
+        SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 2) OR ( rw.round >= 8 AND rw.winner_team = 3 ) THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as team1_score,
         SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 3) OR ( rw.round >= 8 AND rw.winner_team = 2 ) THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as team2_score
     FROM 
         (SELECT match_id, roundNumber as round, winnerSide as winner_team
         FROM ROUND_STATS) rw) cs ON p.match_id = cs.match_id AND p.round = cs.round;
 
 
+CREATE OR REPLACE VIEW MATCH_RESULTS AS (
+SELECT 
+    m.match_id, 
+    m.match_date, 
+    m.mapName, 
+    SUM(CASE WHEN r.roundNumber <= 7 AND r.winnerSide = 2 THEN 1 ELSE 0 END) AS team1_wins_as_T,
+    SUM(CASE WHEN r.roundNumber > 7 AND r.winnerSide = 3 THEN 1 ELSE 0 END) AS team1_wins_as_CT,
+    SUM(CASE WHEN r.roundNumber <= 7 AND r.winnerSide = 3 THEN 1 ELSE 0 END) AS team2_wins_as_CT,
+    SUM(CASE WHEN r.roundNumber > 7 AND r.winnerSide = 2 THEN 1 ELSE 0 END) AS team2_wins_as_T,
+    SUM(CASE WHEN r.winnerSide = 2 THEN 1 ELSE 0 END) AS total_T_wins,
+    SUM(CASE WHEN r.winnerSide = 3 THEN 1 ELSE 0 END) AS total_CT_wins,
+    SUM(CASE WHEN (r.roundNumber <= 7 AND r.winnerSide = 2) OR (r.roundNumber > 7 AND r.winnerSide = 3) THEN 1 ELSE 0 END) AS team1_total_wins,
+    SUM(CASE WHEN (r.roundNumber <= 7 AND r.winnerSide = 3) OR (r.roundNumber > 7 AND r.winnerSide = 2) THEN 1 ELSE 0 END) AS team2_total_wins
+FROM 
+    MATCH_STATS m
+LEFT JOIN 
+    ROUND_STATS r ON m.match_id = r.match_id
+GROUP BY 
+    m.match_id
+);
 
+--select mapName,round(avg(total_T_wins)-7.5,1) as Tadvantage from match_results group by mapName;
 
+CREATE OR REPLACE VIEW PLAYER_MATCH_RESULTS AS (
+SELECT 
+    pt.match_id,
+    pt.steamID,
+    pt.userName,
+    pt.last_round_team,
+    pt.rounds_on_team1,
+    pt.rounds_on_team2,
+    CASE 
+        WHEN pt.last_round_team = 'team1' THEN 
+            CASE 
+                WHEN mr.team1_total_wins > mr.team2_total_wins THEN 'win'
+                WHEN mr.team1_total_wins < mr.team2_total_wins THEN 'loss'
+                ELSE 'draw'
+            END
+        WHEN pt.last_round_team = 'team2' THEN 
+            CASE 
+                WHEN mr.team1_total_wins < mr.team2_total_wins THEN 'win'
+                WHEN mr.team1_total_wins > mr.team2_total_wins THEN 'loss'
+                ELSE 'draw'
+            END
+    END AS match_result,
+    CASE 
+        WHEN pt.last_round_team = 'team1' THEN mr.team1_total_wins
+        WHEN pt.last_round_team = 'team2' THEN mr.team2_total_wins
+    END AS score_for,
+    CASE 
+        WHEN pt.last_round_team = 'team1' THEN mr.team2_total_wins
+        WHEN pt.last_round_team = 'team2' THEN mr.team1_total_wins
+    END AS score_against
+FROM 
+    (
+    SELECT 
+        p.match_id,
+        p.steamID,
+        p.userName,
+        MAX(CASE WHEN p.round <= 7 AND p.team = 2 THEN 'team1' WHEN p.round > 7 AND p.team = 3 THEN 'team1' ELSE 'team2' END) AS last_round_team,
+        SUM(CASE WHEN p.round <= 7 AND p.team = 2 THEN 1 WHEN p.round > 7 AND p.team = 3 THEN 1 ELSE 0 END) AS rounds_on_team1,
+        SUM(CASE WHEN p.round <= 7 AND p.team = 3 THEN 1 WHEN p.round > 7 AND p.team = 2 THEN 1 ELSE 0 END) AS rounds_on_team2
+    FROM 
+        PLAYER_ROUND_STATS p
+    GROUP BY 
+        p.match_id,
+        p.steamID,
+        p.userName
+    ) pt
+LEFT JOIN 
+    MATCH_RESULTS mr ON pt.match_id = mr.match_id
+);
 
+--select userName, SUM(CASE WHEN match_result='win' THEN 1 ELSE 0 END) as wins, SUM(CASE WHEN match_result='loss' THEN 1 ELSE 0 END) as loss from player_match_results group by(userName) order by SUM(CASE
+--WHEN match_result='win' THEN 1 ELSE 0 END) desc;

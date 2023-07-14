@@ -154,6 +154,35 @@ LEFT JOIN
 LEFT JOIN 
     PLAYER_ROUND_STATS prs_victim ON rke.victimSteamId = prs_victim.steamID AND rke.match_id = prs_victim.match_id AND rke.round = prs_victim.round;
 
+CREATE OR REPLACE VIEW PLAYER_WEAPON_MATCH_KILLS AS
+SELECT
+    steamID,
+    match_id,
+    weapon,
+    COUNT(*) AS kills
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED
+WHERE
+    killer_team != victim_team
+GROUP BY 
+    steamID,
+    match_id,
+    weapon;
+
+CREATE OR REPLACE VIEW PLAYER_WEAPON_OVERALL_KILLS AS
+SELECT
+    steamID,
+    weapon,
+    COUNT(*) AS kills
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED
+WHERE
+    killer_team != victim_team
+GROUP BY 
+    steamID,
+    weapon;
+
+
 CREATE OR REPLACE VIEW ROUND_HIT_EVENTS_EXTENDED AS
 SELECT 
     rhe.*, 
@@ -515,7 +544,7 @@ SELECT
     SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits,
     match_id
 FROM 
-    ROUND_HIT_EVENTS
+    ROUND_HIT_EVENTS_EXTENDED
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
 GROUP BY
     steamID,
@@ -551,7 +580,7 @@ SELECT
     SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits,
     match_id
 FROM 
-    ROUND_HIT_EVENTS
+    ROUND_HIT_EVENTS_EXTENDED
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
 GROUP BY
     steamID,
@@ -588,7 +617,7 @@ SELECT
     SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
     SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits
 FROM 
-    ROUND_HIT_EVENTS as r
+    ROUND_HIT_EVENTS_EXTENDED as r
 LEFT JOIN
     MATCH_STATS as m ON r.match_id=m.match_id
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
@@ -622,7 +651,7 @@ SELECT
     SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
     SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits
 FROM 
-    ROUND_HIT_EVENTS
+    ROUND_HIT_EVENTS_EXTENDED
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
 GROUP BY
     steamID,
@@ -684,6 +713,7 @@ SELECT DISTINCT ON (p.steamID, s.weapon)
     s.weapon,
     s.shots_fired,
     h.hits,
+    COALESCE(k.kills, 0) as kills,
     h.total_damage,
     ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
     ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
@@ -698,7 +728,9 @@ FROM
 LEFT JOIN
     OVERALL_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID 
 LEFT JOIN
-    OVERALL_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon;
+    OVERALL_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon
+LEFT JOIN
+    PLAYER_WEAPON_OVERALL_KILLS AS k ON p.steamID = k.steamID AND s.weapon = k.weapon;
 
 CREATE OR REPLACE VIEW MAP_PLAYER_WEAPON_STATS AS
 SELECT DISTINCT ON (p.steamID, s.weapon, s.mapName)

@@ -9,23 +9,24 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
 public class Round_statsDao extends IxigoDao<Round_statsDto> {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(Match_statsDao.class);
-	public static final String tableName = "round_stats";
+
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Round_statsDao.class);
 	private static final long serialVersionUID = 1L;
+	public static final String tableName = "round_stats";
 	private Round_statsDto dto = null;
 
 	public Round_statsDao() {
-		// @formatter:off
 		this.setSqlViewName(tableName);
-		this.setSqlKeys(new String[] {});
-		this.setSqlFields(new String[] { 
+	// @formatter:off
+		this.setSqlKeys(new String[] {  });
+		this.setSqlFields(new String[] {
 			Round_statsDto.Fields.reasonendround,
 			Round_statsDto.Fields.match_id,
 			Round_statsDto.Fields.roundnumber,
-			Round_statsDto.Fields.winnerside
+			Round_statsDto.Fields.winnerside,
 		});
+	// @formatter:on
 		this.dto = new Round_statsDto();
-		// @formatter:on
 	}
 
 	@Override

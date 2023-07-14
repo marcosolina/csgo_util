@@ -11,29 +11,28 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
 public class Match_statsDao extends IxigoDao<Match_statsDto> {
-	private static final Logger _LOGGER = LoggerFactory.getLogger(Match_statsDao.class);
-	public static final String tableName = "match_stats";
 
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Match_statsDao.class);
 	private static final long serialVersionUID = 1L;
+	public static final String tableName = "match_stats";
 	private Match_statsDto dto = null;
 
-	// @formatter:off
 	public Match_statsDao() {
 		this.setSqlViewName(tableName);
-		this.setSqlKeys(new String[] { 
-			Match_statsDto.Fields.match_id
-		});
-		this.setSqlFields(new String[] { 
-			Match_statsDto.Fields.match_filename,
-			Match_statsDto.Fields.mapname,
+	// @formatter:off
+		this.setSqlKeys(new String[] {
 			Match_statsDto.Fields.match_id,
-			Match_statsDto.Fields.match_date
-
 		});
+		this.setSqlFields(new String[] {
+			Match_statsDto.Fields.match_filename,
+			Match_statsDto.Fields.match_id,
+			Match_statsDto.Fields.mapname,
+			Match_statsDto.Fields.match_date,
+		});
+	// @formatter:on
 		this.dto = new Match_statsDto();
 	}
-	// @formatter:on
-	
+
 	@Override
 	public Match_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		return this.genericMappingFunction(new Match_statsDto(), row, rowMetaData);

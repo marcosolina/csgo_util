@@ -10,36 +10,38 @@ import com.ixigo.library.dao.IxigoDao;
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
-public class Round_hit_eventsDao extends IxigoDao<Round_hit_eventsDto> {
+public class Round_hit_events_extendedDao extends IxigoDao<Round_hit_events_extendedDto> {
 
-	private static final Logger _LOGGER = LoggerFactory.getLogger(Round_hit_eventsDao.class);
+	private static final Logger _LOGGER = LoggerFactory.getLogger(Round_hit_events_extendedDao.class);
 	private static final long serialVersionUID = 1L;
-	public static final String tableName = "round_hit_events";
-	private Round_hit_eventsDto dto = null;
+	public static final String tableName = "round_hit_events_extended";
+	private Round_hit_events_extendedDto dto = null;
 
-	public Round_hit_eventsDao() {
+	public Round_hit_events_extendedDao() {
 		this.setSqlViewName(tableName);
 	// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
-			Round_hit_eventsDto.Fields.steamid,
-			Round_hit_eventsDto.Fields.weapon,
-			Round_hit_eventsDto.Fields.damagearmour,
-			Round_hit_eventsDto.Fields.round,
-			Round_hit_eventsDto.Fields.victimsteamid,
-			Round_hit_eventsDto.Fields.hitgroup,
-			Round_hit_eventsDto.Fields.match_id,
-			Round_hit_eventsDto.Fields.damagehealth,
-			Round_hit_eventsDto.Fields.eventtime,
-			Round_hit_eventsDto.Fields.blindtime,
+			Round_hit_events_extendedDto.Fields.steamid,
+			Round_hit_events_extendedDto.Fields.weapon,
+			Round_hit_events_extendedDto.Fields.damagearmour,
+			Round_hit_events_extendedDto.Fields.round,
+			Round_hit_events_extendedDto.Fields.victimsteamid,
+			Round_hit_events_extendedDto.Fields.hitgroup,
+			Round_hit_events_extendedDto.Fields.match_id,
+			Round_hit_events_extendedDto.Fields.damagehealth,
+			Round_hit_events_extendedDto.Fields.eventtime,
+			Round_hit_events_extendedDto.Fields.attacker_team,
+			Round_hit_events_extendedDto.Fields.victim_team,
+			Round_hit_events_extendedDto.Fields.blindtime,
 		});
 	// @formatter:on
-		this.dto = new Round_hit_eventsDto();
+		this.dto = new Round_hit_events_extendedDto();
 	}
 
 	@Override
-	public Round_hit_eventsDto mappingFunction(Row row, RowMetadata rowMetaData) {
-		return this.genericMappingFunction(new Round_hit_eventsDto(), row, rowMetaData);
+	public Round_hit_events_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		return this.genericMappingFunction(new Round_hit_events_extendedDto(), row, rowMetaData);
 	}
 
 	public String getSteamid() {
@@ -114,6 +116,22 @@ public class Round_hit_eventsDao extends IxigoDao<Round_hit_eventsDto> {
 		this.dto.setEventtime(eventtime);
 	}
 
+	public Long getAttacker_team() {
+		return dto.getAttacker_team();
+	}
+
+	public void setAttacker_team(Long attacker_team) {
+		this.dto.setAttacker_team(attacker_team);
+	}
+
+	public Long getVictim_team() {
+		return dto.getVictim_team();
+	}
+
+	public void setVictim_team(Long victim_team) {
+		this.dto.setVictim_team(victim_team);
+	}
+
 	public BigDecimal getBlindtime() {
 		return dto.getBlindtime();
 	}
@@ -122,11 +140,11 @@ public class Round_hit_eventsDao extends IxigoDao<Round_hit_eventsDto> {
 		this.dto.setBlindtime(blindtime);
 	}
 
-	public Round_hit_eventsDto getDto() {
+	public Round_hit_events_extendedDto getDto() {
 		return this.dto;
 	}
 
-	public void setDto(Round_hit_eventsDto dto) {
+	public void setDto(Round_hit_events_extendedDto dto) {
 		this.dto = dto;
 	}
 

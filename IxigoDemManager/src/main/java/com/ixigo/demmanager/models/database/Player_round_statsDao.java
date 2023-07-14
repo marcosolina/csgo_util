@@ -1,13 +1,9 @@
 package com.ixigo.demmanager.models.database;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
-import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import com.ixigo.library.dao.IxigoDao;
 
@@ -15,16 +11,17 @@ import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
 public class Player_round_statsDao extends IxigoDao<Player_round_statsDto> {
+
 	private static final Logger _LOGGER = LoggerFactory.getLogger(Player_round_statsDao.class);
 	private static final long serialVersionUID = 1L;
 	public static final String tableName = "player_round_stats";
 	private Player_round_statsDto dto = null;
 
-	// @formatter:off
 	public Player_round_statsDao() {
 		this.setSqlViewName(tableName);
-		this.setSqlKeys(new String[] {});
-		this.setSqlFields(new String[] { 
+	// @formatter:off
+		this.setSqlKeys(new String[] {  });
+		this.setSqlFields(new String[] {
 			Player_round_statsDto.Fields.steamid,
 			Player_round_statsDto.Fields.round,
 			Player_round_statsDto.Fields.clutchchance,
@@ -35,12 +32,12 @@ public class Player_round_statsDao extends IxigoDao<Player_round_statsDto> {
 			Player_round_statsDto.Fields.equipmentvalue,
 			Player_round_statsDto.Fields.team,
 			Player_round_statsDto.Fields.survived,
-			Player_round_statsDto.Fields.username
+			Player_round_statsDto.Fields.username,
 		});
+	// @formatter:on
 		this.dto = new Player_round_statsDto();
 	}
-	// @formatter:on
-	
+
 	@Override
 	public Player_round_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		return this.genericMappingFunction(new Player_round_statsDto(), row, rowMetaData);
@@ -141,4 +138,5 @@ public class Player_round_statsDao extends IxigoDao<Player_round_statsDto> {
 	public void setDto(Player_round_statsDto dto) {
 		this.dto = dto;
 	}
+
 }

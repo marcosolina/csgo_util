@@ -1014,24 +1014,36 @@ FROM
 
 CREATE OR REPLACE VIEW PLAYER_CLUTCH_STATS AS
 SELECT 
-    steamid, 
+    steamID, 
     CASE WHEN SUM(CASE WHEN clutchChance = 1 THEN 1 ELSE 0 END) = 0 THEN 0
          ELSE ROUND(SUM(CASE WHEN clutchChance = 1 AND clutchSuccess THEN 1 ELSE 0 END) * 100.0 / SUM(CASE WHEN clutchChance = 1 THEN 1 ELSE 0 END), 2)
     END AS _1v1p,
+    SUM(CASE WHEN clutchChance = 1 AND clutchSuccess THEN 1 ELSE 0 END) AS _1v1w,
+    SUM(CASE WHEN clutchChance = 1 AND NOT clutchSuccess THEN 1 ELSE 0 END) AS _1v1l,
     CASE WHEN SUM(CASE WHEN clutchChance = 2 THEN 1 ELSE 0 END) = 0 THEN 0
          ELSE ROUND(SUM(CASE WHEN clutchChance = 2 AND clutchSuccess THEN 1 ELSE 0 END) * 100.0 / SUM(CASE WHEN clutchChance = 2 THEN 1 ELSE 0 END), 2)
-    END AS _1v2,
+    END AS _1v2p,
+    SUM(CASE WHEN clutchChance = 2 AND clutchSuccess THEN 1 ELSE 0 END) AS _1v2w,
+    SUM(CASE WHEN clutchChance = 2 AND NOT clutchSuccess THEN 1 ELSE 0 END) AS _1v2l,
     CASE WHEN SUM(CASE WHEN clutchChance = 3 THEN 1 ELSE 0 END) = 0 THEN 0
          ELSE ROUND(SUM(CASE WHEN clutchChance = 3 AND clutchSuccess THEN 1 ELSE 0 END) * 100.0 / SUM(CASE WHEN clutchChance = 3 THEN 1 ELSE 0 END), 2)
     END AS _1v3p,
+    SUM(CASE WHEN clutchChance = 3 AND clutchSuccess THEN 1 ELSE 0 END) AS _1v3w,
+    SUM(CASE WHEN clutchChance = 3 AND NOT clutchSuccess THEN 1 ELSE 0 END) AS _1v3l,
     CASE WHEN SUM(CASE WHEN clutchChance = 4 THEN 1 ELSE 0 END) = 0 THEN 0
          ELSE ROUND(SUM(CASE WHEN clutchChance = 4 AND clutchSuccess THEN 1 ELSE 0 END) * 100.0 / SUM(CASE WHEN clutchChance = 4 THEN 1 ELSE 0 END), 2)
     END AS _1v4p,
+    SUM(CASE WHEN clutchChance = 4 AND clutchSuccess THEN 1 ELSE 0 END) AS _1v4w,
+    SUM(CASE WHEN clutchChance = 4 AND NOT clutchSuccess THEN 1 ELSE 0 END) AS _1v4l,
     CASE WHEN SUM(CASE WHEN clutchChance = 5 THEN 1 ELSE 0 END) = 0 THEN 0
          ELSE ROUND(SUM(CASE WHEN clutchChance = 5 AND clutchSuccess THEN 1 ELSE 0 END) * 100.0 / SUM(CASE WHEN clutchChance = 5 THEN 1 ELSE 0 END), 2)
     END AS _1v5p,
-    CASE WHEN COUNT(clutchChance) = 0 THEN 0
-         ELSE ROUND(SUM(CASE WHEN clutchSuccess THEN 1 ELSE 0 END) * 100.0 / COUNT(clutchChance), 2)
-    END AS _1vNp
+    SUM(CASE WHEN clutchChance >= 5 AND clutchSuccess THEN 1 ELSE 0 END) AS _1v5w,
+    SUM(CASE WHEN clutchChance >= 5 AND NOT clutchSuccess THEN 1 ELSE 0 END) AS _1v5l,
+    CASE WHEN SUM(CASE WHEN clutchChance > 0 THEN 1 ELSE 0 END) = 0 THEN 0
+         ELSE ROUND(SUM(CASE WHEN clutchSuccess THEN 1 ELSE 0 END) * 100.0 / SUM(CASE WHEN clutchChance > 0 THEN 1 ELSE 0 END), 2)
+    END AS _1vNp,
+    SUM(CASE WHEN clutchSuccess THEN 1 ELSE 0 END) AS _1vNw,
+    SUM(CASE WHEN NOT clutchSuccess AND clutchChance > 0 THEN 1 ELSE 0 END) AS _1vNl
 FROM PLAYER_ROUND_STATS
-GROUP BY steamid;
+GROUP BY steamID;

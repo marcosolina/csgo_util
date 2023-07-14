@@ -672,7 +672,7 @@ demoFile.gameEvents.on("round_end", e => {
         }
       }
       allPlayerRoundStats.push({
-        userName: player.name,
+        userName: stats.name,
         steamID: player.steam64Id,
         round: currentRound,
         team: player.teamNumber,

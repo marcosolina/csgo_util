@@ -370,7 +370,7 @@ LEFT JOIN
 CREATE OR REPLACE VIEW PLAYER_MATCH_STATS AS
 SELECT
     p.steamID,
-    p.userName,
+    STRING_AGG(DISTINCT userName, ', ') usernames,
     p.match_id,
     SUM(CASE WHEN r.team > 1 THEN 1 ELSE 0 END) as roundsPlayed,
     SUM(r.kills) as kills,
@@ -421,8 +421,7 @@ LEFT JOIN
 GROUP BY
     p.steamID,
     p.match_id,
-    p.score,
-    p.userName;
+    p.score;
 
 
 CREATE OR REPLACE VIEW PLAYER_MATCH_STATS_EXTENDED AS
@@ -763,7 +762,6 @@ CREATE OR REPLACE VIEW PLAYER_MATCH_RESULTS AS (
 SELECT 
     pt.match_id,
     pt.steamID,
-    pt.userName,
     pt.last_round_team,
     pt.rounds_on_team1,
     pt.rounds_on_team2,
@@ -794,7 +792,6 @@ FROM
     SELECT 
         p.match_id,
         p.steamID,
-        p.userName,
         MAX(CASE WHEN p.round <= 7 AND p.team = 2 THEN 'team1' WHEN p.round > 7 AND p.team = 3 THEN 'team1' ELSE 'team2' END) AS last_round_team,
         SUM(CASE WHEN p.round <= 7 AND p.team = 2 THEN 1 WHEN p.round > 7 AND p.team = 3 THEN 1 ELSE 0 END) AS rounds_on_team1,
         SUM(CASE WHEN p.round <= 7 AND p.team = 3 THEN 1 WHEN p.round > 7 AND p.team = 2 THEN 1 ELSE 0 END) AS rounds_on_team2
@@ -802,8 +799,7 @@ FROM
         PLAYER_ROUND_STATS p
     GROUP BY 
         p.match_id,
-        p.steamID,
-        p.userName
+        p.steamID
     ) pt
 LEFT JOIN 
     MATCH_RESULTS mr ON pt.match_id = mr.match_id
@@ -811,3 +807,76 @@ LEFT JOIN
 
 --select userName, SUM(CASE WHEN match_result='win' THEN 1 ELSE 0 END) as wins, SUM(CASE WHEN match_result='loss' THEN 1 ELSE 0 END) as loss from player_match_results group by(userName) order by SUM(CASE
 --WHEN match_result='win' THEN 1 ELSE 0 END) desc;
+
+CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED AS
+SELECT
+    pos.steamID,
+    STRING_AGG(DISTINCT userName, ', ') usernames,
+    COUNT(distinct match_id) matches,
+    SUM(pos.roundsPlayed) rounds,
+    SUM(pos.kills) as kills,
+    SUM(pos.assists) as assists,
+    SUM(pos.deaths) as deaths,
+    SUM(pos.headshots) as headshots,
+    ROUND(SUM(CAST(pos.kills AS DECIMAL))*1.0/SUM(CAST(pos.deaths AS DECIMAL)),2) as kdr,
+    ROUND(SUM(CAST(pos.headshots AS DECIMAL))*100.0/SUM(CAST(pos.kills AS DECIMAL)),2) as headshot_percentage,
+    SUM(pos.ff) as ff,
+    SUM(pos.ek) as ek,
+    SUM(pos.bp) as bp,
+    SUM(pos.bd) as bd,
+    SUM(pos.hr) as hr,
+    SUM(pos.mvp) as mvp,
+    SUM(pos._5k) as _5k,
+    SUM(pos._4k) as _4k,
+    SUM(pos._3k) as _3k,
+    SUM(pos._2k) as _2k,
+    SUM(pos._1k) as _1k,
+    SUM(pos.tk) as tk,
+    SUM(pos.td) as td,
+    SUM(pos.tdh) as tdh,
+    SUM(pos.tda) as tda,
+    SUM(pos.ffd) as ffd,
+    ROUND(AVG(pos.ebt),2) as ebt,
+    ROUND(AVG(pos.fbt),2) as fbt,
+    SUM(pos.ud) as ud,
+    SUM(pos._1v1) as _1v1,
+    SUM(pos._1v2) as _1v2,
+    SUM(pos._1v3) as _1v3,
+    SUM(pos._1v4) as _1v4,
+    SUM(pos._1v5) as _1v5,
+    SUM(pos.fa) as fa,
+    ROUND(SUM(CAST(pos.kills AS DECIMAL))*1.0/SUM(CAST(pos.roundsPlayed AS DECIMAL)),2) as kpr,
+    ROUND(SUM(CAST(pos.deaths AS DECIMAL))*1.0/SUM(CAST(pos.roundsPlayed AS DECIMAL)),2) as dpr,
+    ROUND(SUM(CAST(pos.tdh AS DECIMAL))*1.0/SUM(CAST(pos.roundsPlayed AS DECIMAL)),2) as adr,
+    ROUND(AVG(hltv_rating),2) as hltv_rating,
+    ROUND(AVG(rws),2) AS rws,
+    ROUND(AVG(pos.kast),2) as kast
+FROM 
+    PLAYER_MATCH_STATS_EXTENDED as pos
+WHERE
+    pos.roundsPlayed > 0
+GROUP BY
+    pos.steamID;
+
+
+CREATE OR REPLACE VIEW PLAYER_OVERALL_MATCH_STATS AS
+SELECT
+    steamID,
+    SUM(CASE WHEN match_result='win' THEN 1 ELSE 0 END) as wins, 
+    SUM(CASE WHEN match_result='loss' THEN 1 ELSE 0 END) as loss,
+    ROUND(CAST(SUM(CASE WHEN match_result='win' THEN 1 ELSE 0 END) AS DECIMAL)/CAST(SUM(CASE WHEN match_result='loss' THEN 1 ELSE 0 END) AS DECIMAL),2) as winlossratio,
+    ROUND(AVG(score_for)-AVG(score_against),2) as averagewinscore
+FROM PLAYER_MATCH_RESULTS 
+GROUP BY
+    steamID;
+
+
+CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED_EXTENDED AS
+SELECT
+    o.*,
+    m.wins,
+    m.loss,
+    m.winlossratio,
+    m.averagewinscore
+FROM
+    PLAYER_OVERALL_STATS_EXTENDED o LEFT JOIN PLAYER_OVERALL_MATCH_STATS AS m ON o.steamid=m.steamid;

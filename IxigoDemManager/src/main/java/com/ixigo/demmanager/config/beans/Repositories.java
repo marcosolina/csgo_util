@@ -8,10 +8,8 @@ import org.springframework.r2dbc.core.DatabaseClient;
 import com.ixigo.demmanager.config.properties.PostgresProps;
 import com.ixigo.demmanager.repositories.implementations.RepoProcessQueuePostgres;
 import com.ixigo.demmanager.repositories.implementations.RepoUserPostgres;
-import com.ixigo.demmanager.repositories.implementations.RepoUserScorePostgres;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
-import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
 
 import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
@@ -64,10 +62,5 @@ public class Repositories {
 	@Bean
 	public RepoUser getRepoUserPostgres() {
 		return new RepoUserPostgres();
-	}
-
-	@Bean
-	public RepoUserScore getRepoUserScore() {
-		return new RepoUserScorePostgres();
 	}
 }

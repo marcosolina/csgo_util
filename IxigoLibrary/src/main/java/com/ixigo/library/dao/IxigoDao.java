@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -11,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.r2dbc.core.DatabaseClient;
 import org.springframework.r2dbc.core.DatabaseClient.GenericExecuteSpec;
+import org.springframework.util.StringUtils;
 
 import com.ixigo.library.dto.IxigoDto;
 import com.ixigo.library.errors.IxigoException;
@@ -50,6 +52,38 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 	 * @return
 	 */
 	public abstract T mappingFunction(Row row, RowMetadata rowMetaData);
+	
+	/**
+	 * Uses reflection
+	 * @param dto -> new instance of the DTO
+	 * @param row
+	 * @param rowMetaData
+	 * @return
+	 */
+	public T genericMappingFunction(T dto, Row row, RowMetadata rowMetaData) {
+		
+
+		Arrays.asList(this.getSqlFields()).forEach(field -> {
+			try {
+				Method[] m = dto.getClass().getMethods();
+				for (int j = 0; j < m.length; j++) {
+					String setterName = "set" + StringUtils.capitalize(field);
+					if (m[j].getName().equals(setterName) && m[j].getParameterTypes().length == 1) {
+						Object value = row.get(field, m[j].getParameterTypes()[0]);
+						m[j].invoke(dto, new Object[] { value });
+					}
+				}
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
+				_LOGGER.error(e.getMessage());
+				e.printStackTrace();
+			}
+		});
+
+		// dto.setFile_name(row.get(Dem_process_queueDto.Fields.file_name,
+		// String.class));
+
+		return dto;
+	}
 
 	/**
 	 * It returns a deep copy of the DTO

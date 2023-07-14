@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerStats;
+
 /**
  * Service layer model which contains the data extracted from a single DEM file
  * 
@@ -13,7 +15,7 @@ import java.util.List;
 public class SvcMapStats {
 	private String mapName;
 	private LocalDateTime playedOn;
-	private List<SvcUserGotvScore> usersStats;
+	private List<SvcPlayerStats> usersStats;
 
 	public String getMapName() {
 		return mapName;
@@ -31,15 +33,15 @@ public class SvcMapStats {
 		this.playedOn = playedOn;
 	}
 
-	public List<SvcUserGotvScore> getUsersStats() {
+	public List<SvcPlayerStats> getUsersStats() {
 		return usersStats;
 	}
 
-	public void setUsersStats(List<SvcUserGotvScore> usersStats) {
+	public void setUsersStats(List<SvcPlayerStats> usersStats) {
 		this.usersStats = usersStats;
 	}
 
-	public boolean addUserMapStats(SvcUserGotvScore ums) {
+	public boolean addUserMapStats(SvcPlayerStats ums) {
 		if (usersStats == null) {
 			usersStats = new ArrayList<>();
 		}

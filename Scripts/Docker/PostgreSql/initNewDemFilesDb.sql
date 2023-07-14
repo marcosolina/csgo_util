@@ -1,3 +1,21 @@
+/*
+ * Terminating all the connections
+ */
+
+SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE pg_stat_activity.datname = 'demfiles';
+
+DROP DATABASE IF EXISTS DEMFILES;
+
+/*
+ * Create the Database
+ */
+CREATE DATABASE DEMFILES;
+
+/*
+ * Select the database
+ */
+\c demfiles;
+
 DROP TABLE IF EXISTS round_stats CASCADE;
 DROP TABLE IF EXISTS round_shot_events CASCADE;
 DROP TABLE IF EXISTS round_kill_events CASCADE;
@@ -6,6 +24,24 @@ DROP TABLE IF EXISTS round_events CASCADE;
 DROP TABLE IF EXISTS player_stats CASCADE;
 DROP TABLE IF EXISTS player_round_stats CASCADE;
 DROP TABLE IF EXISTS match_stats CASCADE;
+
+/*
+ * Create the users table
+ */
+CREATE TABLE USERS (
+	STEAM_ID				VARCHAR(100) 		DEFAULT ''	NOT NULL PRIMARY KEY,
+	USER_NAME				VARCHAR(100) 		DEFAULT ''	NOT NULL
+);
+
+/*
+ * Queue of file to process
+ */
+CREATE TABLE DEM_PROCESS_QUEUE (
+    FILE_NAME               VARCHAR(1000)       DEFAULT ''  NOT NULL PRIMARY KEY,
+    QUEUED_ON               TIMESTAMP                       NOT NULL,
+    PROCESSED_ON            TIMESTAMP,
+    PROCESS_STATUS          VARCHAR(50)         DEFAULT ''  NOT NULL
+);
 
 CREATE TABLE MATCH_STATS (
     match_id SERIAL PRIMARY KEY,

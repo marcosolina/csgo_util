@@ -196,6 +196,49 @@ LEFT JOIN
     PLAYER_ROUND_STATS prs_victim ON rhe.victimSteamId = prs_victim.steamID AND rhe.match_id = prs_victim.match_id AND rhe.round = prs_victim.round;
 
 
+CREATE OR REPLACE VIEW ENTRY_KILL_STATS AS
+SELECT 
+    P.steamID,
+    (SELECT COUNT(*) FROM (SELECT DISTINCT match_id, round FROM PLAYER_ROUND_STATS WHERE steamID = P.steamID) AS sub) AS total_rounds,
+    (SELECT COUNT(*) FROM (SELECT DISTINCT match_id, round FROM PLAYER_ROUND_STATS WHERE steamID = P.steamID AND team = 2) AS sub) AS total_rounds_t,
+    (SELECT COUNT(*) FROM (SELECT DISTINCT match_id, round FROM PLAYER_ROUND_STATS WHERE steamID = P.steamID AND team = 3) AS sub) AS total_rounds_ct,
+    SUM(CASE WHEN E.isFirstKill AND E.killer_team != E.victim_team THEN 1 ELSE 0 END) AS ek_attempts,
+    SUM(CASE WHEN E.isFirstKill AND E.killer_team != E.victim_team AND P.survived THEN 1 ELSE 0 END) AS ek_success,
+    SUM(CASE WHEN E.isFirstKill AND P.team = 2 AND E.killer_team != E.victim_team THEN 1 ELSE 0 END) AS ekt_attempts,
+    SUM(CASE WHEN E.isFirstKill AND P.team = 2 AND E.killer_team != E.victim_team AND P.survived THEN 1 ELSE 0 END) AS ekt_success,
+    SUM(CASE WHEN E.isFirstKill AND P.team = 3 AND E.killer_team != E.victim_team THEN 1 ELSE 0 END) AS ekct_attempts,
+    SUM(CASE WHEN E.isFirstKill AND P.team = 3 AND E.killer_team != E.victim_team AND P.survived THEN 1 ELSE 0 END) AS ekct_success
+FROM
+    PLAYER_ROUND_STATS AS P
+LEFT JOIN
+    ROUND_KILL_EVENTS_EXTENDED AS E ON E.steamID = P.steamID AND E.round = P.round AND E.match_id = P.match_id
+GROUP BY 
+    P.steamID;
+
+
+CREATE OR REPLACE VIEW ENTRY_KILL_STATS_EXTENDED AS
+SELECT 
+    E.steamID,
+    E.total_rounds,
+    total_rounds_t,
+    total_rounds_ct,
+    E.ek_attempts,
+    E.ek_success,
+    ROUND(CAST(E.ek_success AS NUMERIC) * 100.0 / NULLIF(E.ek_attempts, 0), 2) AS ek_success_rate,
+    ROUND(CAST(E.ek_success AS NUMERIC) * 100.0 / NULLIF(E.total_rounds, 0), 2) AS ek_success_rate_overall,
+    E.ekt_attempts,
+    E.ekt_success,
+    ROUND(CAST(E.ekt_success AS NUMERIC) * 100.0 / NULLIF(E.ekt_attempts, 0), 2) AS ekt_success_rate,
+    ROUND(CAST(E.ekt_success AS NUMERIC) * 100.0 / NULLIF(E.total_rounds_t, 0), 2) AS ekt_success_rate_overall,
+    E.ekct_attempts,
+    E.ekct_success,
+    ROUND(CAST(E.ekct_success AS NUMERIC) * 100.0 / NULLIF(E.ekct_attempts, 0), 2) AS ekct_success_rate,
+    ROUND(CAST(E.ekct_success AS NUMERIC) * 100.0 / NULLIF(E.total_rounds_ct, 0), 2) AS ekct_success_rate_overall
+FROM 
+    ENTRY_KILL_STATS E;
+
+
+
 CREATE OR REPLACE VIEW PLAYER_ROUND_KILL_STATS AS
 SELECT
     prs.steamID,
@@ -953,9 +996,17 @@ SELECT
     m.wins,
     m.loss,
     m.winlossratio,
-    m.averagewinscore
+    m.averagewinscore,
+    c._1vNp,
+    e.ek_success_rate_overall as fkr
 FROM
-    PLAYER_OVERALL_STATS_EXTENDED o LEFT JOIN PLAYER_OVERALL_MATCH_STATS AS m ON o.steamid=m.steamid;
+    PLAYER_OVERALL_STATS_EXTENDED o 
+LEFT JOIN 
+    PLAYER_OVERALL_MATCH_STATS AS m ON o.steamid=m.steamid
+LEFT JOIN 
+    PLAYER_CLUTCH_STATS AS c ON o.steamid=c.steamid
+LEFT JOIN
+    ENTRY_KILL_STATS_EXTENDED AS e ON o.steamid=e.steamid;
 
 
 

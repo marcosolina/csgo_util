@@ -18,17 +18,18 @@ public class Match_player_weapon_statsDao extends IxigoDao<Match_player_weapon_s
 	private Match_player_weapon_statsDto dto = null;
 
 	public Match_player_weapon_statsDao() {
+		_LOGGER.trace("Instanciating Match_player_weapon_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Match_player_weapon_statsDto.Fields.damage_per_shot,
-			Match_player_weapon_statsDto.Fields.match_id,
 			Match_player_weapon_statsDto.Fields.accuracy,
 			Match_player_weapon_statsDto.Fields.steamid,
 			Match_player_weapon_statsDto.Fields.hits,
 			Match_player_weapon_statsDto.Fields.weapon,
 			Match_player_weapon_statsDto.Fields.total_damage,
+			Match_player_weapon_statsDto.Fields.match_filename,
 			Match_player_weapon_statsDto.Fields.damage_per_hit,
 			Match_player_weapon_statsDto.Fields.shots_fired,
 			Match_player_weapon_statsDto.Fields.chest_hit_percentage,
@@ -38,12 +39,13 @@ public class Match_player_weapon_statsDao extends IxigoDao<Match_player_weapon_s
 			Match_player_weapon_statsDto.Fields.username,
 			Match_player_weapon_statsDto.Fields.arm_hit_percentage,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Match_player_weapon_statsDto();
 	}
 
 	@Override
 	public Match_player_weapon_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Match_player_weapon_statsDto(), row, rowMetaData);
 	}
 
@@ -53,14 +55,6 @@ public class Match_player_weapon_statsDao extends IxigoDao<Match_player_weapon_s
 
 	public void setDamage_per_shot(BigDecimal damage_per_shot) {
 		this.dto.setDamage_per_shot(damage_per_shot);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public BigDecimal getAccuracy() {
@@ -101,6 +95,14 @@ public class Match_player_weapon_statsDao extends IxigoDao<Match_player_weapon_s
 
 	public void setTotal_damage(Long total_damage) {
 		this.dto.setTotal_damage(total_damage);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public BigDecimal getDamage_per_hit() {

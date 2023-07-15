@@ -27,7 +27,7 @@ import io.r2dbc.spi.RowMetadata;
  * @see https://github.com/hantsy/spring-r2dbc-sample/blob/master/docs/database-client.md
  * @see https://medium.com/zero-equals-false/dealing-with-postgres-specific-json-enum-type-and-notifier-listener-with-r2dbc-f15cc104aa10
  * @see https://www.baeldung.com/spring-data-r2dbc
- * @see https://www.baeldung.com/r2dbc 
+ * @see https://www.baeldung.com/r2dbc
  * @author Marco
  *
  */
@@ -52,16 +52,18 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 	 * @return
 	 */
 	public abstract T mappingFunction(Row row, RowMetadata rowMetaData);
-	
+
+	public abstract void setDto(T dto);
+
 	/**
 	 * Uses reflection
-	 * @param dto -> new instance of the DTO
+	 * 
+	 * @param dto         -> new instance of the DTO
 	 * @param row
 	 * @param rowMetaData
 	 * @return
 	 */
 	public T genericMappingFunction(T dto, Row row, RowMetadata rowMetaData) {
-		
 
 		Arrays.asList(this.getSqlFields()).forEach(field -> {
 			try {
@@ -205,7 +207,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 
 		return ges;
 	}
-	
+
 	/**
 	 * It prepares the {@link GenericExecuteSpec} for the "SELECT" statement by
 	 * table key
@@ -255,9 +257,9 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		var dto = this.getDtoInstance();
 		for (int i = 0; i < sqlFields.length; i++) {
 			Object value = getValue(dto, sqlFields[i]);
-			if(value == null) {
+			if (value == null) {
 				ges = ges.bindNull(sqlFields[i], getDataType(dto, sqlFields[i]));
-			}else {
+			} else {
 				ges = ges.bind(sqlFields[i], value.getClass().isEnum() ? value.toString() : value);
 			}
 		}
@@ -339,10 +341,10 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), "IXIGO0000");
 		}
 	}
-	
+
 	private Class<?> getDataType(IxigoDto dto, String field) {
 		try {
-			return dto.getClass().getMethod(getterName(field)).getReturnType(); 
+			return dto.getClass().getMethod(getterName(field)).getReturnType();
 		} catch (Exception e) {
 			_LOGGER.error(e.getMessage());
 			e.printStackTrace();
@@ -370,7 +372,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		return res;
 	}
 
-	public GenericExecuteSpec prepareSqlUpdate(DatabaseClient client)  throws IxigoException {
+	public GenericExecuteSpec prepareSqlUpdate(DatabaseClient client) throws IxigoException {
 		if (sqlKeys == null) {
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, "Can not update table without keys", "IXIGO0000");
 		}
@@ -390,18 +392,18 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 			res.append(" where ");
 			res.append(keys.substring(5));
 		}
-		
+
 		var ges = client.sql(res.toString());
 		var dto = this.getDtoInstance();
 		for (int i = 0; i < sqlFields.length; i++) {
 			Object value = getValue(dto, sqlFields[i]);
-			if(value == null) {
+			if (value == null) {
 				ges = ges.bindNull(sqlFields[i], getDataType(dto, sqlFields[i]));
-			}else {
+			} else {
 				ges = ges.bind(sqlFields[i], value.getClass().isEnum() ? value.toString() : value);
 			}
 		}
-		
+
 		return ges;
 	}
 
@@ -435,7 +437,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 	protected void setSqlFields(String[] sqlFields) {
 		this.sqlFields = sqlFields;
 	}
-	
+
 	protected String[] getSqlFields() {
 		return this.sqlFields;
 	}

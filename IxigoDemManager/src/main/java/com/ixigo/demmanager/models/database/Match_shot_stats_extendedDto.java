@@ -14,7 +14,7 @@ public class Match_shot_stats_extendedDto implements IxigoDto {
 	private static final long serialVersionUID = 1L;
 	private String steamid = "";
 	private String weapon = "";
+	private String match_filename = "";
 	private Long shots_fired = null;
-	private Long match_id = null;
 
 }

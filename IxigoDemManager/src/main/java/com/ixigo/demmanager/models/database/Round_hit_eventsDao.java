@@ -18,27 +18,29 @@ public class Round_hit_eventsDao extends IxigoDao<Round_hit_eventsDto> {
 	private Round_hit_eventsDto dto = null;
 
 	public Round_hit_eventsDao() {
+		_LOGGER.trace("Instanciating Round_hit_eventsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Round_hit_eventsDto.Fields.steamid,
 			Round_hit_eventsDto.Fields.weapon,
 			Round_hit_eventsDto.Fields.damagearmour,
+			Round_hit_eventsDto.Fields.match_filename,
 			Round_hit_eventsDto.Fields.round,
 			Round_hit_eventsDto.Fields.victimsteamid,
 			Round_hit_eventsDto.Fields.hitgroup,
-			Round_hit_eventsDto.Fields.match_id,
 			Round_hit_eventsDto.Fields.damagehealth,
 			Round_hit_eventsDto.Fields.eventtime,
 			Round_hit_eventsDto.Fields.blindtime,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Round_hit_eventsDto();
 	}
 
 	@Override
 	public Round_hit_eventsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Round_hit_eventsDto(), row, rowMetaData);
 	}
 
@@ -66,6 +68,14 @@ public class Round_hit_eventsDao extends IxigoDao<Round_hit_eventsDto> {
 		this.dto.setDamagearmour(damagearmour);
 	}
 
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
+	}
+
 	public Long getRound() {
 		return dto.getRound();
 	}
@@ -88,14 +98,6 @@ public class Round_hit_eventsDao extends IxigoDao<Round_hit_eventsDto> {
 
 	public void setHitgroup(Long hitgroup) {
 		this.dto.setHitgroup(hitgroup);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getDamagehealth() {

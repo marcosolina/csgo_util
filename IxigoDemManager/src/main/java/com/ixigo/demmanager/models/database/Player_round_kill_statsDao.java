@@ -18,26 +18,28 @@ public class Player_round_kill_statsDao extends IxigoDao<Player_round_kill_stats
 	private Player_round_kill_statsDto dto = null;
 
 	public Player_round_kill_statsDao() {
+		_LOGGER.trace("Instanciating Player_round_kill_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_round_kill_statsDto.Fields.steamid,
 			Player_round_kill_statsDto.Fields.kills,
+			Player_round_kill_statsDto.Fields.match_filename,
 			Player_round_kill_statsDto.Fields.team_kills,
 			Player_round_kill_statsDto.Fields.headshots,
 			Player_round_kill_statsDto.Fields.round,
 			Player_round_kill_statsDto.Fields.trade_kills,
-			Player_round_kill_statsDto.Fields.match_id,
 			Player_round_kill_statsDto.Fields.headshot_percentage,
 			Player_round_kill_statsDto.Fields.entry_kills,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_round_kill_statsDto();
 	}
 
 	@Override
 	public Player_round_kill_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_round_kill_statsDto(), row, rowMetaData);
 	}
 
@@ -55,6 +57,14 @@ public class Player_round_kill_statsDao extends IxigoDao<Player_round_kill_stats
 
 	public void setKills(Long kills) {
 		this.dto.setKills(kills);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getTeam_kills() {
@@ -87,14 +97,6 @@ public class Player_round_kill_statsDao extends IxigoDao<Player_round_kill_stats
 
 	public void setTrade_kills(Long trade_kills) {
 		this.dto.setTrade_kills(trade_kills);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public BigDecimal getHeadshot_percentage() {

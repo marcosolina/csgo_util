@@ -7,7 +7,6 @@ import org.springframework.context.annotation.Configuration;
 
 import com.ixigo.demmanager.enums.ParserEnvironment;
 import com.ixigo.demmanager.enums.ParserExecutionType;
-import com.ixigo.demmanager.enums.ParserTool;
 
 /**
  * Properties files of the dem manager micro service
@@ -24,7 +23,6 @@ public class DemFileManagerProps {
 	public ParserExecutionType parserExecutionType;
 	public Path parserExecPath;
 	public Boolean processFilesInParallel;
-	public ParserTool parserTool;
 
 	public Path getRootFolder() {
 		return rootFolder;
@@ -65,13 +63,4 @@ public class DemFileManagerProps {
 	public void setProcessFilesInParallel(Boolean processFilesInParallel) {
 		this.processFilesInParallel = processFilesInParallel;
 	}
-
-	public ParserTool getParserTool() {
-		return parserTool;
-	}
-
-	public void setParserTool(ParserTool parserTool) {
-		this.parserTool = parserTool;
-	}
-
 }

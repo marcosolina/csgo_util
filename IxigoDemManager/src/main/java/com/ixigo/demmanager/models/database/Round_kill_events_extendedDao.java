@@ -16,18 +16,19 @@ public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_ex
 	private Round_kill_events_extendedDto dto = null;
 
 	public Round_kill_events_extendedDao() {
+		_LOGGER.trace("Instanciating Round_kill_events_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Round_kill_events_extendedDto.Fields.victimsteamid,
 			Round_kill_events_extendedDto.Fields.isfirstkill,
-			Round_kill_events_extendedDto.Fields.match_id,
 			Round_kill_events_extendedDto.Fields.eventtime,
 			Round_kill_events_extendedDto.Fields.istradekill,
 			Round_kill_events_extendedDto.Fields.assister,
 			Round_kill_events_extendedDto.Fields.steamid,
 			Round_kill_events_extendedDto.Fields.weapon,
+			Round_kill_events_extendedDto.Fields.match_filename,
 			Round_kill_events_extendedDto.Fields.killer_team,
 			Round_kill_events_extendedDto.Fields.flashassister,
 			Round_kill_events_extendedDto.Fields.round,
@@ -36,12 +37,13 @@ public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_ex
 			Round_kill_events_extendedDto.Fields.victim_team,
 			Round_kill_events_extendedDto.Fields.istradedeath,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Round_kill_events_extendedDto();
 	}
 
 	@Override
 	public Round_kill_events_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Round_kill_events_extendedDto(), row, rowMetaData);
 	}
 
@@ -59,14 +61,6 @@ public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_ex
 
 	public void setIsfirstkill(Boolean isfirstkill) {
 		this.dto.setIsfirstkill(isfirstkill);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getEventtime() {
@@ -107,6 +101,14 @@ public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_ex
 
 	public void setWeapon(String weapon) {
 		this.dto.setWeapon(weapon);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getKiller_team() {

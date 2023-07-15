@@ -18,8 +18,9 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 	private Player_round_extended_statsDto dto = null;
 
 	public Player_round_extended_statsDao() {
+		_LOGGER.trace("Instanciating Player_round_extended_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_round_extended_statsDto.Fields.kills,
@@ -46,12 +47,12 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 			Player_round_extended_statsDto.Fields.moneyspent,
 			Player_round_extended_statsDto.Fields.clutchsuccess,
 			Player_round_extended_statsDto.Fields.mvp,
-			Player_round_extended_statsDto.Fields.match_id,
 			Player_round_extended_statsDto.Fields.survived,
 			Player_round_extended_statsDto.Fields.team,
 			Player_round_extended_statsDto.Fields.inferno_thrown,
 			Player_round_extended_statsDto.Fields.teammate_blindtime,
 			Player_round_extended_statsDto.Fields.steamid,
+			Player_round_extended_statsDto.Fields.match_filename,
 			Player_round_extended_statsDto.Fields.he_damage,
 			Player_round_extended_statsDto.Fields.round,
 			Player_round_extended_statsDto.Fields.trade_deaths,
@@ -62,12 +63,13 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 			Player_round_extended_statsDto.Fields.teammate_damage_health,
 			Player_round_extended_statsDto.Fields.total_damage_health,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_round_extended_statsDto();
 	}
 
 	@Override
 	public Player_round_extended_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_round_extended_statsDto(), row, rowMetaData);
 	}
 
@@ -263,14 +265,6 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 		this.dto.setMvp(mvp);
 	}
 
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
-	}
-
 	public Boolean getSurvived() {
 		return dto.getSurvived();
 	}
@@ -309,6 +303,14 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 
 	public void setSteamid(String steamid) {
 		this.dto.setSteamid(steamid);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getHe_damage() {

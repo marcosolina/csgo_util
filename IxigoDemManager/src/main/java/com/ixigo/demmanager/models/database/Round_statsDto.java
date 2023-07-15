@@ -12,8 +12,8 @@ import lombok.experimental.FieldNameConstants;
 public class Round_statsDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
+	private String match_filename = "";
 	private Long reasonendround = null;
-	private Long match_id = null;
 	private Long roundnumber = null;
 	private Long winnerside = null;
 

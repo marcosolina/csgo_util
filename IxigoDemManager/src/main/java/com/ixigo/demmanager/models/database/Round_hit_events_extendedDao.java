@@ -18,29 +18,31 @@ public class Round_hit_events_extendedDao extends IxigoDao<Round_hit_events_exte
 	private Round_hit_events_extendedDto dto = null;
 
 	public Round_hit_events_extendedDao() {
+		_LOGGER.trace("Instanciating Round_hit_events_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Round_hit_events_extendedDto.Fields.steamid,
 			Round_hit_events_extendedDto.Fields.weapon,
 			Round_hit_events_extendedDto.Fields.damagearmour,
+			Round_hit_events_extendedDto.Fields.match_filename,
 			Round_hit_events_extendedDto.Fields.round,
 			Round_hit_events_extendedDto.Fields.victimsteamid,
 			Round_hit_events_extendedDto.Fields.hitgroup,
-			Round_hit_events_extendedDto.Fields.match_id,
 			Round_hit_events_extendedDto.Fields.damagehealth,
 			Round_hit_events_extendedDto.Fields.eventtime,
 			Round_hit_events_extendedDto.Fields.attacker_team,
 			Round_hit_events_extendedDto.Fields.victim_team,
 			Round_hit_events_extendedDto.Fields.blindtime,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Round_hit_events_extendedDto();
 	}
 
 	@Override
 	public Round_hit_events_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Round_hit_events_extendedDto(), row, rowMetaData);
 	}
 
@@ -68,6 +70,14 @@ public class Round_hit_events_extendedDao extends IxigoDao<Round_hit_events_exte
 		this.dto.setDamagearmour(damagearmour);
 	}
 
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
+	}
+
 	public Long getRound() {
 		return dto.getRound();
 	}
@@ -90,14 +100,6 @@ public class Round_hit_events_extendedDao extends IxigoDao<Round_hit_events_exte
 
 	public void setHitgroup(Long hitgroup) {
 		this.dto.setHitgroup(hitgroup);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getDamagehealth() {

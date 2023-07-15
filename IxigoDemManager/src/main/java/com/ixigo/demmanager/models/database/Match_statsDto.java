@@ -15,7 +15,6 @@ public class Match_statsDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
 	private String match_filename = "";
-	private Long match_id = null;
 	private String mapname = "";
 	private LocalDateTime match_date = null;
 

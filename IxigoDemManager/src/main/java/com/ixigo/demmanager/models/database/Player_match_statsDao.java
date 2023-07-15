@@ -19,8 +19,9 @@ public class Player_match_statsDao extends IxigoDao<Player_match_statsDto> {
 	private Player_match_statsDto dto = null;
 
 	public Player_match_statsDao() {
+		_LOGGER.trace("Instanciating Player_match_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_match_statsDto.Fields.kills,
@@ -48,11 +49,11 @@ public class Player_match_statsDao extends IxigoDao<Player_match_statsDto> {
 			Player_match_statsDto.Fields.roundsplayed,
 			Player_match_statsDto.Fields.ek,
 			Player_match_statsDto.Fields.mvp,
-			Player_match_statsDto.Fields.match_id,
 			Player_match_statsDto.Fields.rwstotal,
 			Player_match_statsDto.Fields.steamid,
 			Player_match_statsDto.Fields.td,
 			Player_match_statsDto.Fields.tda,
+			Player_match_statsDto.Fields.match_filename,
 			Player_match_statsDto.Fields._5k,
 			Player_match_statsDto.Fields._3k,
 			Player_match_statsDto.Fields.ebt,
@@ -63,12 +64,13 @@ public class Player_match_statsDao extends IxigoDao<Player_match_statsDto> {
 			Player_match_statsDto.Fields.fbt,
 			Player_match_statsDto.Fields.fa,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_match_statsDto();
 	}
 
 	@Override
 	public Player_match_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_match_statsDto(), row, rowMetaData);
 	}
 
@@ -272,14 +274,6 @@ public class Player_match_statsDao extends IxigoDao<Player_match_statsDto> {
 		this.dto.setMvp(mvp);
 	}
 
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
-	}
-
 	public BigDecimal getRwstotal() {
 		return dto.getRwstotal();
 	}
@@ -310,6 +304,14 @@ public class Player_match_statsDao extends IxigoDao<Player_match_statsDto> {
 
 	public void setTda(BigDecimal tda) {
 		this.dto.setTda(tda);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long get_5k() {

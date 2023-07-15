@@ -16,8 +16,9 @@ public class Map_shot_stats_extendedDao extends IxigoDao<Map_shot_stats_extended
 	private Map_shot_stats_extendedDto dto = null;
 
 	public Map_shot_stats_extendedDao() {
+		_LOGGER.trace("Instanciating Map_shot_stats_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Map_shot_stats_extendedDto.Fields.steamid,
@@ -25,12 +26,13 @@ public class Map_shot_stats_extendedDao extends IxigoDao<Map_shot_stats_extended
 			Map_shot_stats_extendedDto.Fields.shots_fired,
 			Map_shot_stats_extendedDto.Fields.mapname,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Map_shot_stats_extendedDto();
 	}
 
 	@Override
 	public Map_shot_stats_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Map_shot_stats_extendedDto(), row, rowMetaData);
 	}
 

@@ -26,14 +26,17 @@ import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.mappers.SvcMapper;
 import com.ixigo.demmanager.models.database.Dem_process_queueDto;
+import com.ixigo.demmanager.models.database.Match_statsDao;
+import com.ixigo.demmanager.models.database.Match_statsDto;
 import com.ixigo.demmanager.models.database.UsersDto;
-import com.ixigo.demmanager.models.database.Users_scoresDto;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
+import com.ixigo.demmanager.models.svc.demdata.SvcNodeJsParseOutput;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserStatsForLastXGames;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcMapFileStats;
+import com.ixigo.demmanager.repositories.interfaces.CrudRepo;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
-import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.demmanager.services.interfaces.NotificationService;
@@ -50,6 +53,7 @@ import reactor.util.function.Tuples;
 
 /**
  * My implementation of the @DemFileParser
+ * 
  * @author marco
  *
  */
@@ -63,7 +67,7 @@ public class DemFileParserImp implements DemFileParser {
 	@Autowired
 	private RepoUser repoUser;
 	@Autowired
-	private RepoUserScore repoUserScore;
+	private CrudRepo genericRepo;
 	@Autowired
 	private DemProcessor svcDemProcessor;
 	@Autowired
@@ -148,6 +152,7 @@ public class DemFileParserImp implements DemFileParser {
 		// @formatter:off
 		
 		// https://stackoverflow.com/questions/70704314/how-to-return-a-reactive-flux-that-contains-a-reactive-mono-and-flux
+		/*
 		return Flux.fromIterable(usersIDs)
 			.flatMap(steamId -> repoUser.findById(steamId).defaultIfEmpty(new UsersDto().setSteam_id(steamId)))// Get the user definition
 			.map(dto -> {
@@ -169,15 +174,15 @@ public class DemFileParserImp implements DemFileParser {
 			})
 		;
 		// @formatter:on
+		 * 
+		 */
+		return null;
 	}
 
-	private Mono<SvcMapStats> generateMapStatFromFile(File f) throws IxigoException {
-		return svcDemProcessor.processDemFile(f).collectList().map(list -> {
-			SvcMapStats ms = setMapNameAndTime(f);
-			if(list != null && !list.isEmpty()) {
-				ms.setUsersStats(list);
-			}
-			return ms;
+	private Mono<SvcNodeJsParseOutput> generateMapStatFromFile(File f) throws IxigoException {
+		return svcDemProcessor.processDemFile(f).map(stats -> {
+			setMapNameAndTime(f, stats);
+			return stats;
 		});
 	}
 
@@ -187,47 +192,50 @@ public class DemFileParserImp implements DemFileParser {
 	 * @param f
 	 * @return
 	 */
-	private SvcMapStats setMapNameAndTime(File f) {
+	private void setMapNameAndTime(File f, SvcNodeJsParseOutput stats) {
 		String[] tmp = f.getName().split("-");
 		String date = tmp[1];
 		String time = tmp[2];
 		String mapName = tmp[4];
-		
+
 		LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(date + "_" + time, DateFormats.FILE_NAME);
 		SvcMapStats ms = new SvcMapStats();
 		ms.setPlayedOn(ldt);
 		ms.setMapName(cleanMapName(mapName));
-		return ms;
+
+		stats.getMapStats().setMapName(mapName);
+		stats.getMapStats().setDate(ldt);
 	}
-	
+
 	private String cleanMapName(String dirtyMapName) {
-		if(dirtyMapName.toLowerCase().contains("workshop")) {
+		if (dirtyMapName.toLowerCase().contains("workshop")) {
 			int secondUnderscoreIndex = dirtyMapName.indexOf('_', dirtyMapName.indexOf('_') + 1);
 			return dirtyMapName.substring(secondUnderscoreIndex + 1);
 		}
 		return dirtyMapName;
 	}
 
-	private synchronized Mono<Void>  processFiles(List<File> files) {
+	private synchronized Mono<Void> processFiles(List<File> files) {
 		AtomicInteger countProcessedFiles = new AtomicInteger(0);
-		
-		List<ParsingError> errorLists= new ArrayList<>();
-		
+
+		List<ParsingError> errorLists = new ArrayList<>();
+
 		// Function to used to extract the data from the DEM file
-		Function<? super File, ? extends Publisher<? extends Tuple2<String, SvcMapStats>>> function = f -> { 
+		Function<? super File, ? extends Publisher<? extends Tuple2<String, SvcNodeJsParseOutput>>> function = f -> {
 			return generateMapStatFromFile(f).map(stats -> {
 				return Tuples.of(f.getAbsolutePath(), stats);
-			})
-			.onErrorResume(error -> {
+			}).onErrorResume(error -> {
 				_LOGGER.error(String.format("Error while processing %s, msg: %s", f.getAbsolutePath(), error.getMessage()));
 				errorLists.add(new ParsingError(f.getAbsolutePath(), error.getMessage()));
-				return Mono.just(Tuples.of(f.getAbsolutePath(), setMapNameAndTime(f)));
+				var demStats = new SvcNodeJsParseOutput();
+				setMapNameAndTime(f, demStats);
+				return Mono.just(Tuples.of(f.getAbsolutePath(), demStats));
 			});
 		};
-		
+
 		// @formatter:off
 		Flux<File> fileFlux = Flux.fromIterable(files);
-		Flux<Tuple2<String, SvcMapStats>> flux = null;
+		Flux<Tuple2<String, SvcNodeJsParseOutput>> flux = null;
 		if(props.getProcessFilesInParallel()) {
 			_LOGGER.debug("Parsing dem files in parallel");
 			flux = fileFlux.parallel()
@@ -241,32 +249,26 @@ public class DemFileParserImp implements DemFileParser {
 		
 		return flux.map(tuple -> { // Checking if the DEM file had info in it
 				String fileName = tuple.getT1();
-				SvcMapStats stats = tuple.getT2();
-				boolean canProcessTheFile = stats.getUsersStats() != null; 
+				SvcNodeJsParseOutput stats = tuple.getT2();
+				boolean canProcessTheFile = stats.getAllPlayerStats() != null && !stats.getAllPlayerStats().isEmpty(); 
 				return Tuples.of(canProcessTheFile, fileName, stats);
 			})
 			.map(tuple -> { // Map the DEM file info into appropriate objects
 				boolean canProcess = tuple.getT1();
 				String fileName = tuple.getT2();
-				List<Users_scoresDto> scoreList = new ArrayList<Users_scoresDto>();
 				List<UsersDto> usersList = new ArrayList<UsersDto>();
+				SvcNodeJsParseOutput stats = tuple.getT3();
 				
 				if(canProcess) {
-					SvcMapStats stats = tuple.getT3();
-					stats.getUsersStats().forEach(score -> {
+					stats.getAllPlayerStats().forEach(playerScore -> {
 						UsersDto user = new UsersDto();
-						user.setSteam_id(score.getSteamID());
-						user.setUser_name(score.getUserName());
-						
-						Users_scoresDto userScore = mapper.fromUserMapStatsToEntityUserScore(stats, score);
-						userScore.setFile_name(fileName);
-						
-						scoreList.add(userScore);
+						user.setSteam_id(playerScore.getSteamID());
+						user.setUser_name(playerScore.getUserName());
 						usersList.add(user);
 					});
 				}
 				
-				return Tuples.of(canProcess, fileName, usersList, scoreList);
+				return Tuples.of(canProcess, fileName, usersList, stats);
 			})
 			.flatMap(tuple -> { // Saving the objects into the DB
 				boolean canProcess = tuple.getT1();
@@ -276,9 +278,10 @@ public class DemFileParserImp implements DemFileParser {
 					tuple.getT3().forEach(user ->{
 						monos.add(repoUser.insertUpdateUser(user));
 					});
-					tuple.getT4().forEach(score -> {
-						monos.add(repoUserScore.insertUpdateUserScore(score));
-					});
+					SvcMapFileStats mapStats = tuple.getT4().getMapStats();
+					var dto = this.mapper.fromSvcToDto(mapStats);
+					monos.add(genericRepo.insert(Match_statsDao.class, Match_statsDto.class, dto));
+					// TODO add all the other insert
 					
 					/*
 					 * I was running out of DB connections, I did not manage
@@ -348,11 +351,10 @@ public class DemFileParserImp implements DemFileParser {
 		});
 	}
 
-	
 	class ParsingError {
 		String fileName;
 		String error;
-		
+
 		public ParsingError(String fileName, String error) {
 			super();
 			this.fileName = fileName;
@@ -363,7 +365,6 @@ public class DemFileParserImp implements DemFileParser {
 		public String toString() {
 			return "ParsingError [fileName=" + fileName + ", error=" + error + "]";
 		}
-		
+
 	}
 }
-

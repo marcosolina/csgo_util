@@ -1,7 +1,5 @@
 package com.ixigo.demmanager.models.svc.demdata.nodejs;
 
-import java.math.BigDecimal;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class SvcRoundShotEvent {
 	private String eventType;
-    private BigDecimal eventTime;
+    private double time;
     private String steamID;
     private int round;
     private String weapon;

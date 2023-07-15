@@ -18,12 +18,13 @@ public class Match_resultsDao extends IxigoDao<Match_resultsDto> {
 	private Match_resultsDto dto = null;
 
 	public Match_resultsDao() {
+		_LOGGER.trace("Instanciating Match_resultsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
+			Match_resultsDto.Fields.match_filename,
 			Match_resultsDto.Fields.team1_wins_as_ct,
-			Match_resultsDto.Fields.match_id,
 			Match_resultsDto.Fields.team2_wins_as_ct,
 			Match_resultsDto.Fields.team2_wins_as_t,
 			Match_resultsDto.Fields.mapname,
@@ -34,13 +35,22 @@ public class Match_resultsDao extends IxigoDao<Match_resultsDto> {
 			Match_resultsDto.Fields.team1_wins_as_t,
 			Match_resultsDto.Fields.team2_total_wins,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Match_resultsDto();
 	}
 
 	@Override
 	public Match_resultsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Match_resultsDto(), row, rowMetaData);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getTeam1_wins_as_ct() {
@@ -49,14 +59,6 @@ public class Match_resultsDao extends IxigoDao<Match_resultsDto> {
 
 	public void setTeam1_wins_as_ct(Long team1_wins_as_ct) {
 		this.dto.setTeam1_wins_as_ct(team1_wins_as_ct);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getTeam2_wins_as_ct() {

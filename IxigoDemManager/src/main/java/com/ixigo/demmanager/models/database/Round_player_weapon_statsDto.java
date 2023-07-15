@@ -15,12 +15,12 @@ public class Round_player_weapon_statsDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
 	private BigDecimal damage_per_shot = BigDecimal.ZERO;
-	private Long match_id = null;
 	private BigDecimal accuracy = BigDecimal.ZERO;
 	private String steamid = "";
 	private Long hits = null;
 	private String weapon = "";
 	private Long total_damage = null;
+	private String match_filename = "";
 	private Long round = null;
 	private BigDecimal damage_per_hit = BigDecimal.ZERO;
 	private Long shots_fired = null;

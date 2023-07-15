@@ -3,12 +3,10 @@ package com.ixigo.demmanager.mappers;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-import com.ixigo.demmanager.constants.RoundParserUtils;
+import com.ixigo.demmanager.models.database.Match_statsDto;
 import com.ixigo.demmanager.models.database.UsersDto;
-import com.ixigo.demmanager.models.database.Users_scoresDto;
-import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
-import com.ixigo.demmanager.models.svc.demdata.SvcUserGotvScore;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcMapFileStats;
 
 /**
  * Simple mapper to map the models between the Service and Repository layers
@@ -26,6 +24,13 @@ public interface SvcMapper {
 	@Mapping(source = "userName", target = "user_name")
 	public UsersDto fromSvcToDto(SvcUser dto);
 	
+	@Mapping(source = "date", target = "match_date")
+	@Mapping(source = "mapName", target = "mapname")
+	@Mapping(source = "fileName", target = "match_filename")
+	//@Mapping(source = "matchId", target = "match_id")
+	public Match_statsDto fromSvcToDto(SvcMapFileStats svc);
+	
+	/*
 	public default Users_scoresDto fromUserMapStatsToEntityUserScore(SvcMapStats ms, SvcUserGotvScore userScore) {
 		Users_scoresDto ums = new Users_scoresDto();
 
@@ -131,4 +136,5 @@ public interface SvcMapper {
 		mapStats.addUserMapStats(gotvScore);
 		return mapStats;
 	}
+	*/
 }

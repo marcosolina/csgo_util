@@ -16,8 +16,9 @@ public class Match_hit_stats_extendedDao extends IxigoDao<Match_hit_stats_extend
 	private Match_hit_stats_extendedDto dto = null;
 
 	public Match_hit_stats_extendedDao() {
+		_LOGGER.trace("Instanciating Match_hit_stats_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Match_hit_stats_extendedDto.Fields.steamid,
@@ -26,17 +27,18 @@ public class Match_hit_stats_extendedDao extends IxigoDao<Match_hit_stats_extend
 			Match_hit_stats_extendedDto.Fields.weapon,
 			Match_hit_stats_extendedDto.Fields.total_damage,
 			Match_hit_stats_extendedDto.Fields.leg_hits,
+			Match_hit_stats_extendedDto.Fields.match_filename,
 			Match_hit_stats_extendedDto.Fields.headshots,
 			Match_hit_stats_extendedDto.Fields.arm_hits,
-			Match_hit_stats_extendedDto.Fields.match_id,
 			Match_hit_stats_extendedDto.Fields.chest_hits,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Match_hit_stats_extendedDto();
 	}
 
 	@Override
 	public Match_hit_stats_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Match_hit_stats_extendedDto(), row, rowMetaData);
 	}
 
@@ -88,6 +90,14 @@ public class Match_hit_stats_extendedDao extends IxigoDao<Match_hit_stats_extend
 		this.dto.setLeg_hits(leg_hits);
 	}
 
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
+	}
+
 	public Long getHeadshots() {
 		return dto.getHeadshots();
 	}
@@ -102,14 +112,6 @@ public class Match_hit_stats_extendedDao extends IxigoDao<Match_hit_stats_extend
 
 	public void setArm_hits(Long arm_hits) {
 		this.dto.setArm_hits(arm_hits);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getChest_hits() {

@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.svc.demdata;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcMapFileStats;
@@ -19,12 +20,12 @@ import lombok.Setter;
 @Setter
 public class SvcNodeJsParseOutput implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private List<SvcPlayerStats> allPlayerStats;
-	private SvcMapFileStats mapStats;
-	private List<SvcRoundStats> allRoundStats;
-	private List<SvcPlayerRoundStats> allPlayerRoundStats;
-	private List<SvcRoundKillEvent> allRoundKillEvents;
-	private List<SvcRoundShotEvent> allRoundShotEvents;
-	private List<SvcRoundHitEvent> allRoundHitEvents;
-	private List<SvcRoundEvent> allRoundEvents;
+	private List<SvcPlayerStats> allPlayerStats = new ArrayList<>();
+	private SvcMapFileStats mapStats = new SvcMapFileStats();
+	private List<SvcRoundStats> allRoundStats = new ArrayList<>();
+	private List<SvcPlayerRoundStats> allPlayerRoundStats = new ArrayList<>();
+	private List<SvcRoundKillEvent> allRoundKillEvents = new ArrayList<>();
+	private List<SvcRoundShotEvent> allRoundShotEvents = new ArrayList<>();
+	private List<SvcRoundHitEvent> allRoundHitEvents = new ArrayList<>();
+	private List<SvcRoundEvent> allRoundEvents = new ArrayList<>();
 }

@@ -6,8 +6,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.r2dbc.core.DatabaseClient;
 
 import com.ixigo.demmanager.config.properties.PostgresProps;
+import com.ixigo.demmanager.repositories.implementations.CrudRepoGeneric;
 import com.ixigo.demmanager.repositories.implementations.RepoProcessQueuePostgres;
 import com.ixigo.demmanager.repositories.implementations.RepoUserPostgres;
+import com.ixigo.demmanager.repositories.interfaces.CrudRepo;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
 
@@ -62,5 +64,10 @@ public class Repositories {
 	@Bean
 	public RepoUser getRepoUserPostgres() {
 		return new RepoUserPostgres();
+	}
+	
+	@Bean
+	public CrudRepo getCrudRepo() {
+		return new CrudRepoGeneric();
 	}
 }

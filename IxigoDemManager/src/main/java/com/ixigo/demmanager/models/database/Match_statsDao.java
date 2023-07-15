@@ -18,23 +18,24 @@ public class Match_statsDao extends IxigoDao<Match_statsDto> {
 	private Match_statsDto dto = null;
 
 	public Match_statsDao() {
+		_LOGGER.trace("Instanciating Match_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {
-			Match_statsDto.Fields.match_id,
+			Match_statsDto.Fields.match_filename,
 		});
 		this.setSqlFields(new String[] {
 			Match_statsDto.Fields.match_filename,
-			Match_statsDto.Fields.match_id,
 			Match_statsDto.Fields.mapname,
 			Match_statsDto.Fields.match_date,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Match_statsDto();
 	}
 
 	@Override
 	public Match_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Match_statsDto(), row, rowMetaData);
 	}
 
@@ -44,14 +45,6 @@ public class Match_statsDao extends IxigoDao<Match_statsDto> {
 
 	public void setMatch_filename(String match_filename) {
 		this.dto.setMatch_filename(match_filename);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public String getMapname() {

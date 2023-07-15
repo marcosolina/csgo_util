@@ -16,8 +16,9 @@ public class Round_hit_stats_extendedDao extends IxigoDao<Round_hit_stats_extend
 	private Round_hit_stats_extendedDto dto = null;
 
 	public Round_hit_stats_extendedDao() {
+		_LOGGER.trace("Instanciating Round_hit_stats_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Round_hit_stats_extendedDto.Fields.steamid,
@@ -26,18 +27,19 @@ public class Round_hit_stats_extendedDao extends IxigoDao<Round_hit_stats_extend
 			Round_hit_stats_extendedDto.Fields.weapon,
 			Round_hit_stats_extendedDto.Fields.total_damage,
 			Round_hit_stats_extendedDto.Fields.leg_hits,
+			Round_hit_stats_extendedDto.Fields.match_filename,
 			Round_hit_stats_extendedDto.Fields.headshots,
 			Round_hit_stats_extendedDto.Fields.round,
 			Round_hit_stats_extendedDto.Fields.arm_hits,
-			Round_hit_stats_extendedDto.Fields.match_id,
 			Round_hit_stats_extendedDto.Fields.chest_hits,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Round_hit_stats_extendedDto();
 	}
 
 	@Override
 	public Round_hit_stats_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Round_hit_stats_extendedDto(), row, rowMetaData);
 	}
 
@@ -89,6 +91,14 @@ public class Round_hit_stats_extendedDao extends IxigoDao<Round_hit_stats_extend
 		this.dto.setLeg_hits(leg_hits);
 	}
 
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
+	}
+
 	public Long getHeadshots() {
 		return dto.getHeadshots();
 	}
@@ -111,14 +121,6 @@ public class Round_hit_stats_extendedDao extends IxigoDao<Round_hit_stats_extend
 
 	public void setArm_hits(Long arm_hits) {
 		this.dto.setArm_hits(arm_hits);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getChest_hits() {

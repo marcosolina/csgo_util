@@ -18,22 +18,24 @@ public class Round_eventsDao extends IxigoDao<Round_eventsDto> {
 	private Round_eventsDto dto = null;
 
 	public Round_eventsDao() {
+		_LOGGER.trace("Instanciating Round_eventsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Round_eventsDto.Fields.steamid,
+			Round_eventsDto.Fields.match_filename,
 			Round_eventsDto.Fields.round,
-			Round_eventsDto.Fields.match_id,
 			Round_eventsDto.Fields.eventtype,
 			Round_eventsDto.Fields.eventtime,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Round_eventsDto();
 	}
 
 	@Override
 	public Round_eventsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Round_eventsDto(), row, rowMetaData);
 	}
 
@@ -45,20 +47,20 @@ public class Round_eventsDao extends IxigoDao<Round_eventsDto> {
 		this.dto.setSteamid(steamid);
 	}
 
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
+	}
+
 	public Long getRound() {
 		return dto.getRound();
 	}
 
 	public void setRound(Long round) {
 		this.dto.setRound(round);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public String getEventtype() {

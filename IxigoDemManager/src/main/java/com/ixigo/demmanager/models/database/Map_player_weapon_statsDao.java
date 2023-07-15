@@ -18,8 +18,9 @@ public class Map_player_weapon_statsDao extends IxigoDao<Map_player_weapon_stats
 	private Map_player_weapon_statsDto dto = null;
 
 	public Map_player_weapon_statsDao() {
+		_LOGGER.trace("Instanciating Map_player_weapon_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Map_player_weapon_statsDto.Fields.damage_per_shot,
@@ -37,12 +38,13 @@ public class Map_player_weapon_statsDao extends IxigoDao<Map_player_weapon_stats
 			Map_player_weapon_statsDto.Fields.stomach_hit_percentage,
 			Map_player_weapon_statsDto.Fields.arm_hit_percentage,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Map_player_weapon_statsDto();
 	}
 
 	@Override
 	public Map_player_weapon_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Map_player_weapon_statsDto(), row, rowMetaData);
 	}
 

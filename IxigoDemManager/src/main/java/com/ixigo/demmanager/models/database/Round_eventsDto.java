@@ -15,8 +15,8 @@ public class Round_eventsDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
 	private String steamid = "";
+	private String match_filename = "";
 	private Long round = null;
-	private Long match_id = null;
 	private String eventtype = "";
 	private BigDecimal eventtime = BigDecimal.ZERO;
 

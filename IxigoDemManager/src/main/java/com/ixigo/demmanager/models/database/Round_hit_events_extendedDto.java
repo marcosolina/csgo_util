@@ -17,10 +17,10 @@ public class Round_hit_events_extendedDto implements IxigoDto {
 	private String steamid = "";
 	private String weapon = "";
 	private Long damagearmour = null;
+	private String match_filename = "";
 	private Long round = null;
 	private String victimsteamid = "";
 	private Long hitgroup = null;
-	private Long match_id = null;
 	private Long damagehealth = null;
 	private BigDecimal eventtime = BigDecimal.ZERO;
 	private Long attacker_team = null;

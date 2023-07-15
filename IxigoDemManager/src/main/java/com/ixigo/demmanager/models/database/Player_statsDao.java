@@ -16,21 +16,23 @@ public class Player_statsDao extends IxigoDao<Player_statsDto> {
 	private Player_statsDto dto = null;
 
 	public Player_statsDao() {
+		_LOGGER.trace("Instanciating Player_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_statsDto.Fields.steamid,
 			Player_statsDto.Fields.score,
-			Player_statsDto.Fields.match_id,
+			Player_statsDto.Fields.match_filename,
 			Player_statsDto.Fields.username,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_statsDto();
 	}
 
 	@Override
 	public Player_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_statsDto(), row, rowMetaData);
 	}
 
@@ -50,12 +52,12 @@ public class Player_statsDao extends IxigoDao<Player_statsDto> {
 		this.dto.setScore(score);
 	}
 
-	public Long getMatch_id() {
-		return dto.getMatch_id();
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
 	}
 
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public String getUsername() {

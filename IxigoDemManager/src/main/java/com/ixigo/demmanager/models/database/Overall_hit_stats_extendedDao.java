@@ -16,8 +16,9 @@ public class Overall_hit_stats_extendedDao extends IxigoDao<Overall_hit_stats_ex
 	private Overall_hit_stats_extendedDto dto = null;
 
 	public Overall_hit_stats_extendedDao() {
+		_LOGGER.trace("Instanciating Overall_hit_stats_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Overall_hit_stats_extendedDto.Fields.steamid,
@@ -30,12 +31,13 @@ public class Overall_hit_stats_extendedDao extends IxigoDao<Overall_hit_stats_ex
 			Overall_hit_stats_extendedDto.Fields.arm_hits,
 			Overall_hit_stats_extendedDto.Fields.chest_hits,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Overall_hit_stats_extendedDto();
 	}
 
 	@Override
 	public Overall_hit_stats_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Overall_hit_stats_extendedDto(), row, rowMetaData);
 	}
 

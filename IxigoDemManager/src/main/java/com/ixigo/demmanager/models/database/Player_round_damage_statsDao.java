@@ -18,15 +18,16 @@ public class Player_round_damage_statsDao extends IxigoDao<Player_round_damage_s
 	private Player_round_damage_statsDto dto = null;
 
 	public Player_round_damage_statsDao() {
+		_LOGGER.trace("Instanciating Player_round_damage_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_round_damage_statsDto.Fields.steamid,
+			Player_round_damage_statsDto.Fields.match_filename,
 			Player_round_damage_statsDto.Fields.he_damage,
 			Player_round_damage_statsDto.Fields.round,
 			Player_round_damage_statsDto.Fields.fire_damage,
-			Player_round_damage_statsDto.Fields.match_id,
 			Player_round_damage_statsDto.Fields.total_damage_armour,
 			Player_round_damage_statsDto.Fields.opponents_flashed,
 			Player_round_damage_statsDto.Fields.opponent_blindtime,
@@ -34,12 +35,13 @@ public class Player_round_damage_statsDao extends IxigoDao<Player_round_damage_s
 			Player_round_damage_statsDto.Fields.total_damage_health,
 			Player_round_damage_statsDto.Fields.teammate_blindtime,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_round_damage_statsDto();
 	}
 
 	@Override
 	public Player_round_damage_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_round_damage_statsDto(), row, rowMetaData);
 	}
 
@@ -49,6 +51,14 @@ public class Player_round_damage_statsDao extends IxigoDao<Player_round_damage_s
 
 	public void setSteamid(String steamid) {
 		this.dto.setSteamid(steamid);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getHe_damage() {
@@ -73,14 +83,6 @@ public class Player_round_damage_statsDao extends IxigoDao<Player_round_damage_s
 
 	public void setFire_damage(Long fire_damage) {
 		this.dto.setFire_damage(fire_damage);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getTotal_damage_armour() {

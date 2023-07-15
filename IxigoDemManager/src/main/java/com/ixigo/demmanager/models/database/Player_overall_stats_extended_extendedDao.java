@@ -18,8 +18,9 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 	private Player_overall_stats_extended_extendedDto dto = null;
 
 	public Player_overall_stats_extended_extendedDao() {
+		_LOGGER.trace("Instanciating Player_overall_stats_extended_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_overall_stats_extended_extendedDto.Fields.kills,
@@ -68,12 +69,13 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 			Player_overall_stats_extended_extendedDto.Fields.fa,
 			Player_overall_stats_extended_extendedDto.Fields.rounds,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_overall_stats_extended_extendedDto();
 	}
 
 	@Override
 	public Player_overall_stats_extended_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_overall_stats_extended_extendedDto(), row, rowMetaData);
 	}
 

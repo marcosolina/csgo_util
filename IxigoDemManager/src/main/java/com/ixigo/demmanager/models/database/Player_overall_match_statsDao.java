@@ -18,8 +18,9 @@ public class Player_overall_match_statsDao extends IxigoDao<Player_overall_match
 	private Player_overall_match_statsDto dto = null;
 
 	public Player_overall_match_statsDao() {
+		_LOGGER.trace("Instanciating Player_overall_match_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_overall_match_statsDto.Fields.steamid,
@@ -28,12 +29,13 @@ public class Player_overall_match_statsDao extends IxigoDao<Player_overall_match
 			Player_overall_match_statsDto.Fields.averagewinscore,
 			Player_overall_match_statsDto.Fields.winlossratio,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_overall_match_statsDto();
 	}
 
 	@Override
 	public Player_overall_match_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_overall_match_statsDto(), row, rowMetaData);
 	}
 

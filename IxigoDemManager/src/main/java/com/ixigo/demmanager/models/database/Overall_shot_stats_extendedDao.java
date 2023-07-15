@@ -16,20 +16,22 @@ public class Overall_shot_stats_extendedDao extends IxigoDao<Overall_shot_stats_
 	private Overall_shot_stats_extendedDto dto = null;
 
 	public Overall_shot_stats_extendedDao() {
+		_LOGGER.trace("Instanciating Overall_shot_stats_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Overall_shot_stats_extendedDto.Fields.steamid,
 			Overall_shot_stats_extendedDto.Fields.weapon,
 			Overall_shot_stats_extendedDto.Fields.shots_fired,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Overall_shot_stats_extendedDto();
 	}
 
 	@Override
 	public Overall_shot_stats_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Overall_shot_stats_extendedDto(), row, rowMetaData);
 	}
 

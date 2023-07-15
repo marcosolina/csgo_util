@@ -18,23 +18,33 @@ public class Round_stats_extendedDao extends IxigoDao<Round_stats_extendedDto> {
 	private Round_stats_extendedDto dto = null;
 
 	public Round_stats_extendedDao() {
+		_LOGGER.trace("Instanciating Round_stats_extendedDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
+			Round_stats_extendedDto.Fields.match_filename,
 			Round_stats_extendedDto.Fields.reasonendround,
-			Round_stats_extendedDto.Fields.match_id,
 			Round_stats_extendedDto.Fields.roundnumber,
 			Round_stats_extendedDto.Fields.total_damage_winners,
 			Round_stats_extendedDto.Fields.winnerside,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Round_stats_extendedDto();
 	}
 
 	@Override
 	public Round_stats_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Round_stats_extendedDto(), row, rowMetaData);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getReasonendround() {
@@ -43,14 +53,6 @@ public class Round_stats_extendedDao extends IxigoDao<Round_stats_extendedDto> {
 
 	public void setReasonendround(Long reasonendround) {
 		this.dto.setReasonendround(reasonendround);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getRoundnumber() {

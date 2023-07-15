@@ -16,24 +16,26 @@ public class Player_round_death_statsDao extends IxigoDao<Player_round_death_sta
 	private Player_round_death_statsDto dto = null;
 
 	public Player_round_death_statsDao() {
+		_LOGGER.trace("Instanciating Player_round_death_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_round_death_statsDto.Fields.steamid,
+			Player_round_death_statsDto.Fields.match_filename,
 			Player_round_death_statsDto.Fields.headshot_deaths,
 			Player_round_death_statsDto.Fields.round,
 			Player_round_death_statsDto.Fields.trade_deaths,
-			Player_round_death_statsDto.Fields.match_id,
 			Player_round_death_statsDto.Fields.team_deaths,
 			Player_round_death_statsDto.Fields.deaths,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_round_death_statsDto();
 	}
 
 	@Override
 	public Player_round_death_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_round_death_statsDto(), row, rowMetaData);
 	}
 
@@ -43,6 +45,14 @@ public class Player_round_death_statsDao extends IxigoDao<Player_round_death_sta
 
 	public void setSteamid(String steamid) {
 		this.dto.setSteamid(steamid);
+	}
+
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getHeadshot_deaths() {
@@ -67,14 +77,6 @@ public class Player_round_death_statsDao extends IxigoDao<Player_round_death_sta
 
 	public void setTrade_deaths(Long trade_deaths) {
 		this.dto.setTrade_deaths(trade_deaths);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getTeam_deaths() {

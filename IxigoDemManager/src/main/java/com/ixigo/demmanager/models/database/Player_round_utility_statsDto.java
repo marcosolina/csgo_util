@@ -15,9 +15,9 @@ public class Player_round_utility_statsDto implements IxigoDto {
 	private String steamid = "";
 	private Long grenades_thrown = null;
 	private Long smokes_thrown = null;
+	private String match_filename = "";
 	private Long round = null;
 	private Long flashes_thrown = null;
-	private Long match_id = null;
 	private Long inferno_thrown = null;
 
 }

@@ -15,10 +15,10 @@ public class Round_scorecardDto implements IxigoDto {
 	private Long total_equipment_value = null;
 	private Long ct_score = null;
 	private String round_type = "";
-	private Long match_id = null;
 	private Long round_end_reason = null;
 	private Long team = null;
 	private Long player_count = null;
+	private String match_filename = "";
 	private Long round = null;
 	private Long death_count = null;
 	private Long t_score = null;

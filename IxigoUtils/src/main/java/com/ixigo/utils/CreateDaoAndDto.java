@@ -140,6 +140,7 @@ public class CreateDaoAndDto {
 			daoWriter.println("\tprivate " + fileName + "Dto dto = null;");
 			daoWriter.println("");
 			daoWriter.println("\tpublic " + fileName + "Dao() {");
+			daoWriter.println(String.format("\t\t_LOGGER.trace(\"Instanciating %sDao\");", fileName));
 			daoWriter.println("\t\tthis.setSqlViewName(tableName);");
 			daoWriter.println("\t\t// @formatter:off");
 			if (sbKeys.isEmpty()) {
@@ -244,6 +245,7 @@ public class CreateDaoAndDto {
 			dtoWriter.println("@FieldNameConstants");
 			dtoWriter.println("@Getter");
 			dtoWriter.println("@Setter");
+			dtoWriter.println("@Accessors(chain = true)");
 			dtoWriter.println("public class " + fileName + "Dto implements IxigoDto {");
 			dtoWriter.println("");
 			dtoWriter.println("\tprivate static final long serialVersionUID = 1L;");

@@ -16,24 +16,26 @@ public class Player_round_utility_statsDao extends IxigoDao<Player_round_utility
 	private Player_round_utility_statsDto dto = null;
 
 	public Player_round_utility_statsDao() {
+		_LOGGER.trace("Instanciating Player_round_utility_statsDao");
 		this.setSqlViewName(tableName);
-	// @formatter:off
+		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
 			Player_round_utility_statsDto.Fields.steamid,
 			Player_round_utility_statsDto.Fields.grenades_thrown,
 			Player_round_utility_statsDto.Fields.smokes_thrown,
+			Player_round_utility_statsDto.Fields.match_filename,
 			Player_round_utility_statsDto.Fields.round,
 			Player_round_utility_statsDto.Fields.flashes_thrown,
-			Player_round_utility_statsDto.Fields.match_id,
 			Player_round_utility_statsDto.Fields.inferno_thrown,
 		});
-	// @formatter:on
+		// @formatter:on
 		this.dto = new Player_round_utility_statsDto();
 	}
 
 	@Override
 	public Player_round_utility_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
+		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_round_utility_statsDto(), row, rowMetaData);
 	}
 
@@ -61,6 +63,14 @@ public class Player_round_utility_statsDao extends IxigoDao<Player_round_utility
 		this.dto.setSmokes_thrown(smokes_thrown);
 	}
 
+	public String getMatch_filename() {
+		return dto.getMatch_filename();
+	}
+
+	public void setMatch_filename(String match_filename) {
+		this.dto.setMatch_filename(match_filename);
+	}
+
 	public Long getRound() {
 		return dto.getRound();
 	}
@@ -75,14 +85,6 @@ public class Player_round_utility_statsDao extends IxigoDao<Player_round_utility
 
 	public void setFlashes_thrown(Long flashes_thrown) {
 		this.dto.setFlashes_thrown(flashes_thrown);
-	}
-
-	public Long getMatch_id() {
-		return dto.getMatch_id();
-	}
-
-	public void setMatch_id(Long match_id) {
-		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getInferno_thrown() {

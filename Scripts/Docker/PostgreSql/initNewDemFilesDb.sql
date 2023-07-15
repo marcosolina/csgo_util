@@ -44,9 +44,10 @@ CREATE TABLE DEM_PROCESS_QUEUE (
 );
 
 CREATE TABLE MATCH_STATS (
-    match_fileName VARCHAR(255) PRIMARY KEY,
+    match_id SERIAL PRIMARY KEY,
     match_date TIMESTAMP,
-    mapName VARCHAR(255)
+    mapName VARCHAR(255),
+    match_fileName VARCHAR(255)
 );
 
 --UPDATE MATCH_STATS 
@@ -71,8 +72,8 @@ CREATE TABLE PLAYER_ROUND_STATS (
     moneySpent INTEGER,
     equipmentValue INTEGER,
     mvp BOOLEAN,
-    match_fileName VARCHAR(255),
-    FOREIGN KEY (match_fileName) REFERENCES MATCH_STATS(match_fileName)
+    match_id INTEGER,
+    FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
 
 CREATE TABLE ROUND_EVENTS (
@@ -80,8 +81,8 @@ CREATE TABLE ROUND_EVENTS (
     eventtime NUMERIC(6, 2), 
     steamID VARCHAR(255),
     round INTEGER,
-    match_fileName VARCHAR(255),
-    FOREIGN KEY (match_fileName) REFERENCES MATCH_STATS(match_fileName)
+    match_id INTEGER,
+    FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
 
 CREATE TABLE ROUND_KILL_EVENTS (
@@ -97,8 +98,8 @@ CREATE TABLE ROUND_KILL_EVENTS (
     isFirstKill BOOLEAN,
     isTradeKill BOOLEAN,
     isTradeDeath BOOLEAN,
-    match_fileName VARCHAR(255),
-    FOREIGN KEY (match_fileName) REFERENCES MATCH_STATS(match_fileName)
+    match_id INTEGER,
+    FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
 
 CREATE TABLE ROUND_SHOT_EVENTS (
@@ -107,8 +108,8 @@ CREATE TABLE ROUND_SHOT_EVENTS (
     steamID VARCHAR(255),
     round INTEGER,
     weapon VARCHAR(255),
-    match_fileName VARCHAR(255),
-    FOREIGN KEY (match_fileName) REFERENCES MATCH_STATS(match_fileName)
+    match_id INTEGER,
+    FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
 
 CREATE TABLE ROUND_HIT_EVENTS (
@@ -121,24 +122,24 @@ CREATE TABLE ROUND_HIT_EVENTS (
     damageHealth INTEGER,
     damageArmour INTEGER,
     blindTime NUMERIC(6, 2),
-    match_fileName VARCHAR(255),
-    FOREIGN KEY (match_fileName) REFERENCES MATCH_STATS(match_fileName)
+    match_id INTEGER,
+    FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
 
 CREATE TABLE PLAYER_STATS (
     userName VARCHAR(255),
     steamID VARCHAR(255),
-    match_fileName VARCHAR(255),
+    match_id INTEGER,
     score INTEGER,
-    FOREIGN KEY (match_fileName) REFERENCES MATCH_STATS(match_fileName)
+    FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
 
 CREATE TABLE ROUND_STATS (
     roundNumber INTEGER,
     winnerSide INTEGER,
     reasonEndRound INTEGER,
-    match_fileName VARCHAR(255),
-    FOREIGN KEY (match_fileName) REFERENCES MATCH_STATS(match_fileName)
+    match_id INTEGER,
+    FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
 
 CREATE OR REPLACE VIEW ROUND_KILL_EVENTS_EXTENDED AS
@@ -149,9 +150,86 @@ SELECT
 FROM 
     ROUND_KILL_EVENTS rke
 LEFT JOIN 
-    PLAYER_ROUND_STATS prs_killer ON rke.steamID = prs_killer.steamID AND rke.match_fileName = prs_killer.match_fileName AND rke.round = prs_killer.round
+    PLAYER_ROUND_STATS prs_killer ON rke.steamID = prs_killer.steamID AND rke.match_id = prs_killer.match_id AND rke.round = prs_killer.round
 LEFT JOIN 
-    PLAYER_ROUND_STATS prs_victim ON rke.victimSteamId = prs_victim.steamID AND rke.match_fileName = prs_victim.match_fileName AND rke.round = prs_victim.round;
+    PLAYER_ROUND_STATS prs_victim ON rke.victimSteamId = prs_victim.steamID AND rke.match_id = prs_victim.match_id AND rke.round = prs_victim.round;
+
+CREATE OR REPLACE VIEW PLAYER_KILL_COUNT AS
+SELECT 
+    rkee.steamID AS killer, 
+    rkee.victimSteamId AS victim, 
+    COUNT(*) AS kill_count
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED rkee
+WHERE 
+    rkee.killer_team != rkee.victim_team
+GROUP BY 
+    rkee.steamID, 
+    rkee.victimSteamId;
+
+CREATE OR REPLACE VIEW PLAYER_MATCH_KILL_COUNT AS
+SELECT 
+    rkee.steamID AS killer, 
+    rkee.victimSteamId AS victim,
+    rkee.match_id,
+    COUNT(*) AS kill_count
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED rkee
+WHERE 
+    rkee.killer_team != rkee.victim_team
+GROUP BY 
+    rkee.steamID,
+    rkee.match_id,
+    rkee.victimSteamId;
+
+CREATE OR REPLACE VIEW PLAYER_WEAPON_MAP_KILLS AS
+SELECT
+    steamID,
+    mapName,
+    weapon,
+    COUNT(*) AS kills,
+    SUM(CASE WHEN headshot THEN 1 ELSE 0 END) AS headshots
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED as r
+LEFT JOIN
+    MATCH_STATS as m ON r.match_id=m.match_id
+WHERE
+    killer_team != victim_team
+GROUP BY 
+    steamID,
+    mapName,
+    weapon;
+
+CREATE OR REPLACE VIEW PLAYER_WEAPON_MATCH_KILLS AS
+SELECT
+    steamID,
+    match_id,
+    weapon,
+    COUNT(*) AS kills,
+    SUM(CASE WHEN headshot THEN 1 ELSE 0 END) AS headshots
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED
+WHERE
+    killer_team != victim_team
+GROUP BY 
+    steamID,
+    match_id,
+    weapon;
+
+CREATE OR REPLACE VIEW PLAYER_WEAPON_OVERALL_KILLS AS
+SELECT
+    steamID,
+    weapon,
+    COUNT(*) AS kills,
+    SUM(CASE WHEN headshot THEN 1 ELSE 0 END) AS headshots
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED
+WHERE
+    killer_team != victim_team
+GROUP BY 
+    steamID,
+    weapon;
+
 
 CREATE OR REPLACE VIEW ROUND_HIT_EVENTS_EXTENDED AS
 SELECT 
@@ -161,15 +239,58 @@ SELECT
 FROM 
     ROUND_HIT_EVENTS rhe
 LEFT JOIN 
-    PLAYER_ROUND_STATS prs_attacker ON rhe.steamID = prs_attacker.steamID AND rhe.match_fileName = prs_attacker.match_fileName AND rhe.round = prs_attacker.round
+    PLAYER_ROUND_STATS prs_attacker ON rhe.steamID = prs_attacker.steamID AND rhe.match_id = prs_attacker.match_id AND rhe.round = prs_attacker.round
 LEFT JOIN 
-    PLAYER_ROUND_STATS prs_victim ON rhe.victimSteamId = prs_victim.steamID AND rhe.match_fileName = prs_victim.match_fileName AND rhe.round = prs_victim.round;
+    PLAYER_ROUND_STATS prs_victim ON rhe.victimSteamId = prs_victim.steamID AND rhe.match_id = prs_victim.match_id AND rhe.round = prs_victim.round;
+
+
+CREATE OR REPLACE VIEW ENTRY_KILL_STATS AS
+SELECT 
+    P.steamID,
+    (SELECT COUNT(*) FROM (SELECT DISTINCT match_id, round FROM PLAYER_ROUND_STATS WHERE steamID = P.steamID) AS sub) AS total_rounds,
+    (SELECT COUNT(*) FROM (SELECT DISTINCT match_id, round FROM PLAYER_ROUND_STATS WHERE steamID = P.steamID AND team = 2) AS sub) AS total_rounds_t,
+    (SELECT COUNT(*) FROM (SELECT DISTINCT match_id, round FROM PLAYER_ROUND_STATS WHERE steamID = P.steamID AND team = 3) AS sub) AS total_rounds_ct,
+    SUM(CASE WHEN E.isFirstKill AND E.killer_team != E.victim_team THEN 1 ELSE 0 END) AS ek_attempts,
+    SUM(CASE WHEN E.isFirstKill AND E.killer_team != E.victim_team AND P.survived THEN 1 ELSE 0 END) AS ek_success,
+    SUM(CASE WHEN E.isFirstKill AND P.team = 2 AND E.killer_team != E.victim_team THEN 1 ELSE 0 END) AS ekt_attempts,
+    SUM(CASE WHEN E.isFirstKill AND P.team = 2 AND E.killer_team != E.victim_team AND P.survived THEN 1 ELSE 0 END) AS ekt_success,
+    SUM(CASE WHEN E.isFirstKill AND P.team = 3 AND E.killer_team != E.victim_team THEN 1 ELSE 0 END) AS ekct_attempts,
+    SUM(CASE WHEN E.isFirstKill AND P.team = 3 AND E.killer_team != E.victim_team AND P.survived THEN 1 ELSE 0 END) AS ekct_success
+FROM
+    PLAYER_ROUND_STATS AS P
+LEFT JOIN
+    ROUND_KILL_EVENTS_EXTENDED AS E ON E.steamID = P.steamID AND E.round = P.round AND E.match_id = P.match_id
+GROUP BY 
+    P.steamID;
+
+
+CREATE OR REPLACE VIEW ENTRY_KILL_STATS_EXTENDED AS
+SELECT 
+    E.steamID,
+    E.total_rounds,
+    total_rounds_t,
+    total_rounds_ct,
+    E.ek_attempts,
+    E.ek_success,
+    ROUND(CAST(E.ek_success AS NUMERIC) * 100.0 / NULLIF(E.ek_attempts, 0), 2) AS ek_success_rate,
+    ROUND(CAST(E.ek_success AS NUMERIC) * 100.0 / NULLIF(E.total_rounds, 0), 2) AS ek_success_rate_overall,
+    E.ekt_attempts,
+    E.ekt_success,
+    ROUND(CAST(E.ekt_success AS NUMERIC) * 100.0 / NULLIF(E.ekt_attempts, 0), 2) AS ekt_success_rate,
+    ROUND(CAST(E.ekt_success AS NUMERIC) * 100.0 / NULLIF(E.total_rounds_t, 0), 2) AS ekt_success_rate_overall,
+    E.ekct_attempts,
+    E.ekct_success,
+    ROUND(CAST(E.ekct_success AS NUMERIC) * 100.0 / NULLIF(E.ekct_attempts, 0), 2) AS ekct_success_rate,
+    ROUND(CAST(E.ekct_success AS NUMERIC) * 100.0 / NULLIF(E.total_rounds_ct, 0), 2) AS ekct_success_rate_overall
+FROM 
+    ENTRY_KILL_STATS E;
+
 
 
 CREATE OR REPLACE VIEW PLAYER_ROUND_KILL_STATS AS
 SELECT
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round,
     COUNT(*) as kills,
     COUNT(CASE WHEN ke.headshot = TRUE THEN 1 END) as headshots,
@@ -183,18 +304,18 @@ SELECT
 FROM 
     PLAYER_ROUND_STATS prs
 INNER JOIN 
-    ROUND_KILL_EVENTS_EXTENDED ke ON prs.steamID = ke.steamID AND prs.match_fileName = ke.match_fileName AND prs.round = ke.round
+    ROUND_KILL_EVENTS_EXTENDED ke ON prs.steamID = ke.steamID AND prs.match_id = ke.match_id AND prs.round = ke.round
 WHERE 
     ke.steamID IS NOT NULL
 GROUP BY
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round;
 
 CREATE OR REPLACE VIEW PLAYER_ROUND_DEATH_STATS AS
 SELECT
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round,
     COUNT(*) as deaths,
     COUNT(CASE WHEN ke.headshot = TRUE THEN 1 END) as headshot_deaths,
@@ -203,52 +324,52 @@ SELECT
 FROM 
     PLAYER_ROUND_STATS prs
 INNER JOIN 
-    ROUND_KILL_EVENTS_EXTENDED ke ON prs.steamID = ke.victimSteamId AND prs.match_fileName = ke.match_fileName AND prs.round = ke.round
+    ROUND_KILL_EVENTS_EXTENDED ke ON prs.steamID = ke.victimSteamId AND prs.match_id = ke.match_id AND prs.round = ke.round
 WHERE 
     ke.victimSteamId IS NOT NULL
 GROUP BY
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round;
 
 CREATE OR REPLACE VIEW PLAYER_ROUND_ASSIST_STATS AS
 SELECT
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round,
     COUNT(*) as assists
 FROM 
     PLAYER_ROUND_STATS prs
 INNER JOIN 
-    ROUND_KILL_EVENTS ke ON prs.steamID = ke.assister AND prs.match_fileName = ke.match_fileName AND prs.round = ke.round
+    ROUND_KILL_EVENTS ke ON prs.steamID = ke.assister AND prs.match_id = ke.match_id AND prs.round = ke.round
 WHERE 
     ke.assister IS NOT NULL
 GROUP BY
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round;
 
 CREATE OR REPLACE VIEW PLAYER_ROUND_FLASH_ASSIST_STATS AS
 SELECT
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round,
     COUNT(*) as flashassists
 FROM 
     PLAYER_ROUND_STATS prs
 INNER JOIN 
-    ROUND_KILL_EVENTS ke ON prs.steamID = ke.flashAssister AND prs.match_fileName = ke.match_fileName AND prs.round = ke.round
+    ROUND_KILL_EVENTS ke ON prs.steamID = ke.flashAssister AND prs.match_id = ke.match_id AND prs.round = ke.round
 WHERE 
     ke.flashAssister IS NOT NULL
 GROUP BY
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round;
 
 CREATE OR REPLACE VIEW PLAYER_ROUND_EVENT_STATS AS
 SELECT
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round,
     COUNT(CASE WHEN re.eventtype = 'bomb_planted' THEN 1 END) as bombs_planted,
     COUNT(CASE WHEN re.eventtype = 'bomb_defused' THEN 1 END) as bombs_defused,
@@ -256,19 +377,19 @@ SELECT
 FROM 
     PLAYER_ROUND_STATS prs
 INNER JOIN 
-    ROUND_EVENTS re ON prs.steamID = re.steamID AND prs.match_fileName = re.match_fileName AND prs.round = re.round
+    ROUND_EVENTS re ON prs.steamID = re.steamID AND prs.match_id = re.match_id AND prs.round = re.round
 WHERE 
     re.steamID IS NOT NULL
 GROUP BY
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round;
 
 
 CREATE OR REPLACE VIEW PLAYER_ROUND_DAMAGE_STATS AS
 SELECT
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round,
     SUM(CASE WHEN he.attacker_team != he.victim_team THEN he.damageHealth ELSE 0 END) as total_damage_health,
     SUM(CASE WHEN he.attacker_team != he.victim_team THEN he.damageArmour ELSE 0 END) as total_damage_armour,
@@ -281,17 +402,17 @@ SELECT
 FROM 
     PLAYER_ROUND_STATS prs
 LEFT JOIN 
-    ROUND_HIT_EVENTS_EXTENDED he ON prs.steamID = he.steamID AND prs.match_fileName = he.match_fileName AND prs.round = he.round
+    ROUND_HIT_EVENTS_EXTENDED he ON prs.steamID = he.steamID AND prs.match_id = he.match_id AND prs.round = he.round
 WHERE 
     he.steamID IS NOT NULL
 GROUP BY
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round;
 
 CREATE OR REPLACE VIEW ROUND_STATS_EXTENDED AS
 SELECT
-    rs.match_fileName,
+    rs.match_id,
     rs.roundNumber,
     rs.winnerSide,
     rs.reasonEndRound,
@@ -301,7 +422,7 @@ FROM
 LEFT JOIN
     (SELECT
         prs.steamID,
-        prs.match_fileName,
+        prs.match_id,
         prs.round,
         prs.team,
         prds.total_damage_health,
@@ -309,10 +430,10 @@ LEFT JOIN
     FROM
         PLAYER_ROUND_STATS prs
     JOIN
-        PLAYER_ROUND_DAMAGE_STATS prds ON prs.steamID = prds.steamID AND prs.match_fileName = prds.match_fileName AND prs.round = prds.round
-    ) prd ON rs.match_fileName = prd.match_fileName AND rs.roundNumber = prd.round
+        PLAYER_ROUND_DAMAGE_STATS prds ON prs.steamID = prds.steamID AND prs.match_id = prds.match_id AND prs.round = prds.round
+    ) prd ON rs.match_id = prd.match_id AND rs.roundNumber = prd.round
 GROUP BY
-    rs.match_fileName,
+    rs.match_id,
     rs.roundNumber,
     rs.winnerSide,
     rs.reasonEndRound;
@@ -321,7 +442,7 @@ GROUP BY
 CREATE OR REPLACE VIEW PLAYER_ROUND_UTILITY_STATS AS
 SELECT
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round,
     COUNT(CASE WHEN se.weapon = 'weapon_hegrenade' THEN 1 END) as grenades_thrown,
     COUNT(CASE WHEN se.weapon = 'weapon_flashbang' THEN 1 END) as flashes_thrown,
@@ -330,18 +451,18 @@ SELECT
 FROM 
     PLAYER_ROUND_STATS prs
 LEFT JOIN 
-    ROUND_SHOT_EVENTS se ON prs.steamID = se.steamID AND prs.match_fileName = se.match_fileName AND prs.round = se.round
+    ROUND_SHOT_EVENTS se ON prs.steamID = se.steamID AND prs.match_id = se.match_id AND prs.round = se.round
 WHERE 
     se.steamID IS NOT NULL AND se.eventType = 'weapon_fire'
 GROUP BY
     prs.steamID,
-    prs.match_fileName,
+    prs.match_id,
     prs.round;
 
 CREATE OR REPLACE VIEW PLAYER_ROUND_EXTENDED_STATS AS
 SELECT 
     prs.steamID, 
-    prs.match_fileName, 
+    prs.match_id, 
     prs.round, 
     COALESCE(ke.kills, 0) AS kills,
     COALESCE(ae.assists, 0) AS assists,
@@ -384,21 +505,21 @@ SELECT
 FROM 
     PLAYER_ROUND_STATS prs
 LEFT JOIN 
-    PLAYER_ROUND_KILL_STATS ke ON prs.steamID = ke.steamID AND prs.match_fileName = ke.match_fileName AND prs.round = ke.round
+    PLAYER_ROUND_KILL_STATS ke ON prs.steamID = ke.steamID AND prs.match_id = ke.match_id AND prs.round = ke.round
 LEFT JOIN 
-    PLAYER_ROUND_ASSIST_STATS ae ON prs.steamID = ae.steamID AND prs.match_fileName = ae.match_fileName AND prs.round = ae.round
+    PLAYER_ROUND_ASSIST_STATS ae ON prs.steamID = ae.steamID AND prs.match_id = ae.match_id AND prs.round = ae.round
 LEFT JOIN 
-    PLAYER_ROUND_DEATH_STATS de ON prs.steamID = de.steamID AND prs.match_fileName = de.match_fileName AND prs.round = de.round
+    PLAYER_ROUND_DEATH_STATS de ON prs.steamID = de.steamID AND prs.match_id = de.match_id AND prs.round = de.round
 LEFT JOIN 
-    PLAYER_ROUND_DAMAGE_STATS he ON prs.steamID = he.steamID AND prs.match_fileName = he.match_fileName AND prs.round = he.round
+    PLAYER_ROUND_DAMAGE_STATS he ON prs.steamID = he.steamID AND prs.match_id = he.match_id AND prs.round = he.round
 LEFT JOIN 
-    PLAYER_ROUND_UTILITY_STATS ue ON prs.steamID = ue.steamID AND prs.match_fileName = ue.match_fileName AND prs.round = ue.round
+    PLAYER_ROUND_UTILITY_STATS ue ON prs.steamID = ue.steamID AND prs.match_id = ue.match_id AND prs.round = ue.round
 LEFT JOIN 
-    PLAYER_ROUND_FLASH_ASSIST_STATS fa ON prs.steamID = fa.steamID AND prs.match_fileName = fa.match_fileName AND prs.round = fa.round
+    PLAYER_ROUND_FLASH_ASSIST_STATS fa ON prs.steamID = fa.steamID AND prs.match_id = fa.match_id AND prs.round = fa.round
 LEFT JOIN 
-    PLAYER_ROUND_EVENT_STATS re ON prs.steamID = re.steamID AND prs.match_fileName = re.match_fileName AND prs.round = re.round
+    PLAYER_ROUND_EVENT_STATS re ON prs.steamID = re.steamID AND prs.match_id = re.match_id AND prs.round = re.round
 LEFT JOIN
-    ROUND_STATS_EXTENDED rse on prs.match_fileName = rse.match_fileName AND prs.round = rse.roundNumber;
+    ROUND_STATS_EXTENDED rse on prs.match_id = rse.match_id AND prs.round = rse.roundNumber;
 
 
 
@@ -407,7 +528,7 @@ SELECT
     p.steamID,
     m.match_date,
     STRING_AGG(DISTINCT userName, ', ') usernames,
-    m.match_fileName,
+    m.match_id,
     SUM(CASE WHEN r.team > 1 THEN 1 ELSE 0 END) as roundsPlayed,
     SUM(r.kills) as kills,
     SUM(r.assists) as assists,
@@ -453,13 +574,13 @@ SELECT
 FROM
     PLAYER_STATS p
 LEFT JOIN
-    PLAYER_ROUND_EXTENDED_STATS r ON p.steamID = r.steamID AND p.match_fileName = r.match_fileName
+    PLAYER_ROUND_EXTENDED_STATS r ON p.steamID = r.steamID AND p.match_id = r.match_id
 LEFT JOIN
-    MATCH_STATS as m ON r.match_fileName=m.match_fileName
+    MATCH_STATS as m ON r.match_id=m.match_id
 
 GROUP BY
     p.steamID,
-    m.match_fileName,
+    m.match_id,
     m.match_date,
     p.score;
 
@@ -467,6 +588,9 @@ GROUP BY
 CREATE OR REPLACE VIEW PLAYER_MATCH_STATS_EXTENDED AS
 SELECT
     pms.*,
+    mr.last_round_team,
+    rounds_on_team1,
+    rounds_on_team2,
     ROUND(pms.kills*1.0/pms.roundsPlayed,2) as kpr,
     ROUND(pms.deaths*1.0/pms.roundsPlayed,2) as dpr,
     ROUND(pms.tdh*1.0/pms.roundsPlayed,2) as adr,
@@ -479,6 +603,7 @@ SELECT
     ROUND(pms.kastTotal*1.0/pms.roundsPlayed,2) as kast
 FROM 
     PLAYER_MATCH_STATS pms
+LEFT JOIN PLAYER_MATCH_RESULTS mr ON pms.steamid = mr.steamid AND pms.match_id = mr.match_id
 WHERE
     pms.roundsPlayed>0;
 
@@ -487,7 +612,7 @@ CREATE OR REPLACE VIEW ROUND_SHOT_STATS_EXTENDED AS
 SELECT
     steamID,
     round,
-    match_fileName,
+    match_id,
     REPLACE(weapon,'weapon_','') AS weapon,
     COALESCE(COUNT(eventType),0) AS shots_fired
     
@@ -498,7 +623,7 @@ GROUP BY
     steamID,
     round,
     weapon,
-    match_fileName;
+    match_id;
 
 CREATE OR REPLACE VIEW ROUND_HIT_STATS_EXTENDED AS
 SELECT
@@ -512,20 +637,20 @@ SELECT
     SUM(CASE WHEN hitGroup IN (6, 7) THEN 1 ELSE 0 END) AS leg_hits,
     SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
     SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits,
-    match_fileName
+    match_id
 FROM 
-    ROUND_HIT_EVENTS
+    ROUND_HIT_EVENTS_EXTENDED
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
 GROUP BY
     steamID,
     round,
     weapon,
-    match_fileName;
+    match_id;
 
 CREATE OR REPLACE VIEW MATCH_SHOT_STATS_EXTENDED AS 
 SELECT
     steamID,
-    match_fileName,
+    match_id,
     REPLACE(weapon,'weapon_','') AS weapon,
     COALESCE(COUNT(eventType),0) AS shots_fired
     
@@ -535,7 +660,7 @@ WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','m
 GROUP BY
     steamID,
     weapon,
-    match_fileName;
+    match_id;
 
 CREATE OR REPLACE VIEW MATCH_HIT_STATS_EXTENDED AS
 SELECT
@@ -548,14 +673,14 @@ SELECT
     SUM(CASE WHEN hitGroup IN (6, 7) THEN 1 ELSE 0 END) AS leg_hits,
     SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
     SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits,
-    match_fileName
+    match_id
 FROM 
-    ROUND_HIT_EVENTS
+    ROUND_HIT_EVENTS_EXTENDED
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
 GROUP BY
     steamID,
     weapon,
-    match_fileName;
+    match_id;
 
 CREATE OR REPLACE VIEW MAP_SHOT_STATS_EXTENDED AS 
 SELECT
@@ -567,7 +692,7 @@ SELECT
 FROM 
     ROUND_SHOT_EVENTS as r
 LEFT JOIN
-    MATCH_STATS as m ON r.match_fileName=m.match_fileName
+    MATCH_STATS as m ON r.match_id=m.match_id
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
 GROUP BY
     steamID,
@@ -587,9 +712,9 @@ SELECT
     SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
     SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits
 FROM 
-    ROUND_HIT_EVENTS as r
+    ROUND_HIT_EVENTS_EXTENDED as r
 LEFT JOIN
-    MATCH_STATS as m ON r.match_fileName=m.match_fileName
+    MATCH_STATS as m ON r.match_id=m.match_id
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
 GROUP BY
     steamID,
@@ -621,7 +746,7 @@ SELECT
     SUM(CASE WHEN hitGroup = 2 THEN 1 ELSE 0 END) AS chest_hits,
     SUM(CASE WHEN hitGroup = 3 THEN 1 ELSE 0 END) AS stomach_hits
 FROM 
-    ROUND_HIT_EVENTS
+    ROUND_HIT_EVENTS_EXTENDED
 WHERE REPLACE(weapon,'weapon_','') not in ('flashbang','hegrenade', 'inferno','molotov','smokegrenade', 'incgrenade', 'knife', 'knife_t')
 GROUP BY
     steamID,
@@ -630,7 +755,7 @@ GROUP BY
 CREATE OR REPLACE VIEW ROUND_PLAYER_WEAPON_STATS AS
 SELECT
     p.steamID,
-    p.match_fileName,
+    p.match_id,
     p.userName,
     s.round,
     s.weapon,
@@ -648,33 +773,38 @@ SELECT
 FROM 
     PLAYER_STATS AS p
 LEFT JOIN
-    ROUND_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID AND p.match_fileName = s.match_fileName
+    ROUND_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID AND p.match_id = s.match_id
 LEFT JOIN
-    ROUND_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND p.match_fileName = h.match_fileName AND s.weapon = h.weapon AND s.round = h.round;
+    ROUND_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND p.match_id = h.match_id AND s.weapon = h.weapon AND s.round = h.round;
 
 CREATE OR REPLACE VIEW MATCH_PLAYER_WEAPON_STATS AS
 SELECT
     p.steamID,
-    p.match_fileName,
+    p.match_id,
     p.userName,
     s.weapon,
     s.shots_fired,
-    h.hits,
-    h.total_damage,
-    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
-    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
-    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
-    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
-    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
-    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
-    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
-    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+    COALESCE(h.hits, 0) as hits,
+    COALESCE(k.kills, 0) as kills,
+    COALESCE(k.headshots, 0) as headshotkills,
+    COALESCE(ROUND(CAST(k.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(k.kills AS NUMERIC), 0), 2), 0) as headshotkills_percentage,
+    COALESCE(h.total_damage, 0) as total_damage,
+    COALESCE(ROUND((CAST(h.hits AS NUMERIC) * 100.0 / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS accuracy,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS damage_per_shot,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS damage_per_hit,
+    COALESCE(ROUND((CAST(h.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS headshot_percentage,
+    COALESCE(ROUND((CAST(h.arm_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS arm_hit_percentage,
+    COALESCE(ROUND((CAST(h.leg_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS leg_hit_percentage,
+    COALESCE(ROUND((CAST(h.chest_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS chest_hit_percentage,
+    COALESCE(ROUND((CAST(h.stomach_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS stomach_hit_percentage
 FROM 
     PLAYER_STATS AS p
 LEFT JOIN
-    MATCH_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID AND p.match_fileName = s.match_fileName
+    MATCH_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID AND p.match_id = s.match_id
 LEFT JOIN
-    MATCH_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND p.match_fileName = h.match_fileName AND s.weapon = h.weapon;
+    MATCH_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND p.match_id = h.match_id AND s.weapon = h.weapon
+LEFT JOIN
+    PLAYER_WEAPON_MATCH_KILLS AS k ON p.steamID = k.steamID AND p.match_id = k.match_id AND s.weapon = k.weapon;
 
 
 CREATE OR REPLACE VIEW OVERALL_PLAYER_WEAPON_STATS AS
@@ -682,49 +812,60 @@ SELECT DISTINCT ON (p.steamID, s.weapon)
     p.steamID,
     s.weapon,
     s.shots_fired,
-    h.hits,
-    h.total_damage,
-    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
-    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
-    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
-    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
-    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
-    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
-    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
-    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+    COALESCE(h.hits, 0) as hits,
+    COALESCE(k.kills, 0) as kills,
+    COALESCE(k.headshots, 0) as headshotkills,
+    COALESCE(ROUND(CAST(k.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(k.kills AS NUMERIC), 0), 2), 0) as headshotkills_percentage,
+    COALESCE(h.total_damage, 0) as total_damage,
+    COALESCE(ROUND((CAST(h.hits AS NUMERIC) * 100.0 / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS accuracy,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS damage_per_shot,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS damage_per_hit,
+    COALESCE(ROUND((CAST(h.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS headshot_percentage,
+    COALESCE(ROUND((CAST(h.arm_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS arm_hit_percentage,
+    COALESCE(ROUND((CAST(h.leg_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS leg_hit_percentage,
+    COALESCE(ROUND((CAST(h.chest_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS chest_hit_percentage,
+    COALESCE(ROUND((CAST(h.stomach_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS stomach_hit_percentage
 FROM 
     PLAYER_STATS AS p
 LEFT JOIN
     OVERALL_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID 
 LEFT JOIN
-    OVERALL_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon;
+    OVERALL_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon
+LEFT JOIN
+    PLAYER_WEAPON_OVERALL_KILLS AS k ON p.steamID = k.steamID AND s.weapon = k.weapon;
 
+---toupdate
 CREATE OR REPLACE VIEW MAP_PLAYER_WEAPON_STATS AS
 SELECT DISTINCT ON (p.steamID, s.weapon, s.mapName)
     p.steamID,
     s.mapName,
     s.weapon,
     s.shots_fired,
-    h.hits,
-    h.total_damage,
-    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
-    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
-    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
-    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
-    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
-    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
-    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
-    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+    COALESCE(h.hits, 0) as hits,
+    COALESCE(k.kills, 0) as kills,
+    COALESCE(k.headshots, 0) as headshotkills,
+    COALESCE(ROUND(CAST(k.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(k.kills AS NUMERIC), 0), 2), 0) as headshotkills_percentage,
+    COALESCE(h.total_damage, 0) as total_damage,
+    COALESCE(ROUND((CAST(h.hits AS NUMERIC) * 100.0 / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS accuracy,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS damage_per_shot,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS damage_per_hit,
+    COALESCE(ROUND((CAST(h.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS headshot_percentage,
+    COALESCE(ROUND((CAST(h.arm_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS arm_hit_percentage,
+    COALESCE(ROUND((CAST(h.leg_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS leg_hit_percentage,
+    COALESCE(ROUND((CAST(h.chest_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS chest_hit_percentage,
+    COALESCE(ROUND((CAST(h.stomach_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS stomach_hit_percentage
 FROM 
     PLAYER_STATS AS p
 LEFT JOIN
     MAP_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID 
 LEFT JOIN
-    MAP_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon AND s.mapName = h.mapName;
+    MAP_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon AND s.mapName = h.mapName
+LEFT JOIN
+    PLAYER_WEAPON_MAP_KILLS AS k ON p.steamID = k.steamID AND s.weapon = k.weapon AND s.mapName = k.mapName;
 
 CREATE OR REPLACE VIEW ROUND_SCORECARD AS
 SELECT 
-    p.match_fileName, 
+    p.match_id, 
     p.round, 
     p.team, 
     p.player_count, 
@@ -744,40 +885,40 @@ SELECT
     cs.team1_score, 
     cs.team2_score
 FROM 
-    (SELECT match_fileName, round, team, COUNT(*) as player_count
+    (SELECT match_id, round, team, COUNT(*) as player_count
     FROM PLAYER_ROUND_STATS
-    GROUP BY match_fileName, round, team) p
+    GROUP BY match_id, round, team) p
 LEFT JOIN 
-    (SELECT match_fileName, round, team, COUNT(*) as death_count
+    (SELECT match_id, round, team, COUNT(*) as death_count
     FROM PLAYER_ROUND_STATS
     WHERE survived = FALSE
-    GROUP BY match_fileName, round, team) d ON p.match_fileName = d.match_fileName AND p.round = d.round AND p.team = d.team
+    GROUP BY match_id, round, team) d ON p.match_id = d.match_id AND p.round = d.round AND p.team = d.team
 LEFT JOIN 
-    (SELECT match_fileName, roundNumber as round, winnerSide as winner_team
-    FROM ROUND_STATS) r ON p.match_fileName = r.match_fileName AND p.round = r.round
+    (SELECT match_id, roundNumber as round, winnerSide as winner_team
+    FROM ROUND_STATS) r ON p.match_id = r.match_id AND p.round = r.round
 LEFT JOIN 
-    (SELECT match_fileName, round, team, SUM(moneySpent) as total_money_spent, SUM(equipmentValue) as total_equipment_value
+    (SELECT match_id, round, team, SUM(moneySpent) as total_money_spent, SUM(equipmentValue) as total_equipment_value
     FROM PLAYER_ROUND_STATS
-    GROUP BY match_fileName, round, team) m ON p.match_fileName = m.match_fileName AND p.round = m.round AND p.team = m.team
+    GROUP BY match_id, round, team) m ON p.match_id = m.match_id AND p.round = m.round AND p.team = m.team
 LEFT JOIN 
-    (SELECT match_fileName, roundNumber as round, reasonEndRound as round_end_reason
-    FROM ROUND_STATS) re ON p.match_fileName = re.match_fileName AND p.round = re.round
+    (SELECT match_id, roundNumber as round, reasonEndRound as round_end_reason
+    FROM ROUND_STATS) re ON p.match_id = re.match_id AND p.round = re.round
 JOIN 
     (SELECT 
-        rw.match_fileName, 
+        rw.match_id, 
         rw.round, 
-        SUM(CASE WHEN rw.winner_team = 2 THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_fileName ORDER BY rw.round) as t_score,
-        SUM(CASE WHEN rw.winner_team = 3 THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_fileName ORDER BY rw.round) as ct_score,
-        SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 2) OR ( rw.round >= 8 AND rw.winner_team = 3 ) THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_fileName ORDER BY rw.round) as team1_score,
-        SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 3) OR ( rw.round >= 8 AND rw.winner_team = 2 ) THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_fileName ORDER BY rw.round) as team2_score
+        SUM(CASE WHEN rw.winner_team = 2 THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as t_score,
+        SUM(CASE WHEN rw.winner_team = 3 THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as ct_score,
+        SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 2) OR ( rw.round >= 8 AND rw.winner_team = 3 ) THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as team1_score,
+        SUM(CASE WHEN (rw.round < 8 AND rw.winner_team = 3) OR ( rw.round >= 8 AND rw.winner_team = 2 ) THEN 1 ELSE 0 END) OVER (PARTITION BY rw.match_id ORDER BY rw.round) as team2_score
     FROM 
-        (SELECT match_fileName, roundNumber as round, winnerSide as winner_team
-        FROM ROUND_STATS) rw) cs ON p.match_fileName = cs.match_fileName AND p.round = cs.round;
+        (SELECT match_id, roundNumber as round, winnerSide as winner_team
+        FROM ROUND_STATS) rw) cs ON p.match_id = cs.match_id AND p.round = cs.round;
 
 
 CREATE OR REPLACE VIEW MATCH_RESULTS AS (
 SELECT 
-    m.match_fileName, 
+    m.match_id, 
     m.match_date, 
     m.mapName, 
     SUM(CASE WHEN r.roundNumber <= 7 AND r.winnerSide = 2 THEN 1 ELSE 0 END) AS team1_wins_as_T,
@@ -791,16 +932,16 @@ SELECT
 FROM 
     MATCH_STATS m
 LEFT JOIN 
-    ROUND_STATS r ON m.match_fileName = r.match_fileName
+    ROUND_STATS r ON m.match_id = r.match_id
 GROUP BY 
-    m.match_fileName
+    m.match_id
 );
 
 --select mapName,round(avg(total_T_wins)-7.5,1) as Tadvantage from match_results group by mapName;
 
 CREATE OR REPLACE VIEW PLAYER_MATCH_RESULTS AS (
 SELECT 
-    pt.match_fileName,
+    pt.match_id,
     pt.steamID,
     pt.last_round_team,
     pt.rounds_on_team1,
@@ -826,11 +967,18 @@ SELECT
     CASE 
         WHEN pt.last_round_team = 'team1' THEN mr.team2_total_wins
         WHEN pt.last_round_team = 'team2' THEN mr.team1_total_wins
-    END AS score_against
+    END AS score_against,
+    mr.match_date,
+    mr.team1_wins_as_T,
+    team1_wins_as_CT,
+    team2_wins_as_CT,
+    team2_wins_as_T,
+    total_T_wins,
+    total_CT_wins
 FROM 
     (
     SELECT 
-        p.match_fileName,
+        p.match_id,
         p.steamID,
         MAX(CASE WHEN p.round <= 7 AND p.team = 2 THEN 'team1' WHEN p.round > 7 AND p.team = 3 THEN 'team1' ELSE 'team2' END) AS last_round_team,
         SUM(CASE WHEN p.round <= 7 AND p.team = 2 THEN 1 WHEN p.round > 7 AND p.team = 3 THEN 1 ELSE 0 END) AS rounds_on_team1,
@@ -838,11 +986,11 @@ FROM
     FROM 
         PLAYER_ROUND_STATS p
     GROUP BY 
-        p.match_fileName,
+        p.match_id,
         p.steamID
     ) pt
 LEFT JOIN 
-    MATCH_RESULTS mr ON pt.match_fileName = mr.match_fileName
+    MATCH_RESULTS mr ON pt.match_id = mr.match_id
 );
 
 --select userName, SUM(CASE WHEN match_result='win' THEN 1 ELSE 0 END) as wins, SUM(CASE WHEN match_result='loss' THEN 1 ELSE 0 END) as loss from player_match_results group by(userName) order by SUM(CASE
@@ -852,7 +1000,7 @@ CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED AS
 SELECT
     pos.steamID,
     pos.usernames,
-    COUNT(distinct match_fileName) matches,
+    COUNT(distinct match_id) matches,
     SUM(pos.roundsPlayed) rounds,
     SUM(pos.kills) as kills,
     SUM(pos.assists) as assists,
@@ -914,15 +1062,38 @@ GROUP BY
     steamID;
 
 
+CREATE OR REPLACE VIEW PLAYER_WEAPON_RANKING AS
+SELECT
+    steamID,
+    weapon,
+    ROW_NUMBER() OVER (PARTITION BY steamID ORDER BY kills DESC) as weapon_rank
+FROM 
+    PLAYER_WEAPON_OVERALL_KILLS;
+
 CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED_EXTENDED AS
 SELECT
     o.*,
     m.wins,
     m.loss,
     m.winlossratio,
-    m.averagewinscore
+    m.averagewinscore,
+    c._1vNp,
+    e.ek_success_rate_overall as fkr,
+    w1.weapon AS first_weapon,
+    w2.weapon AS second_weapon
 FROM
-    PLAYER_OVERALL_STATS_EXTENDED o LEFT JOIN PLAYER_OVERALL_MATCH_STATS AS m ON o.steamid=m.steamid;
+    PLAYER_OVERALL_STATS_EXTENDED o 
+LEFT JOIN 
+    PLAYER_OVERALL_MATCH_STATS AS m ON o.steamid=m.steamid
+LEFT JOIN 
+    PLAYER_CLUTCH_STATS AS c ON o.steamid=c.steamid
+LEFT JOIN
+    ENTRY_KILL_STATS_EXTENDED AS e ON o.steamid=e.steamid
+LEFT JOIN
+    PLAYER_WEAPON_RANKING w1 ON o.steamid=w1.steamid AND w1.weapon_rank = 1
+LEFT JOIN
+    PLAYER_WEAPON_RANKING w2 ON o.steamid=w2.steamid AND w2.weapon_rank = 2;
+
 
 
 
@@ -931,7 +1102,7 @@ SELECT
     pos.steamID,
     pos.usernames,
     m.mapName,
-    COUNT(distinct m.match_fileName) matches,
+    COUNT(distinct m.match_id) matches,
     SUM(pos.roundsPlayed) rounds,
     SUM(pos.kills) as kills,
     SUM(pos.assists) as assists,
@@ -973,7 +1144,7 @@ SELECT
 FROM 
     PLAYER_MATCH_STATS_EXTENDED as pos
 LEFT JOIN
-    MATCH_STATS as m ON pos.match_fileName=m.match_fileName
+    MATCH_STATS as m ON pos.match_id=m.match_id
 WHERE
     pos.roundsPlayed > 0
 GROUP BY
@@ -994,10 +1165,19 @@ SELECT
     ROUND(AVG(score_for)-AVG(score_against),2) as averagewinscore
 FROM PLAYER_MATCH_RESULTS as r
 LEFT JOIN
-    MATCH_STATS as m ON r.match_fileName=m.match_fileName
+    MATCH_STATS as m ON r.match_id=m.match_id
 GROUP BY
     m.mapName,
     steamID;
+
+CREATE OR REPLACE VIEW PLAYER_WEAPON_MAP_RANKING AS
+SELECT
+    steamID,
+    mapName,
+    weapon,
+    ROW_NUMBER() OVER (PARTITION BY steamID, mapName ORDER BY kills DESC) as weapon_rank
+FROM 
+    PLAYER_WEAPON_MAP_KILLS;
 
 
 CREATE OR REPLACE VIEW PLAYER_MAP_STATS_EXTENDED_EXTENDED AS
@@ -1006,9 +1186,15 @@ SELECT
     m.wins,
     m.loss,
     m.winlossratio,
-    m.averagewinscore
+    m.averagewinscore,
+    w1.weapon AS first_weapon,
+    w2.weapon AS second_weapon
 FROM
-    PLAYER_MAP_STATS_EXTENDED o LEFT JOIN PLAYER_MAP_MATCH_STATS AS m ON o.steamid=m.steamid AND o.mapName=m.mapName;
+    PLAYER_MAP_STATS_EXTENDED o LEFT JOIN PLAYER_MAP_MATCH_STATS AS m ON o.steamid=m.steamid AND o.mapName=m.mapName
+LEFT JOIN
+    PLAYER_WEAPON_MAP_RANKING w1 ON o.steamid=w1.steamid AND o.mapName=w1.mapName AND w1.weapon_rank = 1
+LEFT JOIN
+    PLAYER_WEAPON_MAP_RANKING w2 ON o.steamid=w2.steamid AND o.mapName=w2.mapName AND w2.weapon_rank = 2;
 
 
 CREATE OR REPLACE VIEW PLAYER_CLUTCH_STATS AS

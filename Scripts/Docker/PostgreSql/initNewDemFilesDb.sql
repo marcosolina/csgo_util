@@ -154,12 +154,31 @@ LEFT JOIN
 LEFT JOIN 
     PLAYER_ROUND_STATS prs_victim ON rke.victimSteamId = prs_victim.steamID AND rke.match_id = prs_victim.match_id AND rke.round = prs_victim.round;
 
+CREATE OR REPLACE VIEW PLAYER_WEAPON_MAP_KILLS AS
+SELECT
+    steamID,
+    mapName,
+    weapon,
+    COUNT(*) AS kills,
+    SUM(CASE WHEN headshot THEN 1 ELSE 0 END) AS headshots
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED as r
+LEFT JOIN
+    MATCH_STATS as m ON r.match_id=m.match_id
+WHERE
+    killer_team != victim_team
+GROUP BY 
+    steamID,
+    mapName,
+    weapon;
+
 CREATE OR REPLACE VIEW PLAYER_WEAPON_MATCH_KILLS AS
 SELECT
     steamID,
     match_id,
     weapon,
-    COUNT(*) AS kills
+    COUNT(*) AS kills,
+    SUM(CASE WHEN headshot THEN 1 ELSE 0 END) AS headshots
 FROM 
     ROUND_KILL_EVENTS_EXTENDED
 WHERE
@@ -173,7 +192,8 @@ CREATE OR REPLACE VIEW PLAYER_WEAPON_OVERALL_KILLS AS
 SELECT
     steamID,
     weapon,
-    COUNT(*) AS kills
+    COUNT(*) AS kills,
+    SUM(CASE WHEN headshot THEN 1 ELSE 0 END) AS headshots
 FROM 
     ROUND_KILL_EVENTS_EXTENDED
 WHERE
@@ -732,22 +752,27 @@ SELECT
     p.userName,
     s.weapon,
     s.shots_fired,
-    h.hits,
-    h.total_damage,
-    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
-    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
-    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
-    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
-    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
-    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
-    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
-    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+    COALESCE(h.hits, 0) as hits,
+    COALESCE(k.kills, 0) as kills,
+    COALESCE(k.headshots, 0) as headshotkills,
+    COALESCE(ROUND(CAST(k.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(k.kills AS NUMERIC), 0), 2), 0) as headshotkills_percentage,
+    COALESCE(h.total_damage, 0) as total_damage,
+    COALESCE(ROUND((CAST(h.hits AS NUMERIC) * 100.0 / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS accuracy,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS damage_per_shot,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS damage_per_hit,
+    COALESCE(ROUND((CAST(h.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS headshot_percentage,
+    COALESCE(ROUND((CAST(h.arm_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS arm_hit_percentage,
+    COALESCE(ROUND((CAST(h.leg_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS leg_hit_percentage,
+    COALESCE(ROUND((CAST(h.chest_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS chest_hit_percentage,
+    COALESCE(ROUND((CAST(h.stomach_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS stomach_hit_percentage
 FROM 
     PLAYER_STATS AS p
 LEFT JOIN
     MATCH_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID AND p.match_id = s.match_id
 LEFT JOIN
-    MATCH_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND p.match_id = h.match_id AND s.weapon = h.weapon;
+    MATCH_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND p.match_id = h.match_id AND s.weapon = h.weapon
+LEFT JOIN
+    PLAYER_WEAPON_MATCH_KILLS AS k ON p.steamID = k.steamID AND p.match_id = k.match_id AND s.weapon = k.weapon;
 
 
 CREATE OR REPLACE VIEW OVERALL_PLAYER_WEAPON_STATS AS
@@ -755,17 +780,19 @@ SELECT DISTINCT ON (p.steamID, s.weapon)
     p.steamID,
     s.weapon,
     s.shots_fired,
-    h.hits,
+    COALESCE(h.hits, 0) as hits,
     COALESCE(k.kills, 0) as kills,
-    h.total_damage,
-    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
-    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
-    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
-    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
-    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
-    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
-    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
-    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+    COALESCE(k.headshots, 0) as headshotkills,
+    COALESCE(ROUND(CAST(k.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(k.kills AS NUMERIC), 0), 2), 0) as headshotkills_percentage,
+    COALESCE(h.total_damage, 0) as total_damage,
+    COALESCE(ROUND((CAST(h.hits AS NUMERIC) * 100.0 / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS accuracy,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS damage_per_shot,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS damage_per_hit,
+    COALESCE(ROUND((CAST(h.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS headshot_percentage,
+    COALESCE(ROUND((CAST(h.arm_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS arm_hit_percentage,
+    COALESCE(ROUND((CAST(h.leg_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS leg_hit_percentage,
+    COALESCE(ROUND((CAST(h.chest_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS chest_hit_percentage,
+    COALESCE(ROUND((CAST(h.stomach_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS stomach_hit_percentage
 FROM 
     PLAYER_STATS AS p
 LEFT JOIN
@@ -775,28 +802,34 @@ LEFT JOIN
 LEFT JOIN
     PLAYER_WEAPON_OVERALL_KILLS AS k ON p.steamID = k.steamID AND s.weapon = k.weapon;
 
+---toupdate
 CREATE OR REPLACE VIEW MAP_PLAYER_WEAPON_STATS AS
 SELECT DISTINCT ON (p.steamID, s.weapon, s.mapName)
     p.steamID,
     s.mapName,
     s.weapon,
     s.shots_fired,
-    h.hits,
-    h.total_damage,
-    ROUND((h.hits * 100.0 / NULLIF(s.shots_fired, 0)), 2) AS accuracy,
-    ROUND((h.total_damage / NULLIF(s.shots_fired, 0)), 2) AS damage_per_shot,
-    ROUND((h.total_damage / NULLIF(h.hits, 0)), 2) AS damage_per_hit,
-    ROUND((h.headshots * 100.0 / NULLIF(h.hits, 0)), 2) AS headshot_percentage,
-    ROUND((h.arm_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS arm_hit_percentage,
-    ROUND((h.leg_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS leg_hit_percentage,
-    ROUND((h.chest_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS chest_hit_percentage,
-    ROUND((h.stomach_hits * 100.0 / NULLIF(h.hits, 0)), 2) AS stomach_hit_percentage
+    COALESCE(h.hits, 0) as hits,
+    COALESCE(k.kills, 0) as kills,
+    COALESCE(k.headshots, 0) as headshotkills,
+    COALESCE(ROUND(CAST(k.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(k.kills AS NUMERIC), 0), 2), 0) as headshotkills_percentage,
+    COALESCE(h.total_damage, 0) as total_damage,
+    COALESCE(ROUND((CAST(h.hits AS NUMERIC) * 100.0 / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS accuracy,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(s.shots_fired AS NUMERIC), 0)), 2), 0) AS damage_per_shot,
+    COALESCE(ROUND((CAST(h.total_damage AS NUMERIC) / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS damage_per_hit,
+    COALESCE(ROUND((CAST(h.headshots AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS headshot_percentage,
+    COALESCE(ROUND((CAST(h.arm_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS arm_hit_percentage,
+    COALESCE(ROUND((CAST(h.leg_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS leg_hit_percentage,
+    COALESCE(ROUND((CAST(h.chest_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS chest_hit_percentage,
+    COALESCE(ROUND((CAST(h.stomach_hits AS NUMERIC) * 100.0 / NULLIF(CAST(h.hits AS NUMERIC), 0)), 2), 0) AS stomach_hit_percentage
 FROM 
     PLAYER_STATS AS p
 LEFT JOIN
     MAP_SHOT_STATS_EXTENDED AS s ON p.steamID = s.steamID 
 LEFT JOIN
-    MAP_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon AND s.mapName = h.mapName;
+    MAP_HIT_STATS_EXTENDED AS h ON p.steamID = h.steamID AND s.weapon = h.weapon AND s.mapName = h.mapName
+LEFT JOIN
+    PLAYER_WEAPON_MAP_KILLS AS k ON p.steamID = k.steamID AND s.weapon = k.weapon AND s.mapName = k.mapName;
 
 CREATE OR REPLACE VIEW ROUND_SCORECARD AS
 SELECT 
@@ -990,6 +1023,14 @@ GROUP BY
     steamID;
 
 
+CREATE OR REPLACE VIEW PLAYER_WEAPON_RANKING AS
+SELECT
+    steamID,
+    weapon,
+    ROW_NUMBER() OVER (PARTITION BY steamID ORDER BY kills DESC) as weapon_rank
+FROM 
+    PLAYER_WEAPON_OVERALL_KILLS;
+
 CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED_EXTENDED AS
 SELECT
     o.*,
@@ -998,7 +1039,9 @@ SELECT
     m.winlossratio,
     m.averagewinscore,
     c._1vNp,
-    e.ek_success_rate_overall as fkr
+    e.ek_success_rate_overall as fkr,
+    w1.weapon AS first_weapon,
+    w2.weapon AS second_weapon
 FROM
     PLAYER_OVERALL_STATS_EXTENDED o 
 LEFT JOIN 
@@ -1006,7 +1049,12 @@ LEFT JOIN
 LEFT JOIN 
     PLAYER_CLUTCH_STATS AS c ON o.steamid=c.steamid
 LEFT JOIN
-    ENTRY_KILL_STATS_EXTENDED AS e ON o.steamid=e.steamid;
+    ENTRY_KILL_STATS_EXTENDED AS e ON o.steamid=e.steamid
+LEFT JOIN
+    PLAYER_WEAPON_RANKING w1 ON o.steamid=w1.steamid AND w1.weapon_rank = 1
+LEFT JOIN
+    PLAYER_WEAPON_RANKING w2 ON o.steamid=w2.steamid AND w2.weapon_rank = 2;
+
 
 
 
@@ -1083,6 +1131,15 @@ GROUP BY
     m.mapName,
     steamID;
 
+CREATE OR REPLACE VIEW PLAYER_WEAPON_MAP_RANKING AS
+SELECT
+    steamID,
+    mapName,
+    weapon,
+    ROW_NUMBER() OVER (PARTITION BY steamID, mapName ORDER BY kills DESC) as weapon_rank
+FROM 
+    PLAYER_WEAPON_MAP_KILLS;
+
 
 CREATE OR REPLACE VIEW PLAYER_MAP_STATS_EXTENDED_EXTENDED AS
 SELECT
@@ -1090,9 +1147,15 @@ SELECT
     m.wins,
     m.loss,
     m.winlossratio,
-    m.averagewinscore
+    m.averagewinscore,
+    w1.weapon AS first_weapon,
+    w2.weapon AS second_weapon
 FROM
-    PLAYER_MAP_STATS_EXTENDED o LEFT JOIN PLAYER_MAP_MATCH_STATS AS m ON o.steamid=m.steamid AND o.mapName=m.mapName;
+    PLAYER_MAP_STATS_EXTENDED o LEFT JOIN PLAYER_MAP_MATCH_STATS AS m ON o.steamid=m.steamid AND o.mapName=m.mapName
+LEFT JOIN
+    PLAYER_WEAPON_MAP_RANKING w1 ON o.steamid=w1.steamid AND o.mapName=w1.mapName AND w1.weapon_rank = 1
+LEFT JOIN
+    PLAYER_WEAPON_MAP_RANKING w2 ON o.steamid=w2.steamid AND o.mapName=w2.mapName AND w2.weapon_rank = 2;
 
 
 CREATE OR REPLACE VIEW PLAYER_CLUTCH_STATS AS

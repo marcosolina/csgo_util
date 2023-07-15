@@ -46,7 +46,7 @@ CREATE TABLE DEM_PROCESS_QUEUE (
 CREATE TABLE MATCH_STATS (
     match_fileName VARCHAR(255) PRIMARY KEY,
     match_date TIMESTAMP,
-    mapName VARCHAR(255),
+    mapName VARCHAR(255)
 );
 
 --UPDATE MATCH_STATS 
@@ -583,6 +583,85 @@ GROUP BY
     m.match_date,
     p.score;
 
+CREATE OR REPLACE VIEW MATCH_RESULTS AS (
+SELECT 
+    m.match_fileName, 
+    m.match_date, 
+    m.mapName, 
+    SUM(CASE WHEN r.roundNumber <= 7 AND r.winnerSide = 2 THEN 1 ELSE 0 END) AS team1_wins_as_T,
+    SUM(CASE WHEN r.roundNumber > 7 AND r.winnerSide = 3 THEN 1 ELSE 0 END) AS team1_wins_as_CT,
+    SUM(CASE WHEN r.roundNumber <= 7 AND r.winnerSide = 3 THEN 1 ELSE 0 END) AS team2_wins_as_CT,
+    SUM(CASE WHEN r.roundNumber > 7 AND r.winnerSide = 2 THEN 1 ELSE 0 END) AS team2_wins_as_T,
+    SUM(CASE WHEN r.winnerSide = 2 THEN 1 ELSE 0 END) AS total_T_wins,
+    SUM(CASE WHEN r.winnerSide = 3 THEN 1 ELSE 0 END) AS total_CT_wins,
+    SUM(CASE WHEN (r.roundNumber <= 7 AND r.winnerSide = 2) OR (r.roundNumber > 7 AND r.winnerSide = 3) THEN 1 ELSE 0 END) AS team1_total_wins,
+    SUM(CASE WHEN (r.roundNumber <= 7 AND r.winnerSide = 3) OR (r.roundNumber > 7 AND r.winnerSide = 2) THEN 1 ELSE 0 END) AS team2_total_wins
+FROM 
+    MATCH_STATS m
+LEFT JOIN 
+    ROUND_STATS r ON m.match_fileName = r.match_fileName
+GROUP BY 
+    m.match_fileName
+);
+
+--select mapName,round(avg(total_T_wins)-7.5,1) as Tadvantage from match_results group by mapName;
+
+CREATE OR REPLACE VIEW PLAYER_MATCH_RESULTS AS (
+SELECT 
+    pt.match_fileName,
+    pt.steamID,
+    pt.last_round_team,
+    pt.rounds_on_team1,
+    pt.rounds_on_team2,
+    CASE 
+        WHEN pt.last_round_team = 'team1' THEN 
+            CASE 
+                WHEN mr.team1_total_wins > mr.team2_total_wins THEN 'win'
+                WHEN mr.team1_total_wins < mr.team2_total_wins THEN 'loss'
+                ELSE 'draw'
+            END
+        WHEN pt.last_round_team = 'team2' THEN 
+            CASE 
+                WHEN mr.team1_total_wins < mr.team2_total_wins THEN 'win'
+                WHEN mr.team1_total_wins > mr.team2_total_wins THEN 'loss'
+                ELSE 'draw'
+            END
+    END AS match_result,
+    CASE 
+        WHEN pt.last_round_team = 'team1' THEN mr.team1_total_wins
+        WHEN pt.last_round_team = 'team2' THEN mr.team2_total_wins
+    END AS score_for,
+    CASE 
+        WHEN pt.last_round_team = 'team1' THEN mr.team2_total_wins
+        WHEN pt.last_round_team = 'team2' THEN mr.team1_total_wins
+    END AS score_against,
+    mr.match_date,
+    mr.team1_wins_as_T,
+    team1_wins_as_CT,
+    team2_wins_as_CT,
+    team2_wins_as_T,
+    total_T_wins,
+    total_CT_wins
+FROM 
+    (
+    SELECT 
+        p.match_fileName,
+        p.steamID,
+        MAX(CASE WHEN p.round <= 7 AND p.team = 2 THEN 'team1' WHEN p.round > 7 AND p.team = 3 THEN 'team1' ELSE 'team2' END) AS last_round_team,
+        SUM(CASE WHEN p.round <= 7 AND p.team = 2 THEN 1 WHEN p.round > 7 AND p.team = 3 THEN 1 ELSE 0 END) AS rounds_on_team1,
+        SUM(CASE WHEN p.round <= 7 AND p.team = 3 THEN 1 WHEN p.round > 7 AND p.team = 2 THEN 1 ELSE 0 END) AS rounds_on_team2
+    FROM 
+        PLAYER_ROUND_STATS p
+    GROUP BY 
+        p.match_fileName,
+        p.steamID
+    ) pt
+LEFT JOIN 
+    MATCH_RESULTS mr ON pt.match_fileName = mr.match_fileName
+);
+
+--select userName, SUM(CASE WHEN match_result='win' THEN 1 ELSE 0 END) as wins, SUM(CASE WHEN match_result='loss' THEN 1 ELSE 0 END) as loss from player_match_results group by(userName) order by SUM(CASE
+--WHEN match_result='win' THEN 1 ELSE 0 END) desc;
 
 CREATE OR REPLACE VIEW PLAYER_MATCH_STATS_EXTENDED AS
 SELECT
@@ -915,86 +994,6 @@ JOIN
         FROM ROUND_STATS) rw) cs ON p.match_fileName = cs.match_fileName AND p.round = cs.round;
 
 
-CREATE OR REPLACE VIEW MATCH_RESULTS AS (
-SELECT 
-    m.match_fileName, 
-    m.match_date, 
-    m.mapName, 
-    SUM(CASE WHEN r.roundNumber <= 7 AND r.winnerSide = 2 THEN 1 ELSE 0 END) AS team1_wins_as_T,
-    SUM(CASE WHEN r.roundNumber > 7 AND r.winnerSide = 3 THEN 1 ELSE 0 END) AS team1_wins_as_CT,
-    SUM(CASE WHEN r.roundNumber <= 7 AND r.winnerSide = 3 THEN 1 ELSE 0 END) AS team2_wins_as_CT,
-    SUM(CASE WHEN r.roundNumber > 7 AND r.winnerSide = 2 THEN 1 ELSE 0 END) AS team2_wins_as_T,
-    SUM(CASE WHEN r.winnerSide = 2 THEN 1 ELSE 0 END) AS total_T_wins,
-    SUM(CASE WHEN r.winnerSide = 3 THEN 1 ELSE 0 END) AS total_CT_wins,
-    SUM(CASE WHEN (r.roundNumber <= 7 AND r.winnerSide = 2) OR (r.roundNumber > 7 AND r.winnerSide = 3) THEN 1 ELSE 0 END) AS team1_total_wins,
-    SUM(CASE WHEN (r.roundNumber <= 7 AND r.winnerSide = 3) OR (r.roundNumber > 7 AND r.winnerSide = 2) THEN 1 ELSE 0 END) AS team2_total_wins
-FROM 
-    MATCH_STATS m
-LEFT JOIN 
-    ROUND_STATS r ON m.match_fileName = r.match_fileName
-GROUP BY 
-    m.match_fileName
-);
-
---select mapName,round(avg(total_T_wins)-7.5,1) as Tadvantage from match_results group by mapName;
-
-CREATE OR REPLACE VIEW PLAYER_MATCH_RESULTS AS (
-SELECT 
-    pt.match_fileName,
-    pt.steamID,
-    pt.last_round_team,
-    pt.rounds_on_team1,
-    pt.rounds_on_team2,
-    CASE 
-        WHEN pt.last_round_team = 'team1' THEN 
-            CASE 
-                WHEN mr.team1_total_wins > mr.team2_total_wins THEN 'win'
-                WHEN mr.team1_total_wins < mr.team2_total_wins THEN 'loss'
-                ELSE 'draw'
-            END
-        WHEN pt.last_round_team = 'team2' THEN 
-            CASE 
-                WHEN mr.team1_total_wins < mr.team2_total_wins THEN 'win'
-                WHEN mr.team1_total_wins > mr.team2_total_wins THEN 'loss'
-                ELSE 'draw'
-            END
-    END AS match_result,
-    CASE 
-        WHEN pt.last_round_team = 'team1' THEN mr.team1_total_wins
-        WHEN pt.last_round_team = 'team2' THEN mr.team2_total_wins
-    END AS score_for,
-    CASE 
-        WHEN pt.last_round_team = 'team1' THEN mr.team2_total_wins
-        WHEN pt.last_round_team = 'team2' THEN mr.team1_total_wins
-    END AS score_against,
-    mr.match_date,
-    mr.team1_wins_as_T,
-    team1_wins_as_CT,
-    team2_wins_as_CT,
-    team2_wins_as_T,
-    total_T_wins,
-    total_CT_wins
-FROM 
-    (
-    SELECT 
-        p.match_fileName,
-        p.steamID,
-        MAX(CASE WHEN p.round <= 7 AND p.team = 2 THEN 'team1' WHEN p.round > 7 AND p.team = 3 THEN 'team1' ELSE 'team2' END) AS last_round_team,
-        SUM(CASE WHEN p.round <= 7 AND p.team = 2 THEN 1 WHEN p.round > 7 AND p.team = 3 THEN 1 ELSE 0 END) AS rounds_on_team1,
-        SUM(CASE WHEN p.round <= 7 AND p.team = 3 THEN 1 WHEN p.round > 7 AND p.team = 2 THEN 1 ELSE 0 END) AS rounds_on_team2
-    FROM 
-        PLAYER_ROUND_STATS p
-    GROUP BY 
-        p.match_fileName,
-        p.steamID
-    ) pt
-LEFT JOIN 
-    MATCH_RESULTS mr ON pt.match_fileName = mr.match_fileName
-);
-
---select userName, SUM(CASE WHEN match_result='win' THEN 1 ELSE 0 END) as wins, SUM(CASE WHEN match_result='loss' THEN 1 ELSE 0 END) as loss from player_match_results group by(userName) order by SUM(CASE
---WHEN match_result='win' THEN 1 ELSE 0 END) desc;
-
 CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED AS
 SELECT
     pos.steamID,
@@ -1068,33 +1067,6 @@ SELECT
     ROW_NUMBER() OVER (PARTITION BY steamID ORDER BY kills DESC) as weapon_rank
 FROM 
     PLAYER_WEAPON_OVERALL_KILLS;
-
-CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED_EXTENDED AS
-SELECT
-    o.*,
-    m.wins,
-    m.loss,
-    m.winlossratio,
-    m.averagewinscore,
-    c._1vNp,
-    e.ek_success_rate_overall as fkr,
-    w1.weapon AS first_weapon,
-    w2.weapon AS second_weapon
-FROM
-    PLAYER_OVERALL_STATS_EXTENDED o 
-LEFT JOIN 
-    PLAYER_OVERALL_MATCH_STATS AS m ON o.steamid=m.steamid
-LEFT JOIN 
-    PLAYER_CLUTCH_STATS AS c ON o.steamid=c.steamid
-LEFT JOIN
-    ENTRY_KILL_STATS_EXTENDED AS e ON o.steamid=e.steamid
-LEFT JOIN
-    PLAYER_WEAPON_RANKING w1 ON o.steamid=w1.steamid AND w1.weapon_rank = 1
-LEFT JOIN
-    PLAYER_WEAPON_RANKING w2 ON o.steamid=w2.steamid AND w2.weapon_rank = 2;
-
-
-
 
 CREATE OR REPLACE VIEW PLAYER_MAP_STATS_EXTENDED AS
 SELECT
@@ -1231,3 +1203,27 @@ SELECT
     SUM(CASE WHEN NOT clutchSuccess AND clutchChance > 0 THEN 1 ELSE 0 END) AS _1vNl
 FROM PLAYER_ROUND_STATS
 GROUP BY steamID;
+
+CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED_EXTENDED AS
+SELECT
+    o.*,
+    m.wins,
+    m.loss,
+    m.winlossratio,
+    m.averagewinscore,
+    c._1vNp,
+    e.ek_success_rate_overall as fkr,
+    w1.weapon AS first_weapon,
+    w2.weapon AS second_weapon
+FROM
+    PLAYER_OVERALL_STATS_EXTENDED o 
+LEFT JOIN 
+    PLAYER_OVERALL_MATCH_STATS AS m ON o.steamid=m.steamid
+LEFT JOIN 
+    PLAYER_CLUTCH_STATS AS c ON o.steamid=c.steamid
+LEFT JOIN
+    ENTRY_KILL_STATS_EXTENDED AS e ON o.steamid=e.steamid
+LEFT JOIN
+    PLAYER_WEAPON_RANKING w1 ON o.steamid=w1.steamid AND w1.weapon_rank = 1
+LEFT JOIN
+    PLAYER_WEAPON_RANKING w2 ON o.steamid=w2.steamid AND w2.weapon_rank = 2;

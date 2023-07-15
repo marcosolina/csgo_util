@@ -560,6 +560,9 @@ GROUP BY
 CREATE OR REPLACE VIEW PLAYER_MATCH_STATS_EXTENDED AS
 SELECT
     pms.*,
+    mr.last_round_team,
+    rounds_on_team1,
+    rounds_on_team2,
     ROUND(pms.kills*1.0/pms.roundsPlayed,2) as kpr,
     ROUND(pms.deaths*1.0/pms.roundsPlayed,2) as dpr,
     ROUND(pms.tdh*1.0/pms.roundsPlayed,2) as adr,
@@ -572,6 +575,7 @@ SELECT
     ROUND(pms.kastTotal*1.0/pms.roundsPlayed,2) as kast
 FROM 
     PLAYER_MATCH_STATS pms
+LEFT JOIN PLAYER_MATCH_RESULTS mr ON pms.steamid = mr.steamid AND pms.match_id = mr.match_id
 WHERE
     pms.roundsPlayed>0;
 

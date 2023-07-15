@@ -154,6 +154,34 @@ LEFT JOIN
 LEFT JOIN 
     PLAYER_ROUND_STATS prs_victim ON rke.victimSteamId = prs_victim.steamID AND rke.match_id = prs_victim.match_id AND rke.round = prs_victim.round;
 
+CREATE OR REPLACE VIEW PLAYER_KILL_COUNT AS
+SELECT 
+    rkee.steamID AS killer, 
+    rkee.victimSteamId AS victim, 
+    COUNT(*) AS kill_count
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED rkee
+WHERE 
+    rkee.killer_team != rkee.victim_team
+GROUP BY 
+    rkee.steamID, 
+    rkee.victimSteamId;
+
+CREATE OR REPLACE VIEW PLAYER_MATCH_KILL_COUNT AS
+SELECT 
+    rkee.steamID AS killer, 
+    rkee.victimSteamId AS victim,
+    rkee.match_id,
+    COUNT(*) AS kill_count
+FROM 
+    ROUND_KILL_EVENTS_EXTENDED rkee
+WHERE 
+    rkee.killer_team != rkee.victim_team
+GROUP BY 
+    rkee.steamID,
+    rkee.match_id,
+    rkee.victimSteamId;
+
 CREATE OR REPLACE VIEW PLAYER_WEAPON_MAP_KILLS AS
 SELECT
     steamID,

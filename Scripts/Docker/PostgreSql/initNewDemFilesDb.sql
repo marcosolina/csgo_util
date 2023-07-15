@@ -939,7 +939,14 @@ SELECT
     CASE 
         WHEN pt.last_round_team = 'team1' THEN mr.team2_total_wins
         WHEN pt.last_round_team = 'team2' THEN mr.team1_total_wins
-    END AS score_against
+    END AS score_against,
+    mr.match_date,
+    mr.team1_wins_as_T,
+    team1_wins_as_CT,
+    team2_wins_as_CT,
+    team2_wins_as_T,
+    total_T_wins,
+    total_CT_wins
 FROM 
     (
     SELECT 

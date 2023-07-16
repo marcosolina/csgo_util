@@ -1,3 +1,4 @@
+/*
 package com.ixigo.demmanager.validators.cmd;
 
 import static br.com.fluentvalidator.predicate.LogicalPredicate.not;
@@ -85,3 +86,4 @@ public class ValidatorCmdGetPlayersAvgScorePerMap extends IxigoValidator<CmdGetP
 		
 	}
 }
+*/

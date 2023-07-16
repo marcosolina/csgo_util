@@ -6,14 +6,8 @@ import java.util.Map;
 import org.mapstruct.Mapper;
 
 import com.ixigo.demmanager.models.svc.SvcFileInfo;
-import com.ixigo.demmanager.models.svc.charts.SvcMapPlayedCounter;
-import com.ixigo.demmanager.models.svc.charts.SvcTeamAvgScorePerMap;
-import com.ixigo.demmanager.models.svc.charts.SvcUserAvgScorePerMap;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
-import com.ixigo.demmanagercontract.models.rest.charts.RestMapPlayed;
-import com.ixigo.demmanagercontract.models.rest.charts.RestPlayerAvgScorePerMap;
-import com.ixigo.demmanagercontract.models.rest.charts.RestTeamAvgScorePerMap;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
 import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestFileInfo;
@@ -33,20 +27,10 @@ public interface RestMapper {
 
 	public Map<String, List<RestFileInfo>> fromSvcToRest(Map<String, List<SvcFileInfo>> map);
 
-	// Dem data
-	public RestMapPlayed fromSvcToRest(SvcMapPlayedCounter svc);
-
-	public List<RestMapPlayed> fromSvcToRestMapPlayedList(List<SvcMapPlayedCounter> svc);
-	
-	public List<RestPlayerAvgScorePerMap> fromSvcToRestAvgScorePerMapList(List<SvcUserAvgScorePerMap> svc);
-	
-	public List<RestTeamAvgScorePerMap> fromSvcToRestAvgScorePerTeamMapList(List<SvcTeamAvgScorePerMap> svc);
-
 	public RestUser fromSvcToRest(SvcUser svc);
 
 	public List<RestUser> fromSvcToRestUserList(List<SvcUser> svc);
 
 	public List<RestMapStats> fromSvcToRestMapStats(List<SvcMapStats> svc);
-	
 
 }

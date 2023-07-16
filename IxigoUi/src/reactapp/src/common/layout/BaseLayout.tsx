@@ -10,7 +10,7 @@ import RconContent from "../../contents/rcon/RconContent";
 import ServerInfoContent from "../../contents/server-info/ServerInfoContent";
 import Case from "../switch-case/Case";
 import Switch from "../switch-case/Switch";
-import { useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { QUERY_PARAMS } from "../../lib/constants";
 
 const LANG_BASE_PATH = "page.home";
@@ -19,6 +19,8 @@ const BaseLayout = () => {
   const { t } = useTranslation();
   const [value, setValue] = useState(0);
   const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const history = useNavigate();
 
   useEffect(() => {
     if (searchParams.has(QUERY_PARAMS.TAB) && parseInt(searchParams.get(QUERY_PARAMS.TAB) as string) < 6) {
@@ -28,6 +30,9 @@ const BaseLayout = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    const newPath = `${location.pathname}?${QUERY_PARAMS.TAB}=${newValue}`;
+    location.search = `?${QUERY_PARAMS.TAB}=${newValue}`;
+    history(newPath);
   };
 
   return (

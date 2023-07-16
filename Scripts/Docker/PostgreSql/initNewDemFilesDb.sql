@@ -997,7 +997,6 @@ JOIN
 CREATE OR REPLACE VIEW PLAYER_OVERALL_STATS_EXTENDED AS
 SELECT
     pos.steamID,
-    pos.usernames,
     COUNT(distinct match_fileName) matches,
     SUM(pos.roundsPlayed) rounds,
     SUM(pos.kills) as kills,
@@ -1042,8 +1041,7 @@ FROM
 WHERE
     pos.roundsPlayed > 0
 GROUP BY
-    pos.steamID,
-    pos.usernames;
+    pos.steamID;
 
 
 CREATE OR REPLACE VIEW PLAYER_OVERALL_MATCH_STATS AS
@@ -1071,7 +1069,6 @@ FROM
 CREATE OR REPLACE VIEW PLAYER_MAP_STATS_EXTENDED AS
 SELECT
     pos.steamID,
-    pos.usernames,
     m.mapName,
     COUNT(distinct m.match_fileName) matches,
     SUM(pos.roundsPlayed) rounds,
@@ -1120,8 +1117,7 @@ WHERE
     pos.roundsPlayed > 0
 GROUP BY
     m.mapName,
-    pos.steamID,
-    pos.usernames;
+    pos.steamID;
 
 
 CREATE OR REPLACE VIEW PLAYER_MAP_MATCH_STATS AS

@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,7 @@ public class Player_kill_countDao extends IxigoDao<Player_kill_countDto> {
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_kill_countDto.Fields.kill_count,
 			Player_kill_countDto.Fields.victim,

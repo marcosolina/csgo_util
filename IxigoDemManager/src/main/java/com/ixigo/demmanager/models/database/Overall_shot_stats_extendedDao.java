@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,7 @@ public class Overall_shot_stats_extendedDao extends IxigoDao<Overall_shot_stats_
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Overall_shot_stats_extendedDto.Fields.steamid,
 			Overall_shot_stats_extendedDto.Fields.weapon,

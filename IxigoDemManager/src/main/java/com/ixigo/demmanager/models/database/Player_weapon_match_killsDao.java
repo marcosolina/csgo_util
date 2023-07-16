@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +22,13 @@ public class Player_weapon_match_killsDao extends IxigoDao<Player_weapon_match_k
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_weapon_match_killsDto.Fields.steamid,
 			Player_weapon_match_killsDto.Fields.kills,
 			Player_weapon_match_killsDto.Fields.weapon,
-			Player_weapon_match_killsDto.Fields.match_filename,
 			Player_weapon_match_killsDto.Fields.headshots,
+			Player_weapon_match_killsDto.Fields.match_id,
 		});
 		// @formatter:on
 		this.dto = new Player_weapon_match_killsDto();
@@ -61,20 +64,20 @@ public class Player_weapon_match_killsDao extends IxigoDao<Player_weapon_match_k
 		this.dto.setWeapon(weapon);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
-	}
-
 	public Long getHeadshots() {
 		return dto.getHeadshots();
 	}
 
 	public void setHeadshots(Long headshots) {
 		this.dto.setHeadshots(headshots);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Player_weapon_match_killsDto getDto() {

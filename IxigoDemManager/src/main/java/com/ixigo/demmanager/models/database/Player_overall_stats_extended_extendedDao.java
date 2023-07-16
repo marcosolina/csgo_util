@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_overall_stats_extended_extendedDto.Fields._1v3,
 			Player_overall_stats_extended_extendedDto.Fields._1v2,

@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +22,7 @@ public class Entry_kill_statsDao extends IxigoDao<Entry_kill_statsDto> {
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Entry_kill_statsDto.Fields.steamid,
 			Entry_kill_statsDto.Fields.total_rounds_t,

@@ -8,6 +8,6 @@ import lombok.experimental.FieldNameConstants;
 public class SvcPlayerStats {
 	private String userName;
     private String steamID;
-    private String fileName;
+    private Long matchId;
     private Integer score;
 }

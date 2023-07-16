@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,12 +23,13 @@ public class Player_round_damage_statsDao extends IxigoDao<Player_round_damage_s
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_round_damage_statsDto.Fields.steamid,
-			Player_round_damage_statsDto.Fields.match_filename,
 			Player_round_damage_statsDto.Fields.he_damage,
 			Player_round_damage_statsDto.Fields.round,
 			Player_round_damage_statsDto.Fields.fire_damage,
+			Player_round_damage_statsDto.Fields.match_id,
 			Player_round_damage_statsDto.Fields.total_damage_armour,
 			Player_round_damage_statsDto.Fields.opponents_flashed,
 			Player_round_damage_statsDto.Fields.opponent_blindtime,
@@ -53,14 +55,6 @@ public class Player_round_damage_statsDao extends IxigoDao<Player_round_damage_s
 		this.dto.setSteamid(steamid);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
-	}
-
 	public Long getHe_damage() {
 		return dto.getHe_damage();
 	}
@@ -83,6 +77,14 @@ public class Player_round_damage_statsDao extends IxigoDao<Player_round_damage_s
 
 	public void setFire_damage(Long fire_damage) {
 		this.dto.setFire_damage(fire_damage);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getTotal_damage_armour() {

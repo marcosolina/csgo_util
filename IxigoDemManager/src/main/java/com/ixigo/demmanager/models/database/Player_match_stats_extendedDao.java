@@ -2,6 +2,7 @@ package com.ixigo.demmanager.models.database;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,7 @@ public class Player_match_stats_extendedDao extends IxigoDao<Player_match_stats_
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_match_stats_extendedDto.Fields.kills,
 			Player_match_stats_extendedDto.Fields.ff,
@@ -55,6 +57,7 @@ public class Player_match_stats_extendedDao extends IxigoDao<Player_match_stats_
 			Player_match_stats_extendedDto.Fields.roundsplayed,
 			Player_match_stats_extendedDto.Fields.ek,
 			Player_match_stats_extendedDto.Fields.mvp,
+			Player_match_stats_extendedDto.Fields.match_id,
 			Player_match_stats_extendedDto.Fields.dpr,
 			Player_match_stats_extendedDto.Fields.rwstotal,
 			Player_match_stats_extendedDto.Fields.kpr,
@@ -62,7 +65,6 @@ public class Player_match_stats_extendedDao extends IxigoDao<Player_match_stats_
 			Player_match_stats_extendedDto.Fields.steamid,
 			Player_match_stats_extendedDto.Fields.td,
 			Player_match_stats_extendedDto.Fields.tda,
-			Player_match_stats_extendedDto.Fields.match_filename,
 			Player_match_stats_extendedDto.Fields._5k,
 			Player_match_stats_extendedDto.Fields._3k,
 			Player_match_stats_extendedDto.Fields.ebt,
@@ -331,6 +333,14 @@ public class Player_match_stats_extendedDao extends IxigoDao<Player_match_stats_
 		this.dto.setMvp(mvp);
 	}
 
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
+	}
+
 	public BigDecimal getDpr() {
 		return dto.getDpr();
 	}
@@ -385,14 +395,6 @@ public class Player_match_stats_extendedDao extends IxigoDao<Player_match_stats_
 
 	public void setTda(BigDecimal tda) {
 		this.dto.setTda(tda);
-	}
-
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long get_5k() {

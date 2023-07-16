@@ -45,7 +45,7 @@ public interface SvcMapper {
 	
 	@Mappings({
 		@Mapping(source = "eventType", target = "eventtype"),
-		@Mapping(source = "fileName", target = "match_filename"),
+		@Mapping(source = "matchId", target = "match_id"),
 		@Mapping(source = "round", target = "round"),
 		@Mapping(source = "steamID", target = "steamid"),
 		@Mapping(source = "time", target = "eventtime")
@@ -55,15 +55,15 @@ public interface SvcMapper {
 	@Mappings({
 	@Mapping(source = "date", target = "match_date"),
 	@Mapping(source = "mapName", target = "mapname"),
-	@Mapping(source = "fileName", target = "match_filename")
-	//@Mapping(source = "matchId"", target = "match_id")
+	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "matchId", target = "match_id")
 	})
 	public Match_statsDto fromSvcToDto(SvcMapFileStats svc);
 	
 	@Mappings({
 	@Mapping(source = "userName", target = "username"),
 	@Mapping(source = "steamID", target = "steamid"),
-	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "matchId", target = "match_id"),
 	@Mapping(source = "score", target = "score")
 	})
 	public Player_statsDto fromSvcToDto(SvcPlayerStats svc);
@@ -72,7 +72,7 @@ public interface SvcMapper {
 	@Mapping(source = "roundNumber", target = "roundnumber"),
 	@Mapping(source = "winnerSide", target = "winnerside"),
 	@Mapping(source = "reasonEndRound", target = "reasonendround"),
-	@Mapping(source = "fileName", target = "match_filename")
+	@Mapping(source = "matchId", target = "match_id")
 	})
 	public Round_statsDto fromSvcToDto(SvcRoundStats svc);
 	
@@ -80,7 +80,7 @@ public interface SvcMapper {
 	@Mapping(source = "clutchChance", target = "clutchchance"),
 	@Mapping(source = "clutchSuccess", target = "clutchsuccess"),
 	@Mapping(source = "equipmentValue", target = "equipmentvalue"),
-	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "matchId", target = "match_id"),
 	@Mapping(source = "moneySpent", target = "moneyspent"),
 	@Mapping(source = "mvp", target = "mvp"),
 	@Mapping(source = "round", target = "round"),
@@ -93,7 +93,7 @@ public interface SvcMapper {
 	
 	@Mappings({
 	@Mapping(source = "assister", target = "assister"),
-	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "matchId", target = "match_id"),
 	@Mapping(source = "flashAssister", target = "flashassister"),
 	@Mapping(source = "headshot", target = "headshot"),
 	@Mapping(source = "isFirstKill", target = "isfirstkill"),
@@ -110,7 +110,7 @@ public interface SvcMapper {
 	
 	@Mappings({
 	@Mapping(source = "eventType", target = "eventtype"),
-	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "matchId", target = "match_id"),
 	@Mapping(source = "round", target = "round"),
 	@Mapping(source = "steamID", target = "steamid"),
 	@Mapping(source = "time", target = "eventtime"),
@@ -122,7 +122,7 @@ public interface SvcMapper {
 	@Mapping(source = "blindTime", target = "blindtime"),
 	@Mapping(source = "damageArmour", target = "damagearmour"),
 	@Mapping(source = "damageHealth", target = "damagehealth"),
-	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "matchId", target = "match_id"),
 	@Mapping(source = "hitGroup", target = "hitgroup"),
 	@Mapping(source = "round", target = "round"),
 	@Mapping(source = "steamID", target = "steamid"),

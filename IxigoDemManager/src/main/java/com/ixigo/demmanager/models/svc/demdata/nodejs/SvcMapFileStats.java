@@ -11,4 +11,5 @@ public class SvcMapFileStats {
 	private LocalDateTime date;
 	private String mapName;
 	private String fileName;
+	private Long matchId;
 }

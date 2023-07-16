@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,11 +22,12 @@ public class Player_round_assist_statsDao extends IxigoDao<Player_round_assist_s
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_round_assist_statsDto.Fields.steamid,
-			Player_round_assist_statsDto.Fields.match_filename,
 			Player_round_assist_statsDto.Fields.round,
 			Player_round_assist_statsDto.Fields.assists,
+			Player_round_assist_statsDto.Fields.match_id,
 		});
 		// @formatter:on
 		this.dto = new Player_round_assist_statsDto();
@@ -44,14 +47,6 @@ public class Player_round_assist_statsDao extends IxigoDao<Player_round_assist_s
 		this.dto.setSteamid(steamid);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
-	}
-
 	public Long getRound() {
 		return dto.getRound();
 	}
@@ -66,6 +61,14 @@ public class Player_round_assist_statsDao extends IxigoDao<Player_round_assist_s
 
 	public void setAssists(Long assists) {
 		this.dto.setAssists(assists);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Player_round_assist_statsDto getDto() {

@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,8 +22,9 @@ public class Player_match_kill_countDao extends IxigoDao<Player_match_kill_count
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
-			Player_match_kill_countDto.Fields.match_filename,
+			Player_match_kill_countDto.Fields.match_id,
 			Player_match_kill_countDto.Fields.kill_count,
 			Player_match_kill_countDto.Fields.victim,
 			Player_match_kill_countDto.Fields.killer,
@@ -36,12 +39,12 @@ public class Player_match_kill_countDao extends IxigoDao<Player_match_kill_count
 		return this.genericMappingFunction(new Player_match_kill_countDto(), row, rowMetaData);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
+	public Long getMatch_id() {
+		return dto.getMatch_id();
 	}
 
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getKill_count() {

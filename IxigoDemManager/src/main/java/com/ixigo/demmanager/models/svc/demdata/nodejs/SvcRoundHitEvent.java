@@ -17,5 +17,5 @@ public class SvcRoundHitEvent {
 	private Integer hitGroup;
 	private Integer damageHealth;
 	private Integer damageArmour;
-	private String fileName;
+	private Long matchId;
 }

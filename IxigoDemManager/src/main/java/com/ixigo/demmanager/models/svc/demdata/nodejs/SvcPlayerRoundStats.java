@@ -18,5 +18,5 @@ public class SvcPlayerRoundStats {
     private Integer moneySpent;
     private Integer equipmentValue;
     private Boolean mvp;
-    private String fileName;
+    private Long matchId;
 }

@@ -20,9 +20,9 @@ public class Match_hit_stats_extendedDto implements IxigoDto {
 	private String weapon = "";
 	private Long total_damage = null;
 	private Long leg_hits = null;
-	private String match_filename = "";
 	private Long headshots = null;
 	private Long arm_hits = null;
+	private Long match_id = null;
 	private Long chest_hits = null;
 
 }

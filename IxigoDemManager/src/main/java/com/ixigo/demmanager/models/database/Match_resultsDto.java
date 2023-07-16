@@ -16,8 +16,8 @@ import lombok.experimental.FieldNameConstants;
 public class Match_resultsDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
-	private String match_filename = "";
 	private Long team1_wins_as_ct = null;
+	private Long match_id = null;
 	private Long team2_wins_as_ct = null;
 	private Long team2_wins_as_t = null;
 	private String mapname = "";

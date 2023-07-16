@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,14 +23,15 @@ public class Round_player_weapon_statsDao extends IxigoDao<Round_player_weapon_s
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Round_player_weapon_statsDto.Fields.damage_per_shot,
+			Round_player_weapon_statsDto.Fields.match_id,
 			Round_player_weapon_statsDto.Fields.accuracy,
 			Round_player_weapon_statsDto.Fields.steamid,
 			Round_player_weapon_statsDto.Fields.hits,
 			Round_player_weapon_statsDto.Fields.weapon,
 			Round_player_weapon_statsDto.Fields.total_damage,
-			Round_player_weapon_statsDto.Fields.match_filename,
 			Round_player_weapon_statsDto.Fields.round,
 			Round_player_weapon_statsDto.Fields.damage_per_hit,
 			Round_player_weapon_statsDto.Fields.shots_fired,
@@ -56,6 +58,14 @@ public class Round_player_weapon_statsDao extends IxigoDao<Round_player_weapon_s
 
 	public void setDamage_per_shot(BigDecimal damage_per_shot) {
 		this.dto.setDamage_per_shot(damage_per_shot);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public BigDecimal getAccuracy() {
@@ -96,14 +106,6 @@ public class Round_player_weapon_statsDao extends IxigoDao<Round_player_weapon_s
 
 	public void setTotal_damage(Long total_damage) {
 		this.dto.setTotal_damage(total_damage);
-	}
-
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getRound() {

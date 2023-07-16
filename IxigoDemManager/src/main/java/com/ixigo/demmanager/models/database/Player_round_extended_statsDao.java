@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +23,7 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_round_extended_statsDto.Fields.kills,
 			Player_round_extended_statsDto.Fields.grenades_thrown,
@@ -47,12 +49,12 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 			Player_round_extended_statsDto.Fields.moneyspent,
 			Player_round_extended_statsDto.Fields.clutchsuccess,
 			Player_round_extended_statsDto.Fields.mvp,
+			Player_round_extended_statsDto.Fields.match_id,
 			Player_round_extended_statsDto.Fields.survived,
 			Player_round_extended_statsDto.Fields.team,
 			Player_round_extended_statsDto.Fields.inferno_thrown,
 			Player_round_extended_statsDto.Fields.teammate_blindtime,
 			Player_round_extended_statsDto.Fields.steamid,
-			Player_round_extended_statsDto.Fields.match_filename,
 			Player_round_extended_statsDto.Fields.he_damage,
 			Player_round_extended_statsDto.Fields.round,
 			Player_round_extended_statsDto.Fields.trade_deaths,
@@ -265,6 +267,14 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 		this.dto.setMvp(mvp);
 	}
 
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
+	}
+
 	public Boolean getSurvived() {
 		return dto.getSurvived();
 	}
@@ -303,14 +313,6 @@ public class Player_round_extended_statsDao extends IxigoDao<Player_round_extend
 
 	public void setSteamid(String steamid) {
 		this.dto.setSteamid(steamid);
-	}
-
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getHe_damage() {

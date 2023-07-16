@@ -1,11 +1,11 @@
 package com.ixigo.demmanager.models.database;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.library.dao.IxigoDao;
 
 import io.r2dbc.spi.Row;
@@ -25,6 +25,8 @@ public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 		this.setSqlKeys(new String[] {
 			Dem_process_queueDto.Fields.file_name,
 		});
+		this.setSqlAutoincrementalFiles(Arrays.asList(new String[] {
+		}));
 		this.setSqlFields(new String[] {
 			Dem_process_queueDto.Fields.queued_on,
 			Dem_process_queueDto.Fields.file_name,
@@ -38,12 +40,7 @@ public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 	@Override
 	public Dem_process_queueDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		_LOGGER.trace("Mapping data");
-		Dem_process_queueDto dto = new Dem_process_queueDto();
-		dto.setFile_name(row.get(Dem_process_queueDto.Fields.file_name, String.class));
-		dto.setProcessed_on(row.get(Dem_process_queueDto.Fields.processed_on, LocalDateTime.class));
-		dto.setProcess_status(DemProcessStatus.valueOf(row.get(Dem_process_queueDto.Fields.process_status, String.class)));
-		dto.setQueued_on(row.get(Dem_process_queueDto.Fields.queued_on, LocalDateTime.class));
-		return dto;
+		return this.genericMappingFunction(new Dem_process_queueDto(), row, rowMetaData);
 	}
 
 	public LocalDateTime getQueued_on() {
@@ -62,11 +59,11 @@ public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 		this.dto.setFile_name(file_name);
 	}
 
-	public DemProcessStatus getProcess_status() {
+	public String getProcess_status() {
 		return dto.getProcess_status();
 	}
 
-	public void setProcess_status(DemProcessStatus process_status) {
+	public void setProcess_status(String process_status) {
 		this.dto.setProcess_status(process_status);
 	}
 

@@ -13,5 +13,5 @@ public class SvcRoundShotEvent {
 	private String steamID;
 	private Integer round;
 	private String weapon;
-	private String fileName;
+	private Long matchId;
 }

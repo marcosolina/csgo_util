@@ -12,5 +12,5 @@ public class SvcRoundEvent {
     private BigDecimal time;
     private String steamID;
     private Integer round;
-	private String fileName;
+	private Long matchId;
 }

@@ -14,7 +14,7 @@ import lombok.experimental.FieldNameConstants;
 public class Player_match_kill_countDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
-	private String match_filename = "";
+	private Long match_id = null;
 	private Long kill_count = null;
 	private String victim = "";
 	private String killer = "";

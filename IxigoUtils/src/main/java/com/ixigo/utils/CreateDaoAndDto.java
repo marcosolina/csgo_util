@@ -61,7 +61,9 @@ public class CreateDaoAndDto {
 	public void createDaoAndDto(String tableName) throws Exception {
 		Connection cn = null;
 		Statement st = null;
+		Statement st2 = null;
 		ResultSet rs = null;
+		ResultSet rs2 = null;
 
 		PrintWriter daoWriter = null;
 		PrintWriter dtoWriter = null;
@@ -75,13 +77,17 @@ public class CreateDaoAndDto {
 			DatabaseMetaData dbmd = cn.getMetaData();
 
 			rs = dbmd.getPrimaryKeys(cn.getCatalog(), cn.getSchema(), tableName);
+			st2 = cn.createStatement();
 			while (rs.next()) {
 				ResultSetMetaData rsmd = rs.getMetaData();
 				for (int i = 0; i < rsmd.getColumnCount(); i++) {
-
 					if (rsmd.getColumnName(i + 1).equalsIgnoreCase("COLUMN_NAME")) {
 						Column c = new Column();
 						c.name = rs.getString(i + 1);
+						
+						rs2 = st2.executeQuery(String.format("select %s from %s", c.name, tableName));
+						c.isAutoIncremental = rs2.getMetaData().isAutoIncrement(1);
+						rs2.close();
 						keys.put(c.name, c);
 					}
 				}
@@ -97,6 +103,7 @@ public class CreateDaoAndDto {
 				fields.put(c.name, c);
 				if (keys.get(c.name) != null) {
 					c.key = true;
+					c.isAutoIncremental = keys.get(c.name).isAutoIncremental;
 					keys.put(c.name, c);
 				}
 				System.out.println(c.toString());
@@ -127,6 +134,7 @@ public class CreateDaoAndDto {
 			daoWriter = new PrintWriter(path + fileName + "Dao.java", "UTF-8");
 			daoWriter.println("package " + currentPackage + ";");
 			daoWriter.println("");
+			daoWriter.println("import java.util.Arrays;");
 			daoWriter.println("import java.math.BigDecimal;");
 			daoWriter.println("import org.slf4j.Logger;");
 			daoWriter.println("import org.slf4j.LoggerFactory;");
@@ -151,6 +159,19 @@ public class CreateDaoAndDto {
 					daoWriter.println(String.format("\t\t\t%sDto.Fields.%s,", fileName, key));
 				}
 				daoWriter.println("\t\t});");
+			}
+			
+			if (keys.isEmpty()) {
+				daoWriter.println("\t\tthis.setSqlAutoincrementalFiles(new ArrayList<String>());");
+			} else {
+				daoWriter.println("\t\tthis.setSqlAutoincrementalFiles(Arrays.asList(new String[] {");
+				for (var entry : keys.entrySet()) {
+					Column c = entry.getValue();
+					if(c.isAutoIncremental) {
+						daoWriter.println(String.format("\t\t\t%sDto.Fields.%s,", fileName, entry.getValue().name));
+					}
+				}
+				daoWriter.println("\t\t}));");
 			}
 
 			daoWriter.println("\t\tthis.setSqlFields(new String[] {");
@@ -317,6 +338,7 @@ public class CreateDaoAndDto {
 			throw e;
 		} finally {
 			DatabaseUtils.closeSqlObjects(cn, st, rs);
+			DatabaseUtils.closeSqlObjects(null, st2, rs2);
 			if (daoWriter != null) {
 				daoWriter.close();
 			}
@@ -335,9 +357,10 @@ class Column {
 	public String name;
 	public String type;
 	public boolean key;
+	public boolean isAutoIncremental;
 
 	@Override
 	public String toString() {
-		return "Column [name=" + name + ", type=" + type + ", key=" + key + "]";
+		return "Column [name=" + name + ", type=" + type + ", key=" + key + ", isAutoIncremental=" + isAutoIncremental + "]";
 	}
 }

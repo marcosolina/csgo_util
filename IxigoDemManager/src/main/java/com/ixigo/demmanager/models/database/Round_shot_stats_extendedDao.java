@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +22,13 @@ public class Round_shot_stats_extendedDao extends IxigoDao<Round_shot_stats_exte
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Round_shot_stats_extendedDto.Fields.steamid,
 			Round_shot_stats_extendedDto.Fields.weapon,
-			Round_shot_stats_extendedDto.Fields.match_filename,
 			Round_shot_stats_extendedDto.Fields.round,
 			Round_shot_stats_extendedDto.Fields.shots_fired,
+			Round_shot_stats_extendedDto.Fields.match_id,
 		});
 		// @formatter:on
 		this.dto = new Round_shot_stats_extendedDto();
@@ -53,14 +56,6 @@ public class Round_shot_stats_extendedDao extends IxigoDao<Round_shot_stats_exte
 		this.dto.setWeapon(weapon);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
-	}
-
 	public Long getRound() {
 		return dto.getRound();
 	}
@@ -75,6 +70,14 @@ public class Round_shot_stats_extendedDao extends IxigoDao<Round_shot_stats_exte
 
 	public void setShots_fired(Long shots_fired) {
 		this.dto.setShots_fired(shots_fired);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Round_shot_stats_extendedDto getDto() {

@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +22,13 @@ public class Player_round_death_statsDao extends IxigoDao<Player_round_death_sta
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_round_death_statsDto.Fields.steamid,
-			Player_round_death_statsDto.Fields.match_filename,
 			Player_round_death_statsDto.Fields.headshot_deaths,
 			Player_round_death_statsDto.Fields.round,
 			Player_round_death_statsDto.Fields.trade_deaths,
+			Player_round_death_statsDto.Fields.match_id,
 			Player_round_death_statsDto.Fields.team_deaths,
 			Player_round_death_statsDto.Fields.deaths,
 		});
@@ -45,14 +48,6 @@ public class Player_round_death_statsDao extends IxigoDao<Player_round_death_sta
 
 	public void setSteamid(String steamid) {
 		this.dto.setSteamid(steamid);
-	}
-
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getHeadshot_deaths() {
@@ -77,6 +72,14 @@ public class Player_round_death_statsDao extends IxigoDao<Player_round_death_sta
 
 	public void setTrade_deaths(Long trade_deaths) {
 		this.dto.setTrade_deaths(trade_deaths);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getTeam_deaths() {

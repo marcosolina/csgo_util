@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.Arrays;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,6 +24,8 @@ public class UsersDao extends IxigoDao<UsersDto> {
 		this.setSqlKeys(new String[] {
 			UsersDto.Fields.steam_id,
 		});
+		this.setSqlAutoincrementalFiles(Arrays.asList(new String[] {
+		}));
 		this.setSqlFields(new String[] {
 			UsersDto.Fields.user_name,
 			UsersDto.Fields.steam_id,

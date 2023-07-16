@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,10 +23,14 @@ public class Match_statsDao extends IxigoDao<Match_statsDto> {
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {
-			Match_statsDto.Fields.match_filename,
+			Match_statsDto.Fields.match_id,
 		});
+		this.setSqlAutoincrementalFiles(Arrays.asList(new String[] {
+			Match_statsDto.Fields.match_id,
+		}));
 		this.setSqlFields(new String[] {
 			Match_statsDto.Fields.match_filename,
+			Match_statsDto.Fields.match_id,
 			Match_statsDto.Fields.mapname,
 			Match_statsDto.Fields.match_date,
 		});
@@ -45,6 +50,14 @@ public class Match_statsDao extends IxigoDao<Match_statsDto> {
 
 	public void setMatch_filename(String match_filename) {
 		this.dto.setMatch_filename(match_filename);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public String getMapname() {

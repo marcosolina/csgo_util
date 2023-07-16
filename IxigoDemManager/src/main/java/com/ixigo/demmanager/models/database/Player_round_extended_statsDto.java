@@ -40,12 +40,12 @@ public class Player_round_extended_statsDto implements IxigoDto {
 	private Long moneyspent = null;
 	private Boolean clutchsuccess = null;
 	private Boolean mvp = null;
+	private Long match_id = null;
 	private Boolean survived = null;
 	private Long team = null;
 	private Long inferno_thrown = null;
 	private BigDecimal teammate_blindtime = BigDecimal.ZERO;
 	private String steamid = "";
-	private String match_filename = "";
 	private Long he_damage = null;
 	private Long round = null;
 	private Long trade_deaths = null;

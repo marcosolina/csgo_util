@@ -20,5 +20,5 @@ public class SvcRoundKillEvent {
 	private Boolean isFirstKill;
 	private Boolean isTradeKill;
 	private Boolean isTradeDeath;
-	private String fileName;
+	private Long matchId;
 }

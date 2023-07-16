@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +23,16 @@ public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_ex
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Round_kill_events_extendedDto.Fields.victimsteamid,
 			Round_kill_events_extendedDto.Fields.isfirstkill,
+			Round_kill_events_extendedDto.Fields.match_id,
 			Round_kill_events_extendedDto.Fields.eventtime,
 			Round_kill_events_extendedDto.Fields.istradekill,
 			Round_kill_events_extendedDto.Fields.assister,
 			Round_kill_events_extendedDto.Fields.steamid,
 			Round_kill_events_extendedDto.Fields.weapon,
-			Round_kill_events_extendedDto.Fields.match_filename,
 			Round_kill_events_extendedDto.Fields.killer_team,
 			Round_kill_events_extendedDto.Fields.flashassister,
 			Round_kill_events_extendedDto.Fields.round,
@@ -63,6 +65,14 @@ public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_ex
 
 	public void setIsfirstkill(Boolean isfirstkill) {
 		this.dto.setIsfirstkill(isfirstkill);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public BigDecimal getEventtime() {
@@ -103,14 +113,6 @@ public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_ex
 
 	public void setWeapon(String weapon) {
 		this.dto.setWeapon(weapon);
-	}
-
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getKiller_team() {

@@ -9,5 +9,5 @@ public class SvcRoundStats {
 	private Integer roundNumber;
 	private Integer winnerSide;
 	private Integer reasonEndRound;
-	private String fileName;
+	private Long matchId;
 }

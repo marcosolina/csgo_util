@@ -42,11 +42,11 @@ public class Player_match_statsDto implements IxigoDto {
 	private Long roundsplayed = null;
 	private BigDecimal ek = BigDecimal.ZERO;
 	private Long mvp = null;
+	private Long match_id = null;
 	private BigDecimal rwstotal = BigDecimal.ZERO;
 	private String steamid = "";
 	private BigDecimal td = BigDecimal.ZERO;
 	private BigDecimal tda = BigDecimal.ZERO;
-	private String match_filename = "";
 	private Long _5k = null;
 	private Long _3k = null;
 	private BigDecimal ebt = BigDecimal.ZERO;

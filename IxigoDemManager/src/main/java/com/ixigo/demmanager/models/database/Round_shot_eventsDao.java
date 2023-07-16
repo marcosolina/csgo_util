@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,11 +23,12 @@ public class Round_shot_eventsDao extends IxigoDao<Round_shot_eventsDto> {
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Round_shot_eventsDto.Fields.steamid,
 			Round_shot_eventsDto.Fields.weapon,
-			Round_shot_eventsDto.Fields.match_filename,
 			Round_shot_eventsDto.Fields.round,
+			Round_shot_eventsDto.Fields.match_id,
 			Round_shot_eventsDto.Fields.eventtype,
 			Round_shot_eventsDto.Fields.eventtime,
 		});
@@ -56,20 +58,20 @@ public class Round_shot_eventsDao extends IxigoDao<Round_shot_eventsDto> {
 		this.dto.setWeapon(weapon);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
-	}
-
 	public Long getRound() {
 		return dto.getRound();
 	}
 
 	public void setRound(Long round) {
 		this.dto.setRound(round);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public String getEventtype() {

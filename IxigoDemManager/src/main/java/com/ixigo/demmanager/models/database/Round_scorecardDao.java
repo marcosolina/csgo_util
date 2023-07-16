@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,14 +22,15 @@ public class Round_scorecardDao extends IxigoDao<Round_scorecardDto> {
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Round_scorecardDto.Fields.total_equipment_value,
 			Round_scorecardDto.Fields.ct_score,
 			Round_scorecardDto.Fields.round_type,
+			Round_scorecardDto.Fields.match_id,
 			Round_scorecardDto.Fields.round_end_reason,
 			Round_scorecardDto.Fields.team,
 			Round_scorecardDto.Fields.player_count,
-			Round_scorecardDto.Fields.match_filename,
 			Round_scorecardDto.Fields.round,
 			Round_scorecardDto.Fields.death_count,
 			Round_scorecardDto.Fields.t_score,
@@ -70,6 +73,14 @@ public class Round_scorecardDao extends IxigoDao<Round_scorecardDto> {
 		this.dto.setRound_type(round_type);
 	}
 
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
+	}
+
 	public Long getRound_end_reason() {
 		return dto.getRound_end_reason();
 	}
@@ -92,14 +103,6 @@ public class Round_scorecardDao extends IxigoDao<Round_scorecardDto> {
 
 	public void setPlayer_count(Long player_count) {
 		this.dto.setPlayer_count(player_count);
-	}
-
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getRound() {

@@ -17,7 +17,7 @@ public class Player_weapon_match_killsDto implements IxigoDto {
 	private String steamid = "";
 	private Long kills = null;
 	private String weapon = "";
-	private String match_filename = "";
 	private Long headshots = null;
+	private Long match_id = null;
 
 }

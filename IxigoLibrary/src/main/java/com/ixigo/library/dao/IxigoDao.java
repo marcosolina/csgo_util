@@ -39,6 +39,7 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 
 	private String[] sqlFields = null;
 	private String[] sqlKeys = null;
+	private List<String> sqlAutoincrementalFiles = null;
 
 	private List<String> sqlOrderFields = null;
 	private List<String> sqlWhereAndClauses = null;
@@ -257,12 +258,16 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 		var dto = this.getDtoInstance();
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < sqlFields.length; i++) {
-			Object value = getValue(dto, sqlFields[i]);
+			String fieldName = sqlFields[i];
+			if(isAutoIncremental(fieldName)) {
+				continue;
+			}
+			Object value = getValue(dto, fieldName);
 			if (value == null) {
-				ges = ges.bindNull(sqlFields[i], getDataType(dto, sqlFields[i]));
+				ges = ges.bindNull(fieldName, getDataType(dto, fieldName));
 				sb.append(", null");
 			} else {
-				ges = ges.bind(sqlFields[i], value.getClass().isEnum() ? value.toString() : value);
+				ges = ges.bind(fieldName, value.getClass().isEnum() ? value.toString() : value);
 				sb.append(", " + value );
 			}
 		}
@@ -363,8 +368,12 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, "Fields not defined", "IXIGO0000");
 		}
 		for (int i = 0; i < sqlFields.length; i++) {
-			fields.append(", " + sqlFields[i]);
-			values.append(", :" + sqlFields[i]);
+			String fieldName = sqlFields[i];
+			if(isAutoIncremental(fieldName)) {
+				continue;
+			}
+			fields.append(", " + fieldName);
+			values.append(", :" + fieldName);
 		}
 		StringBuffer res = new StringBuffer("insert into ");
 		res.append(sqlViewName);
@@ -429,6 +438,10 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 
 		return dto;
 	}
+	
+	private boolean isAutoIncremental(String fieldName) {
+		return this.sqlAutoincrementalFiles != null && this.sqlAutoincrementalFiles.contains(fieldName);
+	}
 
 	public void setSqlViewName(String sqlViewName) {
 		this.sqlViewName = sqlViewName;
@@ -444,6 +457,14 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 
 	protected String[] getSqlFields() {
 		return this.sqlFields;
+	}
+	
+	public List<String> getSqlAutoincrementalFiles() {
+		return sqlAutoincrementalFiles;
+	}
+
+	public void setSqlAutoincrementalFiles(List<String> sqlAutoincrementalFiles) {
+		this.sqlAutoincrementalFiles = sqlAutoincrementalFiles;
 	}
 
 	public boolean setSqlOrderFields(List<String> o) {

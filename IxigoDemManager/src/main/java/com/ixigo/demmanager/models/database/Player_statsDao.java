@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +22,11 @@ public class Player_statsDao extends IxigoDao<Player_statsDto> {
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_statsDto.Fields.steamid,
 			Player_statsDto.Fields.score,
-			Player_statsDto.Fields.match_filename,
+			Player_statsDto.Fields.match_id,
 			Player_statsDto.Fields.username,
 		});
 		// @formatter:on
@@ -52,12 +55,12 @@ public class Player_statsDao extends IxigoDao<Player_statsDto> {
 		this.dto.setScore(score);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
+	public Long getMatch_id() {
+		return dto.getMatch_id();
 	}
 
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public String getUsername() {

@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,9 +23,10 @@ public class Match_resultsDao extends IxigoDao<Match_resultsDto> {
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
-			Match_resultsDto.Fields.match_filename,
 			Match_resultsDto.Fields.team1_wins_as_ct,
+			Match_resultsDto.Fields.match_id,
 			Match_resultsDto.Fields.team2_wins_as_ct,
 			Match_resultsDto.Fields.team2_wins_as_t,
 			Match_resultsDto.Fields.mapname,
@@ -45,20 +47,20 @@ public class Match_resultsDao extends IxigoDao<Match_resultsDto> {
 		return this.genericMappingFunction(new Match_resultsDto(), row, rowMetaData);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
-	}
-
 	public Long getTeam1_wins_as_ct() {
 		return dto.getTeam1_wins_as_ct();
 	}
 
 	public void setTeam1_wins_as_ct(Long team1_wins_as_ct) {
 		this.dto.setTeam1_wins_as_ct(team1_wins_as_ct);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getTeam2_wins_as_ct() {

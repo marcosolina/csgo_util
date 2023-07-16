@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,12 +22,13 @@ public class Player_round_event_statsDao extends IxigoDao<Player_round_event_sta
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
 			Player_round_event_statsDto.Fields.steamid,
-			Player_round_event_statsDto.Fields.match_filename,
 			Player_round_event_statsDto.Fields.bombs_defused,
 			Player_round_event_statsDto.Fields.round,
 			Player_round_event_statsDto.Fields.bombs_planted,
+			Player_round_event_statsDto.Fields.match_id,
 			Player_round_event_statsDto.Fields.hostages_rescued,
 		});
 		// @formatter:on
@@ -44,14 +47,6 @@ public class Player_round_event_statsDao extends IxigoDao<Player_round_event_sta
 
 	public void setSteamid(String steamid) {
 		this.dto.setSteamid(steamid);
-	}
-
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
 	}
 
 	public Long getBombs_defused() {
@@ -76,6 +71,14 @@ public class Player_round_event_statsDao extends IxigoDao<Player_round_event_sta
 
 	public void setBombs_planted(Long bombs_planted) {
 		this.dto.setBombs_planted(bombs_planted);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getHostages_rescued() {

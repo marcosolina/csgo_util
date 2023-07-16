@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.ArrayList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +22,10 @@ public class Round_statsDao extends IxigoDao<Round_statsDto> {
 		this.setSqlViewName(tableName);
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
+		this.setSqlAutoincrementalFiles(new ArrayList<String>());
 		this.setSqlFields(new String[] {
-			Round_statsDto.Fields.match_filename,
 			Round_statsDto.Fields.reasonendround,
+			Round_statsDto.Fields.match_id,
 			Round_statsDto.Fields.roundnumber,
 			Round_statsDto.Fields.winnerside,
 		});
@@ -36,20 +39,20 @@ public class Round_statsDao extends IxigoDao<Round_statsDto> {
 		return this.genericMappingFunction(new Round_statsDto(), row, rowMetaData);
 	}
 
-	public String getMatch_filename() {
-		return dto.getMatch_filename();
-	}
-
-	public void setMatch_filename(String match_filename) {
-		this.dto.setMatch_filename(match_filename);
-	}
-
 	public Long getReasonendround() {
 		return dto.getReasonendround();
 	}
 
 	public void setReasonendround(Long reasonendround) {
 		this.dto.setReasonendround(reasonendround);
+	}
+
+	public Long getMatch_id() {
+		return dto.getMatch_id();
+	}
+
+	public void setMatch_id(Long match_id) {
+		this.dto.setMatch_id(match_id);
 	}
 
 	public Long getRoundnumber() {

@@ -231,8 +231,8 @@ function descendingComparator(a: DataItem, b: DataItem, orderBy: keyof DataItem)
   }
   
   const StatsContent = () => {
-    const [order, setOrder] = useState<'asc' | 'desc'>('asc');
-    const [orderBy, setOrderBy] = useState<keyof DataItem>('kills');
+    const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+    const [orderBy, setOrderBy] = useState<keyof DataItem>('hltv_rating');
   
     const createSortHandler = (property: keyof DataItem) => (event: React.MouseEvent<unknown>) => {
       const isAsc = orderBy === property && order === 'asc';
@@ -281,6 +281,12 @@ function descendingComparator(a: DataItem, b: DataItem, orderBy: keyof DataItem)
                             </TableCell>
                         );
                         }
+                    } else if (columnName === 'hltv_rating' && cellContent!= null && typeof cellContent === 'number') {
+                        return (
+                            <TableCell key={columnName} style={{ color: cellContent >= 1 ? 'green' : 'red' }}>
+                                {cellContent}
+                            </TableCell>
+                        );
                     } 
                     return (
                         <TableCell key={columnName}>{cellContent}</TableCell>

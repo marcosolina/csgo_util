@@ -2,13 +2,11 @@ package com.ixigo.demmanager.models.svc.demdata.nodejs;
 
 import java.math.BigDecimal;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants
-@Getter
-@Setter
+@Data
 public class SvcRoundEvent {
 	private String eventType;
     private BigDecimal time;

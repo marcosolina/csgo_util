@@ -4,14 +4,12 @@ import java.time.LocalDateTime;
 
 import com.ixigo.library.dto.IxigoDto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants
-@Getter
-@Setter
+@Data
 @Accessors(chain = true)
 public class Match_statsDto implements IxigoDto {
 

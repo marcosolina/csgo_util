@@ -2,14 +2,12 @@ package com.ixigo.demmanager.models.database;
 
 import com.ixigo.library.dto.IxigoDto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants
-@Getter
-@Setter
+@Data
 @Accessors(chain = true)
 public class Round_statsDto implements IxigoDto {
 

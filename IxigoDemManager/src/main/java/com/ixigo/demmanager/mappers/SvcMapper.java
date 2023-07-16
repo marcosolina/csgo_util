@@ -2,6 +2,7 @@ package com.ixigo.demmanager.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Mappings;
 
 import com.ixigo.demmanager.models.database.Match_statsDto;
 import com.ixigo.demmanager.models.database.Player_round_statsDto;
@@ -30,86 +31,107 @@ import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundStats;
  */
 @Mapper(componentModel = "spring")
 public interface SvcMapper {
-	@Mapping(source = "steam_id", target = "steamId")
+	@Mappings({
+	@Mapping(source = "steam_id", target = "steamId"),
 	@Mapping(source = "user_name", target = "userName")
+	})
 	public SvcUser fromDtoToSvc(UsersDto dto);
 	
-	@Mapping(source = "steamId", target = "steam_id")
+	@Mappings({
+	@Mapping(source = "steamId", target = "steam_id"),
 	@Mapping(source = "userName", target = "user_name")
+	})
 	public UsersDto fromSvcToDto(SvcUser dto);
 	
-	@Mapping(source = SvcMapFileStats.Fields.date, target = Match_statsDto.Fields.match_date)
-	@Mapping(source = SvcMapFileStats.Fields.mapName, target = Match_statsDto.Fields.mapname)
-	@Mapping(source = SvcMapFileStats.Fields.fileName, target = Match_statsDto.Fields.match_filename)
-	//@Mapping(source = "matchId", target = "match_id")
+	@Mappings({
+		@Mapping(source = "eventType", target = "eventtype"),
+		@Mapping(source = "fileName", target = "match_filename"),
+		@Mapping(source = "round", target = "round"),
+		@Mapping(source = "steamID", target = "steamid"),
+		@Mapping(source = "time", target = "eventtime")
+	})
+	public Round_eventsDto fromSvcToDto(SvcRoundEvent svc);
+
+	@Mappings({
+	@Mapping(source = "date", target = "match_date"),
+	@Mapping(source = "mapName", target = "mapname"),
+	@Mapping(source = "fileName", target = "match_filename")
+	//@Mapping(source = "matchId"", target = "match_id")
+	})
 	public Match_statsDto fromSvcToDto(SvcMapFileStats svc);
 	
-	@Mapping(source = SvcPlayerStats.Fields.userName, target = Player_statsDto.Fields.username)
-	@Mapping(source = SvcPlayerStats.Fields.steamID, target = Player_statsDto.Fields.steamid)
-	@Mapping(source = SvcPlayerStats.Fields.fileName, target = Player_statsDto.Fields.match_filename)
-	@Mapping(source = SvcPlayerStats.Fields.score, target = Player_statsDto.Fields.score)
+	@Mappings({
+	@Mapping(source = "userName", target = "username"),
+	@Mapping(source = "steamID", target = "steamid"),
+	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "score", target = "score")
+	})
 	public Player_statsDto fromSvcToDto(SvcPlayerStats svc);
 	
-	@Mapping(source = SvcRoundStats.Fields.roundNumber, target = Round_statsDto.Fields.roundnumber)
-	@Mapping(source = SvcRoundStats.Fields.winnerSide, target = Round_statsDto.Fields.winnerside)
-	@Mapping(source = SvcRoundStats.Fields.reasonEndRound, target = Round_statsDto.Fields.reasonendround)
-	@Mapping(source = SvcRoundStats.Fields.fileName, target = Round_statsDto.Fields.match_filename)
+	@Mappings({
+	@Mapping(source = "roundNumber", target = "roundnumber"),
+	@Mapping(source = "winnerSide", target = "winnerside"),
+	@Mapping(source = "reasonEndRound", target = "reasonendround"),
+	@Mapping(source = "fileName", target = "match_filename")
+	})
 	public Round_statsDto fromSvcToDto(SvcRoundStats svc);
 	
-	@Mapping(source = SvcPlayerRoundStats.Fields.clutchChance, target = Player_round_statsDto.Fields.clutchchance)
-	@Mapping(source = SvcPlayerRoundStats.Fields.clutchSuccess, target = Player_round_statsDto.Fields.clutchsuccess)
-	@Mapping(source = SvcPlayerRoundStats.Fields.equipmentValue, target = Player_round_statsDto.Fields.equipmentvalue)
-	@Mapping(source = SvcPlayerRoundStats.Fields.fileName, target = Player_round_statsDto.Fields.match_filename)
-	@Mapping(source = SvcPlayerRoundStats.Fields.moneySpent, target = Player_round_statsDto.Fields.moneyspent)
-	@Mapping(source = SvcPlayerRoundStats.Fields.mvp, target = Player_round_statsDto.Fields.mvp)
-	@Mapping(source = SvcPlayerRoundStats.Fields.round, target = Player_round_statsDto.Fields.round)
-	@Mapping(source = SvcPlayerRoundStats.Fields.steamID, target = Player_round_statsDto.Fields.steamid)
-	@Mapping(source = SvcPlayerRoundStats.Fields.survived, target = Player_round_statsDto.Fields.survived)
-	@Mapping(source = SvcPlayerRoundStats.Fields.team, target = Player_round_statsDto.Fields.team)
-	@Mapping(source = SvcPlayerRoundStats.Fields.userName, target = Player_round_statsDto.Fields.username)
+	@Mappings({
+	@Mapping(source = "clutchChance", target = "clutchchance"),
+	@Mapping(source = "clutchSuccess", target = "clutchsuccess"),
+	@Mapping(source = "equipmentValue", target = "equipmentvalue"),
+	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "moneySpent", target = "moneyspent"),
+	@Mapping(source = "mvp", target = "mvp"),
+	@Mapping(source = "round", target = "round"),
+	@Mapping(source = "steamID", target = "steamid"),
+	@Mapping(source = "survived", target = "survived"),
+	@Mapping(source = "team", target = "team"),
+	@Mapping(source = "userName", target = "username")
+	})
 	public Player_round_statsDto fromSvcToDto(SvcPlayerRoundStats svc);
 	
-	@Mapping(source = SvcRoundKillEvent.Fields.assister, target = Round_kill_eventsDto.Fields.assister)
-	@Mapping(source = SvcRoundKillEvent.Fields.fileName, target = Round_kill_eventsDto.Fields.match_filename)
-	@Mapping(source = SvcRoundKillEvent.Fields.flashAssister, target = Round_kill_eventsDto.Fields.flashassister)
-	@Mapping(source = SvcRoundKillEvent.Fields.headshot, target = Round_kill_eventsDto.Fields.headshot)
-	@Mapping(source = SvcRoundKillEvent.Fields.isFirstKill, target = Round_kill_eventsDto.Fields.isfirstkill)
-	@Mapping(source = SvcRoundKillEvent.Fields.isTradeDeath, target = Round_kill_eventsDto.Fields.istradedeath)
-	@Mapping(source = SvcRoundKillEvent.Fields.isTradeKill, target = Round_kill_eventsDto.Fields.istradekill)
-	@Mapping(source = SvcRoundKillEvent.Fields.killerFlashed, target = Round_kill_eventsDto.Fields.killerflashed)
-	@Mapping(source = SvcRoundKillEvent.Fields.round, target = Round_kill_eventsDto.Fields.round)
-	@Mapping(source = SvcRoundKillEvent.Fields.steamID, target = Round_kill_eventsDto.Fields.steamid)
-	@Mapping(source = SvcRoundKillEvent.Fields.time, target = Round_kill_eventsDto.Fields.eventtime)
-	@Mapping(source = SvcRoundKillEvent.Fields.victimSteamId, target = Round_kill_eventsDto.Fields.victimsteamid)
-	@Mapping(source = SvcRoundKillEvent.Fields.weapon, target = Round_kill_eventsDto.Fields.weapon)
+	@Mappings({
+	@Mapping(source = "assister", target = "assister"),
+	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "flashAssister", target = "flashassister"),
+	@Mapping(source = "headshot", target = "headshot"),
+	@Mapping(source = "isFirstKill", target = "isfirstkill"),
+	@Mapping(source = "isTradeDeath", target = "istradedeath"),
+	@Mapping(source = "isTradeKill", target = "istradekill"),
+	@Mapping(source = "killerFlashed", target = "killerflashed"),
+	@Mapping(source = "round", target = "round"),
+	@Mapping(source = "steamID", target = "steamid"),
+	@Mapping(source = "time", target = "eventtime"),
+	@Mapping(source = "victimSteamId", target = "victimsteamid"),
+	@Mapping(source = "weapon", target = "weapon")
+	})
 	public Round_kill_eventsDto fromSvcToDto(SvcRoundKillEvent svc);
 	
-	@Mapping(source = SvcRoundShotEvent.Fields.eventType, target = Round_shot_eventsDto.Fields.eventtype)
-	@Mapping(source = SvcRoundShotEvent.Fields.fileName, target = Round_shot_eventsDto.Fields.match_filename)
-	@Mapping(source = SvcRoundShotEvent.Fields.round, target = Round_shot_eventsDto.Fields.round)
-	@Mapping(source = SvcRoundShotEvent.Fields.steamID, target = Round_shot_eventsDto.Fields.steamid)
-	@Mapping(source = SvcRoundShotEvent.Fields.time, target = Round_shot_eventsDto.Fields.eventtime)
-	@Mapping(source = SvcRoundShotEvent.Fields.weapon, target = Round_shot_eventsDto.Fields.weapon)
+	@Mappings({
+	@Mapping(source = "eventType", target = "eventtype"),
+	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "round", target = "round"),
+	@Mapping(source = "steamID", target = "steamid"),
+	@Mapping(source = "time", target = "eventtime"),
+	@Mapping(source = "weapon", target = "weapon")
+	})
 	public Round_shot_eventsDto fromSvcToDto(SvcRoundShotEvent svc);
 	
-	@Mapping(source = SvcRoundHitEvent.Fields.blindTime, target = Round_hit_eventsDto.Fields.blindtime)
-	@Mapping(source = SvcRoundHitEvent.Fields.damageArmour, target = Round_hit_eventsDto.Fields.damagearmour)
-	@Mapping(source = SvcRoundHitEvent.Fields.damageHealth, target = Round_hit_eventsDto.Fields.damagehealth)
-	@Mapping(source = SvcRoundHitEvent.Fields.fileName, target = Round_hit_eventsDto.Fields.match_filename)
-	@Mapping(source = SvcRoundHitEvent.Fields.hitGroup, target = Round_hit_eventsDto.Fields.hitgroup)
-	@Mapping(source = SvcRoundHitEvent.Fields.round, target = Round_hit_eventsDto.Fields.round)
-	@Mapping(source = SvcRoundHitEvent.Fields.steamID, target = Round_hit_eventsDto.Fields.steamid)
-	@Mapping(source = SvcRoundHitEvent.Fields.time, target = Round_hit_eventsDto.Fields.eventtime)
-	@Mapping(source = SvcRoundHitEvent.Fields.victimSteamId, target = Round_hit_eventsDto.Fields.victimsteamid)
-	@Mapping(source = SvcRoundHitEvent.Fields.weapon, target = Round_hit_eventsDto.Fields.weapon)
+	@Mappings({
+	@Mapping(source = "blindTime", target = "blindtime"),
+	@Mapping(source = "damageArmour", target = "damagearmour"),
+	@Mapping(source = "damageHealth", target = "damagehealth"),
+	@Mapping(source = "fileName", target = "match_filename"),
+	@Mapping(source = "hitGroup", target = "hitgroup"),
+	@Mapping(source = "round", target = "round"),
+	@Mapping(source = "steamID", target = "steamid"),
+	@Mapping(source = "time", target = "eventtime"),
+	@Mapping(source = "victimSteamId", target = "victimsteamid"),
+	@Mapping(source = "weapon", target = "weapon")
+	})
 	public Round_hit_eventsDto fromSvcToDto(SvcRoundHitEvent svc);
 	
-	@Mapping(source = SvcRoundEvent.Fields.eventType, target = Round_eventsDto.Fields.eventtype)
-	@Mapping(source = SvcRoundEvent.Fields.fileName, target = Round_eventsDto.Fields.match_filename)
-	@Mapping(source = SvcRoundEvent.Fields.round, target = Round_eventsDto.Fields.round)
-	@Mapping(source = SvcRoundEvent.Fields.steamID, target = Round_eventsDto.Fields.steamid)
-	@Mapping(source = SvcRoundEvent.Fields.time, target = Round_eventsDto.Fields.eventtime)
-	public Round_eventsDto fromSvcToDto(SvcRoundEvent svc);
 	
 	/*
 	public default Users_scoresDto fromUserMapStatsToEntityUserScore(SvcMapStats ms, SvcUserGotvScore userScore) {
@@ -151,15 +173,15 @@ public interface SvcMapper {
 		ums.setHs(userScore.getHeadShots());
 		ums.setSide(userScore.getSide());
 
-		ums.setRws(RoundParserUtils.doubleToBigDecimal(userScore.getRoundWinShare(), 2));
-		ums.setKdr(RoundParserUtils.doubleToBigDecimal(userScore.getKillDeathRatio(), 2));
-		ums.setHsp(RoundParserUtils.doubleToBigDecimal(userScore.getHeadShotsPercentage(), 2));
-		ums.setHltv(RoundParserUtils.doubleToBigDecimal(userScore.getHalfLifeTelevisionRating(), 3));
-		ums.setKpr(RoundParserUtils.doubleToBigDecimal(userScore.getKillPerRound(), 2));
-		ums.setApr(RoundParserUtils.doubleToBigDecimal(userScore.getAssistsPerRound(), 2));
-		ums.setDpr(RoundParserUtils.doubleToBigDecimal(userScore.getDeathPerRound(), 2));
-		ums.setAdr(RoundParserUtils.doubleToBigDecimal(userScore.getAverageDamagePerRound(), 2));
-		ums.setMp(RoundParserUtils.doubleToBigDecimal(userScore.getMatchPlayed(), 2));
+		ums.setRws(RoundParserUtils.doubleToBigDecimal(userScore.getRoundWinShare("), 2));
+		ums.setKdr(RoundParserUtils.doubleToBigDecimal(userScore.getKillDeathRatio("), 2));
+		ums.setHsp(RoundParserUtils.doubleToBigDecimal(userScore.getHeadShotsPercentage("), 2));
+		ums.setHltv(RoundParserUtils.doubleToBigDecimal(userScore.getHalfLifeTelevisionRating("), 3));
+		ums.setKpr(RoundParserUtils.doubleToBigDecimal(userScore.getKillPerRound("), 2));
+		ums.setApr(RoundParserUtils.doubleToBigDecimal(userScore.getAssistsPerRound("), 2));
+		ums.setDpr(RoundParserUtils.doubleToBigDecimal(userScore.getDeathPerRound("), 2));
+		ums.setAdr(RoundParserUtils.doubleToBigDecimal(userScore.getAverageDamagePerRound("), 2));
+		ums.setMp(RoundParserUtils.doubleToBigDecimal(userScore.getMatchPlayed("), 2));
 		return ums;
 	}
 
@@ -204,15 +226,15 @@ public interface SvcMapper {
 		gotvScore.setHeadShots(userScore.getHs());
 		gotvScore.setSide(userScore.getSide());
 
-		gotvScore.setRoundWinShare(RoundParserUtils.bigDecimalToDouble(userScore.getRws(), 2));
-		gotvScore.setKillDeathRatio(RoundParserUtils.bigDecimalToDouble(userScore.getKdr(), 2));
-		gotvScore.setHeadShotsPercentage(RoundParserUtils.bigDecimalToDouble(userScore.getHsp(), 2));
-		gotvScore.setHalfLifeTelevisionRating(RoundParserUtils.bigDecimalToDouble(userScore.getHltv(), 3));
-		gotvScore.setKillPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getKpr(), 2));
-		gotvScore.setAssistsPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getApr(), 2));
-		gotvScore.setDeathPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getDpr(), 2));
-		gotvScore.setAverageDamagePerRound(RoundParserUtils.bigDecimalToDouble(userScore.getAdr(), 2));
-		gotvScore.setMatchPlayed(RoundParserUtils.bigDecimalToDouble(userScore.getMp(), 2));
+		gotvScore.setRoundWinShare(RoundParserUtils.bigDecimalToDouble(userScore.getRws("), 2));
+		gotvScore.setKillDeathRatio(RoundParserUtils.bigDecimalToDouble(userScore.getKdr("), 2));
+		gotvScore.setHeadShotsPercentage(RoundParserUtils.bigDecimalToDouble(userScore.getHsp("), 2));
+		gotvScore.setHalfLifeTelevisionRating(RoundParserUtils.bigDecimalToDouble(userScore.getHltv("), 3));
+		gotvScore.setKillPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getKpr("), 2));
+		gotvScore.setAssistsPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getApr("), 2));
+		gotvScore.setDeathPerRound(RoundParserUtils.bigDecimalToDouble(userScore.getDpr("), 2));
+		gotvScore.setAverageDamagePerRound(RoundParserUtils.bigDecimalToDouble(userScore.getAdr("), 2));
+		gotvScore.setMatchPlayed(RoundParserUtils.bigDecimalToDouble(userScore.getMp("), 2));
 
 		mapStats.addUserMapStats(gotvScore);
 		return mapStats;

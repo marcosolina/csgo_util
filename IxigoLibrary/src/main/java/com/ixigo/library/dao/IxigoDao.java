@@ -255,14 +255,18 @@ public abstract class IxigoDao<T extends IxigoDto> implements Serializable, Clon
 
 		var ges = client.sql(insert);
 		var dto = this.getDtoInstance();
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < sqlFields.length; i++) {
 			Object value = getValue(dto, sqlFields[i]);
 			if (value == null) {
 				ges = ges.bindNull(sqlFields[i], getDataType(dto, sqlFields[i]));
+				sb.append(", null");
 			} else {
 				ges = ges.bind(sqlFields[i], value.getClass().isEnum() ? value.toString() : value);
+				sb.append(", " + value );
 			}
 		}
+		_LOGGER.debug(sb.toString());
 		return ges;
 	}
 

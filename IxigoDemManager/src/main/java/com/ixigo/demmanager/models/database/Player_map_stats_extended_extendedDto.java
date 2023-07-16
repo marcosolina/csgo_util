@@ -6,11 +6,13 @@ import com.ixigo.library.dto.IxigoDto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Player_map_stats_extended_extendedDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
@@ -22,12 +24,14 @@ public class Player_map_stats_extended_extendedDto implements IxigoDto {
 	private BigDecimal _1v2 = BigDecimal.ZERO;
 	private BigDecimal kast = BigDecimal.ZERO;
 	private BigDecimal _1v1 = BigDecimal.ZERO;
+	private String first_weapon = "";
 	private BigDecimal hr = BigDecimal.ZERO;
 	private String mapname = "";
 	private BigDecimal bp = BigDecimal.ZERO;
 	private BigDecimal ud = BigDecimal.ZERO;
 	private BigDecimal rws = BigDecimal.ZERO;
 	private Long loss = null;
+	private String second_weapon = "";
 	private BigDecimal headshots = BigDecimal.ZERO;
 	private BigDecimal assists = BigDecimal.ZERO;
 	private BigDecimal _4k = BigDecimal.ZERO;

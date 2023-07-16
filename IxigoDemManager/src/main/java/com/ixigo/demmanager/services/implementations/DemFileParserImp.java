@@ -27,13 +27,26 @@ import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.mappers.SvcMapper;
 import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 import com.ixigo.demmanager.models.database.Match_statsDao;
-import com.ixigo.demmanager.models.database.Match_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_statsDao;
+import com.ixigo.demmanager.models.database.Player_statsDao;
+import com.ixigo.demmanager.models.database.Round_eventsDao;
+import com.ixigo.demmanager.models.database.Round_hit_eventsDao;
+import com.ixigo.demmanager.models.database.Round_kill_eventsDao;
+import com.ixigo.demmanager.models.database.Round_shot_eventsDao;
+import com.ixigo.demmanager.models.database.Round_statsDao;
 import com.ixigo.demmanager.models.database.UsersDto;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
 import com.ixigo.demmanager.models.svc.demdata.SvcNodeJsParseOutput;
 import com.ixigo.demmanager.models.svc.demdata.SvcUser;
 import com.ixigo.demmanager.models.svc.demdata.SvcUserStatsForLastXGames;
 import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcMapFileStats;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerStats;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundEvent;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundHitEvent;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundKillEvent;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundShotEvent;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundStats;
 import com.ixigo.demmanager.repositories.interfaces.CrudRepo;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
@@ -278,10 +291,61 @@ public class DemFileParserImp implements DemFileParser {
 					tuple.getT3().forEach(user ->{
 						monos.add(repoUser.insertUpdateUser(user));
 					});
-					SvcMapFileStats mapStats = tuple.getT4().getMapStats();
-					var dto = this.mapper.fromSvcToDto(mapStats);
-					monos.add(genericRepo.insert(Match_statsDao.class, Match_statsDto.class, dto));
-					// TODO add all the other insert
+					
+					
+					SvcNodeJsParseOutput stats = tuple.getT4(); 
+					SvcMapFileStats mapStats = stats.getMapStats();
+					var dtoMs = this.mapper.fromSvcToDto(mapStats);
+					monos.add(genericRepo.insert(Match_statsDao.class, dtoMs));
+					
+					List<SvcRoundKillEvent> allRoundKillEvents = stats.getAllRoundKillEvents();
+					for (SvcRoundKillEvent element : allRoundKillEvents) {
+						var dto = this.mapper.fromSvcToDto(element);
+						dto.setMatch_filename(fileName);
+						monos.add(genericRepo.insert(Round_kill_eventsDao.class, dto));
+					}
+					
+					List<SvcPlayerStats> listAllPlayerStats = stats.getAllPlayerStats();
+					for (SvcPlayerStats element : listAllPlayerStats) {
+						var dto = this.mapper.fromSvcToDto(element);
+						dto.setMatch_filename(fileName);
+						monos.add(genericRepo.insert(Player_statsDao.class, dto));
+					}
+					
+					List<SvcRoundStats> allRoundStats = stats.getAllRoundStats();
+					for (SvcRoundStats element : allRoundStats) {
+						var dto = this.mapper.fromSvcToDto(element);
+						dto.setMatch_filename(fileName);
+						monos.add(genericRepo.insert(Round_statsDao.class, dto));
+					}
+					
+					List<SvcPlayerRoundStats> allPlayerRoundStats = stats.getAllPlayerRoundStats();
+					for (SvcPlayerRoundStats element : allPlayerRoundStats) {
+						var dto = this.mapper.fromSvcToDto(element);
+						dto.setMatch_filename(fileName);
+						monos.add(genericRepo.insert(Player_round_statsDao.class, dto));
+					}
+					
+					List<SvcRoundShotEvent> allRoundShotEvents = stats.getAllRoundShotEvents();
+					for (SvcRoundShotEvent element : allRoundShotEvents) {
+						var dto = this.mapper.fromSvcToDto(element);
+						dto.setMatch_filename(fileName);
+						monos.add(genericRepo.insert(Round_shot_eventsDao.class, dto));
+					}
+					
+					List<SvcRoundHitEvent> allRoundHitEvents = stats.getAllRoundHitEvents();
+					for (SvcRoundHitEvent element : allRoundHitEvents) {
+						var dto = this.mapper.fromSvcToDto(element);
+						dto.setMatch_filename(fileName);
+						monos.add(genericRepo.insert(Round_hit_eventsDao.class, dto));
+					}
+					
+					List<SvcRoundEvent> allRoundEvents = stats.getAllRoundEvents();
+					for (SvcRoundEvent element : allRoundEvents) {
+						var dto = this.mapper.fromSvcToDto(element);
+						dto.setMatch_filename(fileName);
+						monos.add(genericRepo.insert(Round_eventsDao.class, dto));
+					}
 					
 					/*
 					 * I was running out of DB connections, I did not manage

@@ -4,19 +4,21 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 
+@FieldNameConstants
 @Getter
 @Setter
 public class SvcPlayerRoundStats {
 	private String userName;
     private String steamID;
-    private int round;
-    private int team;
+    private Integer round;
+    private Integer team;
     private BigDecimal clutchChance;
-    private boolean clutchSuccess;
-    private boolean survived;
-    private int moneySpent;
-    private int equipmentValue;
-    private boolean mvp;
-    private int matchId;
+    private Boolean clutchSuccess;
+    private Boolean survived;
+    private Integer moneySpent;
+    private Integer equipmentValue;
+    private Boolean mvp;
+    private String fileName;
 }

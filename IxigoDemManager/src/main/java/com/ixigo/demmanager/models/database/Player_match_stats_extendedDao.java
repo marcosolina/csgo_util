@@ -42,12 +42,15 @@ public class Player_match_stats_extendedDao extends IxigoDao<Player_match_stats_
 			Player_match_stats_extendedDto.Fields.headshots,
 			Player_match_stats_extendedDto.Fields.assists,
 			Player_match_stats_extendedDto.Fields._4k,
+			Player_match_stats_extendedDto.Fields.last_round_team,
 			Player_match_stats_extendedDto.Fields._2k,
 			Player_match_stats_extendedDto.Fields.usernames,
 			Player_match_stats_extendedDto.Fields._1v5,
 			Player_match_stats_extendedDto.Fields._1v4,
 			Player_match_stats_extendedDto.Fields.headshot_percentage,
 			Player_match_stats_extendedDto.Fields.deaths,
+			Player_match_stats_extendedDto.Fields.rounds_on_team2,
+			Player_match_stats_extendedDto.Fields.rounds_on_team1,
 			Player_match_stats_extendedDto.Fields.ffd,
 			Player_match_stats_extendedDto.Fields.roundsplayed,
 			Player_match_stats_extendedDto.Fields.ek,
@@ -224,6 +227,14 @@ public class Player_match_stats_extendedDao extends IxigoDao<Player_match_stats_
 		this.dto.set_4k(_4k);
 	}
 
+	public String getLast_round_team() {
+		return dto.getLast_round_team();
+	}
+
+	public void setLast_round_team(String last_round_team) {
+		this.dto.setLast_round_team(last_round_team);
+	}
+
 	public Long get_2k() {
 		return dto.get_2k();
 	}
@@ -270,6 +281,22 @@ public class Player_match_stats_extendedDao extends IxigoDao<Player_match_stats_
 
 	public void setDeaths(BigDecimal deaths) {
 		this.dto.setDeaths(deaths);
+	}
+
+	public Long getRounds_on_team2() {
+		return dto.getRounds_on_team2();
+	}
+
+	public void setRounds_on_team2(Long rounds_on_team2) {
+		this.dto.setRounds_on_team2(rounds_on_team2);
+	}
+
+	public Long getRounds_on_team1() {
+		return dto.getRounds_on_team1();
+	}
+
+	public void setRounds_on_team1(Long rounds_on_team1) {
+		this.dto.setRounds_on_team1(rounds_on_team1);
 	}
 
 	public BigDecimal getFfd() {

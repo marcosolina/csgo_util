@@ -7,11 +7,13 @@ import com.ixigo.library.dto.IxigoDto;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
 import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants
 @Getter
 @Setter
+@Accessors(chain = true)
 public class Player_match_stats_extendedDto implements IxigoDto {
 
 	private static final long serialVersionUID = 1L;
@@ -33,12 +35,15 @@ public class Player_match_stats_extendedDto implements IxigoDto {
 	private BigDecimal headshots = BigDecimal.ZERO;
 	private BigDecimal assists = BigDecimal.ZERO;
 	private Long _4k = null;
+	private String last_round_team = "";
 	private Long _2k = null;
 	private String usernames = "";
 	private Long _1v5 = null;
 	private Long _1v4 = null;
 	private BigDecimal headshot_percentage = BigDecimal.ZERO;
 	private BigDecimal deaths = BigDecimal.ZERO;
+	private Long rounds_on_team2 = null;
+	private Long rounds_on_team1 = null;
 	private BigDecimal ffd = BigDecimal.ZERO;
 	private Long roundsplayed = null;
 	private BigDecimal ek = BigDecimal.ZERO;

@@ -37,7 +37,7 @@ public class CrudRepoGeneric implements CrudRepo {
 	}
 
 	@Override
-	public <T extends IxigoDto, D extends IxigoDao<T>> Mono<Boolean> insert(Class<D> daoClass, Class<T> dtoClass, T dto) {
+	public <T extends IxigoDto, D extends IxigoDao<T>> Mono<Boolean> insert(Class<D> daoClass, T dto) {
 		_LOGGER.trace("Inside CrudRepoGeneric.getAll");
 		try {
 			D dao = daoClass.getConstructor().newInstance();

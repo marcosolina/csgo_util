@@ -23,50 +23,54 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
-			Player_overall_stats_extended_extendedDto.Fields.kills,
-			Player_overall_stats_extended_extendedDto.Fields.ff,
-			Player_overall_stats_extended_extendedDto.Fields.hltv_rating,
-			Player_overall_stats_extended_extendedDto.Fields.bd,
 			Player_overall_stats_extended_extendedDto.Fields._1v3,
 			Player_overall_stats_extended_extendedDto.Fields._1v2,
 			Player_overall_stats_extended_extendedDto.Fields.kast,
 			Player_overall_stats_extended_extendedDto.Fields._1v1,
 			Player_overall_stats_extended_extendedDto.Fields.hr,
-			Player_overall_stats_extended_extendedDto.Fields.bp,
 			Player_overall_stats_extended_extendedDto.Fields.ud,
-			Player_overall_stats_extended_extendedDto.Fields.rws,
 			Player_overall_stats_extended_extendedDto.Fields.loss,
-			Player_overall_stats_extended_extendedDto.Fields.headshots,
-			Player_overall_stats_extended_extendedDto.Fields.assists,
-			Player_overall_stats_extended_extendedDto.Fields._4k,
+			Player_overall_stats_extended_extendedDto.Fields.second_weapon,
+			Player_overall_stats_extended_extendedDto.Fields._1vnp,
 			Player_overall_stats_extended_extendedDto.Fields._2k,
-			Player_overall_stats_extended_extendedDto.Fields.usernames,
 			Player_overall_stats_extended_extendedDto.Fields._1v5,
 			Player_overall_stats_extended_extendedDto.Fields._1v4,
 			Player_overall_stats_extended_extendedDto.Fields.headshot_percentage,
 			Player_overall_stats_extended_extendedDto.Fields.deaths,
 			Player_overall_stats_extended_extendedDto.Fields.wins,
-			Player_overall_stats_extended_extendedDto.Fields.averagewinscore,
-			Player_overall_stats_extended_extendedDto.Fields.winlossratio,
 			Player_overall_stats_extended_extendedDto.Fields.ffd,
 			Player_overall_stats_extended_extendedDto.Fields.ek,
-			Player_overall_stats_extended_extendedDto.Fields.mvp,
-			Player_overall_stats_extended_extendedDto.Fields.dpr,
 			Player_overall_stats_extended_extendedDto.Fields.kpr,
 			Player_overall_stats_extended_extendedDto.Fields.matches,
 			Player_overall_stats_extended_extendedDto.Fields.adr,
+			Player_overall_stats_extended_extendedDto.Fields._3k,
+			Player_overall_stats_extended_extendedDto.Fields.kdr,
+			Player_overall_stats_extended_extendedDto.Fields.fbt,
+			Player_overall_stats_extended_extendedDto.Fields.fa,
+			Player_overall_stats_extended_extendedDto.Fields.kills,
+			Player_overall_stats_extended_extendedDto.Fields.ff,
+			Player_overall_stats_extended_extendedDto.Fields.hltv_rating,
+			Player_overall_stats_extended_extendedDto.Fields.bd,
+			Player_overall_stats_extended_extendedDto.Fields.first_weapon,
+			Player_overall_stats_extended_extendedDto.Fields.fkr,
+			Player_overall_stats_extended_extendedDto.Fields.bp,
+			Player_overall_stats_extended_extendedDto.Fields.rws,
+			Player_overall_stats_extended_extendedDto.Fields.headshots,
+			Player_overall_stats_extended_extendedDto.Fields.assists,
+			Player_overall_stats_extended_extendedDto.Fields._4k,
+			Player_overall_stats_extended_extendedDto.Fields.usernames,
+			Player_overall_stats_extended_extendedDto.Fields.averagewinscore,
+			Player_overall_stats_extended_extendedDto.Fields.winlossratio,
+			Player_overall_stats_extended_extendedDto.Fields.mvp,
+			Player_overall_stats_extended_extendedDto.Fields.dpr,
 			Player_overall_stats_extended_extendedDto.Fields.steamid,
 			Player_overall_stats_extended_extendedDto.Fields.td,
 			Player_overall_stats_extended_extendedDto.Fields.tda,
 			Player_overall_stats_extended_extendedDto.Fields._5k,
-			Player_overall_stats_extended_extendedDto.Fields._3k,
 			Player_overall_stats_extended_extendedDto.Fields.ebt,
 			Player_overall_stats_extended_extendedDto.Fields.tk,
-			Player_overall_stats_extended_extendedDto.Fields.kdr,
 			Player_overall_stats_extended_extendedDto.Fields._1k,
 			Player_overall_stats_extended_extendedDto.Fields.tdh,
-			Player_overall_stats_extended_extendedDto.Fields.fbt,
-			Player_overall_stats_extended_extendedDto.Fields.fa,
 			Player_overall_stats_extended_extendedDto.Fields.rounds,
 		});
 		// @formatter:on
@@ -77,38 +81,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 	public Player_overall_stats_extended_extendedDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Player_overall_stats_extended_extendedDto(), row, rowMetaData);
-	}
-
-	public BigDecimal getKills() {
-		return dto.getKills();
-	}
-
-	public void setKills(BigDecimal kills) {
-		this.dto.setKills(kills);
-	}
-
-	public BigDecimal getFf() {
-		return dto.getFf();
-	}
-
-	public void setFf(BigDecimal ff) {
-		this.dto.setFf(ff);
-	}
-
-	public BigDecimal getHltv_rating() {
-		return dto.getHltv_rating();
-	}
-
-	public void setHltv_rating(BigDecimal hltv_rating) {
-		this.dto.setHltv_rating(hltv_rating);
-	}
-
-	public BigDecimal getBd() {
-		return dto.getBd();
-	}
-
-	public void setBd(BigDecimal bd) {
-		this.dto.setBd(bd);
 	}
 
 	public BigDecimal get_1v3() {
@@ -151,28 +123,12 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 		this.dto.setHr(hr);
 	}
 
-	public BigDecimal getBp() {
-		return dto.getBp();
-	}
-
-	public void setBp(BigDecimal bp) {
-		this.dto.setBp(bp);
-	}
-
 	public BigDecimal getUd() {
 		return dto.getUd();
 	}
 
 	public void setUd(BigDecimal ud) {
 		this.dto.setUd(ud);
-	}
-
-	public BigDecimal getRws() {
-		return dto.getRws();
-	}
-
-	public void setRws(BigDecimal rws) {
-		this.dto.setRws(rws);
 	}
 
 	public Long getLoss() {
@@ -183,28 +139,20 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 		this.dto.setLoss(loss);
 	}
 
-	public BigDecimal getHeadshots() {
-		return dto.getHeadshots();
+	public String getSecond_weapon() {
+		return dto.getSecond_weapon();
 	}
 
-	public void setHeadshots(BigDecimal headshots) {
-		this.dto.setHeadshots(headshots);
+	public void setSecond_weapon(String second_weapon) {
+		this.dto.setSecond_weapon(second_weapon);
 	}
 
-	public BigDecimal getAssists() {
-		return dto.getAssists();
+	public BigDecimal get_1vnp() {
+		return dto.get_1vnp();
 	}
 
-	public void setAssists(BigDecimal assists) {
-		this.dto.setAssists(assists);
-	}
-
-	public BigDecimal get_4k() {
-		return dto.get_4k();
-	}
-
-	public void set_4k(BigDecimal _4k) {
-		this.dto.set_4k(_4k);
+	public void set_1vnp(BigDecimal _1vnp) {
+		this.dto.set_1vnp(_1vnp);
 	}
 
 	public BigDecimal get_2k() {
@@ -213,14 +161,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 
 	public void set_2k(BigDecimal _2k) {
 		this.dto.set_2k(_2k);
-	}
-
-	public String getUsernames() {
-		return dto.getUsernames();
-	}
-
-	public void setUsernames(String usernames) {
-		this.dto.setUsernames(usernames);
 	}
 
 	public BigDecimal get_1v5() {
@@ -263,22 +203,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 		this.dto.setWins(wins);
 	}
 
-	public BigDecimal getAveragewinscore() {
-		return dto.getAveragewinscore();
-	}
-
-	public void setAveragewinscore(BigDecimal averagewinscore) {
-		this.dto.setAveragewinscore(averagewinscore);
-	}
-
-	public BigDecimal getWinlossratio() {
-		return dto.getWinlossratio();
-	}
-
-	public void setWinlossratio(BigDecimal winlossratio) {
-		this.dto.setWinlossratio(winlossratio);
-	}
-
 	public BigDecimal getFfd() {
 		return dto.getFfd();
 	}
@@ -293,22 +217,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 
 	public void setEk(BigDecimal ek) {
 		this.dto.setEk(ek);
-	}
-
-	public BigDecimal getMvp() {
-		return dto.getMvp();
-	}
-
-	public void setMvp(BigDecimal mvp) {
-		this.dto.setMvp(mvp);
-	}
-
-	public BigDecimal getDpr() {
-		return dto.getDpr();
-	}
-
-	public void setDpr(BigDecimal dpr) {
-		this.dto.setDpr(dpr);
 	}
 
 	public BigDecimal getKpr() {
@@ -333,6 +241,166 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 
 	public void setAdr(BigDecimal adr) {
 		this.dto.setAdr(adr);
+	}
+
+	public BigDecimal get_3k() {
+		return dto.get_3k();
+	}
+
+	public void set_3k(BigDecimal _3k) {
+		this.dto.set_3k(_3k);
+	}
+
+	public BigDecimal getKdr() {
+		return dto.getKdr();
+	}
+
+	public void setKdr(BigDecimal kdr) {
+		this.dto.setKdr(kdr);
+	}
+
+	public BigDecimal getFbt() {
+		return dto.getFbt();
+	}
+
+	public void setFbt(BigDecimal fbt) {
+		this.dto.setFbt(fbt);
+	}
+
+	public BigDecimal getFa() {
+		return dto.getFa();
+	}
+
+	public void setFa(BigDecimal fa) {
+		this.dto.setFa(fa);
+	}
+
+	public BigDecimal getKills() {
+		return dto.getKills();
+	}
+
+	public void setKills(BigDecimal kills) {
+		this.dto.setKills(kills);
+	}
+
+	public BigDecimal getFf() {
+		return dto.getFf();
+	}
+
+	public void setFf(BigDecimal ff) {
+		this.dto.setFf(ff);
+	}
+
+	public BigDecimal getHltv_rating() {
+		return dto.getHltv_rating();
+	}
+
+	public void setHltv_rating(BigDecimal hltv_rating) {
+		this.dto.setHltv_rating(hltv_rating);
+	}
+
+	public BigDecimal getBd() {
+		return dto.getBd();
+	}
+
+	public void setBd(BigDecimal bd) {
+		this.dto.setBd(bd);
+	}
+
+	public String getFirst_weapon() {
+		return dto.getFirst_weapon();
+	}
+
+	public void setFirst_weapon(String first_weapon) {
+		this.dto.setFirst_weapon(first_weapon);
+	}
+
+	public BigDecimal getFkr() {
+		return dto.getFkr();
+	}
+
+	public void setFkr(BigDecimal fkr) {
+		this.dto.setFkr(fkr);
+	}
+
+	public BigDecimal getBp() {
+		return dto.getBp();
+	}
+
+	public void setBp(BigDecimal bp) {
+		this.dto.setBp(bp);
+	}
+
+	public BigDecimal getRws() {
+		return dto.getRws();
+	}
+
+	public void setRws(BigDecimal rws) {
+		this.dto.setRws(rws);
+	}
+
+	public BigDecimal getHeadshots() {
+		return dto.getHeadshots();
+	}
+
+	public void setHeadshots(BigDecimal headshots) {
+		this.dto.setHeadshots(headshots);
+	}
+
+	public BigDecimal getAssists() {
+		return dto.getAssists();
+	}
+
+	public void setAssists(BigDecimal assists) {
+		this.dto.setAssists(assists);
+	}
+
+	public BigDecimal get_4k() {
+		return dto.get_4k();
+	}
+
+	public void set_4k(BigDecimal _4k) {
+		this.dto.set_4k(_4k);
+	}
+
+	public String getUsernames() {
+		return dto.getUsernames();
+	}
+
+	public void setUsernames(String usernames) {
+		this.dto.setUsernames(usernames);
+	}
+
+	public BigDecimal getAveragewinscore() {
+		return dto.getAveragewinscore();
+	}
+
+	public void setAveragewinscore(BigDecimal averagewinscore) {
+		this.dto.setAveragewinscore(averagewinscore);
+	}
+
+	public BigDecimal getWinlossratio() {
+		return dto.getWinlossratio();
+	}
+
+	public void setWinlossratio(BigDecimal winlossratio) {
+		this.dto.setWinlossratio(winlossratio);
+	}
+
+	public BigDecimal getMvp() {
+		return dto.getMvp();
+	}
+
+	public void setMvp(BigDecimal mvp) {
+		this.dto.setMvp(mvp);
+	}
+
+	public BigDecimal getDpr() {
+		return dto.getDpr();
+	}
+
+	public void setDpr(BigDecimal dpr) {
+		this.dto.setDpr(dpr);
 	}
 
 	public String getSteamid() {
@@ -367,14 +435,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 		this.dto.set_5k(_5k);
 	}
 
-	public BigDecimal get_3k() {
-		return dto.get_3k();
-	}
-
-	public void set_3k(BigDecimal _3k) {
-		this.dto.set_3k(_3k);
-	}
-
 	public BigDecimal getEbt() {
 		return dto.getEbt();
 	}
@@ -391,14 +451,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 		this.dto.setTk(tk);
 	}
 
-	public BigDecimal getKdr() {
-		return dto.getKdr();
-	}
-
-	public void setKdr(BigDecimal kdr) {
-		this.dto.setKdr(kdr);
-	}
-
 	public BigDecimal get_1k() {
 		return dto.get_1k();
 	}
@@ -413,22 +465,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 
 	public void setTdh(BigDecimal tdh) {
 		this.dto.setTdh(tdh);
-	}
-
-	public BigDecimal getFbt() {
-		return dto.getFbt();
-	}
-
-	public void setFbt(BigDecimal fbt) {
-		this.dto.setFbt(fbt);
-	}
-
-	public BigDecimal getFa() {
-		return dto.getFa();
-	}
-
-	public void setFa(BigDecimal fa) {
-		this.dto.setFa(fa);
 	}
 
 	public BigDecimal getRounds() {

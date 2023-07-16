@@ -1,5 +1,7 @@
 package com.ixigo.demmanager.models.database;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,11 +65,11 @@ public class Round_kill_events_extendedDao extends IxigoDao<Round_kill_events_ex
 		this.dto.setIsfirstkill(isfirstkill);
 	}
 
-	public Long getEventtime() {
+	public BigDecimal getEventtime() {
 		return dto.getEventtime();
 	}
 
-	public void setEventtime(Long eventtime) {
+	public void setEventtime(BigDecimal eventtime) {
 		this.dto.setEventtime(eventtime);
 	}
 

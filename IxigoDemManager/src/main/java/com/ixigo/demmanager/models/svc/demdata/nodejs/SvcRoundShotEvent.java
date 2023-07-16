@@ -1,15 +1,19 @@
 package com.ixigo.demmanager.models.svc.demdata.nodejs;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.FieldNameConstants;
 
+@FieldNameConstants
 @Getter
 @Setter
 public class SvcRoundShotEvent {
 	private String eventType;
-    private double time;
+    private BigDecimal time;
     private String steamID;
-    private int round;
+    private Integer round;
     private String weapon;
-    private int matchId;
+    private String fileName;
 }

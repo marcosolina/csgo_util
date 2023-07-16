@@ -8,5 +8,5 @@ import reactor.core.publisher.Mono;
 
 public interface CrudRepo {
 	public <T extends IxigoDto, D extends IxigoDao<T>> Flux<T> getAll(Class<D> daoClass, Class<T> dtoClass);
-	public <T extends IxigoDto, D extends IxigoDao<T>> Mono<Boolean> insert(Class<D> daoClass, Class<T> dtoClass, T dto);
+	public <T extends IxigoDto, D extends IxigoDao<T>> Mono<Boolean> insert(Class<D> daoClass, T dto);
 }

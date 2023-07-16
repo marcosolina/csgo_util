@@ -23,6 +23,8 @@ public class Match_player_weapon_statsDao extends IxigoDao<Match_player_weapon_s
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
+			Match_player_weapon_statsDto.Fields.kills,
+			Match_player_weapon_statsDto.Fields.headshotkills,
 			Match_player_weapon_statsDto.Fields.damage_per_shot,
 			Match_player_weapon_statsDto.Fields.accuracy,
 			Match_player_weapon_statsDto.Fields.steamid,
@@ -31,6 +33,7 @@ public class Match_player_weapon_statsDao extends IxigoDao<Match_player_weapon_s
 			Match_player_weapon_statsDto.Fields.total_damage,
 			Match_player_weapon_statsDto.Fields.match_filename,
 			Match_player_weapon_statsDto.Fields.damage_per_hit,
+			Match_player_weapon_statsDto.Fields.headshotkills_percentage,
 			Match_player_weapon_statsDto.Fields.shots_fired,
 			Match_player_weapon_statsDto.Fields.chest_hit_percentage,
 			Match_player_weapon_statsDto.Fields.leg_hit_percentage,
@@ -47,6 +50,22 @@ public class Match_player_weapon_statsDao extends IxigoDao<Match_player_weapon_s
 	public Match_player_weapon_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Match_player_weapon_statsDto(), row, rowMetaData);
+	}
+
+	public Long getKills() {
+		return dto.getKills();
+	}
+
+	public void setKills(Long kills) {
+		this.dto.setKills(kills);
+	}
+
+	public Long getHeadshotkills() {
+		return dto.getHeadshotkills();
+	}
+
+	public void setHeadshotkills(Long headshotkills) {
+		this.dto.setHeadshotkills(headshotkills);
 	}
 
 	public BigDecimal getDamage_per_shot() {
@@ -111,6 +130,14 @@ public class Match_player_weapon_statsDao extends IxigoDao<Match_player_weapon_s
 
 	public void setDamage_per_hit(BigDecimal damage_per_hit) {
 		this.dto.setDamage_per_hit(damage_per_hit);
+	}
+
+	public BigDecimal getHeadshotkills_percentage() {
+		return dto.getHeadshotkills_percentage();
+	}
+
+	public void setHeadshotkills_percentage(BigDecimal headshotkills_percentage) {
+		this.dto.setHeadshotkills_percentage(headshotkills_percentage);
 	}
 
 	public Long getShots_fired() {

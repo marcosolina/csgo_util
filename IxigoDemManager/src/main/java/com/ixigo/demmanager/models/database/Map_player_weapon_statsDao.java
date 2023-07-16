@@ -23,6 +23,8 @@ public class Map_player_weapon_statsDao extends IxigoDao<Map_player_weapon_stats
 		// @formatter:off
 		this.setSqlKeys(new String[] {  });
 		this.setSqlFields(new String[] {
+			Map_player_weapon_statsDto.Fields.kills,
+			Map_player_weapon_statsDto.Fields.headshotkills,
 			Map_player_weapon_statsDto.Fields.damage_per_shot,
 			Map_player_weapon_statsDto.Fields.accuracy,
 			Map_player_weapon_statsDto.Fields.mapname,
@@ -31,6 +33,7 @@ public class Map_player_weapon_statsDao extends IxigoDao<Map_player_weapon_stats
 			Map_player_weapon_statsDto.Fields.weapon,
 			Map_player_weapon_statsDto.Fields.total_damage,
 			Map_player_weapon_statsDto.Fields.damage_per_hit,
+			Map_player_weapon_statsDto.Fields.headshotkills_percentage,
 			Map_player_weapon_statsDto.Fields.shots_fired,
 			Map_player_weapon_statsDto.Fields.chest_hit_percentage,
 			Map_player_weapon_statsDto.Fields.leg_hit_percentage,
@@ -46,6 +49,22 @@ public class Map_player_weapon_statsDao extends IxigoDao<Map_player_weapon_stats
 	public Map_player_weapon_statsDto mappingFunction(Row row, RowMetadata rowMetaData) {
 		_LOGGER.trace("Mapping data");
 		return this.genericMappingFunction(new Map_player_weapon_statsDto(), row, rowMetaData);
+	}
+
+	public Long getKills() {
+		return dto.getKills();
+	}
+
+	public void setKills(Long kills) {
+		this.dto.setKills(kills);
+	}
+
+	public Long getHeadshotkills() {
+		return dto.getHeadshotkills();
+	}
+
+	public void setHeadshotkills(Long headshotkills) {
+		this.dto.setHeadshotkills(headshotkills);
 	}
 
 	public BigDecimal getDamage_per_shot() {
@@ -110,6 +129,14 @@ public class Map_player_weapon_statsDao extends IxigoDao<Map_player_weapon_stats
 
 	public void setDamage_per_hit(BigDecimal damage_per_hit) {
 		this.dto.setDamage_per_hit(damage_per_hit);
+	}
+
+	public BigDecimal getHeadshotkills_percentage() {
+		return dto.getHeadshotkills_percentage();
+	}
+
+	public void setHeadshotkills_percentage(BigDecimal headshotkills_percentage) {
+		this.dto.setHeadshotkills_percentage(headshotkills_percentage);
 	}
 
 	public Long getShots_fired() {

@@ -20,8 +20,8 @@ import lombok.Setter;
 @Setter
 public class SvcNodeJsParseOutput implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private List<SvcPlayerStats> allPlayerStats = new ArrayList<>();
 	private SvcMapFileStats mapStats = new SvcMapFileStats();
+	private List<SvcPlayerStats> allPlayerStats = new ArrayList<>();
 	private List<SvcRoundStats> allRoundStats = new ArrayList<>();
 	private List<SvcPlayerRoundStats> allPlayerRoundStats = new ArrayList<>();
 	private List<SvcRoundKillEvent> allRoundKillEvents = new ArrayList<>();

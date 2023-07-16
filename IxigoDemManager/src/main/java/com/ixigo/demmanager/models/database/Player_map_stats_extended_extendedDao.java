@@ -31,12 +31,14 @@ public class Player_map_stats_extended_extendedDao extends IxigoDao<Player_map_s
 			Player_map_stats_extended_extendedDto.Fields._1v2,
 			Player_map_stats_extended_extendedDto.Fields.kast,
 			Player_map_stats_extended_extendedDto.Fields._1v1,
+			Player_map_stats_extended_extendedDto.Fields.first_weapon,
 			Player_map_stats_extended_extendedDto.Fields.hr,
 			Player_map_stats_extended_extendedDto.Fields.mapname,
 			Player_map_stats_extended_extendedDto.Fields.bp,
 			Player_map_stats_extended_extendedDto.Fields.ud,
 			Player_map_stats_extended_extendedDto.Fields.rws,
 			Player_map_stats_extended_extendedDto.Fields.loss,
+			Player_map_stats_extended_extendedDto.Fields.second_weapon,
 			Player_map_stats_extended_extendedDto.Fields.headshots,
 			Player_map_stats_extended_extendedDto.Fields.assists,
 			Player_map_stats_extended_extendedDto.Fields._4k,
@@ -144,6 +146,14 @@ public class Player_map_stats_extended_extendedDao extends IxigoDao<Player_map_s
 		this.dto.set_1v1(_1v1);
 	}
 
+	public String getFirst_weapon() {
+		return dto.getFirst_weapon();
+	}
+
+	public void setFirst_weapon(String first_weapon) {
+		this.dto.setFirst_weapon(first_weapon);
+	}
+
 	public BigDecimal getHr() {
 		return dto.getHr();
 	}
@@ -190,6 +200,14 @@ public class Player_map_stats_extended_extendedDao extends IxigoDao<Player_map_s
 
 	public void setLoss(Long loss) {
 		this.dto.setLoss(loss);
+	}
+
+	public String getSecond_weapon() {
+		return dto.getSecond_weapon();
+	}
+
+	public void setSecond_weapon(String second_weapon) {
+		this.dto.setSecond_weapon(second_weapon);
 	}
 
 	public BigDecimal getHeadshots() {

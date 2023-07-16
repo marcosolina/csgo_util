@@ -4,6 +4,7 @@ import { visuallyHidden } from "@mui/utils";
 import TableSortLabel from "@mui/material/TableSortLabel";
 import { weaponImage } from './weaponImage';
 import Pagination from '@mui/material/Pagination';
+import { MaterialReactTable } from 'material-react-table';
 
 type DataItem = {
     usernames: string;
@@ -58,7 +59,6 @@ type DataItem = {
 
   const columnNames: (keyof DataItem)[] = [
     'usernames',
-    'mapname',
     'kills',
     'deaths',
     'kdr',
@@ -66,8 +66,14 @@ type DataItem = {
     //'headshot_percentage',
     //'assists',
     'hltv_rating',
-    'first_weapon',
-    'second_weapon',
+    //'first_weapon',
+    //'second_weapon',
+    'kast',
+    'adr',
+    'rws',
+    'dpr',
+    'kpr',
+    'mvp',
     'ek',
     'tk',
     '_1k',
@@ -80,12 +86,6 @@ type DataItem = {
     '_1v3',
     '_1v4',
     '_1v5',
-    'kast',
-    'adr',
-    'rws',
-    'dpr',
-    'kpr',
-    'mvp',
     'ff',
     'ffd',
     'bd',

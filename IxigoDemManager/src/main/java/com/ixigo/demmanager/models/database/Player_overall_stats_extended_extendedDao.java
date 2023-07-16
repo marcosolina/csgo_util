@@ -58,7 +58,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 			Player_overall_stats_extended_extendedDto.Fields.headshots,
 			Player_overall_stats_extended_extendedDto.Fields.assists,
 			Player_overall_stats_extended_extendedDto.Fields._4k,
-			Player_overall_stats_extended_extendedDto.Fields.usernames,
 			Player_overall_stats_extended_extendedDto.Fields.averagewinscore,
 			Player_overall_stats_extended_extendedDto.Fields.winlossratio,
 			Player_overall_stats_extended_extendedDto.Fields.mvp,
@@ -361,14 +360,6 @@ public class Player_overall_stats_extended_extendedDao extends IxigoDao<Player_o
 
 	public void set_4k(BigDecimal _4k) {
 		this.dto.set_4k(_4k);
-	}
-
-	public String getUsernames() {
-		return dto.getUsernames();
-	}
-
-	public void setUsernames(String usernames) {
-		this.dto.setUsernames(usernames);
 	}
 
 	public BigDecimal getAveragewinscore() {

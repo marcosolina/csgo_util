@@ -43,7 +43,6 @@ public class Player_map_stats_extended_extendedDao extends IxigoDao<Player_map_s
 			Player_map_stats_extended_extendedDto.Fields.assists,
 			Player_map_stats_extended_extendedDto.Fields._4k,
 			Player_map_stats_extended_extendedDto.Fields._2k,
-			Player_map_stats_extended_extendedDto.Fields.usernames,
 			Player_map_stats_extended_extendedDto.Fields._1v5,
 			Player_map_stats_extended_extendedDto.Fields._1v4,
 			Player_map_stats_extended_extendedDto.Fields.headshot_percentage,
@@ -241,15 +240,7 @@ public class Player_map_stats_extended_extendedDao extends IxigoDao<Player_map_s
 	public void set_2k(BigDecimal _2k) {
 		this.dto.set_2k(_2k);
 	}
-
-	public String getUsernames() {
-		return dto.getUsernames();
-	}
-
-	public void setUsernames(String usernames) {
-		this.dto.setUsernames(usernames);
-	}
-
+	
 	public BigDecimal get_1v5() {
 		return dto.get_1v5();
 	}

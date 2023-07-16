@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.validators.cmd;
+/*package com.ixigo.demmanager.validators.cmd;
 
 import static br.com.fluentvalidator.predicate.LogicalPredicate.not;
 import static br.com.fluentvalidator.predicate.StringPredicate.stringEmptyOrNull;
@@ -62,3 +62,4 @@ public class ValidatorCmdGetTeamsScorePerMap extends IxigoValidator<CmdGetTeamsS
 		
 	}
 }
+*/

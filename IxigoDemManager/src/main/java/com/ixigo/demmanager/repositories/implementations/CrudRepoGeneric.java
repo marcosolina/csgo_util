@@ -24,7 +24,7 @@ public class CrudRepoGeneric implements CrudRepo {
 	private DatabaseClient client;
 
 	@Override
-	public <T extends IxigoDto, D extends IxigoDao<T>> Flux<T> getAll(Class<D> daoClass, Class<T> dtoClass) {
+	public <T extends IxigoDto, D extends IxigoDao<T>> Flux<T> getAll(Class<D> daoClass) {
 		_LOGGER.trace("Inside CrudRepoGeneric.getAll");
 		try {
 			D dao = daoClass.getConstructor().newInstance();
@@ -44,6 +44,20 @@ public class CrudRepoGeneric implements CrudRepo {
 			dao.setDto(dto);
 			return dao.prepareSqlInsert(client).then().thenReturn(true);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+			_LOGGER.error(e.getMessage());
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
+		}
+	}
+
+	@Override
+	public  Flux<IxigoDto> getAll(String daoName) {
+		_LOGGER.trace("Inside CrudRepoGeneric.getAll");
+		try {
+			Class c = Class.forName("com.ixigo.demmanager.models.database." + daoName);
+			IxigoDao dao = (IxigoDao)c.getConstructor().newInstance();
+			return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
+		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			e.printStackTrace();
 			_LOGGER.error(e.getMessage());
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);

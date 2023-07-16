@@ -7,6 +7,7 @@ import DemFilesContent from "../../contents/dem-files/DemFilesContent";
 import DiscordBotContent from "../../contents/discord-bot/DiscordBotContent";
 import PlayersContent from "../../contents/players/PlayersContent";
 import RconContent from "../../contents/rcon/RconContent";
+import StatsContent from "../../contents/stats/StatsContent";
 import ServerInfoContent from "../../contents/server-info/ServerInfoContent";
 import Case from "../switch-case/Case";
 import Switch from "../switch-case/Switch";
@@ -60,6 +61,7 @@ const BaseLayout = () => {
           <Tab label={t(`${LANG_BASE_PATH}.tabs.3`)} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.4`)} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.5`)} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.6`)} />
         </Tabs>
       </Box>
 
@@ -76,12 +78,15 @@ const BaseLayout = () => {
             <ChartsContent />
           </Case>
           <Case case={3}>
-            <RconContent />
+            <StatsContent />
           </Case>
           <Case case={4}>
-            <DiscordBotContent />
+            <RconContent />
           </Case>
           <Case case={5}>
+            <DiscordBotContent />
+          </Case>
+          <Case case={6}>
             <ServerInfoContent />
           </Case>
         </Switch>

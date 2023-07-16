@@ -12,9 +12,10 @@
         "0": "Dem Files",
         "1": "Teams",
         "2": "Charts",
-        "3": "Rcon",
-        "4": "Discord Bot",
-        "5": "Join us"
+        "3": "Stats",
+        "4": "Rcon",
+        "5": "Discord Bot",
+        "6": "Join us"
       }
     },
     "discord": {

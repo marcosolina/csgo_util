@@ -1,10 +1,11 @@
-import { useState, useMemo } from "react";
+import { useContext, useMemo } from "react";
 import { IconButton, Tooltip } from '@mui/material';
 import { Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { SelectedStatsContext } from '../SelectedStatsContext';
 import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
+import { Link } from 'react-router-dom';
 import {
     QueryClient,
     QueryClientProvider,
@@ -52,8 +53,50 @@ import {
       const columns = useMemo(
         () => [
           //{ accessorKey: "match_filename", header: "Match Filename", size: smallColSize, Header: createCustomHeader("Match Filename") },
-          { accessorKey: "match_date", header: "Date", size: smallColSize, Header: createCustomHeader("Match Date") ,enableGrouping: false},
-          { accessorKey: "mapname", header: "Map", size: smallColSize, Header: createCustomHeader("Map Name") },
+          { accessorKey: "match_date", header: "Date", size: smallColSize, Header: createCustomHeader("Match Date") ,enableGrouping: false,
+          Cell: ({ cell }: { cell: any }) => {
+            const matchDate = cell.getValue() as string;
+            const selectedStatsContext = useContext(SelectedStatsContext);
+            if (!selectedStatsContext) {
+              throw new Error('useContext was called outside of the SelectedStatsContext provider');
+            }
+            const { selectedMatch, setSelectedMatch, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
+            return (
+              <Link 
+                to={`/match/${matchDate}`} 
+                onClick={(e) => {
+                  e.preventDefault();  // Prevent the link from navigating
+                  setSelectedMatch(matchDate);
+                  setSelectedSubpage("match");
+                  setSelectedTab(3);
+                }}
+              >
+                {matchDate}
+              </Link>
+            );
+          }},
+          { accessorKey: "mapname", header: "Map", size: smallColSize, Header: createCustomHeader("Map Name") ,
+          Cell: ({ cell }: { cell: any }) => {
+            const map = cell.getValue() as string;
+            const selectedStatsContext = useContext(SelectedStatsContext);
+            if (!selectedStatsContext) {
+              throw new Error('useContext was called outside of the SelectedStatsContext provider');
+            }
+            const { selectedMap, setSelectedMap, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
+            return (
+              <Link 
+                to={`/map/${map}`} 
+                onClick={(e) => {
+                  e.preventDefault();  // Prevent the link from navigating
+                  setSelectedMap(map);
+                  setSelectedSubpage("map");
+                  setSelectedTab(3);
+                }}
+              >
+                {map}
+              </Link>
+            );
+          }},
           { accessorKey: "team1_total_wins", header: "T1", size: smallColSize, Header: createCustomHeader("Team 1 Round Wins"),enableGrouping: false, enableFilter: false,
           Cell: ({ cell }: { cell: any }) => {
             const score = cell.getValue() as number;

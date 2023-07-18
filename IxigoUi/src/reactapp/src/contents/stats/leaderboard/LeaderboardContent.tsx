@@ -85,11 +85,11 @@ import { Link } from 'react-router-dom';
             Cell: ({ cell }: { cell: any }) => {
               const username = cell.getValue() as string;
               const steamid = cell.row.original.steamid;
-              const selectedPlayerContext = useContext(SelectedStatsContext);
-              if (!selectedPlayerContext) {
-                throw new Error('useContext was called outside of the SelectedPlayerContext provider');
+              const selectedStatsContext = useContext(SelectedStatsContext);
+              if (!selectedStatsContext) {
+                throw new Error('useContext was called outside of the selectedStatsContext provider');
               }
-              const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage } = selectedPlayerContext;
+              const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
               return (
                 <Link 
                   to={`/player/${steamid}`} 

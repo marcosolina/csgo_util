@@ -1089,7 +1089,7 @@ FROM
 WHERE
     pos.roundsPlayed > 0
 GROUP BY
-    pos.steamID;
+    pos.steamID, pos.usernames;
 
 
 CREATE OR REPLACE VIEW PLAYER_OVERALL_MATCH_STATS AS

@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.repositories.implementations;
 
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,11 +52,11 @@ public class CrudRepoGeneric implements CrudRepo {
 	}
 
 	@Override
-	public  Flux<IxigoDto> getAll(String daoName) {
+	public Flux<IxigoDto> getAll(String daoName) {
 		_LOGGER.trace("Inside CrudRepoGeneric.getAll");
 		try {
 			Class c = Class.forName("com.ixigo.demmanager.models.database." + daoName);
-			IxigoDao dao = (IxigoDao)c.getConstructor().newInstance();
+			IxigoDao dao = (IxigoDao) c.getConstructor().newInstance();
 			return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			e.printStackTrace();
@@ -64,7 +65,19 @@ public class CrudRepoGeneric implements CrudRepo {
 		}
 	}
 
-	
-	
-
+	@Override
+	public <T extends IxigoDto, D extends IxigoDao<T>> Mono<T> insertAndSelect(Class<D> daoClass, T dto, List<String> sqlWhereAndClauses, List<Object> sqlParams) {
+		return this.insert(daoClass, dto).flatMap(status -> {
+			try {
+				D dao = daoClass.getConstructor().newInstance();
+				sqlWhereAndClauses.forEach(dao::addSqlWhereAndClauses);
+				sqlParams.forEach(dao::addSqlParams);
+				return dao.prepareSqlSelect(client).map(dao::mappingFunction).one();
+			} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
+				e.printStackTrace();
+				_LOGGER.error(e.getMessage());
+				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
+			}
+		});
+	}
 }

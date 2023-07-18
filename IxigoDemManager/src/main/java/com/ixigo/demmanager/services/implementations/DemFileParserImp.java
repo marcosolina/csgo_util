@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,7 @@ import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.mappers.SvcMapper;
 import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 import com.ixigo.demmanager.models.database.Match_statsDao;
+import com.ixigo.demmanager.models.database.Match_statsDto;
 import com.ixigo.demmanager.models.database.Player_round_statsDao;
 import com.ixigo.demmanager.models.database.Player_statsDao;
 import com.ixigo.demmanager.models.database.Round_eventsDao;
@@ -232,6 +234,8 @@ public class DemFileParserImp implements DemFileParser {
 		AtomicInteger countProcessedFiles = new AtomicInteger(0);
 
 		List<ParsingError> errorLists = new ArrayList<>();
+		
+		LocalDateTime start = LocalDateTime.now();
 
 		// Function to used to extract the data from the DEM file
 		Function<? super File, ? extends Publisher<? extends Tuple2<String, SvcNodeJsParseOutput>>> function = f -> {
@@ -286,67 +290,40 @@ public class DemFileParserImp implements DemFileParser {
 			.flatMap(tuple -> { // Saving the objects into the DB
 				boolean canProcess = tuple.getT1();
 				String fileName = tuple.getT2();
+				List<UsersDto> users = tuple.getT3();
+				SvcNodeJsParseOutput stats = tuple.getT4(); 
 				if(canProcess) {
+					
 					List<Mono<?>> monos = new ArrayList<>();
-					tuple.getT3().forEach(user ->{
+					users.forEach(user ->{
 						monos.add(repoUser.insertUpdateUser(user));
 					});
 					
 					
-					SvcNodeJsParseOutput stats = tuple.getT4(); 
 					SvcMapFileStats mapStats = stats.getMapStats();
 					var dtoMs = this.mapper.fromSvcToDto(mapStats);
-					monos.add(genericRepo.insert(Match_statsDao.class, dtoMs));
 					
-					List<SvcRoundKillEvent> allRoundKillEvents = stats.getAllRoundKillEvents();
-					for (SvcRoundKillEvent element : allRoundKillEvents) {
-						var dto = this.mapper.fromSvcToDto(element);
-						dto.setMatch_filename(fileName);
-						monos.add(genericRepo.insert(Round_kill_eventsDao.class, dto));
-					}
+					List<String> whereClause = new ArrayList<>();
+					whereClause.add(Match_statsDto.Fields.match_filename);
 					
-					List<SvcPlayerStats> listAllPlayerStats = stats.getAllPlayerStats();
-					for (SvcPlayerStats element : listAllPlayerStats) {
-						var dto = this.mapper.fromSvcToDto(element);
-						dto.setMatch_filename(fileName);
-						monos.add(genericRepo.insert(Player_statsDao.class, dto));
-					}
+					List<Object> sqlParam = new ArrayList<>();
+					sqlParam.add(dtoMs.getMatch_filename());
 					
-					List<SvcRoundStats> allRoundStats = stats.getAllRoundStats();
-					for (SvcRoundStats element : allRoundStats) {
-						var dto = this.mapper.fromSvcToDto(element);
-						dto.setMatch_filename(fileName);
-						monos.add(genericRepo.insert(Round_statsDao.class, dto));
-					}
-					
-					List<SvcPlayerRoundStats> allPlayerRoundStats = stats.getAllPlayerRoundStats();
-					for (SvcPlayerRoundStats element : allPlayerRoundStats) {
-						var dto = this.mapper.fromSvcToDto(element);
-						dto.setMatch_filename(fileName);
-						monos.add(genericRepo.insert(Player_round_statsDao.class, dto));
-					}
-					
-					List<SvcRoundShotEvent> allRoundShotEvents = stats.getAllRoundShotEvents();
-					for (SvcRoundShotEvent element : allRoundShotEvents) {
-						var dto = this.mapper.fromSvcToDto(element);
-						dto.setMatch_filename(fileName);
-						monos.add(genericRepo.insert(Round_shot_eventsDao.class, dto));
-					}
-					
-					List<SvcRoundHitEvent> allRoundHitEvents = stats.getAllRoundHitEvents();
-					for (SvcRoundHitEvent element : allRoundHitEvents) {
-						var dto = this.mapper.fromSvcToDto(element);
-						dto.setMatch_filename(fileName);
-						monos.add(genericRepo.insert(Round_hit_eventsDao.class, dto));
-					}
-					
-					List<SvcRoundEvent> allRoundEvents = stats.getAllRoundEvents();
-					for (SvcRoundEvent element : allRoundEvents) {
-						var dto = this.mapper.fromSvcToDto(element);
-						dto.setMatch_filename(fileName);
-						monos.add(genericRepo.insert(Round_eventsDao.class, dto));
-					}
-					
+					Mono<Boolean> monoInsert = this.saveMapStatsAndRetriveId(mapStats)
+					.flatMap(id -> {
+						Mono<Boolean> allInsert =  this.savePlayersStats(id, stats.getAllPlayerStats())
+						.flatMap( b -> this.saveRoundsStats(id, stats.getAllRoundStats()))
+						.flatMap( b -> this.savePlayerRoundStats(id, stats.getAllPlayerRoundStats()))
+						.flatMap( b -> this.saveRoundKillEvents(id, stats.getAllRoundKillEvents()))
+						.flatMap( b -> this.saveRoundShotEvents(id, stats.getAllRoundShotEvents()))
+						.flatMap( b -> this.saveRoundHitEvents(id, stats.getAllRoundHitEvents()))
+						.flatMap( b -> this.saveRoundsStats(id, stats.getAllRoundStats()))
+						.flatMap( b -> this.saveRoundEvents(id, stats.getAllRoundEvents()))
+						;
+						return allInsert;
+					});
+					monos.add(monoInsert);
+										
 					/*
 					 * I was running out of DB connections, I did not manage
 					 * to understand how to re-use the connections / close them
@@ -386,11 +363,21 @@ public class DemFileParserImp implements DemFileParser {
 			})
 			.collectList()
 			.flatMap(list -> {
+				LocalDateTime endTime = LocalDateTime.now(); // End time
+		        Duration duration = Duration.between(start, endTime);
+		        long days = duration.toDays();
+		        long hours = duration.toHoursPart();
+		        long minutes = duration.toMinutesPart();
+		        long seconds = duration.toSecondsPart();
+
+		        String elapsedTime = String.format("Elapsed Time: %d days, %d hours, %d minutes, %d seconds", days, hours, minutes, seconds);
 				return notificationService.sendParsingCompleteNotification(
 						"Dem Manager",
-						String.format("Processed %d files, %d were successfully processed",
+						String.format("Processed %d files, %d were successfully processed in %s",
 						files.size(),
-						countProcessedFiles.get()))
+						countProcessedFiles.get(),
+						elapsedTime
+						))
 						;
 			}).map(b -> {
 				if(errorLists.isEmpty()) {
@@ -405,6 +392,123 @@ public class DemFileParserImp implements DemFileParser {
 			})
 			.then();
 		// @formatter:on
+	}
+	
+	private Mono<Long> saveMapStatsAndRetriveId(SvcMapFileStats mapStats){
+		var dtoMs = this.mapper.fromSvcToDto(mapStats);
+		
+		List<String> whereClause = new ArrayList<>();
+		whereClause.add(Match_statsDto.Fields.match_filename);
+		
+		List<Object> sqlParam = new ArrayList<>();
+		sqlParam.add(dtoMs.getMatch_filename());
+		return genericRepo.insertAndSelect(Match_statsDao.class, dtoMs, whereClause, sqlParam)
+			.map(Match_statsDto::getMatch_id);
+	}
+	
+	private Mono<Boolean> savePlayersStats(Long matchId, List<SvcPlayerStats> list) {
+		List<Mono<Boolean>> monos = new ArrayList<>();
+		for (SvcPlayerStats element : list) {
+			var dto = this.mapper.fromSvcToDto(element);
+			dto.setMatch_id(matchId);
+			monos.add(genericRepo.insert(Player_statsDao.class, dto));
+		}
+		
+		Mono<Boolean> mono = monos.get(0);
+		for(int i = 1; i < monos.size(); i++) {
+			mono = mono.then(monos.get(i));
+		}
+		return mono;
+	}
+	
+	private Mono<Boolean> saveRoundsStats(Long matchId, List<SvcRoundStats> list) {
+		List<Mono<Boolean>> monos = new ArrayList<>();
+		for (SvcRoundStats element : list) {
+			var dto = this.mapper.fromSvcToDto(element);
+			dto.setMatch_id(matchId);
+			monos.add(genericRepo.insert(Round_statsDao.class, dto));
+		}
+		
+		Mono<Boolean> mono = monos.get(0);
+		for(int i = 1; i < monos.size(); i++) {
+			mono = mono.then(monos.get(i));
+		}
+		return mono;
+	}
+	
+	private Mono<Boolean> savePlayerRoundStats(Long matchId, List<SvcPlayerRoundStats> list) {
+		List<Mono<Boolean>> monos = new ArrayList<>();
+		for (SvcPlayerRoundStats element : list) {
+			var dto = this.mapper.fromSvcToDto(element);
+			dto.setMatch_id(matchId);
+			monos.add(genericRepo.insert(Player_round_statsDao.class, dto));
+		}
+		
+		Mono<Boolean> mono = monos.get(0);
+		for(int i = 1; i < monos.size(); i++) {
+			mono = mono.then(monos.get(i));
+		}
+		return mono;
+	}
+	
+	private Mono<Boolean> saveRoundKillEvents(Long matchId, List<SvcRoundKillEvent> list) {
+		List<Mono<Boolean>> monos = new ArrayList<>();
+		for (SvcRoundKillEvent element : list) {
+			var dto = this.mapper.fromSvcToDto(element);
+			dto.setMatch_id(matchId);
+			monos.add(genericRepo.insert(Round_kill_eventsDao.class, dto));
+		}
+		
+		Mono<Boolean> mono = monos.get(0);
+		for(int i = 1; i < monos.size(); i++) {
+			mono = mono.then(monos.get(i));
+		}
+		return mono;
+	}
+	
+	private Mono<Boolean> saveRoundShotEvents(Long matchId, List<SvcRoundShotEvent> list) {
+		List<Mono<Boolean>> monos = new ArrayList<>();
+		for (SvcRoundShotEvent element : list) {
+			var dto = this.mapper.fromSvcToDto(element);
+			dto.setMatch_id(matchId);
+			monos.add(genericRepo.insert(Round_shot_eventsDao.class, dto));
+		}
+		
+		Mono<Boolean> mono = monos.get(0);
+		for(int i = 1; i < monos.size(); i++) {
+			mono = mono.then(monos.get(i));
+		}
+		return mono;
+	}
+	
+	private Mono<Boolean> saveRoundHitEvents(Long matchId, List<SvcRoundHitEvent> list) {
+		List<Mono<Boolean>> monos = new ArrayList<>();
+		for (SvcRoundHitEvent element : list) {
+			var dto = this.mapper.fromSvcToDto(element);
+			dto.setMatch_id(matchId);
+			monos.add(genericRepo.insert(Round_hit_eventsDao.class, dto));
+		}
+		
+		Mono<Boolean> mono = monos.get(0);
+		for(int i = 1; i < monos.size(); i++) {
+			mono = mono.then(monos.get(i));
+		}
+		return mono;
+	}
+	
+	private Mono<Boolean> saveRoundEvents(Long matchId, List<SvcRoundEvent> list) {
+		List<Mono<Boolean>> monos = new ArrayList<>();
+		for (SvcRoundEvent element : list) {
+			var dto = this.mapper.fromSvcToDto(element);
+			dto.setMatch_id(matchId);
+			monos.add(genericRepo.insert(Round_eventsDao.class, dto));
+		}
+		
+		Mono<Boolean> mono = monos.get(0);
+		for(int i = 1; i < monos.size(); i++) {
+			mono = mono.then(monos.get(i));
+		}
+		return mono;
 	}
 
 	private Mono<Boolean> setFileProcessed(File f, DemProcessStatus status) {

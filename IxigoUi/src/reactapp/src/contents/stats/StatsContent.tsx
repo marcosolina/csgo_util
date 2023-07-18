@@ -2,7 +2,8 @@
 import React, { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LeaderboardContent from './leaderboard/LeaderboardContent';
-import MatchContent from './matches/MatchContent';
+import MatchContent from './leaderboard/MatchContent';
+import KillMatrixContent from './leaderboard/KillMatrixContent';
 import { Typography, Box } from '@mui/material';
 
 interface LayoutProps {
@@ -35,6 +36,10 @@ const StatsContentWithReactQueryProvider: React.FC<StatsContentProps> = ({ setSe
       <Typography variant="h5">Recent Matches</Typography>
     </Box>
     <MatchContent setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
+    <Box textAlign="center">
+      <Typography variant="h5">Kills Matrix</Typography>
+    </Box>
+    <KillMatrixContent setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
   </Layout>
 </QueryClientProvider>
 );

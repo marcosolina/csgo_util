@@ -32,7 +32,6 @@ public class Player_overall_stats_extendedDto implements IxigoDto {
 	private BigDecimal assists = BigDecimal.ZERO;
 	private BigDecimal _4k = BigDecimal.ZERO;
 	private BigDecimal _2k = BigDecimal.ZERO;
-	private String usernames = "";
 	private BigDecimal _1v5 = BigDecimal.ZERO;
 	private BigDecimal _1v4 = BigDecimal.ZERO;
 	private BigDecimal headshot_percentage = BigDecimal.ZERO;

@@ -1,3 +1,5 @@
+import React, { useContext } from 'react';
+import { SelectedStatsContext } from '../SelectedStatsContext';
 import { useState, useMemo } from "react";
 import { IconButton, Tooltip } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -6,7 +8,7 @@ import { MaterialReactTable } from 'material-react-table';
 import {
     useQuery,
   } from '@tanstack/react-query';
-
+import { Link } from 'react-router-dom';
 
   interface User {
     steam_id: string;
@@ -14,8 +16,13 @@ import {
     // include other properties if any
   }
 
+  interface LeaderboardContentProps {
+    setSelectedTab: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedTab: number | null;
+  }
+
   const smallColSize = 5;
-  const LeaderBoardContent = () => {
+  const LeaderboardContent: React.FC<LeaderboardContentProps> = ({ setSelectedTab, selectedTab }) => {
     //const [columnFilters, setColumnFilters] = useState([]);
     //const [globalFilter, setGlobalFilter] = useState('');
     //const [sorting, setSorting] = useState([]);
@@ -62,6 +69,8 @@ import {
         keepPreviousData: true,
     });
 
+    
+
     function createCustomHeader(tooltipText: string) {
         return ({ column }: { column: any }) => (
           <Tooltip title={tooltipText}>
@@ -72,7 +81,28 @@ import {
 
       const columns = useMemo(
         () => [
-            { accessorKey: "username", header: "Name"},
+            { accessorKey: "username", header: "Name",
+            Cell: ({ cell }: { cell: any }) => {
+              const username = cell.getValue() as string;
+              const steamid = cell.row.original.steamid;
+              const selectedPlayerContext = useContext(SelectedStatsContext);
+              if (!selectedPlayerContext) {
+                throw new Error('useContext was called outside of the SelectedPlayerContext provider');
+              }
+              const { selectedPlayerSteamID, setSelectedPlayerSteamID } = selectedPlayerContext;
+              return (
+                <Link 
+                  to={`/player/${steamid}`} 
+                  onClick={(e) => {
+                    e.preventDefault();  // Prevent the link from navigating
+                    setSelectedPlayerSteamID(steamid);
+                    setSelectedTab(3);
+                  }}
+                >
+                  {username}
+                </Link>
+              );
+            }},
           { accessorKey: "matches", header: "M", Header: createCustomHeader("Matches played") ,size: smallColSize},
           { accessorKey: "hltv_rating", header: "HLTV" , Header: createCustomHeader("HLTV Rating - a weighted sum of K/D ratio, rounds survived ratio and rounds with multiple kills. This is the default rating used in the auto team balancing."),size: smallColSize,
           Cell: ({ cell }: { cell: any }) => {
@@ -192,4 +222,4 @@ import {
       );
   };
 
-  export default LeaderBoardContent;
+  export default LeaderboardContent;

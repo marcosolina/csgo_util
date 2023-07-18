@@ -2,6 +2,7 @@ import { useState, useMemo } from "react";
 import { IconButton, Tooltip } from '@mui/material';
 import { Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
+import { SelectedStatsContext } from '../SelectedStatsContext';
 import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
 import {
@@ -10,9 +11,12 @@ import {
     useQuery,
   } from '@tanstack/react-query';
 
-
+  interface MatchContentProps {
+    setSelectedTab: React.Dispatch<React.SetStateAction<number | null>>;
+    selectedTab: number | null;
+  }
   const smallColSize = 5;
-  const MatchContent = () => {
+  const MatchContent: React.FC<MatchContentProps> = ({ setSelectedTab, selectedTab }) => {
 
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['matches'],

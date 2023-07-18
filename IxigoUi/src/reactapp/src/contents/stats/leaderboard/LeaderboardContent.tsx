@@ -89,13 +89,14 @@ import { Link } from 'react-router-dom';
               if (!selectedPlayerContext) {
                 throw new Error('useContext was called outside of the SelectedPlayerContext provider');
               }
-              const { selectedPlayerSteamID, setSelectedPlayerSteamID } = selectedPlayerContext;
+              const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage } = selectedPlayerContext;
               return (
                 <Link 
                   to={`/player/${steamid}`} 
                   onClick={(e) => {
                     e.preventDefault();  // Prevent the link from navigating
                     setSelectedPlayerSteamID(steamid);
+                    setSelectedSubpage("player");
                     setSelectedTab(3);
                   }}
                 >

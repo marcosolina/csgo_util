@@ -1,6 +1,7 @@
 package com.ixigo.utils;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
@@ -10,10 +11,14 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import org.springframework.util.StringUtils;
 
 import com.marco.utils.DatabaseUtils;
 import com.marco.utils.MarcoException;
@@ -66,7 +71,6 @@ public class CreateDaoAndDto {
 		ResultSet rs2 = null;
 
 		PrintWriter daoWriter = null;
-		PrintWriter dtoWriter = null;
 
 		try {
 			cn = DatabaseUtils.getInstance().createDbConnection();
@@ -121,7 +125,31 @@ public class CreateDaoAndDto {
 			}
 
 			String fileName = tableName.toUpperCase().charAt(0) + tableName.substring(1);
+			
+			this.saveDao(fileName, tableName, sbKeys, sbFields, keys, fields);
+			this.saveDto(fileName, fields);
+			this.saveSvc(fileName, fields);
+			this.saveRest(fileName, fields);
 
+			System.out.println("###################### DONE refresh the project");
+		} catch (FileNotFoundException | UnsupportedEncodingException | SQLException | MarcoException e) {
+			throw e;
+		} finally {
+			DatabaseUtils.closeSqlObjects(cn, st, rs);
+			DatabaseUtils.closeSqlObjects(null, st2, rs2);
+			if (daoWriter != null) {
+				daoWriter.close();
+			}
+		}
+	}
+
+	public String fieldName(String nc) {
+		return nc.toUpperCase().charAt(0) + nc.substring(1);
+	}
+	
+	private void saveDao(String fileName, String tableName, List<String> sbKeys, List<String> sbFields, Map<String, Column> keys, Map<String, Column> fields) throws FileNotFoundException, UnsupportedEncodingException {
+		PrintWriter daoWriter = null;
+		try {
 			String currentPackage = this.getClass().getPackage().getName();
 
 			String path = "src/main/java/" + currentPackage.replaceAll("\\.", "/") + "/";
@@ -190,7 +218,7 @@ public class CreateDaoAndDto {
 			daoWriter.println(String.format("\t\treturn this.genericMappingFunction(new %sDto(), row, rowMetaData);", fileName));
 			daoWriter.println("\t}");
 
-			k = fields.keySet();
+			Set<String> k = fields.keySet();
 			for (String string : k) {
 				daoWriter.println("");
 				Column c = fields.get(string);
@@ -252,6 +280,23 @@ public class CreateDaoAndDto {
 
 			daoWriter.println("");
 			daoWriter.println("}");
+		} finally {
+			if (daoWriter != null) {
+				daoWriter.close();
+			}
+		}
+	}
+	
+	private void saveDto(String fileName, Map<String, Column> fields) throws IOException {
+		PrintWriter dtoWriter = null;
+
+		try {
+
+
+			String currentPackage = this.getClass().getPackage().getName();
+
+			String path = "src/main/java/" + currentPackage.replaceAll("\\.", "/") + "/";
+
 
 			/*
 			 * ################################################# WRITING DTO
@@ -270,7 +315,7 @@ public class CreateDaoAndDto {
 			dtoWriter.println("public class " + fileName + "Dto implements IxigoDto {");
 			dtoWriter.println("");
 			dtoWriter.println("\tprivate static final long serialVersionUID = 1L;");
-			k = fields.keySet();
+			Set<String> k = fields.keySet();
 			for (String string : k) {
 				Column c = fields.get(string);
 				dtoWriter.print("\tprivate ");
@@ -305,51 +350,166 @@ public class CreateDaoAndDto {
 				}
 			}
 
-			/*
-			 * k = fields.keySet(); for (String string : k) { dtoWriter.println(""); Column
-			 * c = fields.get(string); String capitalName = fieldName(c.name);
-			 * 
-			 * String classType = "";
-			 * 
-			 * switch (c.type) { case "TEXT": case "CHAR": case "VARCHAR": case "BPCHAR":
-			 * classType = "String"; break; case "DECIMAL": case "NUMERIC": classType =
-			 * "BigDecimal"; break; case "DATE": classType = "LocalDate"; break; case
-			 * "TIMESTAMP": classType = "LocalDateTime"; break; case "BOOL": classType =
-			 * "Boolean"; break; case "INT4": case "INT8": case "SERIAL": classType =
-			 * "Long"; break; default:
-			 * System.err.println(String.format("Column: %s of type: %s not manageg",
-			 * c.name, c.type)); break; }
-			 * 
-			 * dtoWriter.println("\tpublic " + classType + " get" + capitalName + "(){");
-			 * dtoWriter.println("\t\treturn this." + c.name + ";");
-			 * dtoWriter.println("\t}"); dtoWriter.println("");
-			 * dtoWriter.println("\tpublic void set" + capitalName + "(" + classType + " " +
-			 * c.name + "){"); dtoWriter.println("\t\tthis." + c.name + " = " + c.name +
-			 * ";"); dtoWriter.println("\t}");
-			 * 
-			 * dtoWriter.println(""); }
-			 */
 
 			dtoWriter.println("");
 			dtoWriter.println("}");
 
 			System.out.println("###################### DONE refresh the project");
-		} catch (FileNotFoundException | UnsupportedEncodingException | SQLException | MarcoException e) {
-			throw e;
 		} finally {
-			DatabaseUtils.closeSqlObjects(cn, st, rs);
-			DatabaseUtils.closeSqlObjects(null, st2, rs2);
-			if (daoWriter != null) {
-				daoWriter.close();
-			}
 			if (dtoWriter != null) {
 				dtoWriter.close();
 			}
 		}
 	}
+	
+	private void saveSvc(String fileName, Map<String, Column> fields) throws IOException {
+		PrintWriter dtoWriter = null;
 
-	public String fieldName(String nc) {
-		return nc.toUpperCase().charAt(0) + nc.substring(1);
+		try {
+			String svcFileName = "Svc" + Arrays.asList(fileName.toLowerCase().split("_")).stream().map(StringUtils::capitalize).collect(Collectors.joining()); 
+
+			String currentPackage = this.getClass().getPackage().getName();
+
+			String path = "src/main/java/" + currentPackage.replaceAll("\\.", "/") + "/";
+
+
+			/*
+			 * ################################################# WRITING DTO
+			 * #################################################
+			 */
+			dtoWriter = new PrintWriter(path + svcFileName + ".java", "UTF-8");
+			dtoWriter.println("package " + currentPackage + ";");
+			dtoWriter.println("");
+			dtoWriter.println("import java.math.BigDecimal;");
+			dtoWriter.println("import com.ixigo.library.dto.IxigoDto;");
+			dtoWriter.println("");
+			dtoWriter.println("@FieldNameConstants");
+			dtoWriter.println("@Getter");
+			dtoWriter.println("@Setter");
+			dtoWriter.println("@Accessors(chain = true)");
+			dtoWriter.println("public class " + svcFileName + " implements IxigoDto {");
+			dtoWriter.println("");
+			dtoWriter.println("\tprivate static final long serialVersionUID = 1L;");
+			Set<String> k = fields.keySet();
+			for (String string : k) {
+				Column c = fields.get(string);
+				dtoWriter.print("\tprivate ");
+				switch (c.type) {
+				case "TEXT":
+				case "CHAR":
+				case "VARCHAR":
+				case "BPCHAR":
+					dtoWriter.println("String " + c.name + " = \"\";");
+					break;
+				case "DECIMAL":
+				case "NUMERIC":
+					dtoWriter.println("BigDecimal " + c.name + " = BigDecimal.ZERO;");
+					break;
+				case "DATE":
+					dtoWriter.println("LocalDate " + c.name + " = null;");
+					break;
+				case "BOOL":
+					dtoWriter.println("Boolean " + c.name + " = null;");
+					break;
+				case "TIMESTAMP":
+					dtoWriter.println("LocalDateTime " + c.name + " = null;");
+					break;
+				case "INT4":
+				case "INT8":
+				case "SERIAL":
+					dtoWriter.println("Long " + c.name + " = null;");
+					break;
+				default:
+					System.err.println(String.format("Column: %s of type: %s not manageg", c.name, c.type));
+					break;
+				}
+			}
+
+
+			dtoWriter.println("");
+			dtoWriter.println("}");
+
+			System.out.println("###################### DONE refresh the project");
+		} finally {
+			if (dtoWriter != null) {
+				dtoWriter.close();
+			}
+		}
+	}
+	
+	private void saveRest(String fileName, Map<String, Column> fields) throws IOException {
+		PrintWriter dtoWriter = null;
+
+		try {
+			String svcFileName = "Rest" + Arrays.asList(fileName.toLowerCase().split("_")).stream().map(StringUtils::capitalize).collect(Collectors.joining()); 
+
+			String currentPackage = this.getClass().getPackage().getName();
+
+			String path = "src/main/java/" + currentPackage.replaceAll("\\.", "/") + "/";
+
+
+			/*
+			 * ################################################# WRITING DTO
+			 * #################################################
+			 */
+			dtoWriter = new PrintWriter(path + svcFileName + ".java", "UTF-8");
+			dtoWriter.println("package " + currentPackage + ";");
+			dtoWriter.println("");
+			dtoWriter.println("import java.math.BigDecimal;");
+			dtoWriter.println("import com.ixigo.library.dto.IxigoDto;");
+			dtoWriter.println("");
+			dtoWriter.println("@FieldNameConstants");
+			dtoWriter.println("@Getter");
+			dtoWriter.println("@Setter");
+			dtoWriter.println("@Accessors(chain = true)");
+			dtoWriter.println("public class " + svcFileName + " implements IxigoDto {");
+			dtoWriter.println("");
+			dtoWriter.println("\tprivate static final long serialVersionUID = 1L;");
+			Set<String> k = fields.keySet();
+			for (String string : k) {
+				Column c = fields.get(string);
+				dtoWriter.print("\tprivate ");
+				switch (c.type) {
+				case "TEXT":
+				case "CHAR":
+				case "VARCHAR":
+				case "BPCHAR":
+					dtoWriter.println("String " + c.name + " = \"\";");
+					break;
+				case "DECIMAL":
+				case "NUMERIC":
+					dtoWriter.println("BigDecimal " + c.name + " = BigDecimal.ZERO;");
+					break;
+				case "DATE":
+					dtoWriter.println("LocalDate " + c.name + " = null;");
+					break;
+				case "BOOL":
+					dtoWriter.println("Boolean " + c.name + " = null;");
+					break;
+				case "TIMESTAMP":
+					dtoWriter.println("LocalDateTime " + c.name + " = null;");
+					break;
+				case "INT4":
+				case "INT8":
+				case "SERIAL":
+					dtoWriter.println("Long " + c.name + " = null;");
+					break;
+				default:
+					System.err.println(String.format("Column: %s of type: %s not manageg", c.name, c.type));
+					break;
+				}
+			}
+
+
+			dtoWriter.println("");
+			dtoWriter.println("}");
+
+			System.out.println("###################### DONE refresh the project");
+		} finally {
+			if (dtoWriter != null) {
+				dtoWriter.close();
+			}
+		}
 	}
 }
 

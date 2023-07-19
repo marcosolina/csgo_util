@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.models.svc.demdata;
+package com.ixigo.demmanager.models.svc.demdata.data;
 
 import lombok.experimental.FieldNameConstants;
 

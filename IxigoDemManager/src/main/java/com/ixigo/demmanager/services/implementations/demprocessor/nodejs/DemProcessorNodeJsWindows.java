@@ -16,7 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.introspect.VisibilityChecker;
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.constants.ErrorCodes;
-import com.ixigo.demmanager.models.svc.demdata.SvcNodeJsParseOutput;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcNodeJsParseOutput;
 import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.library.errors.IxigoException;

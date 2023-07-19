@@ -2,7 +2,7 @@ package com.ixigo.demmanager.services.interfaces;
 
 import java.io.File;
 
-import com.ixigo.demmanager.models.svc.demdata.SvcNodeJsParseOutput;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcNodeJsParseOutput;
 import com.ixigo.library.errors.IxigoException;
 
 import reactor.core.publisher.Mono;

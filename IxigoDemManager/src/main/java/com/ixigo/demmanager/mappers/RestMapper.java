@@ -7,7 +7,7 @@ import org.mapstruct.Mapper;
 
 import com.ixigo.demmanager.models.svc.SvcFileInfo;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
-import com.ixigo.demmanager.models.svc.demdata.SvcUser;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUser;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
 import com.ixigo.demmanagercontract.models.rest.demfilesmanager.RestFileInfo;

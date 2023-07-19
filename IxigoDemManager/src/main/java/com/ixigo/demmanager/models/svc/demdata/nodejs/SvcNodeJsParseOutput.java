@@ -1,17 +1,17 @@
-package com.ixigo.demmanager.models.svc.demdata;
+package com.ixigo.demmanager.models.svc.demdata.nodejs;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcMapFileStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerRoundStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundHitEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundKillEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundShotEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundStats;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +20,7 @@ import lombok.Setter;
 @Setter
 public class SvcNodeJsParseOutput implements Serializable {
 	private static final long serialVersionUID = 1L;
-	private SvcMapFileStats mapStats = new SvcMapFileStats();
+	private SvcMapStats mapStats = new SvcMapStats();
 	private List<SvcPlayerStats> allPlayerStats = new ArrayList<>();
 	private List<SvcRoundStats> allRoundStats = new ArrayList<>();
 	private List<SvcPlayerRoundStats> allPlayerRoundStats = new ArrayList<>();

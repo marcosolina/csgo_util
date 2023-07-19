@@ -13,15 +13,15 @@ import com.ixigo.demmanager.models.database.Round_kill_eventsDto;
 import com.ixigo.demmanager.models.database.Round_shot_eventsDto;
 import com.ixigo.demmanager.models.database.Round_statsDto;
 import com.ixigo.demmanager.models.database.UsersDto;
-import com.ixigo.demmanager.models.svc.demdata.SvcUser;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcMapFileStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerRoundStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundHitEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundKillEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundShotEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUser;
 
 /**
  * Simple mapper to map the models between the Service and Repository layers
@@ -58,7 +58,7 @@ public interface SvcMapper {
 	@Mapping(source = "fileName", target = "match_filename"),
 	@Mapping(source = "matchId", target = "match_id")
 	})
-	public Match_statsDto fromSvcToDto(SvcMapFileStats svc);
+	public Match_statsDto fromSvcToDto(SvcMapStats svc);
 	
 	@Mappings({
 	@Mapping(source = "userName", target = "username"),

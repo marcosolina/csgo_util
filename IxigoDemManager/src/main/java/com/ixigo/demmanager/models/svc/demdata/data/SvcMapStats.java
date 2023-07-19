@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.models.svc.demdata.nodejs;
+package com.ixigo.demmanager.models.svc.demdata.data;
 
 import java.time.LocalDateTime;
 
@@ -7,7 +7,7 @@ import lombok.experimental.FieldNameConstants;
 
 @FieldNameConstants
 @Data
-public class SvcMapFileStats {
+public class SvcMapStats {
 	private LocalDateTime date;
 	private String mapName;
 	private String fileName;

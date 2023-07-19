@@ -1,4 +1,4 @@
-package com.ixigo.demmanager.models.svc.demdata.nodejs;
+package com.ixigo.demmanager.models.svc.demdata.data;
 
 import java.math.BigDecimal;
 

@@ -38,17 +38,17 @@ import com.ixigo.demmanager.models.database.Round_shot_eventsDao;
 import com.ixigo.demmanager.models.database.Round_statsDao;
 import com.ixigo.demmanager.models.database.UsersDto;
 import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
-import com.ixigo.demmanager.models.svc.demdata.SvcNodeJsParseOutput;
-import com.ixigo.demmanager.models.svc.demdata.SvcUser;
-import com.ixigo.demmanager.models.svc.demdata.SvcUserStatsForLastXGames;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcMapFileStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerRoundStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcPlayerStats;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundHitEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundKillEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundShotEvent;
-import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUser;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUserStatsForLastXGames;
+import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcNodeJsParseOutput;
 import com.ixigo.demmanager.repositories.interfaces.CrudRepo;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
@@ -300,7 +300,7 @@ public class DemFileParserImp implements DemFileParser {
 					});
 					
 					
-					SvcMapFileStats mapStats = stats.getMapStats();
+					SvcMapStats mapStats = stats.getMapStats();
 					var dtoMs = this.mapper.fromSvcToDto(mapStats);
 					
 					List<String> whereClause = new ArrayList<>();
@@ -393,7 +393,7 @@ public class DemFileParserImp implements DemFileParser {
 		// @formatter:on
 	}
 	
-	private Mono<Long> saveMapStatsAndRetriveId(SvcMapFileStats mapStats){
+	private Mono<Long> saveMapStatsAndRetriveId(SvcMapStats mapStats){
 		var dtoMs = this.mapper.fromSvcToDto(mapStats);
 		
 		List<String> whereClause = new ArrayList<>();

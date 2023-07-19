@@ -6,8 +6,8 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
-import com.ixigo.demmanager.models.svc.demdata.SvcUser;
-import com.ixigo.demmanager.models.svc.demdata.SvcUserStatsForLastXGames;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUser;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUserStatsForLastXGames;
 import com.ixigo.library.errors.IxigoException;
 
 import reactor.core.publisher.Flux;

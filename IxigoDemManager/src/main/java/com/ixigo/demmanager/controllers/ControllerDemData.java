@@ -16,7 +16,7 @@ import com.ixigo.demmanager.commands.demdata.CmdGetScoreType;
 import com.ixigo.demmanager.commands.demdata.CmdGetUsers;
 import com.ixigo.demmanager.commands.demdata.CmdGetUsersLastScores;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersResp;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
@@ -47,7 +47,7 @@ public class ControllerDemData {
 
 	@GetMapping("/users")
 	@ApiOperation(value = "It returns a list of the known users")
-	public Mono<ResponseEntity<RestUsers>> getUsers() {
+	public Mono<ResponseEntity<RestUsersResp>> getUsers() {
 		_LOGGER.trace("Inside ControllerDemData.getUsers");
 		return mediator.send(new CmdGetUsers());
 	}

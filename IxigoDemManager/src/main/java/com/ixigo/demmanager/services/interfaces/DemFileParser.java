@@ -1,13 +1,10 @@
 package com.ixigo.demmanager.services.interfaces;
 
-import java.math.BigDecimal;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
-import com.ixigo.demmanager.models.svc.demdata.data.SvcUser;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcUserStatsForLastXGames;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUsers;
 import com.ixigo.library.errors.IxigoException;
 
 import reactor.core.publisher.Flux;
@@ -37,7 +34,7 @@ public interface DemFileParser {
      * @return
      * @throws MarcoException
      */
-    public Flux<SvcUser> getListOfUsers() throws IxigoException;
+    public Flux<SvcUsers> getListOfUsers() throws IxigoException;
     
     /**
      * It will return all the Users scores for the most recent "numberOfMatches" played
@@ -47,7 +44,7 @@ public interface DemFileParser {
      * @param usersIDs
      * @return
      * @throws MarcoException
-     */
     public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs,
             BigDecimal minPercPlayed) throws IxigoException;
+     */
 }

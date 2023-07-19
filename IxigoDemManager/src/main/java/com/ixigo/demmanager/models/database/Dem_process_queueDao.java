@@ -40,7 +40,6 @@ public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 
 	@Override
 	public Dem_process_queueDto mappingFunction(Row row, RowMetadata rowMetaData) {
-		_LOGGER.trace("Mapping data");
 		Dem_process_queueDto dto = new Dem_process_queueDto();
 		dto.setFile_name(row.get(Dem_process_queueDto.Fields.file_name, String.class));
 		dto.setProcessed_on(row.get(Dem_process_queueDto.Fields.processed_on, LocalDateTime.class));
@@ -48,7 +47,7 @@ public class Dem_process_queueDao extends IxigoDao<Dem_process_queueDto> {
 		dto.setQueued_on(row.get(Dem_process_queueDto.Fields.queued_on, LocalDateTime.class));
 		return dto;
 	}
-
+	
 	public LocalDateTime getQueued_on() {
 		return dto.getQueued_on();
 	}

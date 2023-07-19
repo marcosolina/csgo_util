@@ -2,7 +2,6 @@ package com.ixigo.demmanager.services.implementations;
 
 import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -37,17 +36,15 @@ import com.ixigo.demmanager.models.database.Round_kill_eventsDao;
 import com.ixigo.demmanager.models.database.Round_shot_eventsDao;
 import com.ixigo.demmanager.models.database.Round_statsDao;
 import com.ixigo.demmanager.models.database.UsersDto;
-import com.ixigo.demmanager.models.svc.demdata.SvcMapStats;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcMapStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchStats;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundStats;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerStats;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundEvent;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEvent;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEvent;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundEvents;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEvents;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEvents;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotEvents;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundStats;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcUser;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcUserStatsForLastXGames;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUsers;
 import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcNodeJsParseOutput;
 import com.ixigo.demmanager.repositories.interfaces.CrudRepo;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
@@ -158,40 +155,8 @@ public class DemFileParserImp implements DemFileParser {
 	}
 
 	@Override
-	public Flux<SvcUser> getListOfUsers() throws IxigoException {
+	public Flux<SvcUsers> getListOfUsers() throws IxigoException {
 		return repoUser.getUsers().map(mapper::fromDtoToSvc);
-	}
-
-	@Override
-	public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
-		// @formatter:off
-		
-		// https://stackoverflow.com/questions/70704314/how-to-return-a-reactive-flux-that-contains-a-reactive-mono-and-flux
-		/*
-		return Flux.fromIterable(usersIDs)
-			.flatMap(steamId -> repoUser.findById(steamId).defaultIfEmpty(new UsersDto().setSteam_id(steamId)))// Get the user definition
-			.map(dto -> {
-				var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, dto.getSteam_id(), minPercPlayed)
-						.map(dtoScore -> mapper.fromUsersScoreDtoToSvcMapStata(dto, dtoScore))
-						.collectList();
-				return Tuples.of(dto.getSteam_id(), list);
-			})
-			.flatMap(data -> {
-				String steamId = data.getT1();
-				Mono<List<SvcMapStats>> monoUserScores = data.getT2();
-				
-				return monoUserScores.map(list -> {
-					var stats = new SvcUserStatsForLastXGames();
-					stats.setSteamId(steamId);
-					stats.setStats(list);
-					return stats;
-				});
-			})
-		;
-		// @formatter:on
-		 * 
-		 */
-		return null;
 	}
 
 	private Mono<SvcNodeJsParseOutput> generateMapStatFromFile(File f) throws IxigoException {
@@ -214,12 +179,12 @@ public class DemFileParserImp implements DemFileParser {
 		String mapName = tmp[4];
 
 		LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(date + "_" + time, DateFormats.FILE_NAME);
-		SvcMapStats ms = new SvcMapStats();
-		ms.setPlayedOn(ldt);
-		ms.setMapName(cleanMapName(mapName));
+		SvcMatchStats ms = new SvcMatchStats();
+		ms.setMatch_date(ldt);
+		ms.setMapname(cleanMapName(mapName));
 
-		stats.getMapStats().setMapName(mapName);
-		stats.getMapStats().setDate(ldt);
+		stats.getMapStats().setMapname(mapName);
+		stats.getMapStats().setMatch_date(ldt);
 	}
 
 	private String cleanMapName(String dirtyMapName) {
@@ -279,8 +244,8 @@ public class DemFileParserImp implements DemFileParser {
 				if(canProcess) {
 					stats.getAllPlayerStats().forEach(playerScore -> {
 						UsersDto user = new UsersDto();
-						user.setSteam_id(playerScore.getSteamID());
-						user.setUser_name(playerScore.getUserName());
+						user.setSteam_id(playerScore.getSteamid());
+						user.setUser_name(playerScore.getUsername());
 						usersList.add(user);
 					});
 				}
@@ -300,7 +265,7 @@ public class DemFileParserImp implements DemFileParser {
 					});
 					
 					
-					SvcMapStats mapStats = stats.getMapStats();
+					SvcMatchStats mapStats = stats.getMapStats();
 					var dtoMs = this.mapper.fromSvcToDto(mapStats);
 					
 					List<String> whereClause = new ArrayList<>();
@@ -393,7 +358,7 @@ public class DemFileParserImp implements DemFileParser {
 		// @formatter:on
 	}
 	
-	private Mono<Long> saveMapStatsAndRetriveId(SvcMapStats mapStats){
+	private Mono<Long> saveMapStatsAndRetriveId(SvcMatchStats mapStats){
 		var dtoMs = this.mapper.fromSvcToDto(mapStats);
 		
 		List<String> whereClause = new ArrayList<>();
@@ -459,12 +424,12 @@ public class DemFileParserImp implements DemFileParser {
 		return mono;
 	}
 	
-	private Mono<Boolean> saveRoundKillEvents(Long matchId, List<SvcRoundKillEvent> list) {
+	private Mono<Boolean> saveRoundKillEvents(Long matchId, List<SvcRoundKillEvents> list) {
 		if(list.isEmpty()) {
 			return Mono.just(true);
 		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
-		for (SvcRoundKillEvent element : list) {
+		for (SvcRoundKillEvents element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
 			dto.setMatch_id(matchId);
 			monos.add(genericRepo.insert(Round_kill_eventsDao.class, dto));
@@ -477,12 +442,12 @@ public class DemFileParserImp implements DemFileParser {
 		return mono;
 	}
 	
-	private Mono<Boolean> saveRoundShotEvents(Long matchId, List<SvcRoundShotEvent> list) {
+	private Mono<Boolean> saveRoundShotEvents(Long matchId, List<SvcRoundShotEvents> list) {
 		if(list.isEmpty()) {
 			return Mono.just(true);
 		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
-		for (SvcRoundShotEvent element : list) {
+		for (SvcRoundShotEvents element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
 			dto.setMatch_id(matchId);
 			monos.add(genericRepo.insert(Round_shot_eventsDao.class, dto));
@@ -495,12 +460,12 @@ public class DemFileParserImp implements DemFileParser {
 		return mono;
 	}
 	
-	private Mono<Boolean> saveRoundHitEvents(Long matchId, List<SvcRoundHitEvent> list) {
+	private Mono<Boolean> saveRoundHitEvents(Long matchId, List<SvcRoundHitEvents> list) {
 		if(list.isEmpty()) {
 			return Mono.just(true);
 		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
-		for (SvcRoundHitEvent element : list) {
+		for (SvcRoundHitEvents element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
 			dto.setMatch_id(matchId);
 			monos.add(genericRepo.insert(Round_hit_eventsDao.class, dto));
@@ -513,12 +478,12 @@ public class DemFileParserImp implements DemFileParser {
 		return mono;
 	}
 	
-	private Mono<Boolean> saveRoundEvents(Long matchId, List<SvcRoundEvent> list) {
+	private Mono<Boolean> saveRoundEvents(Long matchId, List<SvcRoundEvents> list) {
 		if(list.isEmpty()) {
 			return Mono.just(true);
 		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
-		for (SvcRoundEvent element : list) {
+		for (SvcRoundEvents element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
 			dto.setMatch_id(matchId);
 			monos.add(genericRepo.insert(Round_eventsDao.class, dto));

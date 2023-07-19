@@ -242,7 +242,7 @@ public class Player_map_stats_extended_extendedDao extends IxigoDao<Player_map_s
 	public void set_2k(BigDecimal _2k) {
 		this.dto.set_2k(_2k);
 	}
-	
+
 	public BigDecimal get_1v5() {
 		return dto.get_1v5();
 	}

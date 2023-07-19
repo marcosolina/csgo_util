@@ -48,13 +48,17 @@ public class CreateDaoAndDto {
 			DatabaseMetaData dbmd = cn.getMetaData();
 			
 			rs = dbmd.getTables(cn.getCatalog(), cn.getSchema(), "%", null);
+			List<String> tableNames = new ArrayList<>();
 			while (rs.next()) {
 				String tableName = rs.getString(3);
 				if(!tableName.endsWith("_pkey") && !tableName.endsWith("_seq")) {					
 					System.out.println(rs.getString(3));
-					test.createDaoAndDto(tableName);
+					//test.createDaoAndDto(tableName);
+					tableNames.add(tableName);
 				}
 			}
+			test.saveSvcMapper(tableNames);
+			test.saveRestMapper(tableNames);
 		} catch (Exception e) {
 			e.printStackTrace();
 		} finally {
@@ -126,9 +130,9 @@ public class CreateDaoAndDto {
 
 			String fileName = tableName.toUpperCase().charAt(0) + tableName.substring(1);
 			
-			this.saveDao(fileName, tableName, sbKeys, sbFields, keys, fields);
-			this.saveDto(fileName, fields);
-			this.saveSvc(fileName, fields);
+			//this.saveDao(fileName, tableName, sbKeys, sbFields, keys, fields);
+			//this.saveDto(fileName, fields);
+			//this.saveSvc(fileName, fields);
 			this.saveRest(fileName, fields);
 
 			System.out.println("###################### DONE refresh the project");
@@ -381,13 +385,10 @@ public class CreateDaoAndDto {
 			dtoWriter.println("package " + currentPackage + ";");
 			dtoWriter.println("");
 			dtoWriter.println("import java.math.BigDecimal;");
-			dtoWriter.println("import com.ixigo.library.dto.IxigoDto;");
 			dtoWriter.println("");
-			dtoWriter.println("@FieldNameConstants");
 			dtoWriter.println("@Getter");
 			dtoWriter.println("@Setter");
-			dtoWriter.println("@Accessors(chain = true)");
-			dtoWriter.println("public class " + svcFileName + " implements IxigoDto {");
+			dtoWriter.println("public class " + svcFileName + " implements Serializable {");
 			dtoWriter.println("");
 			dtoWriter.println("\tprivate static final long serialVersionUID = 1L;");
 			Set<String> k = fields.keySet();
@@ -456,13 +457,10 @@ public class CreateDaoAndDto {
 			dtoWriter.println("package " + currentPackage + ";");
 			dtoWriter.println("");
 			dtoWriter.println("import java.math.BigDecimal;");
-			dtoWriter.println("import com.ixigo.library.dto.IxigoDto;");
 			dtoWriter.println("");
-			dtoWriter.println("@FieldNameConstants");
 			dtoWriter.println("@Getter");
 			dtoWriter.println("@Setter");
-			dtoWriter.println("@Accessors(chain = true)");
-			dtoWriter.println("public class " + svcFileName + " implements IxigoDto {");
+			dtoWriter.println("public class " + svcFileName + " implements Serializable {");
 			dtoWriter.println("");
 			dtoWriter.println("\tprivate static final long serialVersionUID = 1L;");
 			Set<String> k = fields.keySet();
@@ -505,6 +503,69 @@ public class CreateDaoAndDto {
 			dtoWriter.println("}");
 
 			System.out.println("###################### DONE refresh the project");
+		} finally {
+			if (dtoWriter != null) {
+				dtoWriter.close();
+			}
+		}
+	}
+	
+	private void saveSvcMapper(List<String> entityNames) throws IOException {
+		PrintWriter dtoWriter = null;
+
+		try {
+			String currentPackage = this.getClass().getPackage().getName();
+			String path = "src/main/java/" + currentPackage.replaceAll("\\.", "/") + "/";
+			
+			dtoWriter = new PrintWriter(path +  "SvcMapper.java", "UTF-8");
+			dtoWriter.println("package " + currentPackage + ";");
+			dtoWriter.println("");
+			dtoWriter.println("@Mapper(componentModel = \"spring\")");
+			dtoWriter.println("public interface SvcMapper {");
+			dtoWriter.println("");
+			
+			for (String entityName : entityNames) {
+				String dtoFileName = StringUtils.capitalize(entityName + "Dto");
+				String svcFileName = "Svc" + Arrays.asList(entityName.toLowerCase().split("_")).stream().map(StringUtils::capitalize).collect(Collectors.joining()); 
+
+				dtoWriter.println("\tpublic " + dtoFileName + " fromSvcToDto(" + svcFileName + " svc);");
+				dtoWriter.println("\tpublic " + svcFileName + " fromDtoToSvc(" + dtoFileName + " dto);");
+			}
+
+			dtoWriter.println("");
+			dtoWriter.println("}");
+		} finally {
+			if (dtoWriter != null) {
+				dtoWriter.close();
+			}
+		}
+	}
+	
+	private void saveRestMapper(List<String> entityNames) throws IOException {
+		PrintWriter dtoWriter = null;
+
+		try {
+			String currentPackage = this.getClass().getPackage().getName();
+			String path = "src/main/java/" + currentPackage.replaceAll("\\.", "/") + "/";
+			
+			dtoWriter = new PrintWriter(path +  "RestMapper.java", "UTF-8");
+			dtoWriter.println("package " + currentPackage + ";");
+			dtoWriter.println("");
+			dtoWriter.println("@Mapper(componentModel = \"spring\")");
+			dtoWriter.println("public interface RestMapper {");
+			dtoWriter.println("");
+			
+			for (String entityName : entityNames) {
+				String tmp = Arrays.asList(entityName.toLowerCase().split("_")).stream().map(StringUtils::capitalize).collect(Collectors.joining());
+				String restFileName = "Rest" + tmp;
+				String svcFileName = "Svc" + tmp; 
+
+				dtoWriter.println("\tpublic " + restFileName + " fromSvcToRest(" + svcFileName + " svc);");
+				dtoWriter.println("\tpublic " + svcFileName + " fromRestToSvc(" + restFileName + " rest);");
+			}
+
+			dtoWriter.println("");
+			dtoWriter.println("}");
 		} finally {
 			if (dtoWriter != null) {
 				dtoWriter.close();

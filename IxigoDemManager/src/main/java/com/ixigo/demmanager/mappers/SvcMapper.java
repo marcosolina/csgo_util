@@ -1,27 +1,203 @@
 package com.ixigo.demmanager.mappers;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 
+import com.ixigo.demmanager.models.database.Dem_process_queueDto;
+import com.ixigo.demmanager.models.database.Entry_kill_statsDto;
+import com.ixigo.demmanager.models.database.Entry_kill_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Entry_kill_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Entry_kill_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Map_hit_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Map_hit_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Map_player_weapon_statsDto;
+import com.ixigo.demmanager.models.database.Map_player_weapon_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Map_shot_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Map_shot_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Match_hit_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Match_hit_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Match_player_weapon_statsDto;
+import com.ixigo.demmanager.models.database.Match_player_weapon_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Match_resultsDto;
+import com.ixigo.demmanager.models.database.Match_results_cacheDto;
+import com.ixigo.demmanager.models.database.Match_shot_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Match_shot_stats_extended_cacheDto;
 import com.ixigo.demmanager.models.database.Match_statsDto;
+import com.ixigo.demmanager.models.database.Overall_hit_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Overall_hit_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Overall_player_weapon_statsDto;
+import com.ixigo.demmanager.models.database.Overall_player_weapon_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Overall_shot_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Overall_shot_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Player_clutch_statsDto;
+import com.ixigo.demmanager.models.database.Player_clutch_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_kill_countDto;
+import com.ixigo.demmanager.models.database.Player_kill_count_cacheDto;
+import com.ixigo.demmanager.models.database.Player_map_match_statsDto;
+import com.ixigo.demmanager.models.database.Player_map_match_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_map_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Player_map_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Player_map_stats_extended_extendedDto;
+import com.ixigo.demmanager.models.database.Player_map_stats_extended_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Player_match_kill_countDto;
+import com.ixigo.demmanager.models.database.Player_match_kill_count_cacheDto;
+import com.ixigo.demmanager.models.database.Player_match_resultsDto;
+import com.ixigo.demmanager.models.database.Player_match_results_cacheDto;
+import com.ixigo.demmanager.models.database.Player_match_statsDto;
+import com.ixigo.demmanager.models.database.Player_match_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_match_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Player_match_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Player_overall_match_statsDto;
+import com.ixigo.demmanager.models.database.Player_overall_match_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_overall_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Player_overall_stats_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Player_overall_stats_extended_extendedDto;
+import com.ixigo.demmanager.models.database.Player_overall_stats_extended_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Player_round_assist_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_assist_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_round_damage_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_damage_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_round_death_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_death_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_round_event_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_event_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_round_extended_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_extended_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_round_flash_assist_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_flash_assist_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Player_round_kill_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_kill_stats_cacheDto;
 import com.ixigo.demmanager.models.database.Player_round_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_utility_statsDto;
+import com.ixigo.demmanager.models.database.Player_round_utility_stats_cacheDto;
 import com.ixigo.demmanager.models.database.Player_statsDto;
+import com.ixigo.demmanager.models.database.Player_weapon_map_killsDto;
+import com.ixigo.demmanager.models.database.Player_weapon_map_kills_cacheDto;
+import com.ixigo.demmanager.models.database.Player_weapon_map_rankingDto;
+import com.ixigo.demmanager.models.database.Player_weapon_map_ranking_cacheDto;
+import com.ixigo.demmanager.models.database.Player_weapon_match_killsDto;
+import com.ixigo.demmanager.models.database.Player_weapon_match_kills_cacheDto;
+import com.ixigo.demmanager.models.database.Player_weapon_overall_killsDto;
+import com.ixigo.demmanager.models.database.Player_weapon_overall_kills_cacheDto;
+import com.ixigo.demmanager.models.database.Player_weapon_rankingDto;
+import com.ixigo.demmanager.models.database.Player_weapon_ranking_cacheDto;
 import com.ixigo.demmanager.models.database.Round_eventsDto;
 import com.ixigo.demmanager.models.database.Round_hit_eventsDto;
+import com.ixigo.demmanager.models.database.Round_hit_events_extendedDto;
+import com.ixigo.demmanager.models.database.Round_hit_events_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Round_hit_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Round_hit_stats_extended_cacheDto;
 import com.ixigo.demmanager.models.database.Round_kill_eventsDto;
+import com.ixigo.demmanager.models.database.Round_kill_events_extendedDto;
+import com.ixigo.demmanager.models.database.Round_kill_events_extended_cacheDto;
+import com.ixigo.demmanager.models.database.Round_player_weapon_statsDto;
+import com.ixigo.demmanager.models.database.Round_player_weapon_stats_cacheDto;
+import com.ixigo.demmanager.models.database.Round_scorecardDto;
+import com.ixigo.demmanager.models.database.Round_scorecard_cacheDto;
 import com.ixigo.demmanager.models.database.Round_shot_eventsDto;
+import com.ixigo.demmanager.models.database.Round_shot_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Round_shot_stats_extended_cacheDto;
 import com.ixigo.demmanager.models.database.Round_statsDto;
+import com.ixigo.demmanager.models.database.Round_stats_extendedDto;
+import com.ixigo.demmanager.models.database.Round_stats_extended_cacheDto;
 import com.ixigo.demmanager.models.database.UsersDto;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcMapStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcDemProcessQueue;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcEntryKillStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcEntryKillStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcEntryKillStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcEntryKillStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapHitStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapHitStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapPlayerWeaponStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapPlayerWeaponStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapShotStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMapShotStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchHitStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchHitStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchPlayerWeaponStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchPlayerWeaponStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchResults;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchResultsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchShotStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchShotStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcOverallHitStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcOverallHitStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcOverallPlayerWeaponStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcOverallPlayerWeaponStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcOverallShotStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcOverallShotStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerClutchStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerClutchStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerKillCount;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerKillCountCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMapMatchStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMapMatchStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMapStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMapStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMapStatsExtendedExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMapStatsExtendedExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchKillCount;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchKillCountCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchResults;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchResultsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerOverallMatchStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerOverallMatchStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerOverallStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerOverallStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerOverallStatsExtendedExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerOverallStatsExtendedExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundAssistStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundAssistStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundDamageStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundDamageStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundDeathStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundDeathStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundEventStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundEventStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundExtendedStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundExtendedStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundFlashAssistStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundFlashAssistStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundKillStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundKillStatsCache;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundUtilityStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundUtilityStatsCache;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerStats;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundEvent;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEvent;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEvent;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotEvent;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponMapKills;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponMapKillsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponMapRanking;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponMapRankingCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponMatchKills;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponMatchKillsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponOverallKills;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponOverallKillsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponRanking;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerWeaponRankingCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundEvents;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEvents;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEventsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitEventsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundHitStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEvents;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEventsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundKillEventsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundPlayerWeaponStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundPlayerWeaponStatsCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundScorecard;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundScorecardCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotEvents;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotStatsExtendedCache;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundStats;
-import com.ixigo.demmanager.models.svc.demdata.data.SvcUser;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundStatsExtended;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundStatsExtendedCache;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcUsers;
 
 /**
  * Simple mapper to map the models between the Service and Repository layers
@@ -31,106 +207,202 @@ import com.ixigo.demmanager.models.svc.demdata.data.SvcUser;
  */
 @Mapper(componentModel = "spring")
 public interface SvcMapper {
-	@Mappings({
-	@Mapping(source = "steam_id", target = "steamId"),
-	@Mapping(source = "user_name", target = "userName")
-	})
-	public SvcUser fromDtoToSvc(UsersDto dto);
-	
-	@Mappings({
-	@Mapping(source = "steamId", target = "steam_id"),
-	@Mapping(source = "userName", target = "user_name")
-	})
-	public UsersDto fromSvcToDto(SvcUser dto);
-	
-	@Mappings({
-		@Mapping(source = "eventType", target = "eventtype"),
-		@Mapping(source = "matchId", target = "match_id"),
-		@Mapping(source = "round", target = "round"),
-		@Mapping(source = "steamID", target = "steamid"),
-		@Mapping(source = "time", target = "eventtime")
-	})
-	public Round_eventsDto fromSvcToDto(SvcRoundEvent svc);
-
-	@Mappings({
-	@Mapping(source = "date", target = "match_date"),
-	@Mapping(source = "mapName", target = "mapname"),
-	@Mapping(source = "fileName", target = "match_filename"),
-	@Mapping(source = "matchId", target = "match_id")
-	})
-	public Match_statsDto fromSvcToDto(SvcMapStats svc);
-	
-	@Mappings({
-	@Mapping(source = "userName", target = "username"),
-	@Mapping(source = "steamID", target = "steamid"),
-	@Mapping(source = "matchId", target = "match_id"),
-	@Mapping(source = "score", target = "score")
-	})
-	public Player_statsDto fromSvcToDto(SvcPlayerStats svc);
-	
-	@Mappings({
-	@Mapping(source = "roundNumber", target = "roundnumber"),
-	@Mapping(source = "winnerSide", target = "winnerside"),
-	@Mapping(source = "reasonEndRound", target = "reasonendround"),
-	@Mapping(source = "matchId", target = "match_id")
-	})
-	public Round_statsDto fromSvcToDto(SvcRoundStats svc);
-	
-	@Mappings({
-	@Mapping(source = "clutchChance", target = "clutchchance"),
-	@Mapping(source = "clutchSuccess", target = "clutchsuccess"),
-	@Mapping(source = "equipmentValue", target = "equipmentvalue"),
-	@Mapping(source = "matchId", target = "match_id"),
-	@Mapping(source = "moneySpent", target = "moneyspent"),
-	@Mapping(source = "mvp", target = "mvp"),
-	@Mapping(source = "round", target = "round"),
-	@Mapping(source = "steamID", target = "steamid"),
-	@Mapping(source = "survived", target = "survived"),
-	@Mapping(source = "team", target = "team"),
-	@Mapping(source = "userName", target = "username")
-	})
+	public Dem_process_queueDto fromSvcToDto(SvcDemProcessQueue svc);
+	public SvcDemProcessQueue fromDtoToSvc(Dem_process_queueDto dto);
+	public Entry_kill_stats_cacheDto fromSvcToDto(SvcEntryKillStatsCache svc);
+	public SvcEntryKillStatsCache fromDtoToSvc(Entry_kill_stats_cacheDto dto);
+	public Entry_kill_stats_extended_cacheDto fromSvcToDto(SvcEntryKillStatsExtendedCache svc);
+	public SvcEntryKillStatsExtendedCache fromDtoToSvc(Entry_kill_stats_extended_cacheDto dto);
+	public Map_hit_stats_extended_cacheDto fromSvcToDto(SvcMapHitStatsExtendedCache svc);
+	public SvcMapHitStatsExtendedCache fromDtoToSvc(Map_hit_stats_extended_cacheDto dto);
+	public Map_player_weapon_stats_cacheDto fromSvcToDto(SvcMapPlayerWeaponStatsCache svc);
+	public SvcMapPlayerWeaponStatsCache fromDtoToSvc(Map_player_weapon_stats_cacheDto dto);
+	public Map_shot_stats_extended_cacheDto fromSvcToDto(SvcMapShotStatsExtendedCache svc);
+	public SvcMapShotStatsExtendedCache fromDtoToSvc(Map_shot_stats_extended_cacheDto dto);
+	public Match_hit_stats_extended_cacheDto fromSvcToDto(SvcMatchHitStatsExtendedCache svc);
+	public SvcMatchHitStatsExtendedCache fromDtoToSvc(Match_hit_stats_extended_cacheDto dto);
+	public Match_player_weapon_stats_cacheDto fromSvcToDto(SvcMatchPlayerWeaponStatsCache svc);
+	public SvcMatchPlayerWeaponStatsCache fromDtoToSvc(Match_player_weapon_stats_cacheDto dto);
+	public Match_results_cacheDto fromSvcToDto(SvcMatchResultsCache svc);
+	public SvcMatchResultsCache fromDtoToSvc(Match_results_cacheDto dto);
+	public Match_shot_stats_extended_cacheDto fromSvcToDto(SvcMatchShotStatsExtendedCache svc);
+	public SvcMatchShotStatsExtendedCache fromDtoToSvc(Match_shot_stats_extended_cacheDto dto);
+	public Match_statsDto fromSvcToDto(SvcMatchStats svc);
+	public SvcMatchStats fromDtoToSvc(Match_statsDto dto);
+	public Overall_hit_stats_extended_cacheDto fromSvcToDto(SvcOverallHitStatsExtendedCache svc);
+	public SvcOverallHitStatsExtendedCache fromDtoToSvc(Overall_hit_stats_extended_cacheDto dto);
+	public Overall_player_weapon_stats_cacheDto fromSvcToDto(SvcOverallPlayerWeaponStatsCache svc);
+	public SvcOverallPlayerWeaponStatsCache fromDtoToSvc(Overall_player_weapon_stats_cacheDto dto);
+	public Overall_shot_stats_extended_cacheDto fromSvcToDto(SvcOverallShotStatsExtendedCache svc);
+	public SvcOverallShotStatsExtendedCache fromDtoToSvc(Overall_shot_stats_extended_cacheDto dto);
+	public Player_clutch_stats_cacheDto fromSvcToDto(SvcPlayerClutchStatsCache svc);
+	public SvcPlayerClutchStatsCache fromDtoToSvc(Player_clutch_stats_cacheDto dto);
+	public Player_kill_count_cacheDto fromSvcToDto(SvcPlayerKillCountCache svc);
+	public SvcPlayerKillCountCache fromDtoToSvc(Player_kill_count_cacheDto dto);
+	public Player_map_match_stats_cacheDto fromSvcToDto(SvcPlayerMapMatchStatsCache svc);
+	public SvcPlayerMapMatchStatsCache fromDtoToSvc(Player_map_match_stats_cacheDto dto);
+	public Player_map_stats_extended_cacheDto fromSvcToDto(SvcPlayerMapStatsExtendedCache svc);
+	public SvcPlayerMapStatsExtendedCache fromDtoToSvc(Player_map_stats_extended_cacheDto dto);
+	public Player_map_stats_extended_extended_cacheDto fromSvcToDto(SvcPlayerMapStatsExtendedExtendedCache svc);
+	public SvcPlayerMapStatsExtendedExtendedCache fromDtoToSvc(Player_map_stats_extended_extended_cacheDto dto);
+	public Player_match_kill_count_cacheDto fromSvcToDto(SvcPlayerMatchKillCountCache svc);
+	public SvcPlayerMatchKillCountCache fromDtoToSvc(Player_match_kill_count_cacheDto dto);
+	public Player_match_results_cacheDto fromSvcToDto(SvcPlayerMatchResultsCache svc);
+	public SvcPlayerMatchResultsCache fromDtoToSvc(Player_match_results_cacheDto dto);
+	public Player_match_stats_cacheDto fromSvcToDto(SvcPlayerMatchStatsCache svc);
+	public SvcPlayerMatchStatsCache fromDtoToSvc(Player_match_stats_cacheDto dto);
+	public Player_match_stats_extended_cacheDto fromSvcToDto(SvcPlayerMatchStatsExtendedCache svc);
+	public SvcPlayerMatchStatsExtendedCache fromDtoToSvc(Player_match_stats_extended_cacheDto dto);
+	public Player_overall_match_stats_cacheDto fromSvcToDto(SvcPlayerOverallMatchStatsCache svc);
+	public SvcPlayerOverallMatchStatsCache fromDtoToSvc(Player_overall_match_stats_cacheDto dto);
+	public Player_overall_stats_extended_cacheDto fromSvcToDto(SvcPlayerOverallStatsExtendedCache svc);
+	public SvcPlayerOverallStatsExtendedCache fromDtoToSvc(Player_overall_stats_extended_cacheDto dto);
+	public Player_overall_stats_extended_extended_cacheDto fromSvcToDto(SvcPlayerOverallStatsExtendedExtendedCache svc);
+	public SvcPlayerOverallStatsExtendedExtendedCache fromDtoToSvc(Player_overall_stats_extended_extended_cacheDto dto);
+	public Player_round_assist_stats_cacheDto fromSvcToDto(SvcPlayerRoundAssistStatsCache svc);
+	public SvcPlayerRoundAssistStatsCache fromDtoToSvc(Player_round_assist_stats_cacheDto dto);
+	public Player_round_damage_stats_cacheDto fromSvcToDto(SvcPlayerRoundDamageStatsCache svc);
+	public SvcPlayerRoundDamageStatsCache fromDtoToSvc(Player_round_damage_stats_cacheDto dto);
+	public Player_round_death_stats_cacheDto fromSvcToDto(SvcPlayerRoundDeathStatsCache svc);
+	public SvcPlayerRoundDeathStatsCache fromDtoToSvc(Player_round_death_stats_cacheDto dto);
+	public Player_round_event_stats_cacheDto fromSvcToDto(SvcPlayerRoundEventStatsCache svc);
+	public SvcPlayerRoundEventStatsCache fromDtoToSvc(Player_round_event_stats_cacheDto dto);
+	public Player_round_extended_stats_cacheDto fromSvcToDto(SvcPlayerRoundExtendedStatsCache svc);
+	public SvcPlayerRoundExtendedStatsCache fromDtoToSvc(Player_round_extended_stats_cacheDto dto);
+	public Player_round_flash_assist_stats_cacheDto fromSvcToDto(SvcPlayerRoundFlashAssistStatsCache svc);
+	public SvcPlayerRoundFlashAssistStatsCache fromDtoToSvc(Player_round_flash_assist_stats_cacheDto dto);
+	public Player_round_kill_stats_cacheDto fromSvcToDto(SvcPlayerRoundKillStatsCache svc);
+	public SvcPlayerRoundKillStatsCache fromDtoToSvc(Player_round_kill_stats_cacheDto dto);
 	public Player_round_statsDto fromSvcToDto(SvcPlayerRoundStats svc);
-	
-	@Mappings({
-	@Mapping(source = "assister", target = "assister"),
-	@Mapping(source = "matchId", target = "match_id"),
-	@Mapping(source = "flashAssister", target = "flashassister"),
-	@Mapping(source = "headshot", target = "headshot"),
-	@Mapping(source = "isFirstKill", target = "isfirstkill"),
-	@Mapping(source = "isTradeDeath", target = "istradedeath"),
-	@Mapping(source = "isTradeKill", target = "istradekill"),
-	@Mapping(source = "killerFlashed", target = "killerflashed"),
-	@Mapping(source = "round", target = "round"),
-	@Mapping(source = "steamID", target = "steamid"),
-	@Mapping(source = "time", target = "eventtime"),
-	@Mapping(source = "victimSteamId", target = "victimsteamid"),
-	@Mapping(source = "weapon", target = "weapon")
-	})
-	public Round_kill_eventsDto fromSvcToDto(SvcRoundKillEvent svc);
-	
-	@Mappings({
-	@Mapping(source = "eventType", target = "eventtype"),
-	@Mapping(source = "matchId", target = "match_id"),
-	@Mapping(source = "round", target = "round"),
-	@Mapping(source = "steamID", target = "steamid"),
-	@Mapping(source = "time", target = "eventtime"),
-	@Mapping(source = "weapon", target = "weapon")
-	})
-	public Round_shot_eventsDto fromSvcToDto(SvcRoundShotEvent svc);
-	
-	@Mappings({
-	@Mapping(source = "blindTime", target = "blindtime"),
-	@Mapping(source = "damageArmour", target = "damagearmour"),
-	@Mapping(source = "damageHealth", target = "damagehealth"),
-	@Mapping(source = "matchId", target = "match_id"),
-	@Mapping(source = "hitGroup", target = "hitgroup"),
-	@Mapping(source = "round", target = "round"),
-	@Mapping(source = "steamID", target = "steamid"),
-	@Mapping(source = "time", target = "eventtime"),
-	@Mapping(source = "victimSteamId", target = "victimsteamid"),
-	@Mapping(source = "weapon", target = "weapon")
-	})
-	public Round_hit_eventsDto fromSvcToDto(SvcRoundHitEvent svc);
+	public SvcPlayerRoundStats fromDtoToSvc(Player_round_statsDto dto);
+	public Player_round_utility_stats_cacheDto fromSvcToDto(SvcPlayerRoundUtilityStatsCache svc);
+	public SvcPlayerRoundUtilityStatsCache fromDtoToSvc(Player_round_utility_stats_cacheDto dto);
+	public Player_statsDto fromSvcToDto(SvcPlayerStats svc);
+	public SvcPlayerStats fromDtoToSvc(Player_statsDto dto);
+	public Player_weapon_map_kills_cacheDto fromSvcToDto(SvcPlayerWeaponMapKillsCache svc);
+	public SvcPlayerWeaponMapKillsCache fromDtoToSvc(Player_weapon_map_kills_cacheDto dto);
+	public Player_weapon_map_ranking_cacheDto fromSvcToDto(SvcPlayerWeaponMapRankingCache svc);
+	public SvcPlayerWeaponMapRankingCache fromDtoToSvc(Player_weapon_map_ranking_cacheDto dto);
+	public Player_weapon_match_kills_cacheDto fromSvcToDto(SvcPlayerWeaponMatchKillsCache svc);
+	public SvcPlayerWeaponMatchKillsCache fromDtoToSvc(Player_weapon_match_kills_cacheDto dto);
+	public Player_weapon_overall_kills_cacheDto fromSvcToDto(SvcPlayerWeaponOverallKillsCache svc);
+	public SvcPlayerWeaponOverallKillsCache fromDtoToSvc(Player_weapon_overall_kills_cacheDto dto);
+	public Player_weapon_ranking_cacheDto fromSvcToDto(SvcPlayerWeaponRankingCache svc);
+	public SvcPlayerWeaponRankingCache fromDtoToSvc(Player_weapon_ranking_cacheDto dto);
+	public Round_eventsDto fromSvcToDto(SvcRoundEvents svc);
+	public SvcRoundEvents fromDtoToSvc(Round_eventsDto dto);
+	public Round_hit_eventsDto fromSvcToDto(SvcRoundHitEvents svc);
+	public SvcRoundHitEvents fromDtoToSvc(Round_hit_eventsDto dto);
+	public Round_hit_events_extended_cacheDto fromSvcToDto(SvcRoundHitEventsExtendedCache svc);
+	public SvcRoundHitEventsExtendedCache fromDtoToSvc(Round_hit_events_extended_cacheDto dto);
+	public Round_hit_stats_extended_cacheDto fromSvcToDto(SvcRoundHitStatsExtendedCache svc);
+	public SvcRoundHitStatsExtendedCache fromDtoToSvc(Round_hit_stats_extended_cacheDto dto);
+	public Round_kill_eventsDto fromSvcToDto(SvcRoundKillEvents svc);
+	public SvcRoundKillEvents fromDtoToSvc(Round_kill_eventsDto dto);
+	public Round_kill_events_extended_cacheDto fromSvcToDto(SvcRoundKillEventsExtendedCache svc);
+	public SvcRoundKillEventsExtendedCache fromDtoToSvc(Round_kill_events_extended_cacheDto dto);
+	public Round_player_weapon_stats_cacheDto fromSvcToDto(SvcRoundPlayerWeaponStatsCache svc);
+	public SvcRoundPlayerWeaponStatsCache fromDtoToSvc(Round_player_weapon_stats_cacheDto dto);
+	public Round_scorecard_cacheDto fromSvcToDto(SvcRoundScorecardCache svc);
+	public SvcRoundScorecardCache fromDtoToSvc(Round_scorecard_cacheDto dto);
+	public Round_shot_eventsDto fromSvcToDto(SvcRoundShotEvents svc);
+	public SvcRoundShotEvents fromDtoToSvc(Round_shot_eventsDto dto);
+	public Round_shot_stats_extended_cacheDto fromSvcToDto(SvcRoundShotStatsExtendedCache svc);
+	public SvcRoundShotStatsExtendedCache fromDtoToSvc(Round_shot_stats_extended_cacheDto dto);
+	public Round_statsDto fromSvcToDto(SvcRoundStats svc);
+	public SvcRoundStats fromDtoToSvc(Round_statsDto dto);
+	public Round_stats_extended_cacheDto fromSvcToDto(SvcRoundStatsExtendedCache svc);
+	public SvcRoundStatsExtendedCache fromDtoToSvc(Round_stats_extended_cacheDto dto);
+	public UsersDto fromSvcToDto(SvcUsers svc);
+	public SvcUsers fromDtoToSvc(UsersDto dto);
+	public Entry_kill_statsDto fromSvcToDto(SvcEntryKillStats svc);
+	public SvcEntryKillStats fromDtoToSvc(Entry_kill_statsDto dto);
+	public Entry_kill_stats_extendedDto fromSvcToDto(SvcEntryKillStatsExtended svc);
+	public SvcEntryKillStatsExtended fromDtoToSvc(Entry_kill_stats_extendedDto dto);
+	public Map_hit_stats_extendedDto fromSvcToDto(SvcMapHitStatsExtended svc);
+	public SvcMapHitStatsExtended fromDtoToSvc(Map_hit_stats_extendedDto dto);
+	public Map_player_weapon_statsDto fromSvcToDto(SvcMapPlayerWeaponStats svc);
+	public SvcMapPlayerWeaponStats fromDtoToSvc(Map_player_weapon_statsDto dto);
+	public Map_shot_stats_extendedDto fromSvcToDto(SvcMapShotStatsExtended svc);
+	public SvcMapShotStatsExtended fromDtoToSvc(Map_shot_stats_extendedDto dto);
+	public Match_hit_stats_extendedDto fromSvcToDto(SvcMatchHitStatsExtended svc);
+	public SvcMatchHitStatsExtended fromDtoToSvc(Match_hit_stats_extendedDto dto);
+	public Match_player_weapon_statsDto fromSvcToDto(SvcMatchPlayerWeaponStats svc);
+	public SvcMatchPlayerWeaponStats fromDtoToSvc(Match_player_weapon_statsDto dto);
+	public Match_resultsDto fromSvcToDto(SvcMatchResults svc);
+	public SvcMatchResults fromDtoToSvc(Match_resultsDto dto);
+	public Match_shot_stats_extendedDto fromSvcToDto(SvcMatchShotStatsExtended svc);
+	public SvcMatchShotStatsExtended fromDtoToSvc(Match_shot_stats_extendedDto dto);
+	public Overall_hit_stats_extendedDto fromSvcToDto(SvcOverallHitStatsExtended svc);
+	public SvcOverallHitStatsExtended fromDtoToSvc(Overall_hit_stats_extendedDto dto);
+	public Overall_player_weapon_statsDto fromSvcToDto(SvcOverallPlayerWeaponStats svc);
+	public SvcOverallPlayerWeaponStats fromDtoToSvc(Overall_player_weapon_statsDto dto);
+	public Overall_shot_stats_extendedDto fromSvcToDto(SvcOverallShotStatsExtended svc);
+	public SvcOverallShotStatsExtended fromDtoToSvc(Overall_shot_stats_extendedDto dto);
+	public Player_clutch_statsDto fromSvcToDto(SvcPlayerClutchStats svc);
+	public SvcPlayerClutchStats fromDtoToSvc(Player_clutch_statsDto dto);
+	public Player_kill_countDto fromSvcToDto(SvcPlayerKillCount svc);
+	public SvcPlayerKillCount fromDtoToSvc(Player_kill_countDto dto);
+	public Player_map_match_statsDto fromSvcToDto(SvcPlayerMapMatchStats svc);
+	public SvcPlayerMapMatchStats fromDtoToSvc(Player_map_match_statsDto dto);
+	public Player_map_stats_extendedDto fromSvcToDto(SvcPlayerMapStatsExtended svc);
+	public SvcPlayerMapStatsExtended fromDtoToSvc(Player_map_stats_extendedDto dto);
+	public Player_map_stats_extended_extendedDto fromSvcToDto(SvcPlayerMapStatsExtendedExtended svc);
+	public SvcPlayerMapStatsExtendedExtended fromDtoToSvc(Player_map_stats_extended_extendedDto dto);
+	public Player_match_kill_countDto fromSvcToDto(SvcPlayerMatchKillCount svc);
+	public SvcPlayerMatchKillCount fromDtoToSvc(Player_match_kill_countDto dto);
+	public Player_match_resultsDto fromSvcToDto(SvcPlayerMatchResults svc);
+	public SvcPlayerMatchResults fromDtoToSvc(Player_match_resultsDto dto);
+	public Player_match_statsDto fromSvcToDto(SvcPlayerMatchStats svc);
+	public SvcPlayerMatchStats fromDtoToSvc(Player_match_statsDto dto);
+	public Player_match_stats_extendedDto fromSvcToDto(SvcPlayerMatchStatsExtended svc);
+	public SvcPlayerMatchStatsExtended fromDtoToSvc(Player_match_stats_extendedDto dto);
+	public Player_overall_match_statsDto fromSvcToDto(SvcPlayerOverallMatchStats svc);
+	public SvcPlayerOverallMatchStats fromDtoToSvc(Player_overall_match_statsDto dto);
+	public Player_overall_stats_extendedDto fromSvcToDto(SvcPlayerOverallStatsExtended svc);
+	public SvcPlayerOverallStatsExtended fromDtoToSvc(Player_overall_stats_extendedDto dto);
+	public Player_overall_stats_extended_extendedDto fromSvcToDto(SvcPlayerOverallStatsExtendedExtended svc);
+	public SvcPlayerOverallStatsExtendedExtended fromDtoToSvc(Player_overall_stats_extended_extendedDto dto);
+	public Player_round_assist_statsDto fromSvcToDto(SvcPlayerRoundAssistStats svc);
+	public SvcPlayerRoundAssistStats fromDtoToSvc(Player_round_assist_statsDto dto);
+	public Player_round_damage_statsDto fromSvcToDto(SvcPlayerRoundDamageStats svc);
+	public SvcPlayerRoundDamageStats fromDtoToSvc(Player_round_damage_statsDto dto);
+	public Player_round_death_statsDto fromSvcToDto(SvcPlayerRoundDeathStats svc);
+	public SvcPlayerRoundDeathStats fromDtoToSvc(Player_round_death_statsDto dto);
+	public Player_round_event_statsDto fromSvcToDto(SvcPlayerRoundEventStats svc);
+	public SvcPlayerRoundEventStats fromDtoToSvc(Player_round_event_statsDto dto);
+	public Player_round_extended_statsDto fromSvcToDto(SvcPlayerRoundExtendedStats svc);
+	public SvcPlayerRoundExtendedStats fromDtoToSvc(Player_round_extended_statsDto dto);
+	public Player_round_flash_assist_statsDto fromSvcToDto(SvcPlayerRoundFlashAssistStats svc);
+	public SvcPlayerRoundFlashAssistStats fromDtoToSvc(Player_round_flash_assist_statsDto dto);
+	public Player_round_kill_statsDto fromSvcToDto(SvcPlayerRoundKillStats svc);
+	public SvcPlayerRoundKillStats fromDtoToSvc(Player_round_kill_statsDto dto);
+	public Player_round_utility_statsDto fromSvcToDto(SvcPlayerRoundUtilityStats svc);
+	public SvcPlayerRoundUtilityStats fromDtoToSvc(Player_round_utility_statsDto dto);
+	public Player_weapon_map_killsDto fromSvcToDto(SvcPlayerWeaponMapKills svc);
+	public SvcPlayerWeaponMapKills fromDtoToSvc(Player_weapon_map_killsDto dto);
+	public Player_weapon_map_rankingDto fromSvcToDto(SvcPlayerWeaponMapRanking svc);
+	public SvcPlayerWeaponMapRanking fromDtoToSvc(Player_weapon_map_rankingDto dto);
+	public Player_weapon_match_killsDto fromSvcToDto(SvcPlayerWeaponMatchKills svc);
+	public SvcPlayerWeaponMatchKills fromDtoToSvc(Player_weapon_match_killsDto dto);
+	public Player_weapon_overall_killsDto fromSvcToDto(SvcPlayerWeaponOverallKills svc);
+	public SvcPlayerWeaponOverallKills fromDtoToSvc(Player_weapon_overall_killsDto dto);
+	public Player_weapon_rankingDto fromSvcToDto(SvcPlayerWeaponRanking svc);
+	public SvcPlayerWeaponRanking fromDtoToSvc(Player_weapon_rankingDto dto);
+	public Round_hit_events_extendedDto fromSvcToDto(SvcRoundHitEventsExtended svc);
+	public SvcRoundHitEventsExtended fromDtoToSvc(Round_hit_events_extendedDto dto);
+	public Round_hit_stats_extendedDto fromSvcToDto(SvcRoundHitStatsExtended svc);
+	public SvcRoundHitStatsExtended fromDtoToSvc(Round_hit_stats_extendedDto dto);
+	public Round_kill_events_extendedDto fromSvcToDto(SvcRoundKillEventsExtended svc);
+	public SvcRoundKillEventsExtended fromDtoToSvc(Round_kill_events_extendedDto dto);
+	public Round_player_weapon_statsDto fromSvcToDto(SvcRoundPlayerWeaponStats svc);
+	public SvcRoundPlayerWeaponStats fromDtoToSvc(Round_player_weapon_statsDto dto);
+	public Round_scorecardDto fromSvcToDto(SvcRoundScorecard svc);
+	public SvcRoundScorecard fromDtoToSvc(Round_scorecardDto dto);
+	public Round_shot_stats_extendedDto fromSvcToDto(SvcRoundShotStatsExtended svc);
+	public SvcRoundShotStatsExtended fromDtoToSvc(Round_shot_stats_extendedDto dto);
+	public Round_stats_extendedDto fromSvcToDto(SvcRoundStatsExtended svc);
+	public SvcRoundStatsExtended fromDtoToSvc(Round_stats_extendedDto dto);
 	
 	
 	/*

@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 import com.ixigo.demmanager.commands.demdata.CmdGetUsers;
 import com.ixigo.demmanager.mappers.RestMapper;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersResp;
 import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 
 import reactor.core.publisher.Mono;
@@ -22,7 +22,7 @@ import reactor.core.publisher.Mono;
  *
  */
 @Component
-public class GetUsersHandler implements WebCommandHandler<CmdGetUsers, RestUsers> {
+public class GetUsersHandler implements WebCommandHandler<CmdGetUsers, RestUsersResp> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(GetUsersHandler.class);
 	@Autowired
 	private DemFileParser service;
@@ -30,7 +30,7 @@ public class GetUsersHandler implements WebCommandHandler<CmdGetUsers, RestUsers
 	private RestMapper mapper;
 
 	@Override
-	public Mono<ResponseEntity<RestUsers>> handle(CmdGetUsers request) {
+	public Mono<ResponseEntity<RestUsersResp>> handle(CmdGetUsers request) {
 		_LOGGER.trace("Inside GetUsersHandler.handle");
 
 		// @formatter:off
@@ -38,7 +38,7 @@ public class GetUsersHandler implements WebCommandHandler<CmdGetUsers, RestUsers
 				.collectList()
 				.map(mapper::fromSvcToRestUserList)
 				.map(list -> {
-					RestUsers resp = new RestUsers();
+					RestUsersResp resp = new RestUsersResp();
 					resp.setUsers(list);
 					return new ResponseEntity<>(resp, HttpStatus.OK);
 				});

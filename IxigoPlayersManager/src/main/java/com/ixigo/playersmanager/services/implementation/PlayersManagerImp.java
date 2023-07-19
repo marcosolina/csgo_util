@@ -21,7 +21,7 @@ import org.springframework.http.HttpStatus;
 import com.ixigo.demmanagercontract.models.enums.UsersScoresQueryParam;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersResp;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.messages.IxigoMessageResource;
@@ -284,7 +284,7 @@ public class PlayersManagerImp implements PlayersManager {
 		try {
 			URL url = new URL(demManagerEndPoints.getGetDemDataUsers());
 			_LOGGER.debug(url.toString());
-			 return webClient.performGetRequest(RestUsers.class, url, Optional.empty(), Optional.empty()).map(resp -> resp.getBody().getUsers());
+			 return webClient.performGetRequest(RestUsersResp.class, url, Optional.empty(), Optional.empty()).map(resp -> resp.getBody().getUsers());
 		}
 		catch (MalformedURLException e) {
 			e.printStackTrace();

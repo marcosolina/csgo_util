@@ -103,8 +103,9 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
                 label: 'Trendline',
                 data: trendline,
                 fill: false,
-                borderColor: 'rgba(255, 0, 0, 0.5)', // Red and half-transparent
-                borderDash: [5, 5], // This makes the line dashed
+                pointRadius: 0,
+                borderColor: 'rgba(255, 255, 255, 0.5)', 
+                borderDash: [5, 5], 
                 tension: 0.1,
               },
             ],

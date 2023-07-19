@@ -317,7 +317,6 @@ public class DemFileParserImp implements DemFileParser {
 						.flatMap( b -> this.saveRoundKillEvents(id, stats.getAllRoundKillEvents()))
 						.flatMap( b -> this.saveRoundShotEvents(id, stats.getAllRoundShotEvents()))
 						.flatMap( b -> this.saveRoundHitEvents(id, stats.getAllRoundHitEvents()))
-						.flatMap( b -> this.saveRoundsStats(id, stats.getAllRoundStats()))
 						.flatMap( b -> this.saveRoundEvents(id, stats.getAllRoundEvents()))
 						;
 						return allInsert;
@@ -407,6 +406,9 @@ public class DemFileParserImp implements DemFileParser {
 	}
 	
 	private Mono<Boolean> savePlayersStats(Long matchId, List<SvcPlayerStats> list) {
+		if(list.isEmpty()) {
+			return Mono.just(true);
+		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
 		for (SvcPlayerStats element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
@@ -422,6 +424,9 @@ public class DemFileParserImp implements DemFileParser {
 	}
 	
 	private Mono<Boolean> saveRoundsStats(Long matchId, List<SvcRoundStats> list) {
+		if(list.isEmpty()) {
+			return Mono.just(true);
+		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
 		for (SvcRoundStats element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
@@ -437,6 +442,9 @@ public class DemFileParserImp implements DemFileParser {
 	}
 	
 	private Mono<Boolean> savePlayerRoundStats(Long matchId, List<SvcPlayerRoundStats> list) {
+		if(list.isEmpty()) {
+			return Mono.just(true);
+		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
 		for (SvcPlayerRoundStats element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
@@ -452,6 +460,9 @@ public class DemFileParserImp implements DemFileParser {
 	}
 	
 	private Mono<Boolean> saveRoundKillEvents(Long matchId, List<SvcRoundKillEvent> list) {
+		if(list.isEmpty()) {
+			return Mono.just(true);
+		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
 		for (SvcRoundKillEvent element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
@@ -467,6 +478,9 @@ public class DemFileParserImp implements DemFileParser {
 	}
 	
 	private Mono<Boolean> saveRoundShotEvents(Long matchId, List<SvcRoundShotEvent> list) {
+		if(list.isEmpty()) {
+			return Mono.just(true);
+		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
 		for (SvcRoundShotEvent element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
@@ -482,6 +496,9 @@ public class DemFileParserImp implements DemFileParser {
 	}
 	
 	private Mono<Boolean> saveRoundHitEvents(Long matchId, List<SvcRoundHitEvent> list) {
+		if(list.isEmpty()) {
+			return Mono.just(true);
+		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
 		for (SvcRoundHitEvent element : list) {
 			var dto = this.mapper.fromSvcToDto(element);
@@ -497,6 +514,9 @@ public class DemFileParserImp implements DemFileParser {
 	}
 	
 	private Mono<Boolean> saveRoundEvents(Long matchId, List<SvcRoundEvent> list) {
+		if(list.isEmpty()) {
+			return Mono.just(true);
+		}
 		List<Mono<Boolean>> monos = new ArrayList<>();
 		for (SvcRoundEvent element : list) {
 			var dto = this.mapper.fromSvcToDto(element);

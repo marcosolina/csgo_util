@@ -7,34 +7,34 @@ import { Typography, Box, LinearProgress, Tooltip } from '@mui/material';
 
 // Updated PlayerData interface
 interface PlayerData {
-    _1v1p: number;
-    _1v1w: number;
-    _1v1l: number;
-    _1v2p: number;
-    _1v2w: number;
-    _1v2l: number;
-    _1v3p: number;
-    _1v3w: number;
-    _1v3l: number;
-    _1v4p: number;
-    _1v4w: number;
-    _1v4l: number;
-    _1v5p: number;
-    _1v5w: number;
-    _1v5l: number;
-    _1vnp: number;
     steamid: string;
+    total_rounds: number;
+    total_rounds_t: number;
+    total_rounds_ct: number;
+    ek_attempts: number;
+    ek_success: number;
+    ekt_attempts: number;
+    ekt_success: number;
+    ekct_attempts: number;
+    ekct_success: number;
+    ek_success_rate: number;
+    ek_success_rate_overall: number;
+    ekt_success_rate: number;
+    ekt_success_rate_overall: number;
+    ekct_success_rate: number;
+    ekct_success_rate_overall: number;
 }
+
 
 interface RadarChartProps {
     steamid: string;
 }
 
-const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
+const PlayerEntryKIllTable: React.FC<RadarChartProps> = ({ steamid }) => {
     const { data: playerData, isError, isLoading, isFetching } = useQuery<PlayerData[], Error>({
-        queryKey: ['clutch'],
+        queryKey: ['entrykill'],
         queryFn: async (): Promise<PlayerData[]> => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_CLUTCH_STATS");
+            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ENTRY_KILL_STATS_EXTENDED");
 
             const responses = await Promise.all([
                 fetch(url1.href),
@@ -68,43 +68,45 @@ const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
     const columns = useMemo(
         () => [
             {
-                accessorKey: '1v1' as const, header: '1v1', size: 5, Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
+                accessorKey: 'label' as const, header: '', size: 5
+            },
+            {
+                accessorKey: 'Combined' as const, header: 'All', size: 5, Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
                     const percentageString = cell.getValue() as string;
                     // Parse the percentage value from the string.
                     const percentage = Number(percentageString.slice(0, -1));
-                    return row.index === 0 ? <PieChartMini percentage={percentage} color='darkturquoise' size={35} /> : percentageString;
+                    return row.index <= 1 ? <Box display="flex" flexDirection="column" width="100%" alignItems="center">
+                        <PieChartMini percentage={percentage} color='darkturquoise' size={40} />
+                        <Typography component="span" align="center">
+                            {percentageString}
+                        </Typography>
+                    </Box> : percentageString;
                 },
             },
             {
-                accessorKey: '1v2' as const, header: '1v2', size: 5, Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
+                accessorKey: 'Ts' as const, header: 'Ts', size: 5, Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
                     const percentageString = cell.getValue() as string;
                     // Parse the percentage value from the string.
                     const percentage = Number(percentageString.slice(0, -1));
-                    return row.index === 0 ? <PieChartMini percentage={percentage} color='darkturquoise' size={35} /> : percentageString;
+                    return row.index <= 1 ? <Box display="flex" flexDirection="column" width="100%" alignItems="center">
+                        <PieChartMini percentage={percentage} color='darkturquoise' size={40} />
+                        <Typography component="span" align="center">
+                            {percentageString}
+                        </Typography>
+                    </Box> : percentageString;
                 },
             },
             {
-                accessorKey: '1v3' as const, header: '1v3', size: 5, Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
+                accessorKey: 'CTs' as const, header: 'CTs', size: 5, Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
                     const percentageString = cell.getValue() as string;
                     // Parse the percentage value from the string.
                     const percentage = Number(percentageString.slice(0, -1));
-                    return row.index === 0 ? <PieChartMini percentage={percentage} color='darkturquoise' size={35} /> : percentageString;
-                },
-            },
-            {
-                accessorKey: '1v4' as const, header: '1v4', size: 5, Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
-                    const percentageString = cell.getValue() as string;
-                    // Parse the percentage value from the string.
-                    const percentage = Number(percentageString.slice(0, -1));
-                    return row.index === 0 ? <PieChartMini percentage={percentage} color='darkturquoise' size={35} /> : percentageString;
-                },
-            },
-            {
-                accessorKey: '1v5' as const, header: '1v5', size: 5, Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
-                    const percentageString = cell.getValue() as string;
-                    // Parse the percentage value from the string.
-                    const percentage = Number(percentageString.slice(0, -1));
-                    return row.index === 0 ? <PieChartMini percentage={percentage} color='darkturquoise' size={35} /> : percentageString;
+                    return row.index <= 1 ? <Box display="flex" flexDirection="column" width="100%" alignItems="center">
+                        <PieChartMini percentage={percentage} color='darkturquoise' size={40} />
+                        <Typography component="span" align="center">
+                            {percentageString}
+                        </Typography>
+                    </Box> : percentageString;
                 },
             },
         ],
@@ -116,33 +118,17 @@ const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
         if (!player) return [];
         return [
             {
-                '1v1': `${player._1v1p.toFixed(0)}%`,
-                '1v2': `${player._1v2p.toFixed(0)}%`,
-                '1v3': `${player._1v3p.toFixed(0)}%`,
-                '1v4': `${player._1v4p.toFixed(0)}%`,
-                '1v5': `${player._1v5p.toFixed(0)}%`,
+                'label': `Success`,
+                'Combined': `${(player.ek_success_rate).toFixed(0)}%`,
+                'Ts': `${(player.ekt_success_rate).toFixed(0)}%`,
+                'CTs': `${(player.ekct_success_rate).toFixed(0)}%`,
             },
             {
-                '1v1': `${player._1v1p.toFixed(0)}%`,
-                '1v2': `${player._1v2p.toFixed(0)}%`,
-                '1v3': `${player._1v3p.toFixed(0)}%`,
-                '1v4': `${player._1v4p.toFixed(0)}%`,
-                '1v5': `${player._1v5p.toFixed(0)}%`,
-            },
-            {
-                '1v1': `W:${player._1v1w}`,
-                '1v2': `W:${player._1v2w}`,
-                '1v3': `W:${player._1v3w}`,
-                '1v4': `W:${player._1v4w}`,
-                '1v5': `W:${player._1v5w}`,
-            },
-            {
-                '1v1': `L:${player._1v1l}`,
-                '1v2': `L:${player._1v2l}`,
-                '1v3': `L:${player._1v3l}`,
-                '1v4': `L:${player._1v4l}`,
-                '1v5': `L:${player._1v5l}`,
-            },
+                'label': `Attempts`,
+                'Combined': `${(100*player.ek_success_rate_overall/player.ek_success_rate).toFixed(0)}%`,
+                'Ts': `${(100*player.ekt_success_rate_overall/player.ekt_success_rate).toFixed(0)}%`,
+                'CTs': `${(100*player.ekct_success_rate_overall/player.ekct_success_rate).toFixed(0)}%`,
+            }
             // Add more rows if needed
         ];
     }, [player]);
@@ -184,15 +170,15 @@ const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
             renderTopToolbarCustomActions={() => (
             <Box  width="100%" >
                 <Typography variant="h5" component="h2" align="center" gutterBottom>
-                    Clutch Stats
+                    Entry Kill Stats
                 </Typography>
                 <Box display="flex" width="100%" alignItems="center">
                     <Typography width="100%" component="span">
-                        1vX : {player._1vnp}%
+                        Overall : {player.ek_success_rate_overall}%
                     </Typography>
                     <Box width="100%" mx={2}>
-                        <Tooltip title={`${player._1vnp}%`} placement="top">
-                            <LinearProgress variant="determinate" value={player._1vnp} color='primary'/>
+                        <Tooltip title={`${player.ek_success_rate_overall}%`} placement="top">
+                            <LinearProgress variant="determinate" value={player.ek_success_rate_overall} color='primary'/>
                         </Tooltip>
                     </Box>
                 </Box></Box>
@@ -201,4 +187,4 @@ const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
     );
 };
 
-export default PlayerClutchTable;
+export default PlayerEntryKIllTable;

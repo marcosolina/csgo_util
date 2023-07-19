@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid, Box, Paper } from '@mui/material';
 import PlayerRadarChart from "./PlayerRadarChart";
 import PlayerClutchTable from "./PlayerClutchTable";
+import PlayerEntryKIllTable from './PlayerEntryKillTable';
 
 interface PlayerStatsContentProps {
   steamid: string;
@@ -23,7 +24,7 @@ const PlayerStatsContent: React.FC<PlayerStatsContentProps> = ({ steamid }) => {
       </Grid>
       <Grid item xs={4}>
         <Paper>
-          <Box height={160} bgcolor="lightblue" />
+        <PlayerEntryKIllTable steamid={steamid} />
         </Paper>
       </Grid>
 

@@ -4,7 +4,9 @@ FROM postgres:11
 
 #COPY 010-initDemFilesDb.sql                 /docker-entrypoint-initdb.d
 COPY 015-initNewDemFilesDb.sql             /docker-entrypoint-initdb.d
-COPY 016-optimizedNewDemFilesDb_views.sql  /docker-entrypoint-initdb.d
+COPY 016-seedDummyData.sql                 /docker-entrypoint-initdb.d
+COPY 018-optimizedNewDemFilesDb_views.sql  /docker-entrypoint-initdb.d
+COPY 019-clearDummyData.sql                /docker-entrypoint-initdb.d
 COPY 020-initDiscordDb.sql                 /docker-entrypoint-initdb.d
 COPY 030-initEventDispatcherDb.sql         /docker-entrypoint-initdb.d
 

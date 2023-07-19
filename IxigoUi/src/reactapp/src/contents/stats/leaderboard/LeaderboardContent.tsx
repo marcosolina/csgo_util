@@ -115,7 +115,6 @@ import { Link } from 'react-router-dom';
                 backgroundColor = '#7ED321';
             }
             return (
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                     <span style={{
                         borderRadius: '4px',
                         padding: '2px',
@@ -127,45 +126,47 @@ import { Link } from 'react-router-dom';
                     }}>
                         {rating}
                     </span>
-                </div>
             );
         },
           },
-          { accessorKey: "first_weapon", header: "W1" ,size: smallColSize, Header: createCustomHeader("Most used weapon"), 
+          { accessorKey: "first_weapon", header: "W1" ,size: smallColSize, Header: createCustomHeader("Primary weapon - most kills"), 
           Cell: ({ cell }: { cell: any }) => {
             const weapon = cell.getValue() as string;
             const imageUrl = weaponImage[weapon];
             return imageUrl ? <img src={imageUrl} alt={weapon} style={{  height: '18px' }} /> : null;
           }
         },
-        { accessorKey: "second_weapon", header: "W2" ,size: smallColSize, Header: createCustomHeader("Second most used weapon"),
+        { accessorKey: "second_weapon", header: "W2" ,size: smallColSize, Header: createCustomHeader("Secondary weapon"),
           Cell: ({ cell }: { cell: any }) => {
             const weapon = cell.getValue() as string;
             const imageUrl = weaponImage[weapon];
             return imageUrl ? <img src={imageUrl} alt={weapon} style={{  height: '18px' }} /> : null;
           }
         },
-          { accessorKey: "rounds", header: "R"  ,size: smallColSize, Header: createCustomHeader("Number of rounds played")},
+        { accessorKey: "averagewinscore", header: "SCR+" ,size: smallColSize, Header: createCustomHeader("Average Match Score Difference") },
           { accessorKey: "winlossratio", header: "Win%"  ,size: smallColSize, Header: createCustomHeader("Win Loss Ratio")},
-          { accessorKey: "wins", header: "Won" ,size: smallColSize, Header: createCustomHeader("Total matches won") },
-          { accessorKey: "loss", header: "Lost" ,size: smallColSize, Header: createCustomHeader("Total matches lost") },
           { accessorKey: "kills", header: "K" ,size: smallColSize, Header: createCustomHeader("Total kills") },
+          { accessorKey: "rws", header: "RWS" ,size: smallColSize, Header: createCustomHeader("Round Win Share - average ratio of the amount of damage done by the player as a proportion of the total damage done by the winning team in each round")},
+          { accessorKey: "kast", header: "KAST" ,size: smallColSize, Header: createCustomHeader("Ratio of rounds with either a kill, an assist, survived or a trade death averaged across all matches.") },
+          { accessorKey: "headshot_percentage", header: "HS%",size: smallColSize , Header: createCustomHeader("Headshot kill percentage")},
+          { accessorKey: "_1vnp", header: "1vN%" ,size: smallColSize, Header: createCustomHeader("Total successful clutch rounds (rounds won where a player's last teammate died with players still alive on the opponents team)")},
+          { accessorKey: "ebt", header: "EBT",size: smallColSize , Header: createCustomHeader("Average enemy blind time per match") },
+          { accessorKey: "mvp", header: "MVP" ,size: smallColSize, Header: createCustomHeader("Total MVP (Most Valuable Player) rounds")},
           { accessorKey: "assists", header: "A" ,size: smallColSize, Header: createCustomHeader("Total assists") },
           { accessorKey: "deaths", header: "D" ,size: smallColSize , Header: createCustomHeader("Total deaths")},
           { accessorKey: "kdr", header: "K/D",size: smallColSize , Header: createCustomHeader("Kill/Death ratio")},
+          { accessorKey: "adr", header: "ADR" ,size: smallColSize, Header: createCustomHeader("Average damage per round") },
           { accessorKey: "kpr", header: "K/R" ,size: smallColSize , Header: createCustomHeader("Average kills per round")},
           { accessorKey: "dpr", header: "D/R" ,size: smallColSize , Header: createCustomHeader("Average deaths per round")},
-          { accessorKey: "adr", header: "ADR" ,size: smallColSize, Header: createCustomHeader("Average damage per round") },
-          { accessorKey: "rws", header: "RWS" ,size: smallColSize, Header: createCustomHeader("Round Win Share - average ratio of the amount of damage done by the player as a proportion of the total damage done by the winning team in each round")},
-          { accessorKey: "kast", header: "KAST%" ,size: smallColSize, Header: createCustomHeader("Percentage of rounds with either a kill, an assist, survived or a trade death averaged across all matches.") },
           { accessorKey: "headshots", header: "HS" ,size: smallColSize , Header: createCustomHeader("Total headshot kills")},
-          { accessorKey: "headshot_percentage", header: "HS%",size: smallColSize , Header: createCustomHeader("Headshot kill percentage")},
+          { accessorKey: "rounds", header: "R"  ,size: smallColSize, Header: createCustomHeader("Number of rounds played")},
+          { accessorKey: "wins", header: "Won" ,size: smallColSize, Header: createCustomHeader("Total matches won") },
+          { accessorKey: "loss", header: "Lost" ,size: smallColSize, Header: createCustomHeader("Total matches lost") },
           { accessorKey: "ff", header: "FF",size: smallColSize , Header: createCustomHeader("Total friendly fire/team kills")},
           { accessorKey: "ek", header: "EK",size: smallColSize , Header: createCustomHeader("Total entry kills (first kills of the round)")},
           { accessorKey: "bp", header: "BP" ,size: smallColSize , Header: createCustomHeader("Total bombs planted")},
           { accessorKey: "bd", header: "BD",size: smallColSize , Header: createCustomHeader("Total bombs defused")},
           { accessorKey: "hr", header: "HR",size: smallColSize , Header: createCustomHeader("Total hostages rescued")},
-          { accessorKey: "mvp", header: "MVP" ,size: smallColSize, Header: createCustomHeader("Total MVP (Most Valuable Player) rounds")},
           { accessorKey: "_5k", header: "5K",size: smallColSize , Header: createCustomHeader("Total rounds with 5 or more kills")},
           { accessorKey: "_4k", header: "4K",size: smallColSize , Header: createCustomHeader("Total rounds with exactly 4 kills")},
           { accessorKey: "_3k", header: "3K" ,size: smallColSize, Header: createCustomHeader("Total rounds with exactly 3 kills")},
@@ -176,13 +177,10 @@ import { Link } from 'react-router-dom';
           { accessorKey: "tdh", header: "TDH",size: smallColSize , Header: createCustomHeader("Total damage to health") },
           { accessorKey: "tda", header: "TDA",size: smallColSize , Header: createCustomHeader("Total damage to armour") },
           { accessorKey: "ffd", header: "FFD",size: smallColSize , Header: createCustomHeader("Total damage to team mates") },
-          { accessorKey: "ebt", header: "EBT",size: smallColSize , Header: createCustomHeader("Average enemy blind time per match") },
           { accessorKey: "fbt", header: "FBT" ,size: smallColSize, Header: createCustomHeader("Average team mate blind time per match") },
           { accessorKey: "ud", header: "UD" ,size: smallColSize, Header: createCustomHeader("Average utility damage (HE grenades, molotovs plus incediary) damage per match") },
-          { accessorKey: "averagewinscore", header: "SCR+" ,size: smallColSize, Header: createCustomHeader("Average Score Difference") },
           { accessorKey: "fkr", header: "EK%" ,size: smallColSize, Header: createCustomHeader("Percentage of first kill rounds") },
           { accessorKey: "fa", header: "FA",size: smallColSize , Header: createCustomHeader("Total flash assist kills - where teammate kills an opponent blinded by your flash") },
-          { accessorKey: "_1vnp", header: "1vN%" ,size: smallColSize, Header: createCustomHeader("Total successful clutch rounds (rounds won where a player's last teammate died with players still alive on the opponents team)")},
           { accessorKey: "_1v1", header: "1v1" ,size: smallColSize, Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 1 player still alive on the opponents team)")},
           { accessorKey: "_1v2", header: "1v2" ,size: smallColSize, Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 2 players still alive on the opponents team)")},
           { accessorKey: "_1v3", header: "1v3" ,size: smallColSize, Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 3 players still alive on the opponents team)")},

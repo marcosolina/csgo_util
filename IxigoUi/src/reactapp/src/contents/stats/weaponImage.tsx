@@ -41,7 +41,7 @@ import ump45 from '../../assets/weapons/ump45.png';
 import usp_silencer from '../../assets/weapons/usp_silencer.png';
 import xm1014 from '../../assets/weapons/xm1014.png';
 
-export const weaponImage = {
+export const weaponImage: { [key: string]: string } = {
     'ak47': ak47,
     'aug': aug,
     'awp': awp,

@@ -1,6 +1,5 @@
 // StatsContent.tsx
 import React, { ReactNode } from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import LeaderboardContent from './leaderboard/LeaderboardContent';
 import MatchContent from './leaderboard/MatchContent';
 import KillMatrixContent from './leaderboard/KillMatrixContent';
@@ -23,10 +22,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-const queryClient = new QueryClient();
 
-const StatsContentWithReactQueryProvider: React.FC<StatsContentProps> = ({ setSelectedTab, selectedTab }) => (
-  <QueryClientProvider client={queryClient}>
+const StatsContent: React.FC<StatsContentProps> = ({ setSelectedTab, selectedTab }) => (
   <Layout>
     <Box textAlign="center">
       <Typography variant="h5">Leaderboard</Typography>
@@ -41,7 +38,6 @@ const StatsContentWithReactQueryProvider: React.FC<StatsContentProps> = ({ setSe
     </Box>
     <KillMatrixContent setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
   </Layout>
-</QueryClientProvider>
 );
 
-export default StatsContentWithReactQueryProvider;
+export default StatsContent;

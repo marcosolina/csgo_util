@@ -10,7 +10,7 @@ import {
     QueryClient,
     QueryClientProvider,
     useQuery,
-  } from '@tanstack/react-query';
+  } from 'react-query';
 
   interface MatchContentProps {
     setSelectedTab: React.Dispatch<React.SetStateAction<number | null>>;

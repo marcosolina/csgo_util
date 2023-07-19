@@ -1,5 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { useQuery } from 'react-query';
+import {
+  useQuery,
+} from 'react-query';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 import { startOfWeek, startOfMonth, format } from 'date-fns';
@@ -16,7 +18,7 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
   const canvasRef = useRef(null);
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
-    queryKey: ['matches'],
+    queryKey: ['playerradar'],
     queryFn: async () => {
       const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED");
   
@@ -116,6 +118,11 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
                   unit: binningLevel
                 },
                 display: showXAxisLabels,
+                ticks: {
+                    autoSkip: false,
+                    maxRotation: 90,
+                    minRotation: 90
+                }
               }
             }
           }

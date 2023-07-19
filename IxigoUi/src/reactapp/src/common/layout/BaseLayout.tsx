@@ -83,7 +83,7 @@ const BaseLayout = () => {
       </Box>
 
       <Container>
-        
+        <Box sx={{ m: "2rem" }} />
         <Switch value={value}>
           <Case case={0}>
             <DemFilesContent />

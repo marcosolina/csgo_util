@@ -7,7 +7,7 @@ import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
 import {
     useQuery,
-  } from '@tanstack/react-query';
+  } from 'react-query';
 import { Link } from 'react-router-dom';
 
   interface User {
@@ -35,7 +35,7 @@ import { Link } from 'react-router-dom';
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['leaderboard'],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_OVERALL_STATS_EXTENDED");
+            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED");
             const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
     
             const responses = await Promise.all([
@@ -131,6 +131,20 @@ import { Link } from 'react-router-dom';
             );
         },
           },
+          { accessorKey: "first_weapon", header: "W1" ,size: smallColSize, Header: createCustomHeader("Most used weapon"), 
+          Cell: ({ cell }: { cell: any }) => {
+            const weapon = cell.getValue() as string;
+            const imageUrl = weaponImage[weapon];
+            return imageUrl ? <img src={imageUrl} alt={weapon} style={{  height: '18px' }} /> : null;
+          }
+        },
+        { accessorKey: "second_weapon", header: "W2" ,size: smallColSize, Header: createCustomHeader("Second most used weapon"),
+          Cell: ({ cell }: { cell: any }) => {
+            const weapon = cell.getValue() as string;
+            const imageUrl = weaponImage[weapon];
+            return imageUrl ? <img src={imageUrl} alt={weapon} style={{  height: '18px' }} /> : null;
+          }
+        },
           { accessorKey: "rounds", header: "R"  ,size: smallColSize, Header: createCustomHeader("Number of rounds played")},
           { accessorKey: "kills", header: "K" ,size: smallColSize, Header: createCustomHeader("Total kills") },
           { accessorKey: "assists", header: "A" ,size: smallColSize, Header: createCustomHeader("Total assists") },

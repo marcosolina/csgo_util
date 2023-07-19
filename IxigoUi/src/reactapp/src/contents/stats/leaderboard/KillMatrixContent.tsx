@@ -5,7 +5,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery } from 'react-query';
 import { Link } from 'react-router-dom';
 
 interface User {

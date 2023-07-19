@@ -17,7 +17,7 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
 
 
   return (
-    <div>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}> 
       <IxigoSelect
         label="Binning Level"
         possibleValues={binningLevels}
@@ -33,10 +33,10 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
       <Box sx={{ height: 200 }}>
         <PlayerGraphsStatsContent steamid={steamid} fieldName="headshot_percentage" label="Headshot %" binningLevel={binningLevel} showXAxisLabels={false}/>
       </Box>
-      <Box sx={{ height: 200 }}>
-        <PlayerGraphsStatsContent steamid={steamid} fieldName="adr" label="Average Damage/Round" binningLevel={binningLevel} showXAxisLabels={false} />
+      <Box sx={{ height: 290 }}>
+        <PlayerGraphsStatsContent steamid={steamid} fieldName="adr" label="Average Damage/Round" binningLevel={binningLevel} showXAxisLabels={true} />
       </Box>
-    </div>
+    </Box>
   );
 };
 

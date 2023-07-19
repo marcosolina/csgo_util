@@ -3,12 +3,9 @@ import { IconButton, Tooltip } from '@mui/material';
 import { Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { SelectedStatsContext } from '../SelectedStatsContext';
-import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
 import { Link } from 'react-router-dom';
 import {
-    QueryClient,
-    QueryClientProvider,
     useQuery,
   } from 'react-query';
 

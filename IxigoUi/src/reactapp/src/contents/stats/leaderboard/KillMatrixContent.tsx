@@ -119,7 +119,6 @@ const columns = useMemo(() => [
     id: player,
     header: player,
     size: smallColSize,
-    minSize: smallColSize,
     accessorFn: (row: RowData) => row[player as string],
     Cell: ({ cell }: { cell: any }) => {
       const killCount = cell.getValue() as number;
@@ -132,8 +131,7 @@ const columns = useMemo(() => [
       return (
         <div style={{ backgroundColor, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span style={{
-              borderRadius: '4px',
-              padding: '2px',
+              padding: '4px',
               display: 'block',
               color: '#fff',
               width: '43px',

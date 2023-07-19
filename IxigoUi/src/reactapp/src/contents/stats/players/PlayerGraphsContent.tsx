@@ -13,7 +13,7 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
     { value: 'week', label: 'Week' },
     { value: 'month', label: 'Month' },
   ];
-  const [binningLevel, setBinningLevel] = useState<'week' | 'month'>('month');
+  const [binningLevel, setBinningLevel] = useState<'week' | 'month'>('week');
 
 
   return (

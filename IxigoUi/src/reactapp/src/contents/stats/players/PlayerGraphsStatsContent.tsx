@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { useQuery } from 'react-query';
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
-import { startOfWeek, format } from 'date-fns';
+import { startOfWeek, startOfMonth, format } from 'date-fns';
 
 interface PlayerGraphsStatsContentProps {
   steamid: string;
@@ -47,14 +47,15 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
       // Sort the data by date
       filteredData.sort((a: any, b: any) => new Date(a.match_date).getTime() - new Date(b.match_date).getTime());
 
-      // Bin the data by week
+      // Bin the data by week or month
       const binnedData = new Map();
       filteredData.forEach((item: any) => {
-        const startOfWeekDate = format(startOfWeek(new Date(item.match_date)), 'yyyy-MM-dd');
-        if (!binnedData.has(startOfWeekDate)) {
-          binnedData.set(startOfWeekDate, []);
+        const dateFn = binningLevel === 'week' ? startOfWeek : startOfMonth; // Choose the correct date function
+        const binnedDate = format(dateFn(new Date(item.match_date)), 'yyyy-MM-dd');
+        if (!binnedData.has(binnedDate)) {
+          binnedData.set(binnedDate, []);
         }
-        binnedData.get(startOfWeekDate).push(item);
+        binnedData.get(binnedDate).push(item);
       });
 
       // Get the average field value for each bin

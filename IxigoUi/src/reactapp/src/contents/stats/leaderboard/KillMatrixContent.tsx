@@ -125,9 +125,9 @@ const columns = useMemo(() => [
       // Interpolate the kill count to a color
       const [minKillCount, maxKillCount] = minMaxKillCounts[player as any];
       const ratio = Math.min((killCount - minKillCount) / (maxKillCount - minKillCount), 1);
-      const red = Math.round(150 * ratio);
-      const green = Math.round(150 * (1 - ratio));
-      const backgroundColor = `rgb(${red},${green},0)`;
+      const red = Math.round(27+150 * ratio);
+      //const green = Math.round(150 * (1 - ratio));
+      const backgroundColor = `rgb(${red},27,27)`;
       return (
         <div style={{ backgroundColor, height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <span style={{

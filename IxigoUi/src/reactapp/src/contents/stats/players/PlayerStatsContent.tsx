@@ -15,7 +15,7 @@ interface PlayerStatsContentProps {
 
 const PlayerStatsContent: React.FC<PlayerStatsContentProps> = ({ steamid }) => {
   return (
-    <Grid container spacing={3}>
+    <Grid container spacing={1}>
       {/* Row 1: 3 4x4 Boxes */}
       <Grid item xs={4}>
         <Paper>

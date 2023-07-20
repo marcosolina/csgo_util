@@ -60,17 +60,26 @@ import {
             }
             const { selectedMatch, setSelectedMatch, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
             return (
-              <Link 
-                to={`/match/${matchDate}`} 
+              <Box 
+                component={Link}
+                to={`/match/${match_id}`}
+                sx={{
+                  color: 'white',
+                  fontWeight: 'bold',
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    textDecoration: 'underline',
+                  },
+                }}
                 onClick={(e) => {
                   e.preventDefault();  // Prevent the link from navigating
                   setSelectedMatch(match_id);
                   setSelectedSubpage("match");
-                  setSelectedTab(3);
                 }}
               >
                 {matchDate}
-              </Link>
+              </Box>
             );
           }},
           { accessorKey: "mapname", header: "Map", size: smallColSize, Header: createCustomHeader("Map Name") ,
@@ -82,17 +91,26 @@ import {
             }
             const { selectedMap, setSelectedMap, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
             return (
-              <Link 
-                to={`/map/${map}`} 
-                onClick={(e) => {
-                  e.preventDefault();  // Prevent the link from navigating
-                  setSelectedMap(map);
-                  setSelectedSubpage("map");
-                  setSelectedTab(3);
-                }}
-              >
-                {map}
-              </Link>
+              <Box 
+              component={Link}
+              to={`/map/${map}`}
+              sx={{
+                color: 'white',
+                fontWeight: 'bold',
+                textDecoration: 'none',
+                cursor: 'pointer',
+                '&:hover': {
+                  textDecoration: 'underline',
+                },
+              }}
+              onClick={(e) => {
+                e.preventDefault();  // Prevent the link from navigating
+                setSelectedMap(map);
+                setSelectedSubpage("map");
+              }}
+            >
+              {map}
+            </Box>
             );
           }},
           { accessorKey: "team1_total_wins", header: "T1", size: smallColSize, Header: createCustomHeader("Team 1 Round Wins"),enableGrouping: false, enableFilter: false,

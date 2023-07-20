@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { SelectedStatsContext } from '../SelectedStatsContext';
 import { useState, useMemo } from "react";
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
@@ -110,17 +110,26 @@ import { Link } from 'react-router-dom';
               }
               const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
               return (
-                <Link 
-                  to={`/player/${steamid}`} 
+                <Box 
+                  component={Link}
+                  to={`/player/${steamid}`}
+                  sx={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
                   onClick={(e) => {
                     e.preventDefault();  // Prevent the link from navigating
                     setSelectedPlayerSteamID(steamid);
                     setSelectedSubpage("player");
-                    //setSelectedTab(3); TODO: pass this through for links
                   }}
                 >
                   {username}
-                </Link>
+                </Box>
               );
             }},
           { accessorKey: 'weapon' as const, header: 'WEAPON', size: smallColSize, Header: createCustomHeader('Weapon')},

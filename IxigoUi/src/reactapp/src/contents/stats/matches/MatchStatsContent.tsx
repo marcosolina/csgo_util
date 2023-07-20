@@ -3,7 +3,7 @@ import { Box, Tab, Tabs, Typography } from '@mui/material';
 import MatchScoreboardContent from './MatchScoreboardContent';
 import MatchRoundsContent from './MatchRoundsContent';
 import MatchWeaponsContent from './MatchWeaponsContent';
-import MatchDuelsContent from './MatchDuelsContent';
+import MatchKillMatrixContent from './MatchKillMatrixContent';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -55,7 +55,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
           <MatchWeaponsContent match_id={match_id} />
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <MatchDuelsContent match_id={match_id} />
+          <MatchKillMatrixContent match_id={match_id} />
         </TabPanel>
       </Box>
     </Box>

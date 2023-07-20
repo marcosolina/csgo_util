@@ -174,7 +174,7 @@ import { Link } from 'react-router-dom';
             pagination: { pageIndex: 0, pageSize: 20 },
           }}
              enableGrouping
-             enableColumnFilters={true}
+             enableColumnFilters={false}
              enableSorting={true}
              enableBottomToolbar={true}
              enablePagination={true}
@@ -182,6 +182,9 @@ import { Link } from 'react-router-dom';
              enableDensityToggle={true}
              enableGlobalFilter={false}
              enableFullScreenToggle={true}
+             enableColumnOrdering={false}
+             enableColumnActions={false}
+             enableColumnDragging={false}
              enableHiding={true}
              muiTableBodyRowProps={{ hover: false }}
           muiToolbarAlertBannerProps={

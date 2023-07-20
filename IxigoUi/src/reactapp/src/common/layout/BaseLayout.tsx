@@ -52,6 +52,12 @@ const BaseLayout = () => {
     history(newPath);
   };
 
+  const handleTabClick = (newValue: number) => {
+    if (newValue === 3) {
+      setSelectedSubpage(null);
+    }
+  };
+
   return (
     <SelectedStatsContext.Provider value={{ selectedPlayerSteamID, setSelectedPlayerSteamID, selectedMatch, setSelectedMatch, selectedMap, setSelectedMap, selectedSubpage,
       setSelectedSubpage}}>
@@ -75,7 +81,7 @@ const BaseLayout = () => {
           <Tab label={t(`${LANG_BASE_PATH}.tabs.0`)} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.1`)} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.2`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.3`)} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.3`)} onClick={() => handleTabClick(3)} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.4`)} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.5`)} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.6`)} />

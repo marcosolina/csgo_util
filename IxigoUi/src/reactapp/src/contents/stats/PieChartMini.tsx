@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pie } from 'react-chartjs-2';
+import { PieChart } from 'react-minimal-pie-chart';
 
 interface PieChartProps {
     percentage: number;
@@ -8,34 +8,22 @@ interface PieChartProps {
 }
 
 const PieChartMini: React.FC<PieChartProps> = ({ percentage, color, size }) => {
-    const data = {
-        datasets: [
-            {
-                data: [percentage, 100 - percentage],
-                backgroundColor: [color, '#555'],
-            },
-        ],
-    };
-
-    const options = {
-        responsive: true,
-        maintainAspectRatio: false,
-        tooltips: {
-            enabled: false,
-        },
-        legend: {
-            display: false,
-        },
-        elements: {
-            arc: {
-                borderWidth: 0,
-            },
-        },
-    };
+    percentage=percentage>100?100:percentage;
+    const data = [
+        { title: percentage+'%', value: percentage, color: color },
+        { title: '', value: 100 - percentage, color: 'dimgrey' },
+    ];
 
     return (
-        <div style={{ width: size, height: size }}>  {/* Set the size of the div */}
-            <Pie data={data} options={options} />
+        <div style={{ width: size, height: size, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <PieChart
+                data={data}
+                lineWidth={100} // This makes it a donut chart
+                totalValue={100}
+                startAngle={-90}
+                lengthAngle={360}
+                animate
+            />
         </div>
     );
 };

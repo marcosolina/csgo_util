@@ -3,6 +3,11 @@ import { Grid, Box, Paper } from '@mui/material';
 import PlayerRadarChart from "./PlayerRadarChart";
 import PlayerClutchTable from "./PlayerClutchTable";
 import PlayerEntryKIllTable from './PlayerEntryKillTable';
+import PlayerWinRateTable from './PlayerWinRateTable';
+import PlayerHeadShotTable from './PlayerHeadShotTable';
+import PlayerDamageTable from './PlayerDamageTable';
+import PlayerUtilityTable from './PlayerUtilityTable';
+import PlayerWeaponSummaryTable from './PlayerWeaponSummaryTable';
 
 interface PlayerStatsContentProps {
   steamid: string;
@@ -31,32 +36,32 @@ const PlayerStatsContent: React.FC<PlayerStatsContentProps> = ({ steamid }) => {
       {/* Row 2: 1 12 full width box */}
       <Grid item xs={12}>
         <Paper>
-          <Box height={160} bgcolor="lightgreen" />
+          <PlayerWeaponSummaryTable steamid={steamid} />
         </Paper>
       </Grid>
 
       {/* Row 3: 4 3x2 Boxes */}
       <Grid item xs={3}>
         <Paper>
-          <Box height={80} bgcolor="lightgrey" />
+          <PlayerWinRateTable steamid={steamid}/>
         </Paper>
       </Grid>
       <Grid item xs={3}>
         <Paper>
-          <Box height={80} bgcolor="lightgrey" />
+        <PlayerHeadShotTable steamid={steamid}/>
         </Paper>
       </Grid>
       <Grid item xs={3}>
         <Paper>
-          <Box height={80} bgcolor="lightgrey" />
+          <PlayerDamageTable steamid={steamid}/>
         </Paper>
       </Grid>
       <Grid item xs={3}>
         <Paper>
-          <Box height={80} bgcolor="lightgrey" />
+          <PlayerUtilityTable steamid={steamid}/>
         </Paper>
       </Grid>
-
+      
       {/* Row 4: 2 6x4 Boxes */}
       <Grid item xs={6}>
         <Paper>

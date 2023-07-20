@@ -11,6 +11,7 @@ interface PlayerData {
     fa: number;
     ebt: number;
     ud: number;
+    fbt: number;
     rounds: number;
 }
 
@@ -34,8 +35,8 @@ const PlayerUtilityTable: React.FC<RadarChartProps> = ({ steamid }) => {
                 }
                 return response.json();
             }));
-    
-            const playerData = jsons[0].view_data.map((player: any) => {
+
+            let playerData = jsons[0].view_data.map((player: any) => {
                 return {
                     ...player,
                 } as PlayerData;
@@ -48,17 +49,19 @@ const PlayerUtilityTable: React.FC<RadarChartProps> = ({ steamid }) => {
 
     const player = useMemo(() => {
         if (playerData) {
-            return playerData.find(p => p.steamid === steamid);
+            const foundPlayer = playerData.find(p => p.steamid === steamid);
+            return foundPlayer;
         }
         return undefined;
     }, [playerData, steamid]);
-
-    const maxUd = useMemo(() => {
+    
+    const maxUD = useMemo(() => {
         if (playerData) {
-            return Math.max(...playerData.map(p => p.ud));
+            const max = Math.max(...playerData.map(p => Number(p.ud) || 0));
+            return max;
         }
         return undefined;
-    }, [playerData, steamid]);
+    }, [playerData]);
 
     const columns = useMemo(
         () => [
@@ -82,8 +85,8 @@ const PlayerUtilityTable: React.FC<RadarChartProps> = ({ steamid }) => {
 
             },
             {
-                'label': `Utility Damage (avg)`,
-                'value': `${(player.ud).toFixed(2)}s`,
+                'label': `Team Blind (avg)`,
+                'value': `${(player.fbt).toFixed(2)}s`,
 
             },
             // Add more rows if needed
@@ -127,15 +130,15 @@ const PlayerUtilityTable: React.FC<RadarChartProps> = ({ steamid }) => {
             renderTopToolbarCustomActions={() => (
             <Box  width="100%" >
                 <Typography variant="h5" component="h2" align="center" gutterBottom>
-                    Utility Stats
+                    Utility
                 </Typography>
                 <Box display="flex" width="100%" alignItems="center">
                     <Typography width="100%" component="span">
-                        FA/Round: {(player.fa/player.rounds).toFixed(2)}
+                        UD: {player.ud}
                     </Typography>
                     <Box width="100%" mx={2}>
-                        <Tooltip title={`${(player.fa/player.rounds).toFixed(2)}%`} placement="top">
-                            <LinearProgress variant="determinate" value={(player && maxUd ? (player.ud / maxUd) * 100 : 0)} color='primary'/>
+                        <Tooltip title={`${(player.ud)}`} placement="top">
+                            <LinearProgress variant="determinate" value={(player && maxUD ? (player.ud / maxUD) * 100 : 0)} color='primary'/>
                         </Tooltip>
                     </Box>
                 </Box></Box>

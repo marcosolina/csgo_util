@@ -11,6 +11,7 @@ interface PlayerData {
     adr: number;
     tdh: number;
     tda: number;
+    ffd: number;
     rounds: number;
 }
 
@@ -82,6 +83,11 @@ const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
 
             },
             {
+                'label': `Team Damage`,
+                'value': `${(player.ffd).toFixed(0)}`,
+
+            },
+            {
                 'label': `Rounds`,
                 'value': `${(player.rounds).toFixed(0)}`,
 
@@ -127,7 +133,7 @@ const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
             renderTopToolbarCustomActions={() => (
             <Box  width="100%" >
                 <Typography variant="h5" component="h2" align="center" gutterBottom>
-                    ADR
+                    Damage/Round
                 </Typography>
                 <Box display="flex" width="100%" alignItems="center">
                     <Typography width="100%" component="span">

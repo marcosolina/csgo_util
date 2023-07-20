@@ -4,6 +4,7 @@ import { useState, useMemo } from "react";
 import { IconButton, Tooltip } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { weaponImage } from '../weaponImage';
+import PieChartMini from '../PieChartMini';
 import { MaterialReactTable } from 'material-react-table';
 import {
     useQuery,
@@ -144,12 +145,16 @@ import { Link } from 'react-router-dom';
           }
         },
         { accessorKey: "averagewinscore", header: "SCR+" ,size: smallColSize, Header: createCustomHeader("Average Match Score Difference") },
-          { accessorKey: "winlossratio", header: "Win%"  ,size: smallColSize, Header: createCustomHeader("Win Loss Ratio")},
-          { accessorKey: "kills", header: "K" ,size: smallColSize, Header: createCustomHeader("Total kills") },
+          { accessorKey: "winlossratio", header: "W/L"  ,size: smallColSize, Header: createCustomHeader("Win Loss Ratio")},
+          { accessorKey: "kills", header: "KILLS" ,size: smallColSize, Header: createCustomHeader("Total kills") },
           { accessorKey: "rws", header: "RWS" ,size: smallColSize, Header: createCustomHeader("Round Win Share - average ratio of the amount of damage done by the player as a proportion of the total damage done by the winning team in each round")},
           { accessorKey: "kast", header: "KAST" ,size: smallColSize, Header: createCustomHeader("Ratio of rounds with either a kill, an assist, survived or a trade death averaged across all matches.") },
-          { accessorKey: "headshot_percentage", header: "HS%",size: smallColSize , Header: createCustomHeader("Headshot kill percentage")},
-          { accessorKey: "_1vnp", header: "1vN%" ,size: smallColSize, Header: createCustomHeader("Total successful clutch rounds (rounds won where a player's last teammate died with players still alive on the opponents team)")},
+          { accessorKey: "headshot_percentage", header: "HS%",size: smallColSize , Header: createCustomHeader("Headshot kill percentage"), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
+            return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
+          }},
+          { accessorKey: "_1vnp", header: "1vN%" ,size: smallColSize, Header: createCustomHeader("Total successful clutch rounds (rounds won where a player's last teammate died with players still alive on the opponents team)"), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
+            return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
+          }},
           { accessorKey: "ebt", header: "EBT",size: smallColSize , Header: createCustomHeader("Average enemy blind time per match") },
           { accessorKey: "mvp", header: "MVP" ,size: smallColSize, Header: createCustomHeader("Total MVP (Most Valuable Player) rounds")},
           { accessorKey: "assists", header: "A" ,size: smallColSize, Header: createCustomHeader("Total assists") },

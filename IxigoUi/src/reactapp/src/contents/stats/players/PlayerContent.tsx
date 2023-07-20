@@ -62,7 +62,7 @@ export default function PlayerPage({ steamid }: PlayerPageProps) {
       <Box sx={{ display: 'flex' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="vertical">
-            <Tab label="Stats" />
+            <Tab label="Overall" />
             <Tab label="Graphs" />
             <Tab label="Weapons" />
             <Tab label="Maps" />

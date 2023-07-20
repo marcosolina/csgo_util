@@ -29,7 +29,7 @@ const BaseLayout = () => {
   const history = useNavigate();
 
   const [selectedPlayerSteamID, setSelectedPlayerSteamID] = useState<string | null>(null);
-  const [selectedMatch, setSelectedMatch] = useState<string | null>(null);
+  const [selectedMatch, setSelectedMatch] = useState<number | null>(null);
   const [selectedMap, setSelectedMap] = useState<string | null>(null);
   const [selectedSubpage, setSelectedSubpage] = useState<string | null>(null);
 

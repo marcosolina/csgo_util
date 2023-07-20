@@ -25,7 +25,7 @@ function TabPanel(props: TabPanelProps) {
 }
 
 interface MatchStatsContentProps {
-  match_id: string;
+  match_id: number;
 }
 
 export default function MatchPage({ match_id }: MatchStatsContentProps) {

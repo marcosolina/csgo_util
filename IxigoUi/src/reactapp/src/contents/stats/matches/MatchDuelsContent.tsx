@@ -2,7 +2,7 @@
 import React from 'react';
 
 interface MatchDuelsContentProps {
-  match_id: string;
+  match_id: number;
 }
 
 const MatchDuelsContent: React.FC<MatchDuelsContentProps> = ({ match_id }) => {

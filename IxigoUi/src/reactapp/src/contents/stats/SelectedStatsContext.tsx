@@ -3,8 +3,8 @@ import React from 'react';
 interface SelectedStatsContextProps {
   selectedPlayerSteamID: string | null;
   setSelectedPlayerSteamID: (selectedPlayerSteamID: string | null) => void;
-  selectedMatch: string | null;
-  setSelectedMatch: (selectedMatch: string | null) => void;
+  selectedMatch: number | null;
+  setSelectedMatch: (selectedMatch: number | null) => void;
   selectedMap: string | null;
   setSelectedMap: (selectedMap: string | null) => void;
   selectedSubpage: string | null;

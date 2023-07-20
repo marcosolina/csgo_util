@@ -53,6 +53,7 @@ import {
           { accessorKey: "match_date", header: "Date", size: smallColSize, Header: createCustomHeader("Match Date") ,enableGrouping: false,
           Cell: ({ cell }: { cell: any }) => {
             const matchDate = cell.getValue() as string;
+            const match_id = cell.row.original.match_id;
             const selectedStatsContext = useContext(SelectedStatsContext);
             if (!selectedStatsContext) {
               throw new Error('useContext was called outside of the SelectedStatsContext provider');
@@ -63,7 +64,7 @@ import {
                 to={`/match/${matchDate}`} 
                 onClick={(e) => {
                   e.preventDefault();  // Prevent the link from navigating
-                  setSelectedMatch(matchDate);
+                  setSelectedMatch(match_id);
                   setSelectedSubpage("match");
                   setSelectedTab(3);
                 }}

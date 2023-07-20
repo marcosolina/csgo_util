@@ -2,7 +2,7 @@
 import React from 'react';
 
 interface MatchRoundsContentProps {
-  match_id: string;
+  match_id: number;
 }
 
 const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => {

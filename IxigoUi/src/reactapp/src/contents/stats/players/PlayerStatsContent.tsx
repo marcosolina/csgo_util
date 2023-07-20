@@ -17,17 +17,17 @@ const PlayerStatsContent: React.FC<PlayerStatsContentProps> = ({ steamid }) => {
   return (
     <Grid container spacing={1}>
       {/* Row 1: 3 4x4 Boxes */}
-      <Grid item xs={4}>
+      <Grid item xs={12} sm={6} md={4}>
         <Paper>
           <PlayerRadarChart steamid={steamid} />
         </Paper>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12} sm={6} md={4}>
         <Paper>
           <PlayerClutchTable steamid={steamid} />
         </Paper>
       </Grid>
-      <Grid item xs={4}>
+      <Grid item xs={12} sm={6} md={4}>
         <Paper>
         <PlayerEntryKIllTable steamid={steamid} />
         </Paper>
@@ -41,36 +41,24 @@ const PlayerStatsContent: React.FC<PlayerStatsContentProps> = ({ steamid }) => {
       </Grid>
 
       {/* Row 3: 4 3x2 Boxes */}
-      <Grid item xs={3}>
+      <Grid item xs={12} sm={6} md={3}>
         <Paper>
           <PlayerWinRateTable steamid={steamid}/>
         </Paper>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={12} sm={6} md={3}>
         <Paper>
         <PlayerHeadShotTable steamid={steamid}/>
         </Paper>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={12} sm={6} md={3}>
         <Paper>
           <PlayerDamageTable steamid={steamid}/>
         </Paper>
       </Grid>
-      <Grid item xs={3}>
+      <Grid item xs={12} sm={6} md={3}>
         <Paper>
           <PlayerUtilityTable steamid={steamid}/>
-        </Paper>
-      </Grid>
-      
-      {/* Row 4: 2 6x4 Boxes */}
-      <Grid item xs={6}>
-        <Paper>
-          <Box height={160} bgcolor="lightyellow" />
-        </Paper>
-      </Grid>
-      <Grid item xs={6}>
-        <Paper>
-          <Box height={160} bgcolor="lightyellow" />
         </Paper>
       </Grid>
     </Grid>

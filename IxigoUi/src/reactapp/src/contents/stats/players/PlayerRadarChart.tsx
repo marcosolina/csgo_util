@@ -120,7 +120,6 @@ const PlayerRadarChart: React.FC<RadarChartProps> = ({ steamid }) => {
             tooltip: {
                 callbacks: {
                     label: function (tooltipItem: TooltipItem<'radar'>) {
-                        const datasetLabel = tooltipItem.dataset.label || '';
                         // Use the original value directly
                         const rawValue = originalValues[tooltipItem.dataIndex!];
                         const desc = descriptions[tooltipItem.dataIndex!];

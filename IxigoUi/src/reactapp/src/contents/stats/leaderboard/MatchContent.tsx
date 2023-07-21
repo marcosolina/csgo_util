@@ -183,6 +183,7 @@ import {
              }}
           enableGrouping
           enablePagination
+          enableDensityToggle={false}
           muiToolbarAlertBannerProps={
             isError
               ? {

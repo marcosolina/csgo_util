@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { SelectedStatsContext } from '../SelectedStatsContext';
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import { IconButton, Tooltip, Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { weaponImage } from '../weaponImage';
@@ -15,7 +15,6 @@ import { Link } from 'react-router-dom';
   interface User {
     steam_id: string;
     user_name: string;
-    // include other properties if any
   }
 
   interface LeaderboardContentProps {
@@ -25,13 +24,6 @@ import { Link } from 'react-router-dom';
 
   const smallColSize = 5;
   const LeaderboardContent: React.FC<LeaderboardContentProps> = ({ setSelectedTab, selectedTab }) => {
-    //const [columnFilters, setColumnFilters] = useState([]);
-    //const [globalFilter, setGlobalFilter] = useState('');
-    //const [sorting, setSorting] = useState([]);
-    //const [pagination, setPagination] = useState({
-    //    pageIndex: 0,
-    //    pagesize: 10,
-    //});
 
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['leaderboard'],
@@ -215,12 +207,10 @@ import { Link } from 'react-router-dom';
             sorting: [{ id: 'hltv_rating', desc: true }], //sort by state by default
             columnPinning: { left: ['username','matches', 'hltv_rating'] },
              }}
-          //enableColumnOrdering
-          //enableGrouping
           enableColumnFilterModes
+          enableDensityToggle={false}
           enablePinning
           enableMultiSort
-          //enableColumnDragging
           enablePagination
           muiToolbarAlertBannerProps={
             isError
@@ -230,10 +220,6 @@ import { Link } from 'react-router-dom';
                 }
               : undefined
           }
-          //onColumnFiltersChange={setColumnFilters}
-          //onGlobalFilterChange={setGlobalFilter}
-          //onPaginationChange={(newPagination) => setPagination(newPagination)}
-          //onSortingChange={setSorting}
           renderTopToolbarCustomActions={() => (
             <Tooltip arrow title="Refresh Data">
               <IconButton onClick={() => refetch()}>
@@ -243,13 +229,9 @@ import { Link } from 'react-router-dom';
           )}
           rowCount={data?.length ?? 0}
           state={{
-            //columnFilters,
-            //globalFilter,
             isLoading,
-            //pagination,
             showAlertBanner: isError,
             showProgressBars: isFetching,
-            //sorting,
           }}
         />
       );

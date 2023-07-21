@@ -1,10 +1,8 @@
 
 import React, { useContext } from 'react';
 import { SelectedStatsContext } from '../SelectedStatsContext';
-import { useState, useMemo } from "react";
-import { IconButton, Tooltip, Box } from '@mui/material';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import { weaponImage } from '../weaponImage';
+import { useMemo } from "react";
+import { Tooltip, Box } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
 import PieChartMini from '../PieChartMini';
 import {
@@ -258,7 +256,7 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
              enableSorting={true}
              enableTopToolbar={true}
              enableBottomToolbar={false}
-             enableDensityToggle={true}
+             enableDensityToggle={false}
              enableGlobalFilter={false}
              enableFullScreenToggle={false}
              enableHiding={true}

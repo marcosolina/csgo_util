@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Grid, Box, Paper } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import MatchTeamTable from './MatchTeamTable';
 
 interface MatchScoreboardContentProps {

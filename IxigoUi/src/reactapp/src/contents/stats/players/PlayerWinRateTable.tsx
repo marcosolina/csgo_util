@@ -4,8 +4,6 @@ import { MaterialReactTable } from 'material-react-table';
 import { useMemo } from "react";
 import { Typography, Box, LinearProgress, Tooltip } from '@mui/material';
 
-
-// Define your types for the player data
 interface PlayerData {
     steamid: string;
     wins: number;

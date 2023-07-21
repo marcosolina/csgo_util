@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import PlayerGraphsStatsContent from './PlayerGraphsStatsContent';
 import IxigoSelect from "../../../common/select/IxigoSelect";
-import IxigoSelectMultiple from "../../../common/select/IxigoSelectMultiple";
 import { Box } from '@mui/material';
 
 interface PlayerGraphsContentProps {

@@ -5,7 +5,6 @@ import { useMemo } from "react";
 import PieChartMini from '../PieChartMini';
 import { Typography, Box, LinearProgress, Tooltip } from '@mui/material';
 
-// Updated PlayerData interface
 interface PlayerData {
     steamid: string;
     total_rounds: number;

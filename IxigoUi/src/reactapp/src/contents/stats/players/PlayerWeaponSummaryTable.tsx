@@ -1,22 +1,18 @@
-import React, { useContext } from 'react';
-import { SelectedStatsContext } from '../SelectedStatsContext';
-import { useState, useMemo } from "react";
-import { IconButton, Tooltip } from '@mui/material';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import React from 'react';
+import { useMemo } from "react";
+import { Tooltip } from '@mui/material';
 import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
 import PieChartMini from '../PieChartMini';
 import {
     useQuery,
   } from 'react-query';
-import { Link } from 'react-router-dom';
 
 
   interface PlayerWeaponProps {
     steamid: string;
   }
 
-  // Define your types for the player data
   interface WeaponData {
     steamid: string;
     kills: number;
@@ -40,7 +36,7 @@ import { Link } from 'react-router-dom';
   const PlayerWeaponSummaryTable: React.FC<PlayerWeaponProps> = ({ steamid }) => {
 
     const { data: weaponData, isError, isLoading } = useQuery<WeaponData[], Error>({
-        queryKey: ['playerweapon'],
+        queryKey: ['playerweapon'+steamid],
         queryFn: async () => {
             const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/OVERALL_PLAYER_WEAPON_STATS");
     
@@ -131,7 +127,6 @@ import { Link } from 'react-router-dom';
              enableSorting={true}
              enableBottomToolbar={true}
              enableTopToolbar={false}
-             enableDensityToggle={false}
              enableGlobalFilter={false}
              enableFullScreenToggle={false}
              enableHiding={false}

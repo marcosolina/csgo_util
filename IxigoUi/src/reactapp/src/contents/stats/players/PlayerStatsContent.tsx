@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Box, Paper } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import PlayerRadarChart from "./PlayerRadarChart";
 import PlayerClutchTable from "./PlayerClutchTable";
 import PlayerEntryKIllTable from './PlayerEntryKillTable';

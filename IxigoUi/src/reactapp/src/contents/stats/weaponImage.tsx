@@ -2,7 +2,6 @@ import ak47 from '../../assets/weapons/ak47.png';
 import aug from '../../assets/weapons/aug.png';
 import awp from '../../assets/weapons/awp.png';
 import bizon from '../../assets/weapons/bizon.png';
-import bomb from '../../assets/weapons/bomb.png';
 import cz75a from '../../assets/weapons/cz75a.png';
 import deagle from '../../assets/weapons/deagle.png';
 import elite from '../../assets/weapons/elite.png';
@@ -24,6 +23,7 @@ import mac10 from '../../assets/weapons/mac10.png';
 import mag7 from '../../assets/weapons/mag7.png';
 import molotov from '../../assets/weapons/molotov.png';
 import mp7 from '../../assets/weapons/mp7.png';
+import mp5sd from '../../assets/weapons/mp5sd.png';
 import mp9 from '../../assets/weapons/mp9.png';
 import negev from '../../assets/weapons/negev.png';
 import nova from '../../assets/weapons/nova.png';
@@ -46,7 +46,6 @@ export const weaponImage: { [key: string]: string } = {
     'aug': aug,
     'awp': awp,
     'bizon': bizon,
-    'bomb': bomb,
     'cz75a': cz75a,
     'deagle': deagle,
     'elite': elite,
@@ -68,6 +67,7 @@ export const weaponImage: { [key: string]: string } = {
     'mag7': mag7,
     'molotov': molotov,
     'mp7': mp7,
+    'mp5sd': mp5sd,
     'mp9': mp9,
     'negev': negev,
     'nova': nova,

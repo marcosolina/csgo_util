@@ -1,9 +1,7 @@
 import React, { useContext } from 'react';
 import { SelectedStatsContext } from '../SelectedStatsContext';
-import { useState, useMemo } from "react";
-import { IconButton, Tooltip, Box } from '@mui/material';
-import RefreshIcon from '@mui/icons-material/Refresh';
-import { weaponImage } from '../weaponImage';
+import { useMemo } from "react";
+import { Tooltip, Box } from '@mui/material';
 import { MaterialReactTable } from 'material-react-table';
 import PieChartMini from '../PieChartMini';
 import {
@@ -100,10 +98,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
           }));
   
           const playerMatchStatsExtended = jsons[0].view_data;
-          console.log(match_id);
-          console.log(team);
           let matchData = playerMatchStatsExtended.filter ((p: TeamMatch) => p.match_id === match_id && p.last_round_team === team);
-          console.log(matchData);
           return matchData;
       },
       keepPreviousData: true,
@@ -150,7 +145,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
               </Box>
             );
           }},
-          { accessorKey: 'roundsplayed' as const, header: 'RNDS', size: smallColSize, Header: createCustomHeader('Rounds Played') },
+          { accessorKey: 'roundsplayed' as const, header: 'R', size: smallColSize, Header: createCustomHeader('Rounds Played') },
           { accessorKey: 'last_round_team' as const, header: 'TEAM', size: smallColSize, Header: createCustomHeader('Team') },
           { accessorKey: 'rounds_on_team1' as const, header: 'RNDT1', size: smallColSize, Header: createCustomHeader('Rounds on Team 1') },
           { accessorKey: 'rounds_on_team2' as const, header: 'RNDT2', size: smallColSize, Header: createCustomHeader('Rounds on Team 2') },
@@ -240,16 +235,20 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
                 _1v3: false,
                 _1v4: false,
                 _1v5: false,
+                _1k: false,
+                _2k: false,
+                _3k: false,
+                _4k: false,
+                _5k: false,
                 hr: false,
                 bp: false,
-                ud: false,
                 ffd: false,
                 td: false,
                 tda: false,
                 tdh: false,
                 fbt: false,
                 fa: false,
-                ebt: false,
+                headshots: false,
               },
             density: 'compact',
             sorting: [{ id: 'hltv_rating', desc: true }], //sort by state by default
@@ -260,7 +259,6 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
              enableSorting={true}
              enableTopToolbar={true}
              enableBottomToolbar={false}
-             enableDensityToggle={true}
              enableGlobalFilter={false}
              enableFullScreenToggle={false}
              enableHiding={true}

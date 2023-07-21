@@ -1,15 +1,12 @@
-import React, { useContext } from 'react';
-import { SelectedStatsContext } from '../SelectedStatsContext';
-import { useState, useMemo } from "react";
-import { IconButton, Tooltip } from '@mui/material';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import React from 'react';
+import { useMemo } from "react";
+import { Tooltip } from '@mui/material';
 import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
 import PieChartMini from '../PieChartMini';
 import {
     useQuery,
   } from 'react-query';
-import { Link } from 'react-router-dom';
 
 
   interface PlayerWeaponProps {
@@ -30,6 +27,7 @@ import { Link } from 'react-router-dom';
     damage_per_hit: number;
     headshotkills_percentage: number;
     shots_fired: number;
+    headshot_percentage: number;
     chest_hit_percentage: number;
     leg_hit_percentage: number;
     stomach_hit_percentage: number;
@@ -98,6 +96,9 @@ import { Link } from 'react-router-dom';
             return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
           }},
           { accessorKey: 'shots_fired' as const, header: 'SHOTS', size: smallColSize, Header: createCustomHeader('Shots fired') },
+          { accessorKey: 'headshot_percentage' as const, header: 'HHP', size: smallColSize, Header: createCustomHeader('Head hit percentage'), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
+            return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
+          }},
           { accessorKey: 'chest_hit_percentage' as const, header: 'CHP', size: smallColSize, Header: createCustomHeader('Chest hit percentage'), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
             return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
           }},
@@ -130,7 +131,7 @@ import { Link } from 'react-router-dom';
              enableBottomToolbar={true}
              enablePagination={false}
              enableTopToolbar={true}
-             enableDensityToggle={true}
+
              enableGlobalFilter={false}
              enableFullScreenToggle={true}
              enableHiding={true}

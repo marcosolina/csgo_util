@@ -1,8 +1,7 @@
 import React, { useContext } from 'react';
 import { SelectedStatsContext } from '../SelectedStatsContext';
-import { useState, useMemo } from "react";
-import { IconButton, Tooltip, Box } from '@mui/material';
-import RefreshIcon from '@mui/icons-material/Refresh';
+import { useMemo } from "react";
+import { Tooltip, Box } from '@mui/material';
 import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
 import PieChartMini from '../PieChartMini';
@@ -19,10 +18,7 @@ import { Link } from 'react-router-dom';
   interface User {
     steam_id: string;
     username: string;
-    // include other properties if any
   }
-
-  // Define your types for the player data
   interface WeaponData {
     steamid: string;
     username: string;
@@ -176,7 +172,7 @@ import { Link } from 'react-router-dom';
           data={weaponData ?? []} //data is undefined on first render  ?.data ?? []
           initialState={{ showColumnFilters: false,
             density: 'compact',
-            sorting: [{ id: 'kills', desc: true }], //sort by state by default
+            sorting: [{ id: 'kills', desc: true },{ id: 'total_damage', desc: true }], //sort by state by default
             columnPinning: { left: ['weapon_img','weapon','username'] },
             expanded: true,
             grouping: ['weapon_img'],
@@ -185,10 +181,11 @@ import { Link } from 'react-router-dom';
              enableGrouping
              enableColumnFilters={false}
              enableSorting={true}
+             enableMultiSort
              enableBottomToolbar={true}
              enablePagination={true}
              enableTopToolbar={true}
-             enableDensityToggle={true}
+             enableDensityToggle={false}
              enableGlobalFilter={false}
              enableFullScreenToggle={true}
              enableColumnOrdering={false}

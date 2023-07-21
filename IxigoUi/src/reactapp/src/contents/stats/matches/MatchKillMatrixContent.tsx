@@ -1,12 +1,9 @@
-import React, { useContext } from 'react';
-import { SelectedStatsContext } from '../SelectedStatsContext';
-import { useState, useMemo } from "react";
+import React from 'react';
+import { useMemo } from "react";
 import { IconButton, Tooltip } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { weaponImage } from '../weaponImage';
 import { MaterialReactTable } from 'material-react-table';
 import { useQuery } from 'react-query';
-import { Link } from 'react-router-dom';
 
 interface User {
   steam_id: string;
@@ -23,8 +20,6 @@ interface KillCount {
 }
 
 interface KillMatrixContentProps {
-  //setSelectedTab: React.Dispatch<React.SetStateAction<number | null>>;
-  //selectedTab: number | null;
   match_id: number;
 }
 
@@ -162,12 +157,9 @@ const columns = useMemo(() => [
         pagination: { pageIndex: 0, pageSize: 10 },
         columnPinning: { left: ['Killer/Victim'] },
          }}
-      //enableColumnOrdering
-      //enableGrouping
       enableColumnFilterModes
       enablePinning
       enableMultiSort
-      //enableColumnDragging
       enablePagination
       muiToolbarAlertBannerProps={
         isError
@@ -177,10 +169,6 @@ const columns = useMemo(() => [
             }
           : undefined
       }
-      //onColumnFiltersChange={setColumnFilters}
-      //onGlobalFilterChange={setGlobalFilter}
-      //onPaginationChange={(newPagination) => setPagination(newPagination)}
-      //onSortingChange={setSorting}
       renderTopToolbarCustomActions={() => (
         <Tooltip arrow title="Refresh Data">
           <IconButton onClick={() => refetch()}>
@@ -190,13 +178,9 @@ const columns = useMemo(() => [
       )}
       rowCount={flattenedData?.length ?? 0}
       state={{
-        //columnFilters,
-        //globalFilter,
         isLoading,
-        //pagination,
         showAlertBanner: isError,
         showProgressBars: isFetching,
-        //sorting,
       }}
     />
   );

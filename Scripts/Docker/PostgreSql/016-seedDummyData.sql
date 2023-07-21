@@ -1,5 +1,35 @@
 \c demfiles;
 
+INSERT INTO public.users (steam_id, user_name) VALUES ('', '');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198044148171', 'I am Murdock');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199111430276', 'ahenderson2509');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199107771304', 'vks2020');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198072484969', 'dannyhangboy');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199512100675', 'rebeccasolina14');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199057392192', 'chiCkin');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199511995652', 'maria.schuller1');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198908381989', 'jackydubs');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561197974132960', 'Wagatha Christie');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561197961466528', 'EIK3000');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198029333008', 'Lagatha Christie');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199112466556', 'elgringo');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198093594380', 'S.S.G. Tolkien');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561197963053225', 'Handbagatha Christie');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199052006347', 'jonnyjapes');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199045993244', 'Sir Pollo Loco');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561197965589644', 'Marco');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199465861599', 'Lolly11luce');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561197960332990', 'Facet');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561197960993150', 'Buckshot');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561197962351233', 'Tippeh');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198970656823', 'SimpleBonsai');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199039770275', 'Chipieto');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561197993629987', 'KV');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561199041012759', 'dr.hammer');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198266269604', 'Gloomz');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198310186195', 'Queen_Ug');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198119203032', 'Zigzagatha Christie');
+
 INSERT INTO public.match_stats (match_filename, match_date, mapname, match_id) VALUES ('C:\Temp\demfiles\2020-08-24\auto0-20200824-203025-1694882996-cs_assault-IXI-GO__Monday_Nights.dem', '2020-08-24 20:30:25', 'cs_assault', 1);
 INSERT INTO public.player_round_stats (username, steamid, round, team, clutchchance, clutchsuccess, survived, moneyspent, equipmentvalue, mvp, match_id) VALUES ('Sir Pollo Loco', '76561199045993244', 1, 2, 3, false, false, 400, 200, false, 1);
 INSERT INTO public.player_stats (username, steamid, match_id, score) VALUES ('Sir Pollo Loco', '76561199045993244', 1, 3);

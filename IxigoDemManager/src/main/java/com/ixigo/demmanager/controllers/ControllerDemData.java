@@ -1,27 +1,12 @@
 package com.ixigo.demmanager.controllers;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.demmanager.commands.demdata.CmdGetScoreType;
-import com.ixigo.demmanager.commands.demdata.CmdGetUsers;
-import com.ixigo.demmanager.commands.demdata.CmdGetUsersLastScores;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersResp;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
-
-import io.swagger.annotations.ApiOperation;
-import reactor.core.publisher.Mono;
 
 /**
  * Controller used to expose the APIs to access the data extracted from the DEM
@@ -38,13 +23,7 @@ public class ControllerDemData {
 	@Autowired
 	private WebMediator mediator;
 
-	@GetMapping("/scorestype")
-	@ApiOperation(value = "It will return a map of the score types that you can pass when call the team creation API")
-	public Mono<ResponseEntity<RestScoreTypes>> getScoreType() {
-		_LOGGER.trace("Inside ControllerDemData.getScoreType");
-		return mediator.send(new CmdGetScoreType());
-	}
-
+	/*
 	@GetMapping("/users")
 	@ApiOperation(value = "It returns a list of the known users")
 	public Mono<ResponseEntity<RestUsersResp>> getUsers() {
@@ -59,7 +38,7 @@ public class ControllerDemData {
 	 * @param counter
 	 * @param usersIDs
 	 * @return
-	 */
+	 *
 	@GetMapping("/usersscores")
 	@ApiOperation(value = "It will return the users scores for the last \"numberOfMatches\" where the players have played for at least \"minPercPlayed\" of the the match")
 	// @formatter:off
@@ -71,4 +50,5 @@ public class ControllerDemData {
 		_LOGGER.trace("Inside ControllerDemData.getUsersLastScores");
 		return mediator.send(new CmdGetUsersLastScores(numberOfMatches, usersIDs, minPercPlayed));
 	}
+	*/
 }

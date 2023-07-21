@@ -1,32 +1,11 @@
 package com.ixigo.demmanager.handlers.demdata;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-
-import com.ixigo.demmanager.commands.demdata.CmdGetUsersLastScores;
-import com.ixigo.demmanager.mappers.RestMapper;
-import com.ixigo.demmanager.services.interfaces.DemFileParser;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
-import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
-
-import reactor.core.publisher.Mono;
-
 /**
  * Handler used to retrieve the scores of the players according to the input
  * filters
  * 
  * @author marco
  *
- */
 @Component
 public class GetUsersLastScoresHandler implements WebCommandHandler<CmdGetUsersLastScores, RestUsersScores> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(GetUsersLastScoresHandler.class);
@@ -56,3 +35,5 @@ public class GetUsersLastScoresHandler implements WebCommandHandler<CmdGetUsersL
 	}
 
 }
+
+ */

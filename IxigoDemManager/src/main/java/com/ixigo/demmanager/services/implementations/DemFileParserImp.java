@@ -131,8 +131,10 @@ public class DemFileParserImp implements DemFileParser {
 					{
 						// Check if the DEM file is already saved in the DB queue
 						String absPath = path.toFile().getAbsolutePath();
+						var def = new Dem_process_queueDto();
+						def.setFile_name(absPath);
 						return repoQueue.findById(absPath)
-								.defaultIfEmpty(new Dem_process_queueDto().setFile_name(absPath));
+								.defaultIfEmpty(def);
 					})
 					.filter(dto -> dto.getProcessed_on() == null) // Remove already queued files
 					.flatMap(dto -> { // Add the new files to the queue

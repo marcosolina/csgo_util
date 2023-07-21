@@ -132,7 +132,7 @@ public class CreateDaoAndDto {
 			
 			//this.saveDao(fileName, tableName, sbKeys, sbFields, keys, fields);
 			//this.saveDto(fileName, fields);
-			//this.saveSvc(fileName, fields);
+			this.saveSvc(fileName, fields);
 			this.saveRest(fileName, fields);
 
 			System.out.println("###################### DONE refresh the project");
@@ -315,7 +315,7 @@ public class CreateDaoAndDto {
 			dtoWriter.println("@FieldNameConstants");
 			dtoWriter.println("@Getter");
 			dtoWriter.println("@Setter");
-			dtoWriter.println("@Accessors(chain = true)");
+			//dtoWriter.println("@Accessors(chain = true)");
 			dtoWriter.println("public class " + fileName + "Dto implements IxigoDto {");
 			dtoWriter.println("");
 			dtoWriter.println("\tprivate static final long serialVersionUID = 1L;");

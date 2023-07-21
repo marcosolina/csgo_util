@@ -11,81 +11,81 @@ import {
 } from "demofile";
 
 interface IPlayerRoundStats {
-  userName: string;
-  steamID: string;
+  username: string;
+  steamid: string;
   round: number;
   team: number;
-  clutchChance: number;
-  clutchSuccess: boolean;
+  clutchchance: number;
+  clutchsuccess: boolean;
   survived: boolean;
-  moneySpent: number;
-  equipmentValue: number;
+  moneyspent: number;
+  equipmentvalue: number;
   mvp: boolean;
 }
 
 interface IRoundEvents {
-  eventType: string;
-  time: number; 
-  steamID: string;
+  eventtype: string;
+  eventtime: number;
+  steamid: string;
   round: number;
 }
 
 interface IRoundKillEvents {
-  time: number; 
-  steamID: string;
+  eventtime: number;
+  steamid: string;
   assister: string | undefined;
-  flashAssister: string | undefined;
-  killerFlashed: boolean | undefined;
+  flashassister: string | undefined;
+  killerflashed: boolean | undefined;
   round: number;
   weapon: string;
   headshot: boolean;
-  victimSteamId: string | undefined;
-  isFirstKill: boolean;
-  isTradeKill: boolean;
-  isTradeDeath: boolean;
+  victimsteamid: string | undefined;
+  isfirstkill: boolean;
+  istradekill: boolean;
+  istradedeath: boolean;
 }
 
 interface IRoundShotEvents {
-  eventType: string;
-  time: number; 
-  steamID: string;
+  eventtype: string;
+  eventtime: number;
+  steamid: string;
   round: number;
   weapon: string;
 }
 
 interface IRoundHitEvents {
-  time: number; 
-  steamID: string;
+  eventtime: number;
+  steamid: string;
   round: number;
   weapon: string;
-  victimSteamId: string;
-  hitGroup: number;
-  damageHealth: number;
-  damageArmour: number;
-  blindTime: number | undefined;
+  victimsteamid: string;
+  hitgroup: number;
+  damagehealth: number;
+  damagearmour: number;
+  blindtime: number | undefined;
 }
 
 interface IPlayerStats {
-  userName: string;
-  steamID: string;
+  username: string;
+  steamid: string;
   score: number;
 }
 
 interface IMergedStats {
-  allPlayerStats: IPlayerStats[];
   mapStats: MapStats;
+  allPlayerStats: IPlayerStats[];
   allRoundStats: IRoundStats[];
   allPlayerRoundStats: IPlayerRoundStats[];
-  allRoundEvents: IRoundEvents[];
   allRoundKillEvents: IRoundKillEvents[];
   allRoundShotEvents: IRoundShotEvents[];
   allRoundHitEvents: IRoundHitEvents[];
+  allRoundEvents: IRoundEvents[];
 }
 
 interface IRoundStats {
-  roundNumber: number;
-  winnerSide: TeamNumber;
-  reasonEndRound: number;
+  roundnumber: number;
+  winnerside: TeamNumber;
+  reasonendround: number;
 }
 
 // Create the currentRound variable
@@ -100,18 +100,17 @@ let mvpPlayer: Player | null = null;
 // Create a map to hold player statistics
 const playerStats = new Map<string, PlayerStats>();
 
-
 const roundStats = new Map<number, RoundStats>();
 
 class MapStats {
-  date: Date | null;
-  mapName: string;
-  fileName: string;
+  match_date: Date | null;
+  mapname: string;
+  match_filename: string;
 
   constructor(fileName: string) {
-    this.date = null;
-    this.mapName = "";
-    this.fileName = fileName;
+    this.match_date = null;
+    this.mapname = "";
+    this.match_filename = fileName;
   }
 }
 
@@ -128,7 +127,7 @@ class RoundStats {
   terroristSteamIDs: string[];
   ctSteamIDs: string[];
 
-  constructor(roundNumber:number) {
+  constructor(roundNumber: number) {
     this.winnerSide = TeamNumber.Unassigned;
     this.moneySpentTerrorists = 0;
     this.moneySpentCT = 0;
@@ -151,7 +150,6 @@ class PlayerStats {
   name: string;
   roundStart: Map<number, boolean>;
   score: number;
-
 
   constructor(userid: number, steamid: string, name: string) {
     this.userid = userid;
@@ -210,7 +208,6 @@ function computeHltvOrgRating(
   );
 }
 
-
 enum EHitGroup {
   EHG_Generic = 0,
   EHG_Head = 1,
@@ -225,7 +222,7 @@ enum EHitGroup {
 }
 
 demoFile.on("start", () => {
-  mapStats.mapName = demoFile.header.mapName;
+  mapStats.mapname = demoFile.header.mapName;
   // Reset all stats if the game is restarted
   playerStats.clear();
   roundStats.clear();
@@ -245,9 +242,6 @@ let allRoundEvents: IRoundEvents[] = [];
 let allRoundKillEvents: IRoundKillEvents[] = [];
 let allRoundShotEvents: IRoundShotEvents[] = [];
 let allRoundHitEvents: IRoundHitEvents[] = [];
-
-
-
 
 demoFile.entities.on("create", e => {
   if (!(e.entity instanceof Player)) {
@@ -332,9 +326,9 @@ demoFile.gameEvents.on("weapon_fire", e => {
   if (shooter) {
     const weaponName = e.weapon;
     allRoundShotEvents.push({
-      eventType: "weapon_fire",
-      time: demoFile.currentTime,
-      steamID: shooter.steam64Id,
+      eventtype: "weapon_fire",
+      eventtime: demoFile.currentTime,
+      steamid: shooter.steam64Id,
       round: currentRound,
       weapon: weaponName
     });
@@ -353,9 +347,9 @@ demoFile.gameEvents.on("flashbang_detonate", e => {
   const thrower = demoFile.entities.getByUserId(e.userid);
   if (thrower) {
     allRoundShotEvents.push({
-      eventType: "flashbang_detonate",
-      time: demoFile.currentTime,
-      steamID: thrower.steam64Id,
+      eventtype: "flashbang_detonate",
+      eventtime: demoFile.currentTime,
+      steamid: thrower.steam64Id,
       round: currentRound,
       weapon: "flashbang"
     });
@@ -367,9 +361,9 @@ demoFile.gameEvents.on("hegrenade_detonate", e => {
   const thrower = demoFile.entities.getByUserId(e.userid);
   if (thrower) {
     allRoundShotEvents.push({
-      eventType: "hegrenade_detonate",
-      time: demoFile.currentTime,
-      steamID: thrower.steam64Id,
+      eventtype: "hegrenade_detonate",
+      eventtime: demoFile.currentTime,
+      steamid: thrower.steam64Id,
       round: currentRound,
       weapon: "hegrenade"
     });
@@ -385,9 +379,9 @@ demoFile.on("molotovDetonate", e => {
   const thrower = e.thrower;
   if (thrower) {
     allRoundShotEvents.push({
-      eventType: "molotovDetonate",
-      time: demoFile.currentTime,
-      steamID: thrower.steam64Id,
+      eventtype: "molotovDetonate",
+      eventtime: demoFile.currentTime,
+      steamid: thrower.steam64Id,
       round: currentRound,
       weapon: "inferno"
     });
@@ -403,9 +397,9 @@ demoFile.gameEvents.on("smokegrenade_detonate", e => {
   const thrower = demoFile.entities.getByUserId(e.userid);
   if (thrower) {
     allRoundShotEvents.push({
-      eventType: "smokegrenade_detonate",
-      time: demoFile.currentTime,
-      steamID: thrower.steam64Id,
+      eventtype: "smokegrenade_detonate",
+      eventtime: demoFile.currentTime,
+      steamid: thrower.steam64Id,
       round: currentRound,
       weapon: "smokegrenade"
     });
@@ -415,25 +409,28 @@ demoFile.gameEvents.on("smokegrenade_detonate", e => {
 demoFile.gameEvents.on("player_blind", e => {
   const attacker = demoFile.entities.getByUserId(e.attacker);
   const victim = demoFile.entities.getByUserId(e.userid);
-  blindedPlayers.set(victim, {blindEndTime: demoFile.currentTime + e.blind_duration, blinder: attacker});
+  blindedPlayers.set(victim, {
+    blindEndTime: demoFile.currentTime + e.blind_duration,
+    blinder: attacker
+  });
   if (attacker && victim) {
     allRoundHitEvents.push({
-      time: demoFile.currentTime,
-      steamID: attacker.steam64Id,
+      eventtime: demoFile.currentTime,
+      steamid: attacker.steam64Id,
       round: currentRound,
       weapon: "flashbang",
-      victimSteamId: victim.steam64Id,
-      hitGroup: 0,
-      damageHealth: 0,
-      damageArmour: 0,
-      blindTime: e.blind_duration
+      victimsteamid: victim.steam64Id,
+      hitgroup: 0,
+      damagehealth: 0,
+      damagearmour: 0,
+      blindtime: e.blind_duration
     });
   }
 });
 
 demoFile.gameEvents.on("player_hurt", e => {
   const attacker = demoFile.entities.getByUserId(e.attacker);
-    if (attacker) {
+  if (attacker) {
     const lastWeaponFiredByAttacker = lastWeaponFired.get(attacker.steam64Id);
     if (lastWeaponFiredByAttacker) {
       const stats = playerStats.get(attacker.steam64Id)!;
@@ -441,15 +438,15 @@ demoFile.gameEvents.on("player_hurt", e => {
         const weaponName = lastWeaponFiredByAttacker.weapon;
 
         allRoundHitEvents.push({
-          time: demoFile.currentTime,
-          steamID: attacker.steam64Id,
+          eventtime: demoFile.currentTime,
+          steamid: attacker.steam64Id,
           round: currentRound,
           weapon: weaponName,
-          victimSteamId: e.player.steam64Id,
-          hitGroup: e.hitgroup,
-          damageHealth: e.dmg_health,
-          damageArmour: e.dmg_armor,
-          blindTime: undefined
+          victimsteamid: e.player.steam64Id,
+          hitgroup: e.hitgroup,
+          damagehealth: e.dmg_health,
+          damagearmour: e.dmg_armor,
+          blindtime: undefined
         });
       }
     }
@@ -459,7 +456,6 @@ demoFile.gameEvents.on("player_hurt", e => {
 let lastKill: { killer: Player; victim: Player; time: number } | null = null;
 
 demoFile.gameEvents.on("player_death", e => {
-
   const teams = demoFile.teams;
   for (const team of teams) {
     const alivePlayers = team.members.filter(player => player.isAlive);
@@ -549,18 +545,18 @@ demoFile.gameEvents.on("player_death", e => {
     }
 
     allRoundKillEvents.push({
-      time: demoFile.currentTime,
-      steamID: attacker.steam64Id,
+      eventtime: demoFile.currentTime,
+      steamid: attacker.steam64Id,
       assister: assister?.steam64Id,
-      flashAssister: blinder?.steam64Id,
-      killerFlashed: blinded,
+      flashassister: blinder?.steam64Id,
+      killerflashed: blinded,
       round: currentRound,
       weapon: weapon,
       headshot: e.headshot,
-      victimSteamId: victim?.steam64Id,
-      isFirstKill: isFirstKill,
-      isTradeKill: isTradeKill,
-      isTradeDeath: isTradeDeath
+      victimsteamid: victim?.steam64Id,
+      isfirstkill: isFirstKill,
+      istradekill: isTradeKill,
+      istradedeath: isTradeDeath
     });
   }
 });
@@ -570,9 +566,9 @@ demoFile.gameEvents.on("bomb_planted", e => {
 
   if (planter) {
     allRoundEvents.push({
-      eventType: "bomb_planted",
-      time: demoFile.currentTime,
-      steamID: planter.steam64Id,
+      eventtype: "bomb_planted",
+      eventtime: demoFile.currentTime,
+      steamid: planter.steam64Id,
       round: currentRound
     });
   }
@@ -583,23 +579,22 @@ demoFile.gameEvents.on("bomb_defused", e => {
 
   if (defuser) {
     allRoundEvents.push({
-      eventType: "bomb_defused",
-      time: demoFile.currentTime,
-      steamID: defuser.steam64Id,
+      eventtype: "bomb_defused",
+      eventtime: demoFile.currentTime,
+      steamid: defuser.steam64Id,
       round: currentRound
     });
   }
 });
-
 
 demoFile.gameEvents.on("hostage_rescued", e => {
   const rescuer = demoFile.entities.getByUserId(e.userid);
 
   if (rescuer) {
     allRoundEvents.push({
-      eventType: "hostage_rescued",
-      time: demoFile.currentTime,
-      steamID: rescuer.steam64Id,
+      eventtype: "hostage_rescued",
+      eventtime: demoFile.currentTime,
+      steamid: rescuer.steam64Id,
       round: currentRound
     });
   }
@@ -630,7 +625,7 @@ demoFile.gameEvents.on("round_end", e => {
     }
   }
 
-  roundStats.set(currentRound,roundStat);
+  roundStats.set(currentRound, roundStat);
 
   allRoundsDamage.push(roundDamage);
   roundDamage = {};
@@ -645,7 +640,7 @@ demoFile.gameEvents.on("round_end", e => {
     }
 
     let roundStat = roundStats.get(currentRound);
-    if(roundStat){
+    if (roundStat) {
       if (player.teamNumber === TeamNumber.Terrorists) {
         roundStat.terroristSteamIDs.push(player.steam64Id);
       } else if (player.teamNumber === TeamNumber.CounterTerrorists) {
@@ -654,39 +649,37 @@ demoFile.gameEvents.on("round_end", e => {
     }
     const stats = playerStats.get(player.steam64Id)!;
     stats.score = player.score;
-
   }
 
   for (const [playerid, stats] of playerStats.entries()) {
     const player = players.get(playerid);
     if (player) {
-      let clutchChance=0;
-      let clutchSuccess=false;
+      let clutchChance = 0;
+      let clutchSuccess = false;
       for (const clutch of potentialClutchPlayers) {
         // If the clutch player is still alive, increment the successful clutches
-        if (player===clutch.player) {
+        if (player === clutch.player) {
           clutchChance = clutch.clutchSize;
-          if(clutch.player.isAlive){
-            clutchSuccess=true;
+          if (clutch.player.isAlive) {
+            clutchSuccess = true;
           }
         }
       }
       allPlayerRoundStats.push({
-        userName: stats.name,
-        steamID: player.steam64Id,
+        username: stats.name,
+        steamid: player.steam64Id,
         round: currentRound,
         team: player.teamNumber,
-        clutchChance: clutchChance,
-        clutchSuccess: clutchSuccess,
+        clutchchance: clutchChance,
+        clutchsuccess: clutchSuccess,
         survived: player.isAlive,
-        moneySpent: player.cashSpendThisRound,
-        equipmentValue: player.roundStartEquipmentValue,
+        moneyspent: player.cashSpendThisRound,
+        equipmentvalue: player.roundStartEquipmentValue,
         mvp: player == mvpPlayer
       });
     }
   }
 });
-
 
 demoFile.entities.on("beforeremove", e => {
   if (!(e.entity instanceof Player)) {
@@ -699,15 +692,14 @@ demoFile.entities.on("beforeremove", e => {
 });
 
 demoFile.on("end", e => {
-
   let allRoundStats: IRoundStats[] = [];
 
-  for (const [round,roundStat] of roundStats.entries()){
-    const roundStatTable: IRoundStats ={
-      roundNumber: roundStat.roundNumber,
-      winnerSide: roundStat.winnerSide,
-      reasonEndRound: roundStat.reasonEndRound,
-    }
+  for (const [round, roundStat] of roundStats.entries()) {
+    const roundStatTable: IRoundStats = {
+      roundnumber: roundStat.roundNumber,
+      winnerside: roundStat.winnerSide,
+      reasonendround: roundStat.reasonEndRound
+    };
     allRoundStats.push(roundStatTable);
   }
 
@@ -716,12 +708,12 @@ demoFile.on("end", e => {
   for (const [playerid, stats] of playerStats.entries()) {
     const player = players.get(playerid);
     // Ignore bots in the final output
-    if (!player || player.name === "GOTV" ) {
+    if (!player || player.name === "GOTV") {
       continue;
     }
     const playerStatsTable: IPlayerStats = {
-      userName: stats.name,
-      steamID: stats.steamid,
+      username: stats.name,
+      steamid: stats.steamid,
       score: stats.score
     };
     allPlayerStats.push(playerStatsTable);

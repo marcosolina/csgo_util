@@ -157,6 +157,7 @@ const columns = useMemo(() => [
       //enableColumnOrdering
       //enableGrouping
       enableColumnFilterModes
+      enableHiding
       enableDensityToggle={false}
       enablePinning
       enableMultiSort

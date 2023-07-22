@@ -24,9 +24,9 @@ interface RadarChartProps {
 
 const PlayerRadarChart: React.FC<RadarChartProps> = ({ steamid }) => {
     const { data: playerData, isError, isLoading } = useQuery<PlayerData[], Error>({
-        queryKey: ['leaderboard'],
+        queryKey: ['leaderboard'+steamid],
         queryFn: async (): Promise<PlayerData[]> => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED");
+            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE");
 
             const responses = await Promise.all([
                 fetch(url1.href),

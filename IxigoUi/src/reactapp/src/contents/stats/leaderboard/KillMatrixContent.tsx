@@ -34,7 +34,7 @@ const KillMatrixContent: React.FC<KillMatrixContentProps> = ({ setSelectedTab, s
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: ['killmatrix'],
     queryFn: async () => {
-        const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/player_kill_count");
+        const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/player_kill_count_cache");
         const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
 
         const responses = await Promise.all([
@@ -157,6 +157,7 @@ const columns = useMemo(() => [
       //enableColumnOrdering
       //enableGrouping
       enableColumnFilterModes
+      enableHiding
       enableDensityToggle={false}
       enablePinning
       enableMultiSort

@@ -19,7 +19,7 @@ import {
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['matches'],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS");
+            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS_CACHE");
     
             const responses = await Promise.all([
                 fetch(url1.href),
@@ -113,12 +113,12 @@ import {
             </Box>
             );
           }},
-          { accessorKey: "team1_total_wins", header: "T1", size: smallColSize, Header: createCustomHeader("Team 1 Round Wins"),enableGrouping: false, enableFilter: false,
+          { accessorKey: "team1_total_wins", header: "", enableColumnActions: false, size: smallColSize, Header: createCustomHeader("Team 1 Round Wins"),enableGrouping: false, enableFilter: false,
           Cell: ({ cell }: { cell: any }) => {
             const score = cell.getValue() as number;
-            let backgroundColor = '#A04141';
+            let backgroundColor = '#D0021B';
             if (score >= 8) {
-                backgroundColor = '#96C626';
+                backgroundColor = '#7ED321';
             }
             return (
                 <div style={{ display: 'flex', justifyContent: 'right', alignItems: 'right', height: '100%' }}>
@@ -138,12 +138,12 @@ import {
         },
           },
           //{ accessorKey: "team1_wins_as_t", header: "T1 Wins as T", size: smallColSize, Header: createCustomHeader("Team 1 Wins as T") },
-          { accessorKey: "team2_total_wins", header: "T2", size: smallColSize, Header: createCustomHeader("Team 2 Round Wins"),enableGrouping: false, enableFilter: false,
+          { accessorKey: "team2_total_wins", header: "", enableColumnActions: false, size: smallColSize, Header: createCustomHeader("Team 2 Round Wins"),enableGrouping: false, enableFilter: false,
           Cell: ({ cell }: { cell: any }) => {
             const score = cell.getValue() as number;
-            let backgroundColor = '#A04141';
+            let backgroundColor = '#D0021B';
             if (score >= 8) {
-                backgroundColor = '#96C626';
+                backgroundColor = '#7ED321';
             }
             return (
                 <div style={{ display: 'flex', justifyContent: 'left', alignItems: 'left', height: '100%' }}>

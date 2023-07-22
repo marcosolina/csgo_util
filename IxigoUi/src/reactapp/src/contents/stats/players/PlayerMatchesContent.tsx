@@ -84,7 +84,7 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
   const { data: matchData, isError, isLoading } = useQuery<PlayerMatch[], Error>({
       queryKey: ['playermatch' + steamid],
       queryFn: async () => {
-          const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED");
+          const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE");
   
           const responses = await Promise.all([
               fetch(url1.href),
@@ -167,8 +167,10 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
             let backgroundColor = '#D0021B';
             if (rating >= 0.85 && rating < 1.1) {
                 backgroundColor = '#D39121'; // Amber in hexadecimal
-            } else if (rating >= 1.1) {
+            } else if (rating >= 1.1 && rating < 1.5) {
                 backgroundColor = '#7ED321';
+            } else if (rating >= 1.5){
+              backgroundColor = '#90caf9';
             }
             return (
                     <span style={{

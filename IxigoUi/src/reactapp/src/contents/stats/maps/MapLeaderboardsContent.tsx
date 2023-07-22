@@ -200,8 +200,10 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
             let backgroundColor = '#D0021B';
             if (rating >= 0.85 && rating < 1.1) {
                 backgroundColor = '#D39121'; // Amber in hexadecimal
-            } else if (rating >= 1.1) {
+            } else if (rating >= 1.1 && rating < 1.5) {
                 backgroundColor = '#7ED321';
+            } else if (rating >= 1.5){
+              backgroundColor = '#90caf9';
             }
             return (
                     <span style={{

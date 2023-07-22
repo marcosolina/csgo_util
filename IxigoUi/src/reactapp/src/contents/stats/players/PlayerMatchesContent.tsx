@@ -254,10 +254,10 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
             columnPinning: { left: ['match_date'] },
              }}
              enableColumnActions={false}
-             enableColumnFilters={false}
+             enableColumnFilters
              enableSorting={true}
              enableTopToolbar={true}
-             enableBottomToolbar={false}
+             enableBottomToolbar
              enableDensityToggle={false}
              enableGlobalFilter={false}
              enableFullScreenToggle={false}

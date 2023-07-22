@@ -115,7 +115,7 @@ interface TableRound {
   roundEvents?: any[];
 }
 
-const round_end_reasons : { [key: number]: string } = {
+const round_end_reasons: { [key: number]: string } = {
   1: "Target Successfully Bombed!",
   7: "The bomb has been defused!",
   8: "Counter-Terrorists Win!",
@@ -172,8 +172,8 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
           foundRound = { round: round.round, killEvents: [], roundEvents: [] };
           acc.push(foundRound);
         }
-        foundRound = foundRound!; 
-        if ((round.team === 2 && round.round<=7) || (round.team === 3 && round.round>7)) {
+        foundRound = foundRound!;
+        if ((round.team === 2 && round.round <= 7) || (round.team === 3 && round.round > 7)) {
           foundRound.team1 = round;
           if (foundRound.killEvents) {
             foundRound.killEvents.push(...killEvents.filter((event: any) => event.round === round.round));
@@ -184,7 +184,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
         } else {
           foundRound.team2 = round;
         }
-    
+
         return acc;
       }, []);
 
@@ -194,13 +194,8 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
         let maxMoneySpent = 0;
 
         for (const round of filteredMatchRounds) {
-          if (round.team === 2) {
-            maxEquipmentValue = Math.max(maxEquipmentValue, round.total_equipment_value);
-            maxMoneySpent = Math.max(maxMoneySpent, round.total_money_spent);
-          } else if (round.team === 3) {
-            maxEquipmentValue = Math.max(maxEquipmentValue, round.total_equipment_value);
-            maxMoneySpent = Math.max(maxMoneySpent, round.total_money_spent);
-          }
+          maxEquipmentValue = Math.max(maxEquipmentValue, round.total_equipment_value);
+          maxMoneySpent = Math.max(maxMoneySpent, round.total_money_spent);
         }
 
         return { total_equipment_value: maxEquipmentValue, total_money_spent: maxMoneySpent };
@@ -208,7 +203,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
       setMaxValues(getMaxValues());
       const maxValues = getMaxValues();
-      return { matchRounds: groupedData, maxValues , playerStats};
+      return { matchRounds: groupedData, maxValues, playerStats };
 
     },
     keepPreviousData: true,
@@ -228,44 +223,44 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     if (!maxValues) {
       return null;  // or some placeholder
     }
-  const teamData = cell.row.original[team];
-  if (!data) {
-    return null;  // or some placeholder
+    const teamData = cell.row.original[team];
+    if (!data) {
+      return null;  // or some placeholder
+    }
+
+    const equipmentValuePercentage = teamData.total_equipment_value / data.maxValues.total_equipment_value * 100;
+    const moneySpentPercentage = teamData.total_money_spent / data.maxValues.total_money_spent * 100;
+
+    return (
+      <div style={{ direction: team === 'team1' ? 'rtl' : 'ltr' }}>
+        <Tooltip title={`Equipment Value: $${teamData.total_equipment_value}`}>
+          <div style={{
+            backgroundColor: 'rgb(75, 192, 192)',
+            borderRadius: '10px',
+            width: `${equipmentValuePercentage}%`,
+            height: '10px'
+          }} />
+        </Tooltip>
+        <Tooltip title={`Cash Spent: $${teamData.total_money_spent}`}>
+          <div style={{
+            backgroundColor: 'orange',
+            borderRadius: '10px',
+            width: `${moneySpentPercentage}%`,
+            height: '10px'
+          }} />
+        </Tooltip>
+      </div>
+    );
   }
-
-  const equipmentValuePercentage = teamData.total_equipment_value / data.maxValues.total_equipment_value * 100;
-  const moneySpentPercentage = teamData.total_money_spent / data.maxValues.total_money_spent * 100;
-
-  return (
-    <div style={{ direction: team === 'team1' ? 'rtl' : 'ltr' }}>
-      <Tooltip title={`Equipment Value: $${teamData.total_equipment_value}`}>
-        <div style={{
-          backgroundColor: 'rgb(75, 192, 192)',
-          borderRadius: '10px',
-          width: `${equipmentValuePercentage}%`,
-          height: '10px'
-        }} />
-      </Tooltip>
-      <Tooltip title={`Cash Spent: $${teamData.total_money_spent}`}>
-        <div style={{
-          backgroundColor: 'orange',
-          borderRadius: '10px',
-          width: `${moneySpentPercentage}%`,
-          height: '10px'
-        }} />
-      </Tooltip>
-    </div>
-  );
-}
 
 
 
   const PlayerBlob: React.FC<{ isAlive: boolean, team: 'team1' | 'team2' }> = ({ isAlive, team }) => {
     const data = [
-      { title: 'Alive', value: isAlive ? 100 : 0, color: team=='team1'? '#90caf9' : 'orange' },
+      { title: 'Alive', value: isAlive ? 100 : 0, color: team == 'team1' ? '#90caf9' : 'orange' },
       { title: 'Dead', value: isAlive ? 0 : 100, color: 'dimgrey' },
     ];
-  
+
     return (
       <div style={{ width: 20, height: 20, display: 'flex', alignItems: 'center', justifyContent: 'flex-end' }}>
         <PieChart
@@ -313,60 +308,72 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     const { round, team1_score, team2_score, winner_team } = teamData;
     const isTerrorist = ((team === 'team1' && round <= 7) || (team === 'team2' && round > 7));
     const logo = isTerrorist ? terroristLogo : ctLogo;
-    const isWinner = ((winner_team === 2 && isTerrorist) || (winner_team ===3 && !isTerrorist));
+    const isWinner = ((winner_team === 2 && isTerrorist) || (winner_team === 3 && !isTerrorist));
     const imageOpacity = isWinner ? .5 : 0.05;
     const colour = isWinner ? 'white' : 'dimgrey';
 
     return (
-        <div style={{ position: 'relative', width: 25, height: 25 }}>
-            <img src={logo} alt={isTerrorist ? 'Terrorist logo' : 'CT logo'} style={{ width: '100%', height: '100%', opacity: imageOpacity }} />
-            <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: colour, fontWeight: 'bold' }}>
-                {team === 'team1' ? team1_score: team2_score}
-            </div>
+      <div style={{ position: 'relative', width: 25, height: 25 }}>
+        <img src={logo} alt={isTerrorist ? 'Terrorist logo' : 'CT logo'} style={{ width: '100%', height: '100%', opacity: imageOpacity }} />
+        <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: colour, fontWeight: 'bold' }}>
+          {team === 'team1' ? team1_score : team2_score}
         </div>
+      </div>
     );
-}
+  }
 
   const columns = useMemo(
     () => [
-      { accessorKey: 'round' as const, header: 'R', size: smallColSize, Header: createCustomHeader('Round number') },
       {
         accessorKey: 'team1.total_equipment_value' as const, header: 'Equipment/Spend', size: 150, Header: createCustomHeader('Starting equipment value/cash spent'),
-      Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team1' maxValues={data?.maxValues} />
+        Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team1' maxValues={data?.maxValues} />
       },
-      { accessorKey: 'team1.round_type' as const, header: 'Type', size: smallColSize, Header: createCustomHeader('Round Type') , 
-      Cell: ({ cell }: { cell: any }) => {
-        const type = cell.getValue() as string;
-        const imageUrl = roundTypeIconImage[type];
-        return imageUrl ? <Tooltip title={type}><img src={imageUrl} alt={type} style={{  height: '30px' }} /></Tooltip> : null;
-      } },
       {
-        accessorKey: 'team1.player_count' as const, header: 'Players',size: 100, Header: createCustomHeader('Player Count'),
+        accessorKey: 'team1.round_type' as const, header: 'Type', size: smallColSize, Header: createCustomHeader('Round Type'),
+        Cell: ({ cell }: { cell: any }) => {
+          const type = cell.getValue() as string;
+          const imageUrl = roundTypeIconImage[type];
+          return imageUrl ? <Tooltip title={type}><img src={imageUrl} alt={type} style={{ height: '30px' }} /></Tooltip> : null;
+        }
+      },
+      {
+        accessorKey: 'team1.player_count' as const, header: 'Players', size: 100, Header: createCustomHeader('Player Count'),
         Cell: (props: { cell: any, row: { index: number } }) => <PlayerCountCell {...props} team='team1' />
       },
-      { accessorKey: 'team1.team1_score' as const, header: 'T1', minSize: 5, maxSize: 5, size: smallColSize, Header: createCustomHeader('Team 1 Score') ,
-        Cell: (props: { cell: any, row: { index: number } }) => <ScoreCell {...props} team='team1'/>},
-      { accessorKey: 'team1.round_end_reason' as const, header: 'W', minSize: 5, maxSize: 5, size: 1, Header: createCustomHeader('Round End Reason'), 
+      {
+        accessorKey: 'team1.team1_score' as const, header: 'T1', minSize: 5, maxSize: 5, size: smallColSize, Header: createCustomHeader('Team 1 Score'),
+        Cell: (props: { cell: any, row: { index: number } }) => <ScoreCell {...props} team='team1' />
+      },
+      {
+        accessorKey: 'team1.round_end_reason' as const, header: '', minSize: 5, maxSize: 5, size: 1, Header: createCustomHeader('Round End Reason'),
         Cell: ({ cell }: { cell: any }) => {
           const reason = cell.getValue() as number;
           const imageUrl = roundIconImage[reason];
           const reasonText = round_end_reasons[reason];
-          return imageUrl ? <Tooltip title={reasonText}><img src={imageUrl} alt={reasonText} style={{  height: '30px' }} /></Tooltip> : null;
-        } },
-      { accessorKey: 'team2.team2_score' as const, header: 'T2', minSize: 5, maxSize: 5, size: smallColSize, Header: createCustomHeader('Team 2 Score') ,
-      Cell: (props: { cell: any, row: { index: number } }) => <ScoreCell {...props} team='team2'/>},
-      { accessorKey: 'team2.player_count' as const, header: 'Players', size: 100, Header: createCustomHeader('Player Count'),
-      Cell: (props: { cell: any, row: { index: number } }) => <PlayerCountCell {...props} team='team2' /> },
-      { accessorKey: 'team2.round_type' as const, header: 'Type', size: smallColSize, Header: createCustomHeader('Round Type'), 
-      Cell: ({ cell }: { cell: any }) => {
-        const type = cell.getValue() as string;
-        const imageUrl = roundTypeIconImage[type];
-        return imageUrl ? <Tooltip title={type}><img src={imageUrl} alt={type} style={{  height: '30px' }} /></Tooltip> : null;
-      }  },
+          return imageUrl ? <Tooltip title={reasonText}><img src={imageUrl} alt={reasonText} style={{ height: '30px' }} /></Tooltip> : null;
+        }
+      },
+      {
+        accessorKey: 'team2.team2_score' as const, header: 'T2', minSize: 5, maxSize: 5, size: smallColSize, Header: createCustomHeader('Team 2 Score'),
+        Cell: (props: { cell: any, row: { index: number } }) => <ScoreCell {...props} team='team2' />
+      },
+      {
+        accessorKey: 'team2.player_count' as const, header: 'Players', size: 100, Header: createCustomHeader('Player Count'),
+        Cell: (props: { cell: any, row: { index: number } }) => <PlayerCountCell {...props} team='team2' />
+      },
+      {
+        accessorKey: 'team2.round_type' as const, header: 'Type', size: smallColSize, Header: createCustomHeader('Round Type'),
+        Cell: ({ cell }: { cell: any }) => {
+          const type = cell.getValue() as string;
+          const imageUrl = roundTypeIconImage[type];
+          return imageUrl ? <Tooltip title={type}><img src={imageUrl} alt={type} style={{ height: '30px' }} /></Tooltip> : null;
+        }
+      },
       {
         accessorKey: 'team2.total_equipment_value' as const, header: 'Equipment/Spend', size: 150, Header: createCustomHeader('Starting equipment value/cash spent'),
         Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team2' maxValues={data?.maxValues} />
       },
+      { accessorKey: 'round' as const, header: 'R', size: smallColSize, Header: createCustomHeader('Round number') },
     ],
     [data],
   );
@@ -375,59 +382,59 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
   const renderDetailPanel = (playerStats: PlayerStat[]) => ({ row }: { row: any }) => {
     const { killEvents, roundEvents } = row.original;
     const events = [...killEvents, ...roundEvents];
-  
+
     events.sort((a, b) => a.eventtime - b.eventtime);
 
     const getUsernameAndTeam = (steamid: string) => {
       const player = playerStats.find((player: any) => player.steamid === steamid);
-      return player ? {username: player.usernames, team: player.last_round_team} : {username: "Bot", team: 'unknown'};
+      return player ? { username: player.usernames, team: player.last_round_team } : { username: "Bot", team: 'unknown' };
     };
-  
+
     return (
-<Box
-  sx={{
-    display: 'flex',
-    flexDirection: 'column',
-    margin: 'auto',
-    width: '100%',
-  }}
->
-  {events.map((event: any, i) => {
-    const { username: steamidUsername, team: steamidTeam } = getUsernameAndTeam(event.steamid);
-    if (event.victimsteamid) {
-      const { username: victimsteamidUsername, team: victimsteamidTeam } = getUsernameAndTeam(event.victimsteamid);
-      const { username: assisterUsername, team: assisterTeam } = getUsernameAndTeam(event.assister);
-      const { username: flashAssisterUsername, team: flashAssisterTeam } = getUsernameAndTeam(event.flashassister);
-      return (
-        <Box key={i} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-          <Typography>
-            {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
-            <span style={{color: steamidTeam=='team1'? '#90caf9' : 'orange'}}>{steamidUsername}</span>
-            <span style={{color: assisterTeam=='team1'? '#90caf9' : 'orange'}}>{event.assister && ` + ${assisterUsername}`} </span>
-            {event.flashassist && <img height="20px" style={{padding: '0 5px'}} src={flashbang} alt="Flash Assist" />}
-            <span style={{color: flashAssisterTeam=='team1'? '#90caf9' : 'orange'}}>{event.flashassist && ` + ${flashAssisterUsername}`}</span>
-          </Typography>
-          <img height="20px" style={{ transform: 'scaleX(-1)', padding: '0 5px'  }} src={weaponImage[event.weapon]} alt={event.weapon} />
-          {event.headshot && <img height="20px" style={{padding: '0 5px'}} src={headshot} alt="Headshot" />}
-          <Typography>
-            <span style={{color: victimsteamidTeam=='team1'? '#90caf9' : 'orange'}}>{victimsteamidUsername}</span>
-          </Typography>
-        </Box>
-      );
-    } else {
-      return (
-        <Typography key={i}>
-          {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
-          <span style={{color: steamidTeam=='team1'? '#90caf9' : 'orange'}}>{steamidUsername +" "}</span>
-          {eventNameDesc[event.eventtype]? eventNameDesc[event.eventtype] : event.eventtype}
-        </Typography>
-      );
-    }
-  })}
-</Box>
+      <Box
+        sx={{
+          display: 'flex',
+          flexDirection: 'column',
+          margin: 'auto',
+          width: '100%',
+        }}
+      >
+        {events.map((event: any, i) => {
+          const { username: steamidUsername, team: steamidTeam } = getUsernameAndTeam(event.steamid);
+          if (event.victimsteamid) {
+            const { username: victimsteamidUsername, team: victimsteamidTeam } = getUsernameAndTeam(event.victimsteamid);
+            const { username: assisterUsername, team: assisterTeam } = getUsernameAndTeam(event.assister);
+            const { username: flashAssisterUsername, team: flashAssisterTeam } = getUsernameAndTeam(event.flashassister);
+            return (
+              <Box key={i} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+                <Typography>
+                  {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `}
+                  <span style={{ color: steamidTeam == 'team1' ? '#90caf9' : 'orange' }}>{steamidUsername}</span>
+                  <span style={{ color: assisterTeam == 'team1' ? '#90caf9' : 'orange' }}>{event.assister && ` + ${assisterUsername}`} </span>
+                  {event.flashassist && <img height="20px" style={{ padding: '0 5px' }} src={flashbang} alt="Flash Assist" />}
+                  <span style={{ color: flashAssisterTeam == 'team1' ? '#90caf9' : 'orange' }}>{event.flashassist && ` + ${flashAssisterUsername}`}</span>
+                </Typography>
+                <img height="20px" style={{ transform: 'scaleX(-1)', padding: '0 5px' }} src={weaponImage[event.weapon]} alt={event.weapon} />
+                {event.headshot && <img height="20px" style={{ padding: '0 5px' }} src={headshot} alt="Headshot" />}
+                <Typography>
+                  <span style={{ color: victimsteamidTeam == 'team1' ? '#90caf9' : 'orange' }}>{victimsteamidUsername}</span>
+                </Typography>
+              </Box>
+            );
+          } else {
+            return (
+              <Typography key={i}>
+                {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `}
+                <span style={{ color: steamidTeam == 'team1' ? '#90caf9' : 'orange' }}>{steamidUsername + " "}</span>
+                {eventNameDesc[event.eventtype] ? eventNameDesc[event.eventtype] : event.eventtype}
+              </Typography>
+            );
+          }
+        })}
+      </Box>
     );
   };
-  
+
 
   return (
     <MaterialReactTable

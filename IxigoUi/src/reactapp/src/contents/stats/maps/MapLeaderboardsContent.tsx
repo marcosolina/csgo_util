@@ -262,14 +262,16 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
               },
             density: 'compact',
             sorting: [{ id: 'hltv_rating', desc: true }], //sort by state by default
+            pagination: { pageIndex: 0, pageSize: 20 },
             columnPinning: { left: ['username'] },
              }}
              enableColumnActions={false}
              enableColumnFilters={true}
+             enableColumnFilterModes
              enableDensityToggle={false}
              enableSorting={true}
              enableTopToolbar={true}
-             enableBottomToolbar={false}
+             enableBottomToolbar={true}
              enableGlobalFilter={false}
              enableFullScreenToggle={false}
              enableHiding={true}

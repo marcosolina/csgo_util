@@ -1,6 +1,7 @@
 package com.ixigo.demmanager.repositories.implementations;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,12 +32,19 @@ public class CrudRepoGeneric implements CrudRepo {
 		_LOGGER.trace("Inside CrudRepoGeneric.getAll");
 		try {
 			D dao = daoClass.getConstructor().newInstance();
-			
-			if(whereClause.isPresent() && whereClause.isPresent()) {
+
+			if (whereClause.isPresent() && whereClause.isPresent()) {
 				whereClause.get().forEach(dao::addSqlWhereAndClauses);
-				whereValues.get().forEach(dao::addSqlParams);
+				whereValues.get().forEach(v -> {
+					try {
+						BigDecimal number = new BigDecimal(v);
+						dao.addSqlParams(number);
+					} catch (Exception e) {
+						dao.addSqlParams(v);
+					}
+				});
 			}
-			
+
 			return dao.prepareSqlSelect(client).map(dao::mappingFunction).all();
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();
@@ -97,19 +105,13 @@ public class CrudRepoGeneric implements CrudRepo {
 		dao.addSqlWhereAndClauses("routine_schema");
 		dao.addSqlParams("FUNCTION");
 		dao.addSqlParams("public");
-		
-		return dao.prepareSqlSelect(client)
-			.map(dao::mappingFunction)
-			.all()
-			.flatMap(dto -> {
-				String sql = String.format("select %s()", dto.getRoutine_name());
-				return client.sql(sql).fetch().all();
-			})
-			.map(map -> {
-				return map;
-			})
-			.collectList()
-			.map(list -> true)
-			;
+
+		return dao.prepareSqlSelect(client).map(dao::mappingFunction).all().flatMap(dto -> {
+			String sql = String.format("select %s()", dto.getRoutine_name());
+			_LOGGER.debug("Executing: %s", sql);
+			return client.sql(sql).fetch().all();
+		}).map(map -> {
+			return map;
+		}).collectList().map(list -> true);
 	}
 }

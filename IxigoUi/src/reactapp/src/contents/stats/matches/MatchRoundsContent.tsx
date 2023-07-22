@@ -40,6 +40,13 @@ interface MatchRoundsContentProps {
   match_id: number;
 }
 
+interface PlayerStat {
+  steamid: string;
+  usernames: string;
+  last_round_team: string;
+  // add more fields here as necessary
+}
+
 interface MatchRound {
   match_id: number,
   round: number,
@@ -115,18 +122,21 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery<{
     matchRounds: TableRound[],
-    maxValues: { total_equipment_value: number, total_money_spent: number }
+    maxValues: { total_equipment_value: number, total_money_spent: number },
+    playerStats: any[]
   }>({
     queryKey: ['matchrounds' + match_id],
     queryFn: async () => {
       const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD_CACHE");
       const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_kill_events");
       const url3 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_events");
+      const url4 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE");
 
       const responses = await Promise.all([
         fetch(url1.href),
         fetch(url2.href),
         fetch(url3.href),
+        fetch(url4.href),
       ]);
 
       const jsons = await Promise.all(responses.map(response => {
@@ -142,6 +152,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
       const filteredMatchRounds = matchRounds.filter((round: MatchRound) => round.match_id === match_id);
       const killEvents = jsons[1].view_data.filter((event: any) => event.match_id === match_id);
       const roundEvents = jsons[2].view_data.filter((event: any) => event.match_id === match_id);
+      const playerStats = jsons[3].view_data.filter((stats: any) => stats.match_id === match_id);
 
 
 
@@ -189,7 +200,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
       setMaxValues(getMaxValues());
       const maxValues = getMaxValues();
-      return { matchRounds: groupedData, maxValues };
+      return { matchRounds: groupedData, maxValues , playerStats};
 
     },
     keepPreviousData: true,
@@ -353,11 +364,16 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
   );
 
 
-  const renderDetailPanel = ({ row }: { row: any }) => {
+  const renderDetailPanel = (playerStats: PlayerStat[]) => ({ row }: { row: any }) => {
     const { killEvents, roundEvents } = row.original;
     const events = [...killEvents, ...roundEvents];
   
     events.sort((a, b) => a.eventtime - b.eventtime);
+
+    const getUsernameAndTeam = (steamid: string) => {
+      const player = playerStats.find((player: any) => player.steamid === steamid);
+      return player ? {username: player.usernames, team: player.last_round_team} : {username: steamid, team: 'unknown'};
+    };
   
     return (
       <Box
@@ -369,16 +385,18 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
       }}
     >
       {events.map((event: any, i) => {
+        const { username: steamidUsername, team: steamidTeam } = getUsernameAndTeam(event.steamid);
         if (event.victimsteamid) {
+          const { username: victimsteamidUsername, team: victimsteamidTeam } = getUsernameAndTeam(event.victimsteamid);
           return (
             <Typography key={i}>
-              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${event.steamid} killed ${event.victimsteamid} with ${event.weapon}${event.headshot ? ' (headshot)' : ''}`}
+              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${steamidUsername} (${steamidTeam}) killed ${victimsteamidUsername} (${victimsteamidTeam}) with ${event.weapon}${event.headshot ? ' (headshot)' : ''}`}
             </Typography>
           );
         } else {
           return (
             <Typography key={i}>
-              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${event.steamid}  ${event.eventtype}`}
+              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${steamidUsername} (${steamidTeam}) ${event.eventtype}`}
             </Typography>
           );
         }
@@ -407,7 +425,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
       enableFullScreenToggle={false}
       enableHiding={false}
       enablePagination={false}
-      renderDetailPanel={renderDetailPanel}
+      renderDetailPanel={renderDetailPanel(data?.playerStats ?? [])}
       muiToolbarAlertBannerProps={
         isError
           ? {

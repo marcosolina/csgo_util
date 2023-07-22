@@ -31,9 +31,9 @@ interface RadarChartProps {
 
 const PlayerEntryKIllTable: React.FC<RadarChartProps> = ({ steamid }) => {
     const { data: playerData, isError, isLoading, isFetching } = useQuery<PlayerData[], Error>({
-        queryKey: ['entrykill'],
+        queryKey: ['entrykill' +steamid],
         queryFn: async (): Promise<PlayerData[]> => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ENTRY_KILL_STATS_EXTENDED_CACHE");
+            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ENTRY_KILL_STATS_EXTENDED_CACHE?steamid=${steamid}`);
 
             const responses = await Promise.all([
                 fetch(url1.href),

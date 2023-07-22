@@ -41,7 +41,7 @@ export default function PlayerPage({ steamid }: PlayerPageProps) {
 
     // useQuery hook to fetch the user name
     const { data: userData } = useQuery(['user', steamid], async () => {
-      const url = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
+      const url = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS?steam_id=${steamid}`);
       const response = await fetch(url.href);
   
       if (!response.ok) {

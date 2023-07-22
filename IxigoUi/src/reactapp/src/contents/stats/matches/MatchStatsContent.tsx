@@ -38,7 +38,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
   };
 
   const { data: matchData, isLoading } = useQuery(['match', match_id], async () => {
-    const url = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS");
+    const url = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS`);
     const response = await fetch(url.href);
 
     if (!response.ok) {

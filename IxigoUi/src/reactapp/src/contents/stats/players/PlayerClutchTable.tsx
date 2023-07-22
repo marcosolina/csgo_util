@@ -33,7 +33,7 @@ const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
     const { data: playerData, isError, isLoading, isFetching } = useQuery<PlayerData[], Error>({
         queryKey: ['clutch'+steamid],
         queryFn: async (): Promise<PlayerData[]> => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_CLUTCH_STATS_CACHE");
+            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_CLUTCH_STATS_CACHE?steamID=${steamid}`);
 
             const responses = await Promise.all([
                 fetch(url1.href),

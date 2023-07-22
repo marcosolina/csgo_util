@@ -20,7 +20,7 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: ['playerradar'],
     queryFn: async () => {
-      const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE");
+      const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?steamID=${steamid}`);
   
       const responses = await Promise.all([
         fetch(url1.href),

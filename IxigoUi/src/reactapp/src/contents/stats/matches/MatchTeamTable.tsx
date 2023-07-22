@@ -84,7 +84,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
   const { data: matchData, isError, isFetching, isLoading } = useQuery<TeamMatch[], Error>({
       queryKey: ['matchteam' + match_id + team],
       queryFn: async () => {
-          const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE");
+          const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
   
           const responses = await Promise.all([
               fetch(url1.href),

@@ -129,10 +129,10 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
   }>({
     queryKey: ['matchrounds' + match_id],
     queryFn: async () => {
-      const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD_CACHE");
-      const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_kill_events");
-      const url3 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_events");
-      const url4 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE");
+      const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD_CACHE?match_id=${match_id}`);
+      const url2 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_kill_events?match_id=${match_id}`);
+      const url3 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_events?match_id=${match_id}`);
+      const url4 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
 
       const responses = await Promise.all([
         fetch(url1.href),

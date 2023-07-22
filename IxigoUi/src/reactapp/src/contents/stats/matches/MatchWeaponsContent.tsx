@@ -44,9 +44,9 @@ import { Link } from 'react-router-dom';
   const MatchWeaponsContent: React.FC<MatchWeaponProps> = ({ match_id }) => {
 
     const { data: weaponData, isError, isLoading } = useQuery<WeaponData[], Error>({
-        queryKey: ['matchplayerweapon'],
+        queryKey: ['matchplayerweapon' +match_id],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_PLAYER_WEAPON_STATS_CACHE");
+            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_PLAYER_WEAPON_STATS_CACHE?match_id=${match_id}`);
             const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
             const responses = await Promise.all([
                 fetch(url1.href),

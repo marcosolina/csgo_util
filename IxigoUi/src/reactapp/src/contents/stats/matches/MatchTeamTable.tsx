@@ -84,7 +84,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
   const { data: matchData, isError, isFetching, isLoading } = useQuery<TeamMatch[], Error>({
       queryKey: ['matchteam' + match_id + team],
       queryFn: async () => {
-          const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE");
+          const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
   
           const responses = await Promise.all([
               fetch(url1.href),
@@ -114,7 +114,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
 
     const columns = useMemo(
         () => [
-          { accessorKey: 'usernames' as const, header: 'PLAYER', minSize: 100, Header: createCustomHeader('Player') ,Cell: ({ cell }: { cell: any }) => {
+          { accessorKey: 'usernames' as const, header: `${team.toUpperCase()} PLAYERS`, minSize: 100, Header: createCustomHeader('Player') ,Cell: ({ cell }: { cell: any }) => {
             const username = cell.getValue() as string;
             const steamid = cell.row.original.steamid;
             const selectedStatsContext = useContext(SelectedStatsContext);
@@ -127,7 +127,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
                 component={Link}
                 to={`/player/${steamid}`}
                 sx={{
-                  color: 'white',
+                  color: cell.row.original.last_round_team=='team1'? '#90caf9' : 'orange',
                   fontWeight: 'bold',
                   textDecoration: 'none',
                   cursor: 'pointer',

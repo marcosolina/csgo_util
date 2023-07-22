@@ -18,6 +18,9 @@ import eco from '../../../assets/icons/eco.png';
 import force from '../../../assets/icons/forcebuy.png';
 import full from '../../../assets/icons/fullbuy.png';
 import pistol from '../../../assets/icons/pistol.png';
+import headshot from '../../../assets/icons/hs.png';
+import flashbang from '../../../assets/icons/flashbang.png';
+import { weaponImage } from "../weaponImage";
 
 const roundIconImage: { [key: number]: string } = {
   1: bomb,
@@ -127,10 +130,10 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
   }>({
     queryKey: ['matchrounds' + match_id],
     queryFn: async () => {
-      const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD_CACHE");
-      const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_kill_events");
-      const url3 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_events");
-      const url4 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE");
+      const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD_CACHE?match_id=${match_id}`);
+      const url2 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_kill_events?match_id=${match_id}`);
+      const url3 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_events?match_id=${match_id}`);
+      const url4 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
 
       const responses = await Promise.all([
         fetch(url1.href),
@@ -232,7 +235,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     <div style={{ direction: team === 'team1' ? 'rtl' : 'ltr' }}>
       <Tooltip title={`Equipment Value: $${teamData.total_equipment_value}`}>
         <div style={{
-          backgroundColor: '#90caf9',
+          backgroundColor: 'rgb(75, 192, 192)',
           borderRadius: '10px',
           width: `${equipmentValuePercentage}%`,
           height: '10px'
@@ -252,9 +255,9 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
 
 
-  const PlayerBlob: React.FC<{ isAlive: boolean }> = ({ isAlive }) => {
+  const PlayerBlob: React.FC<{ isAlive: boolean, team: 'team1' | 'team2' }> = ({ isAlive, team }) => {
     const data = [
-      { title: 'Alive', value: isAlive ? 100 : 0, color: '#90caf9' },
+      { title: 'Alive', value: isAlive ? 100 : 0, color: team=='team1'? '#90caf9' : 'orange' },
       { title: 'Dead', value: isAlive ? 0 : 100, color: 'dimgrey' },
     ];
   
@@ -283,7 +286,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
     for (let i = 0; i < player_count; i++) {
       playerBlobs.push(
-        <PlayerBlob key={i} isAlive={i >= death_count} />
+        <PlayerBlob key={i} isAlive={i >= death_count} team={team} />
       );
     }
 
@@ -372,36 +375,51 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
     const getUsernameAndTeam = (steamid: string) => {
       const player = playerStats.find((player: any) => player.steamid === steamid);
-      return player ? {username: player.usernames, team: player.last_round_team} : {username: steamid, team: 'unknown'};
+      return player ? {username: player.usernames, team: player.last_round_team} : {username: "Bot", team: 'unknown'};
     };
   
     return (
-      <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        margin: 'auto',
-        width: '100%',
-      }}
-    >
-      {events.map((event: any, i) => {
-        const { username: steamidUsername, team: steamidTeam } = getUsernameAndTeam(event.steamid);
-        if (event.victimsteamid) {
-          const { username: victimsteamidUsername, team: victimsteamidTeam } = getUsernameAndTeam(event.victimsteamid);
-          return (
-            <Typography key={i}>
-              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${steamidUsername} (${steamidTeam}) killed ${victimsteamidUsername} (${victimsteamidTeam}) with ${event.weapon}${event.headshot ? ' (headshot)' : ''}`}
-            </Typography>
-          );
-        } else {
-          return (
-            <Typography key={i}>
-              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${steamidUsername} (${steamidTeam}) ${event.eventtype}`}
-            </Typography>
-          );
-        }
-      })}
-    </Box>
+<Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'column',
+    margin: 'auto',
+    width: '100%',
+  }}
+>
+  {events.map((event: any, i) => {
+    const { username: steamidUsername, team: steamidTeam } = getUsernameAndTeam(event.steamid);
+    if (event.victimsteamid) {
+      const { username: victimsteamidUsername, team: victimsteamidTeam } = getUsernameAndTeam(event.victimsteamid);
+      const { username: assisterUsername, team: assisterTeam } = getUsernameAndTeam(event.assister);
+      const { username: flashAssisterUsername, team: flashAssisterTeam } = getUsernameAndTeam(event.flashassister);
+      return (
+        <Box key={i} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <Typography>
+            {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
+            <span style={{color: steamidTeam=='team1'? '#90caf9' : 'orange'}}>{steamidUsername}</span>
+            <span style={{color: assisterTeam=='team1'? '#90caf9' : 'orange'}}>{event.assister && ` + ${assisterUsername}`} </span>
+            {event.flashassist && <img height="20px" style={{padding: '0 5px'}} src={flashbang} alt="Flash Assist" />}
+            <span style={{color: flashAssisterTeam=='team1'? '#90caf9' : 'orange'}}>{event.flashassist && ` + ${flashAssisterUsername}`}</span>
+          </Typography>
+          <img height="20px" style={{ transform: 'scaleX(-1)', padding: '0 5px'  }} src={weaponImage[event.weapon]} alt={event.weapon} />
+          {event.headshot && <img height="20px" style={{padding: '0 5px'}} src={headshot} alt="Headshot" />}
+          <Typography>
+            <span style={{color: victimsteamidTeam=='team1'? '#90caf9' : 'orange'}}>{victimsteamidUsername}</span>
+          </Typography>
+        </Box>
+      );
+    } else {
+      return (
+        <Typography key={i}>
+          {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
+          <span style={{color: steamidTeam=='team1'? '#90caf9' : 'orange'}}>{steamidUsername +" "}</span>
+          {event.eventtype}
+        </Typography>
+      );
+    }
+  })}
+</Box>
     );
   };
   

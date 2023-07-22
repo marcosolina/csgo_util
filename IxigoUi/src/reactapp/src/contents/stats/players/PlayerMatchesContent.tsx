@@ -17,7 +17,7 @@ interface PlayerMatchesContentProps {
 interface PlayerMatch {
     usernames: string;
     steamid: string;
-  
+    mapName: string;
     roundsplayed: number;
     rounds_on_team1: number;
     rounds_on_team2: number;
@@ -75,6 +75,20 @@ interface PlayerMatch {
     ff: number;
     bd: number;
   }
+
+  type Match = {
+    team1_wins_as_ct: number,
+    match_id: number,
+    team2_wins_as_ct: number,
+    team2_wins_as_t: number,
+    mapname: string,
+    total_t_wins: number,
+    total_ct_wins: number,
+    team1_total_wins: number,
+    match_date: string,
+    team1_wins_as_t: number,
+    team2_total_wins: number,
+  };
   
   
 
@@ -85,9 +99,10 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
       queryKey: ['playermatch' + steamid],
       queryFn: async () => {
           const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`);
-  
+          const url2 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS`);
           const responses = await Promise.all([
               fetch(url1.href),
+              fetch(url2.href)
           ]);
   
           const jsons = await Promise.all(responses.map(response => {
@@ -98,8 +113,19 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
           }));
   
           const playerMatchStatsExtended = jsons[0].view_data;
+          const matches = jsons[1].view_data;
 
-          let matchData = playerMatchStatsExtended.filter ((p: PlayerMatch) => p.steamid === steamid);
+          // Create a lookup for mapName from match_id in matches
+          const mapNameLookup = matches.reduce((lookup: {[key: number]: string}, match: Match) => {
+              lookup[match.match_id] = match.mapname;
+              return lookup;
+          }, {});
+
+          let matchData = playerMatchStatsExtended.map((p: PlayerMatch) => {
+            p.mapName = mapNameLookup[p.match_id];
+            return p;
+          }).filter((p: PlayerMatch) => p.steamid === steamid);
+
           return matchData;
       },
       keepPreviousData: true,
@@ -118,6 +144,9 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
           { accessorKey: 'match_date' as const, header: 'DATE', minSize: 100, Header: createCustomHeader('Match Date') ,Cell: ({ cell }: { cell: any }) => {
             const date = cell.getValue() as string;
             const match_id = cell.row.original.match_id;
+            const dateF = new Date(date);
+            const formattedDate = dateF.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedTime = dateF.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
             const selectedStatsContext = useContext(SelectedStatsContext);
             if (!selectedStatsContext) {
               throw new Error('useContext was called outside of the selectedStatsContext provider');
@@ -142,10 +171,42 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
                   setSelectedSubpage("match");
                 }}
               >
-                {date}
+                {`${formattedDate}, ${formattedTime}`}
               </Box>
             );
           }},
+          { accessorKey: "mapName" as const, header: "Map",
+            Cell: ({ cell }: { cell: any }) => {
+              const mapName = cell.getValue() as string;
+              const steamid = cell.row.original.steamid;
+              const selectedStatsContext = useContext(SelectedStatsContext);
+              if (!selectedStatsContext) {
+                throw new Error('useContext was called outside of the selectedStatsContext provider');
+              }
+              const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage, selectedMap, setSelectedMap } = selectedStatsContext;
+              return (
+                <Box 
+                  component={Link}
+                  to={`/map/${mapName}`}
+                  sx={{
+                    color: 'white',
+                    fontWeight: 'bold',
+                    textDecoration: 'none',
+                    cursor: 'pointer',
+                    '&:hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                  onClick={(e) => {
+                    e.preventDefault();  // Prevent the link from navigating
+                    setSelectedMap(mapName);
+                    setSelectedSubpage("map");
+                  }}
+                >
+                  {mapName}
+                </Box>
+              );
+            }},
           { accessorKey: 'roundsplayed' as const, header: 'RNDS', size: smallColSize, Header: createCustomHeader('Rounds Played') },
           { accessorKey: 'last_round_team' as const, header: 'TEAM', size: smallColSize, Header: createCustomHeader('Team') },
           { accessorKey: 'rounds_on_team1' as const, header: 'RNDT1', size: smallColSize, Header: createCustomHeader('Rounds on Team 1') },

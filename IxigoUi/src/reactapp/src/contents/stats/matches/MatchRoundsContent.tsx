@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { IconButton, Tooltip } from '@mui/material';
+import { IconButton, Tooltip, Typography } from '@mui/material';
 import { Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { MaterialReactTable } from 'material-react-table';
@@ -64,11 +64,38 @@ interface FinanceCellProps {
   maxValues: { total_equipment_value: number, total_money_spent: number } | undefined;
 }
 
+interface RoundEvent {
+  steamid: string;
+  round: number;
+  match_id: number;
+  eventtype: string;
+  eventtime: number;
+}
+
+interface KillEvent {
+  victimsteamid: string;
+  isfirstkill: boolean;
+  match_id: number;
+  eventtime: number;
+  istradekill: boolean;
+  assister: string;
+  steamid: string;
+  weapon: string;
+  flashassister: string;
+  round: number;
+  killerflashed: string;
+  headshot: boolean;
+  istradedeath: boolean;
+}
+
+
 // Define a type that represents a row in your table
 interface TableRound {
   round: number;
   team1?: MatchRound;
   team2?: MatchRound;
+  killEvents?: any[];
+  roundEvents?: any[];
 }
 
 const round_end_reasons : { [key: number]: string } = {
@@ -93,9 +120,13 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     queryKey: ['matchrounds' + match_id],
     queryFn: async () => {
       const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD_CACHE");
+      const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_kill_events");
+      const url3 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_events");
 
       const responses = await Promise.all([
         fetch(url1.href),
+        fetch(url2.href),
+        fetch(url3.href),
       ]);
 
       const jsons = await Promise.all(responses.map(response => {
@@ -109,21 +140,32 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
       // filter matchRounds based on match_id
       const filteredMatchRounds = matchRounds.filter((round: MatchRound) => round.match_id === match_id);
+      const killEvents = jsons[1].view_data.filter((event: any) => event.match_id === match_id);
+      const roundEvents = jsons[2].view_data.filter((event: any) => event.match_id === match_id);
 
 
 
-      // Group by round, then by team
       const groupedData: TableRound[] = filteredMatchRounds.reduce((acc: TableRound[], round: MatchRound) => {
         let foundRound = acc.find(r => r.round === round.round);
         if (!foundRound) {
-          foundRound = { round: round.round };
+          foundRound = { round: round.round, killEvents: [], roundEvents: [] };
           acc.push(foundRound);
         }
+        foundRound = foundRound!; 
         if (round.team === 2) {
           foundRound.team1 = round;
+          if (foundRound.killEvents) {
+            foundRound.killEvents.push(...killEvents.filter((event: any) => event.round === round.round));
+          }
+          
+          if (foundRound.roundEvents) {
+            foundRound.roundEvents.push(...roundEvents.filter((event: any) => event.round === round.round));
+          }
+          
         } else if (round.team === 3) {
           foundRound.team2 = round;
         }
+    
         return acc;
       }, []);
 
@@ -311,6 +353,41 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
   );
 
 
+  const renderDetailPanel = ({ row }: { row: any }) => {
+    const { killEvents, roundEvents } = row.original;
+    const events = [...killEvents, ...roundEvents];
+  
+    events.sort((a, b) => a.eventtime - b.eventtime);
+  
+    return (
+      <Box
+      sx={{
+        display: 'flex',
+        flexDirection: 'column',
+        margin: 'auto',
+        width: '100%',
+      }}
+    >
+      {events.map((event: any, i) => {
+        if (event.victimsteamid) {
+          return (
+            <Typography key={i}>
+              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${event.steamid} killed ${event.victimsteamid} with ${event.weapon}${event.headshot ? ' (headshot)' : ''}`}
+            </Typography>
+          );
+        } else {
+          return (
+            <Typography key={i}>
+              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${event.steamid}  ${event.eventtype}`}
+            </Typography>
+          );
+        }
+      })}
+    </Box>
+    );
+  };
+  
+
   return (
     <MaterialReactTable
       columns={columns}
@@ -330,6 +407,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
       enableFullScreenToggle={false}
       enableHiding={false}
       enablePagination={false}
+      renderDetailPanel={renderDetailPanel}
       muiToolbarAlertBannerProps={
         isError
           ? {

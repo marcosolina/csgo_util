@@ -33,10 +33,20 @@ export default function MapContent({ mapName }: MapContentProps) {
     setValue(newValue);
   };
 
+  
+
   return (
-    <Box sx={{ display: 'flex' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="vertical">
+    <Box sx={{ width: '100%' }}>
+      <Box textAlign="center">
+          <Typography variant="h5">Map: { mapName }</Typography>
+        </Box>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="horizontal"          centered
+          sx={{
+            "& .MuiTabs-flexContainer": {
+              flexWrap: "wrap",
+            },
+          }}>
           <Tab label="Leaderboards" />
           <Tab label="Weapons" />
           <Tab label="Matches" />

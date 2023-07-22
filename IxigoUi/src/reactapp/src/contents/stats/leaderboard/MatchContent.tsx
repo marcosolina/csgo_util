@@ -32,7 +32,12 @@ import {
                 return response.json();
             }));
     
-            const matchResults = jsons[0].view_data;
+            let matchResults = jsons[0].view_data;
+                    // Add score_differential to each item in matchResults
+        matchResults = matchResults.map((match: any) => ({
+          ...match,
+          score_differential: match.total_t_wins - match.total_ct_wins
+      }));
     
             return matchResults;
         },
@@ -169,6 +174,18 @@ import {
           AggregatedCell: ({ cell }: { cell: any }) => <Box>Terrorist Mean Score: {cell.getValue().toFixed(2)}</Box>,},
           { accessorKey: "total_ct_wins", header: "CT Wins", size: smallColSize, Header: createCustomHeader("Total Counter Terrorist Wins") ,enableGrouping: false, enableFilter: false,aggregationFn: 'mean' as any,
           AggregatedCell: ({ cell }: { cell: any }) => <Box>CT Mean Score: {cell.getValue().toFixed(2)}</Box>,},
+          {
+            accessorKey: "score_differential", 
+            header: "Score Differential", 
+            size: smallColSize, 
+            Header: createCustomHeader("Score Differential between Terrorists and CTs"),
+            enableGrouping: false,
+            Cell: ({ cell }: { cell: any }) => cell.getValue(),
+            aggregationFn: 'mean' as any,
+            AggregatedCell: ({ cell }: { cell: any }) => {
+              return <Box>Mean score differential: {cell.getValue().toFixed(2)}</Box>
+            },
+          },
         ],
         [],
       );

@@ -208,7 +208,6 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
       setMaxValues(getMaxValues());
       const maxValues = getMaxValues();
-      console.log(groupedData);
       return { matchRounds: groupedData, maxValues , playerStats};
 
     },

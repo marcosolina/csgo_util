@@ -181,46 +181,6 @@ let mapStats = new MapStats(filePath);
 const stream = fs.createReadStream(filePath);
 const demoFile = new DemoFile();
 
-function computeHltvOrgRating(
-  roundCount: number,
-  kills: number,
-  deaths: number,
-  nKills: number[]
-): number {
-  const AVERAGE_KPR = 0.679;
-  const AVERAGE_SPR = 0.317;
-  const AVERAGE_RMK = 1.277;
-  const killRating = kills / roundCount / AVERAGE_KPR;
-  const survivalRating = (roundCount - deaths) / roundCount / AVERAGE_SPR;
-  const roundsWithMultipleKillsRating =
-    ((nKills[0] || 0) +
-      4 * (nKills[1] || 0) +
-      9 * (nKills[2] || 0) +
-      16 * (nKills[3] || 0) +
-      25 * (nKills[4] || 0)) /
-    roundCount /
-    AVERAGE_RMK;
-  return Number(
-    (
-      (killRating + 0.7 * survivalRating + roundsWithMultipleKillsRating) /
-      2.7
-    ).toFixed(3)
-  );
-}
-
-enum EHitGroup {
-  EHG_Generic = 0,
-  EHG_Head = 1,
-  EHG_Chest = 2,
-  EHG_Stomach = 3,
-  EHG_LeftArm = 4,
-  EHG_RightArm = 5,
-  EHG_LeftLeg = 6,
-  EHG_RightLeg = 7,
-  EHG_Gear = 8,
-  EHG_Miss = 9
-}
-
 demoFile.on("start", () => {
   mapStats.mapname = demoFile.header.mapName;
   // Reset all stats if the game is restarted
@@ -263,7 +223,7 @@ demoFile.entities.on("create", e => {
   playerStats.get(player.steam64Id)!.roundStart.set(currentRound, false); // Players that join mid-round did not start the round
   players.set(player.steam64Id, player);
 });
-
+let roundEndTriggered = false;
 demoFile.gameEvents.on("round_start", e => {
   roundDamage = {};
   potentialClutchPlayers = [];
@@ -272,6 +232,7 @@ demoFile.gameEvents.on("round_start", e => {
   lastKill = null;
   blindedPlayers = new Map();
   currentRound++;
+  roundEndTriggered = false;
   for (const player of demoFile.entities.players) {
     const playerStat = playerStats.get(player.steam64Id);
     if (playerStat) {
@@ -606,6 +567,11 @@ demoFile.gameEvents.on("round_mvp", e => {
 });
 
 demoFile.gameEvents.on("round_end", e => {
+  // If the round end event was already triggered, ignore this event
+  if (roundEndTriggered) {
+    return;
+  }
+  roundEndTriggered = true;
   let roundStat = new RoundStats(currentRound);
   const winnerSide = e.winner;
 
@@ -650,7 +616,6 @@ demoFile.gameEvents.on("round_end", e => {
     const stats = playerStats.get(player.steam64Id)!;
     stats.score = player.score;
   }
-
   for (const [playerid, stats] of playerStats.entries()) {
     const player = players.get(playerid);
     if (player) {

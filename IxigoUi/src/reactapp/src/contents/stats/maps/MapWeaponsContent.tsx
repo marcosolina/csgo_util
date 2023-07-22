@@ -17,13 +17,13 @@ interface MapWeaponsContentProps {
 
   interface User {
     steam_id: string;
-    username: string;
+    user_name: string;
   }
 
   interface WeaponData {
     steamid: string;
     username: string;
-    mapName: string;
+    mapname: string;
     kills: number;
     headshotkills: number;
     damage_per_shot: number;
@@ -45,9 +45,9 @@ interface MapWeaponsContentProps {
   const MapWeaponsContent: React.FC<MapWeaponsContentProps> = ({ mapName }) => {
 
     const { data: weaponData, isError, isLoading } = useQuery<WeaponData[], Error>({
-        queryKey: ['matchplayerweapon'],
+        queryKey: ['mapplayerweapon'+mapName],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MAP_PLAYER_WEAPON_STATS");
+            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MAP_PLAYER_WEAPON_STATS?mapname=${mapName}`);
             const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
             const responses = await Promise.all([
                 fetch(url1.href),
@@ -64,7 +64,7 @@ interface MapWeaponsContentProps {
             const playerOverallStatsExtended = jsons[0].view_data;
             const users = jsons[1].view_data;
 
-            let weaponData = playerOverallStatsExtended.filter ((p: WeaponData) => p.mapName === mapName);
+            let weaponData = playerOverallStatsExtended;//.filter ((p: WeaponData) => p.mapname === mapName);
             // Add the weapon_img property
               weaponData = weaponData.map((wd: WeaponData) => ({
                 ...wd,
@@ -74,13 +74,14 @@ interface MapWeaponsContentProps {
             // Create a lookup table for usernames
             const usernameLookup: { [steamID: string]: string } = {};
             users.forEach((user: User) => {
-                usernameLookup[user.steam_id] = user.username;
+                usernameLookup[user.steam_id] = user.user_name;
             });
     
             // Replace steamid with username in playerOverallStatsExtended
-            playerOverallStatsExtended.forEach((player: any) => {
+            weaponData.forEach((player: any) => {
                 player.username = usernameLookup[player.steamid] || player.steamid;
             });
+
             return weaponData;
         },
         keepPreviousData: true,
@@ -183,6 +184,7 @@ interface MapWeaponsContentProps {
              enableColumnFilters={false}
              enableSorting={true}
              enableMultiSort
+             enableDensityToggle={false}
              enableBottomToolbar={true}
              enablePagination={true}
              enableTopToolbar={true}

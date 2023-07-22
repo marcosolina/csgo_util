@@ -52,12 +52,15 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
-
+  const date = new Date(matchData.match_date);
+  const formattedDate = date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+  const formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+  
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Box textAlign="center">
         <Typography variant="h4">Match: {matchData.mapname}</Typography>
-        <Typography variant="h6">{matchData.match_date}</Typography>
+        <Typography variant="h6">{`${formattedDate}, ${formattedTime}`}</Typography>
         <Grid container spacing={3} alignItems="center" justifyContent="center">
           <Grid item xs={6}>
             <Paper elevation={3}>

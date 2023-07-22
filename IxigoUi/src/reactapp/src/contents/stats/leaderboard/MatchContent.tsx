@@ -59,6 +59,9 @@ import {
               throw new Error('useContext was called outside of the SelectedStatsContext provider');
             }
             const { selectedMatch, setSelectedMatch, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
+            const date = new Date(matchDate);
+            const formattedDate = date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
             return (
               <Box 
                 component={Link}
@@ -78,7 +81,7 @@ import {
                   setSelectedSubpage("match");
                 }}
               >
-                {matchDate}
+                {`${formattedDate}, ${formattedTime}`}
               </Box>
             );
           }},

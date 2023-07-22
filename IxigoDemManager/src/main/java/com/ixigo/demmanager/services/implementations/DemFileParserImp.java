@@ -107,9 +107,9 @@ public class DemFileParserImp implements DemFileParser {
 					 */
 					switch (props.getParserExecutionType()) {
 					case SYNC:
-						return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
+						return processFiles(filesToProcess).map(v -> triggerFunctions()).thenReturn(HttpStatus.ACCEPTED);
 					case ASYNC:
-						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
+						new Thread(() -> processFiles(filesToProcess).map(v -> triggerFunctions()).subscribe(v -> {
 							_LOGGER.debug("Async queue process completed");
 						})).start();
 						return Mono.just(HttpStatus.ACCEPTED);
@@ -268,13 +268,6 @@ public class DemFileParserImp implements DemFileParser {
 					
 					
 					SvcMatchStats mapStats = stats.getMapStats();
-					var dtoMs = this.mapper.fromSvcToDto(mapStats);
-					
-					List<String> whereClause = new ArrayList<>();
-					whereClause.add(Match_statsDto.Fields.match_filename);
-					
-					List<Object> sqlParam = new ArrayList<>();
-					sqlParam.add(dtoMs.getMatch_filename());
 					
 					Mono<Boolean> monoInsert = this.saveMapStatsAndRetriveId(mapStats)
 					.flatMap(id -> {
@@ -504,6 +497,10 @@ public class DemFileParserImp implements DemFileParser {
 			dto.setProcessed_on(DateUtils.getCurrentUtcDateTime());
 			return repoQueue.insertOrUpdate(dto);
 		});
+	}
+	
+	private Mono<Boolean> triggerFunctions(){
+		return this.genericRepo.triggerAllFunctions();
 	}
 
 	class ParsingError {

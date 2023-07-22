@@ -62,7 +62,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
           <Grid item xs={6}>
             <Paper elevation={3}>
               <Typography variant="h2" align="center" style={{ color: matchData.team1_total_wins > 7 ? 'green' : 'red' }}>{matchData.team1_total_wins}</Typography>
-              <Typography variant="h6" align="center">Team 1</Typography>
+              <Typography variant="h6" align="center" style={{color:"#90caf9"}}>Team 1</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
                   <img src={terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
@@ -82,7 +82,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
           <Grid item xs={6}>
             <Paper elevation={3}>
               <Typography variant="h2" align="center" style={{ color: matchData.team2_total_wins > 7 ? 'green' : 'red' }}>{matchData.team2_total_wins}</Typography>
-              <Typography variant="h6" align="center">Team 2</Typography>
+              <Typography variant="h6" align="center" style={{color:"orange"}}>Team 2</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
                   <img src={terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />

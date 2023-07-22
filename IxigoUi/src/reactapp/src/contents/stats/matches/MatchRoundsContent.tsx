@@ -235,7 +235,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     <div style={{ direction: team === 'team1' ? 'rtl' : 'ltr' }}>
       <Tooltip title={`Equipment Value: $${teamData.total_equipment_value}`}>
         <div style={{
-          backgroundColor: '#90caf9',
+          backgroundColor: 'rgb(75, 192, 192)',
           borderRadius: '10px',
           width: `${equipmentValuePercentage}%`,
           height: '10px'
@@ -255,9 +255,9 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
 
 
-  const PlayerBlob: React.FC<{ isAlive: boolean }> = ({ isAlive }) => {
+  const PlayerBlob: React.FC<{ isAlive: boolean, team: 'team1' | 'team2' }> = ({ isAlive, team }) => {
     const data = [
-      { title: 'Alive', value: isAlive ? 100 : 0, color: '#90caf9' },
+      { title: 'Alive', value: isAlive ? 100 : 0, color: team=='team1'? '#90caf9' : 'orange' },
       { title: 'Dead', value: isAlive ? 0 : 100, color: 'dimgrey' },
     ];
   
@@ -286,7 +286,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
     for (let i = 0; i < player_count; i++) {
       playerBlobs.push(
-        <PlayerBlob key={i} isAlive={i >= death_count} />
+        <PlayerBlob key={i} isAlive={i >= death_count} team={team} />
       );
     }
 
@@ -397,22 +397,24 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
         <Box key={i} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <Typography>
             {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
-            {steamidUsername}
-            {event.assister && ` + ${assisterUsername}`} 
+            <span style={{color: steamidTeam=='team1'? '#90caf9' : 'orange'}}>{steamidUsername}</span>
+            <span style={{color: assisterTeam=='team1'? '#90caf9' : 'orange'}}>{event.assister && ` + ${assisterUsername}`} </span>
             {event.flashassist && <img height="20px" style={{padding: '0 5px'}} src={flashbang} alt="Flash Assist" />}
-            {event.flashassist && ` + ${flashAssisterUsername}`}
+            <span style={{color: flashAssisterTeam=='team1'? '#90caf9' : 'orange'}}>{event.flashassist && ` + ${flashAssisterUsername}`}</span>
           </Typography>
           <img height="20px" style={{ transform: 'scaleX(-1)', padding: '0 5px'  }} src={weaponImage[event.weapon]} alt={event.weapon} />
           {event.headshot && <img height="20px" style={{padding: '0 5px'}} src={headshot} alt="Headshot" />}
           <Typography>
-            {victimsteamidUsername}
+            <span style={{color: victimsteamidTeam=='team1'? '#90caf9' : 'orange'}}>{victimsteamidUsername}</span>
           </Typography>
         </Box>
       );
     } else {
       return (
         <Typography key={i}>
-          {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${steamidUsername} ${event.eventtype}`}
+          {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
+          <span style={{color: steamidTeam=='team1'? '#90caf9' : 'orange'}}>{steamidUsername +" "}</span>
+          {event.eventtype}
         </Typography>
       );
     }

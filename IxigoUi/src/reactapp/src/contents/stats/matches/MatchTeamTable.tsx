@@ -127,7 +127,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
                 component={Link}
                 to={`/player/${steamid}`}
                 sx={{
-                  color: 'white',
+                  color: cell.row.original.last_round_team=='team1'? '#90caf9' : 'orange',
                   fontWeight: 'bold',
                   textDecoration: 'none',
                   cursor: 'pointer',

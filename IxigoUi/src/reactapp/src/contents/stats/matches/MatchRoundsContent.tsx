@@ -9,6 +9,32 @@ import {
 import { PieChart } from 'react-minimal-pie-chart';
 import terroristLogo from '../../../assets/icons/T.png';
 import ctLogo from '../../../assets/icons/CT.png';
+import bomb from '../../../assets/icons/bomb.png';
+import death from '../../../assets/icons/death.png';
+import defuse from '../../../assets/icons/defuse.png';
+import rescue from '../../../assets/icons/rescue.png';
+import time from '../../../assets/icons/time.png';
+import eco from '../../../assets/icons/eco.png';
+import force from '../../../assets/icons/forcebuy.png';
+import full from '../../../assets/icons/fullbuy.png';
+import pistol from '../../../assets/icons/pistol.png';
+
+const roundIconImage: { [key: number]: string } = {
+  1: bomb,
+  7: defuse,
+  8: death,
+  9: death,
+  11: rescue,
+  12: time,
+  13: time
+}
+
+const roundTypeIconImage: { [key: string]: string } = {
+  'pistol': pistol,
+  'eco': eco,
+  'force buy': force,
+  'full buy': full
+}
 
 interface MatchRoundsContentProps {
   match_id: number;
@@ -31,6 +57,13 @@ interface MatchRound {
   team2_score: number
 }
 
+interface FinanceCellProps {
+  cell: any;
+  row: { index: number };
+  team: 'team1' | 'team2';
+  maxValues: { total_equipment_value: number, total_money_spent: number } | undefined;
+}
+
 // Define a type that represents a row in your table
 interface TableRound {
   round: number;
@@ -38,7 +71,7 @@ interface TableRound {
   team2?: MatchRound;
 }
 
-const round_end_reasons = {
+const round_end_reasons : { [key: number]: string } = {
   1: "Target Successfully Bombed!",
   7: "The bomb has been defused!",
   8: "Counter-Terrorists Win!",
@@ -53,10 +86,13 @@ const smallColSize = 5;
 const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => {
   const [maxValues, setMaxValues] = useState<{ total_equipment_value: number, total_money_spent: number }>({ total_equipment_value: 0, total_money_spent: 0 });
 
-  const { data: matchRounds, isError, isFetching, isLoading, refetch } = useQuery<TableRound[]>({
+  const { data, isError, isFetching, isLoading, refetch } = useQuery<{
+    matchRounds: TableRound[],
+    maxValues: { total_equipment_value: number, total_money_spent: number }
+  }>({
     queryKey: ['matchrounds' + match_id],
     queryFn: async () => {
-      const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD");
+      const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD_CACHE");
 
       const responses = await Promise.all([
         fetch(url1.href),
@@ -110,8 +146,8 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
       }
 
       setMaxValues(getMaxValues());
-
-      return groupedData;
+      const maxValues = getMaxValues();
+      return { matchRounds: groupedData, maxValues };
 
     },
     keepPreviousData: true,
@@ -127,38 +163,40 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     );
   }
 
-  const FinanceCell: React.FC<{ cell: any, row: { index: number }, team: 'team1' | 'team2' }> = ({ cell, row, team }) => {
-
-    const teamData = cell.row.original[team];
-    if (!teamData) {
-      // The data for this team does not exist, possibly because the match is not over yet
-      return null;
+  const FinanceCell: React.FC<FinanceCellProps> = ({ cell, row, team, maxValues }) => {
+    if (!maxValues) {
+      return null;  // or some placeholder
     }
-
-    const equipmentValuePercentage = teamData.total_equipment_value / maxValues.total_equipment_value * 100;
-    const moneySpentPercentage = teamData.total_money_spent / maxValues.total_money_spent * 100;
-
-    return (
-      <div style={{ direction: team === 'team1' ? 'rtl' : 'ltr' }}>
-        <Tooltip title={`Equipment Value: $${teamData.total_equipment_value}`}>
-          <div style={{
-            backgroundColor: '#90caf9',
-            borderRadius: '10px',
-            width: `${equipmentValuePercentage}%`,
-            height: '10px'
-          }} />
-        </Tooltip>
-        <Tooltip title={`Cash Spent: $${teamData.total_money_spent}`}>
-          <div style={{
-            backgroundColor: 'orange',
-            borderRadius: '10px',
-            width: `${moneySpentPercentage}%`,
-            height: '10px'
-          }} />
-        </Tooltip>
-      </div>
-    );
+  const teamData = cell.row.original[team];
+  if (!data) {
+    return null;  // or some placeholder
   }
+
+  const equipmentValuePercentage = teamData.total_equipment_value / data.maxValues.total_equipment_value * 100;
+  const moneySpentPercentage = teamData.total_money_spent / data.maxValues.total_money_spent * 100;
+
+  return (
+    <div style={{ direction: team === 'team1' ? 'rtl' : 'ltr' }}>
+      <Tooltip title={`Equipment Value: $${teamData.total_equipment_value}`}>
+        <div style={{
+          backgroundColor: '#90caf9',
+          borderRadius: '10px',
+          width: `${equipmentValuePercentage}%`,
+          height: '10px'
+        }} />
+      </Tooltip>
+      <Tooltip title={`Cash Spent: $${teamData.total_money_spent}`}>
+        <div style={{
+          backgroundColor: 'orange',
+          borderRadius: '10px',
+          width: `${moneySpentPercentage}%`,
+          height: '10px'
+        }} />
+      </Tooltip>
+    </div>
+  );
+}
+
 
 
   const PlayerBlob: React.FC<{ isAlive: boolean }> = ({ isAlive }) => {
@@ -232,33 +270,51 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     () => [
       { accessorKey: 'round' as const, header: 'R', size: smallColSize, Header: createCustomHeader('Round number') },
       {
-        accessorKey: 'team1.total_equipment_value' as const, header: '$', size: 100, Header: createCustomHeader('Finance'),
-        Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team1' />
+        accessorKey: 'team1.total_equipment_value' as const, header: 'Equipment/Spend', size: 150, Header: createCustomHeader('Starting equipment value/cash spent'),
+      Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team1' maxValues={data?.maxValues} />
       },
+      { accessorKey: 'team1.round_type' as const, header: 'Type', size: smallColSize, Header: createCustomHeader('Round Type') , 
+      Cell: ({ cell }: { cell: any }) => {
+        const type = cell.getValue() as string;
+        const imageUrl = roundTypeIconImage[type];
+        return imageUrl ? <Tooltip title={type}><img src={imageUrl} alt={type} style={{  height: '30px' }} /></Tooltip> : null;
+      } },
       {
-        accessorKey: 'team1.player_count' as const, header: 'Players', size: smallColSize, Header: createCustomHeader('Player Count'),
+        accessorKey: 'team1.player_count' as const, header: 'Players',size: 100, Header: createCustomHeader('Player Count'),
         Cell: (props: { cell: any, row: { index: number } }) => <PlayerCountCell {...props} team='team1' />
       },
-      { accessorKey: 'team1.team1_score' as const, header: 'T1', size: smallColSize, Header: createCustomHeader('Team 1 Score') ,
+      { accessorKey: 'team1.team1_score' as const, header: 'T1', minSize: 5, maxSize: 5, size: smallColSize, Header: createCustomHeader('Team 1 Score') ,
         Cell: (props: { cell: any, row: { index: number } }) => <ScoreCell {...props} team='team1'/>},
-      { accessorKey: 'team1.round_end_reason' as const, header: 'W', size: 1, Header: createCustomHeader('Round End Reason') },
-      { accessorKey: 'team2.team2_score' as const, header: 'T2', size: smallColSize, Header: createCustomHeader('Team 2 Score') ,
+      { accessorKey: 'team1.round_end_reason' as const, header: 'W', minSize: 5, maxSize: 5, size: 1, Header: createCustomHeader('Round End Reason'), 
+        Cell: ({ cell }: { cell: any }) => {
+          const reason = cell.getValue() as number;
+          const imageUrl = roundIconImage[reason];
+          const reasonText = round_end_reasons[reason];
+          return imageUrl ? <Tooltip title={reasonText}><img src={imageUrl} alt={reasonText} style={{  height: '30px' }} /></Tooltip> : null;
+        } },
+      { accessorKey: 'team2.team2_score' as const, header: 'T2', minSize: 5, maxSize: 5, size: smallColSize, Header: createCustomHeader('Team 2 Score') ,
       Cell: (props: { cell: any, row: { index: number } }) => <ScoreCell {...props} team='team2'/>},
-      { accessorKey: 'team2.player_count' as const, header: 'Players', size: smallColSize, Header: createCustomHeader('Player Count'),
+      { accessorKey: 'team2.player_count' as const, header: 'Players', size: 100, Header: createCustomHeader('Player Count'),
       Cell: (props: { cell: any, row: { index: number } }) => <PlayerCountCell {...props} team='team2' /> },
+      { accessorKey: 'team2.round_type' as const, header: 'Type', size: smallColSize, Header: createCustomHeader('Round Type'), 
+      Cell: ({ cell }: { cell: any }) => {
+        const type = cell.getValue() as string;
+        const imageUrl = roundTypeIconImage[type];
+        return imageUrl ? <Tooltip title={type}><img src={imageUrl} alt={type} style={{  height: '30px' }} /></Tooltip> : null;
+      }  },
       {
-        accessorKey: 'team2.total_equipment_value' as const, header: '$', size: 100, Header: createCustomHeader('Finance'),
-        Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team2' />
+        accessorKey: 'team2.total_equipment_value' as const, header: 'Equipment/Spend', size: 150, Header: createCustomHeader('Starting equipment value/cash spent'),
+        Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team2' maxValues={data?.maxValues} />
       },
     ],
-    [],
+    [data],
   );
 
 
   return (
     <MaterialReactTable
       columns={columns}
-      data={matchRounds ?? []}
+      data={data?.matchRounds ?? []}
       initialState={{
         showColumnFilters: false,
         density: 'compact',
@@ -289,7 +345,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
           </IconButton>
         </Tooltip>
       )}
-      rowCount={matchRounds?.length ?? 0}
+      rowCount={data?.matchRounds?.length ?? 0}
       state={{
         isLoading,
         showAlertBanner: isError,

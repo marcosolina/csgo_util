@@ -28,7 +28,7 @@ import { Link } from 'react-router-dom';
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['leaderboard'],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED");
+            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE");
             const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
     
             const responses = await Promise.all([
@@ -195,7 +195,7 @@ import { Link } from 'react-router-dom';
           { accessorKey: "_1v4", header: "1v4",size: smallColSize , Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 4 players still alive on the opponents team)")},
           { accessorKey: "_1v5", header: "1v5" ,size: smallColSize, Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 5 or more player still alive on the opponents team)")},
         ],
-        [],
+        [data],
       );
       
 

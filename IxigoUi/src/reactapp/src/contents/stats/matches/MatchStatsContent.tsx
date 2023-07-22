@@ -1,9 +1,12 @@
 import React from 'react';
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Typography, Grid, Paper } from '@mui/material';
 import MatchScoreboardContent from './MatchScoreboardContent';
 import MatchRoundsContent from './MatchRoundsContent';
 import MatchWeaponsContent from './MatchWeaponsContent';
 import MatchKillMatrixContent from './MatchKillMatrixContent';
+import { useQuery } from 'react-query';
+import terroristLogo from '../../../assets/icons/T.png';
+import ctLogo from '../../../assets/icons/CT.png';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -34,29 +37,89 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
     setValue(newValue);
   };
 
+  const { data: matchData } = useQuery(['match', match_id], async () => {
+    const url = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS");
+    const response = await fetch(url.href);
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+
+    const json = await response.json();
+    return json.view_data.find((match: any) => match.match_id === match_id);
+  });
+
   return (
-    <Box sx={{display: 'flex' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="vertical">
-          <Tab label="Scoreboard" />
-          <Tab label="Rounds" />
-          <Tab label="Weapons" />
-          <Tab label="Duels" />
-        </Tabs>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+      <Box textAlign="center">
+        <Typography variant="h4">Match: {matchData.mapname}</Typography>
+        <Typography variant="h6">{matchData.match_date}</Typography>
+        <Grid container spacing={3} alignItems="center" justifyContent="center">
+          <Grid item xs={6}>
+            <Paper elevation={3}>
+              <Typography variant="h1" align="center" style={{ color: matchData.team1_total_wins > 7 ? 'green' : 'red' }}>{matchData.team1_total_wins}</Typography>
+              <Typography variant="h6" align="center">Team 1</Typography>
+              <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                <div style={{ position: 'relative', width: 25, height: 25 }}>
+                  <img src={terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
+                    {matchData.team1_wins_as_t}
+                  </div>
+                </div>
+                <div style={{ position: 'relative', width: 25, height: 25 }}>
+                  <img src={ctLogo} alt='CT logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
+                    {matchData.team1_wins_as_ct}
+                  </div>
+                </div>
+              </div>
+            </Paper>
+          </Grid>
+          <Grid item xs={6}>
+            <Paper elevation={3}>
+              <Typography variant="h1" align="center" style={{ color: matchData.team2_total_wins > 7 ? 'green' : 'red' }}>{matchData.team2_total_wins}</Typography>
+              <Typography variant="h6" align="center">Team 2</Typography>
+              <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+                <div style={{ position: 'relative', width: 25, height: 25 }}>
+                  <img src={terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
+                    {matchData.team2_wins_as_t}
+                  </div>
+                </div>
+                <div style={{ position: 'relative', width: 25, height: 25 }}>
+                  <img src={ctLogo} alt='CT logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
+                  <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
+                    {matchData.team2_wins_as_ct}
+                  </div>
+                </div>
+              </div>
+            </Paper>
+          </Grid>
+        </Grid>
       </Box>
-      <Box sx={{ width: '100%' }}>
-        <TabPanel value={value} index={0}>
-          <MatchScoreboardContent match_id={match_id} />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <MatchRoundsContent match_id={match_id} />
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          <MatchWeaponsContent match_id={match_id} />
-        </TabPanel>
-        <TabPanel value={value} index={3}>
-          <MatchKillMatrixContent match_id={match_id} />
-        </TabPanel>
+      <Box sx={{ display: 'flex' }}>
+        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="vertical">
+            <Tab label="Scoreboard" />
+            <Tab label="Rounds" />
+            <Tab label="Weapons" />
+            <Tab label="Duels" />
+          </Tabs>
+        </Box>
+        <Box sx={{ width: '100%' }}>
+          <TabPanel value={value} index={0}>
+            <MatchScoreboardContent match_id={match_id} />
+          </TabPanel>
+          <TabPanel value={value} index={1}>
+            <MatchRoundsContent match_id={match_id} />
+          </TabPanel>
+          <TabPanel value={value} index={2}>
+            <MatchWeaponsContent match_id={match_id} />
+          </TabPanel>
+          <TabPanel value={value} index={3}>
+            <MatchKillMatrixContent match_id={match_id} />
+          </TabPanel>
+        </Box>
       </Box>
     </Box>
   );

@@ -34,7 +34,7 @@ const MatchKillMatrixContent: React.FC<KillMatrixContentProps> = ({ match_id }) 
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: ['killmatrix'],
     queryFn: async () => {
-        const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_KILL_COUNT");
+        const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_KILL_COUNT_CACHE");
         const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
 
         const responses = await Promise.all([

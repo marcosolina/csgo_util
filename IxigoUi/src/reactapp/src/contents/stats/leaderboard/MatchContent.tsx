@@ -19,7 +19,7 @@ import {
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['matches'],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS");
+            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS_CACHE");
     
             const responses = await Promise.all([
                 fetch(url1.href),

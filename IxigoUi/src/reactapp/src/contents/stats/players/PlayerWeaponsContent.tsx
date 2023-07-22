@@ -38,9 +38,9 @@ import {
   const PlayerWeaponsContent: React.FC<PlayerWeaponProps> = ({ steamid }) => {
 
     const { data: weaponData, isError, isLoading } = useQuery<WeaponData[], Error>({
-        queryKey: ['playerweapon'],
+        queryKey: ['playerweapon'+steamid],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/OVERALL_PLAYER_WEAPON_STATS");
+            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/OVERALL_PLAYER_WEAPON_STATS_CACHE");
     
             const responses = await Promise.all([
                 fetch(url1.href),

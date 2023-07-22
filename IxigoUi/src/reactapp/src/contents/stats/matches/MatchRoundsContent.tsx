@@ -19,6 +19,7 @@ import force from '../../../assets/icons/forcebuy.png';
 import full from '../../../assets/icons/fullbuy.png';
 import pistol from '../../../assets/icons/pistol.png';
 import headshot from '../../../assets/icons/hs.png';
+import flashbang from '../../../assets/icons/flashbang.png';
 import { weaponImage } from "../weaponImage";
 
 const roundIconImage: { [key: number]: string } = {
@@ -390,14 +391,15 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     const { username: steamidUsername, team: steamidTeam } = getUsernameAndTeam(event.steamid);
     if (event.victimsteamid) {
       const { username: victimsteamidUsername, team: victimsteamidTeam } = getUsernameAndTeam(event.victimsteamid);
-      const { username: assisterUsername, team: assisterTeam } = getUsernameAndTeam(event.victimsteamid);
-      const { username: flashAssisterUsername, team: flashAssisterTeam } = getUsernameAndTeam(event.victimsteamid);
+      const { username: assisterUsername, team: assisterTeam } = getUsernameAndTeam(event.assister);
+      const { username: flashAssisterUsername, team: flashAssisterTeam } = getUsernameAndTeam(event.flashassister);
       return (
         <Box key={i} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
           <Typography>
             {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
             {steamidUsername}
             {event.assister && ` + ${assisterUsername}`} 
+            {event.flashassist && <img height="20px" style={{padding: '0 5px'}} src={flashbang} alt="Flash Assist" />}
             {event.flashassist && ` + ${flashAssisterUsername}`}
           </Typography>
           <img height="20px" style={{ transform: 'scaleX(-1)', padding: '0 5px'  }} src={weaponImage[event.weapon]} alt={event.weapon} />

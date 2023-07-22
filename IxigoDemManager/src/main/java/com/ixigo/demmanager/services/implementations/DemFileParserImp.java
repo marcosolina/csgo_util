@@ -321,7 +321,8 @@ public class DemFileParserImp implements DemFileParser {
 				return fileName;
 			})
 			.collectList()
-			.flatMap(list -> {
+			.then(this.triggerFunctions())
+			.flatMap(b -> {
 				LocalDateTime endTime = LocalDateTime.now(); // End time
 		        Duration duration = Duration.between(start, endTime);
 		        long days = duration.toDays();
@@ -336,8 +337,8 @@ public class DemFileParserImp implements DemFileParser {
 						files.size(),
 						countProcessedFiles.get(),
 						elapsedTime
-						))
-						;
+					))
+					;
 			}).map(b -> {
 				if(errorLists.isEmpty()) {
 					return b;

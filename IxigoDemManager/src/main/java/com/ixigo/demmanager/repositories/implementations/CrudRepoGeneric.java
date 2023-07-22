@@ -101,8 +101,12 @@ public class CrudRepoGeneric implements CrudRepo {
 		return dao.prepareSqlSelect(client)
 			.map(dao::mappingFunction)
 			.all()
-			.map(dto -> {
-				return client.sql(String.format("selecet %s", dto.getRoutine_name())).fetch();
+			.flatMap(dto -> {
+				String sql = String.format("select %s()", dto.getRoutine_name());
+				return client.sql(sql).fetch().all();
+			})
+			.map(map -> {
+				return map;
 			})
 			.collectList()
 			.map(list -> true)

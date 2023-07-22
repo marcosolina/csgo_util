@@ -250,9 +250,9 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     }
 
     const { round, team1_score, team2_score, winner_team } = teamData;
-    const isTerrorist = team === 'team1' && round <= 7 || team === 'team2' && round > 7;
+    const isTerrorist = ((team === 'team1' && round <= 7) || (team === 'team2' && round > 7));
     const logo = isTerrorist ? terroristLogo : ctLogo;
-    const isWinner = (winner_team === 2 && isTerrorist || winner_team ===3 && !isTerrorist);
+    const isWinner = ((winner_team === 2 && isTerrorist) || (winner_team ===3 && !isTerrorist));
     const imageOpacity = isWinner ? .5 : 0.05;
     const colour = isWinner ? 'white' : 'dimgrey';
 

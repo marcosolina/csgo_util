@@ -37,7 +37,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
     setValue(newValue);
   };
 
-  const { data: matchData } = useQuery(['match', match_id], async () => {
+  const { data: matchData, isLoading } = useQuery(['match', match_id], async () => {
     const url = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS");
     const response = await fetch(url.href);
 
@@ -48,6 +48,10 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
     const json = await response.json();
     return json.view_data.find((match: any) => match.match_id === match_id);
   });
+
+  if (isLoading) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}>

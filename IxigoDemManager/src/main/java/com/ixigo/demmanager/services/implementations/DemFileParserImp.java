@@ -107,9 +107,9 @@ public class DemFileParserImp implements DemFileParser {
 					 */
 					switch (props.getParserExecutionType()) {
 					case SYNC:
-						return processFiles(filesToProcess).map(v -> triggerFunctions()).thenReturn(HttpStatus.ACCEPTED);
+						return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
 					case ASYNC:
-						new Thread(() -> processFiles(filesToProcess).map(v -> triggerFunctions()).subscribe(v -> {
+						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
 							_LOGGER.debug("Async queue process completed");
 						})).start();
 						return Mono.just(HttpStatus.ACCEPTED);

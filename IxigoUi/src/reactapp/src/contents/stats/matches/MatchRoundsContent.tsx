@@ -41,7 +41,7 @@ const roundTypeIconImage: { [key: string]: string } = {
 }
 
 const eventNameDesc: { [key: string]: string } = {
-  'hostage_recued': 'rescued the hostage',
+  'hostage_rescued': 'rescued the hostage',
   'bomb_planted': 'planted the bomb',
   'bomb_defused': 'defused the bomb'
 }
@@ -420,7 +420,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
         <Typography key={i}>
           {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
           <span style={{color: steamidTeam=='team1'? '#90caf9' : 'orange'}}>{steamidUsername +" "}</span>
-          {eventNameDesc[event.eventtype]}
+          {eventNameDesc[event.eventtype]? eventNameDesc[event.eventtype] : event.eventtype}
         </Typography>
       );
     }

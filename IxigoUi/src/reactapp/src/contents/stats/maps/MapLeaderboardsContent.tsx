@@ -90,7 +90,7 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
   const { data: matchData, isError, isLoading, refetch } = useQuery<PlayerMatch[], Error>({
       queryKey: ['mapleaderboard' + mapName],
       queryFn: async () => {
-          const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED");
+          const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED?mapname=${mapName}`);
           const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
           const responses = await Promise.all([
               fetch(url1.href),
@@ -166,7 +166,6 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
               </Box>
             );
           }},
-          { accessorKey: 'mapname' as const, header: 'MAP', size: smallColSize, Header: createCustomHeader('Map Name') },
           { accessorKey: 'matches' as const, header: 'M', size: smallColSize, Header: createCustomHeader('Matches'), filterVariant: 'range',
           filterFn: 'between'},
           { accessorKey: "first_weapon" as const, header: "W1" ,size: smallColSize, Header: createCustomHeader("Primary weapon - most kills"), 
@@ -267,6 +266,7 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
              }}
              enableColumnActions={false}
              enableColumnFilters={true}
+             enableDensityToggle={false}
              enableSorting={true}
              enableTopToolbar={true}
              enableBottomToolbar={false}

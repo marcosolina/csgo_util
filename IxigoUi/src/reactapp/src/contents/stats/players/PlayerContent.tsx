@@ -59,9 +59,14 @@ export default function PlayerPage({ steamid }: PlayerPageProps) {
       <Box textAlign="center">
           <Typography variant="h5">Player: { userName }</Typography>
         </Box>
-      <Box sx={{ display: 'flex' }}>
+        <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="vertical">
+        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="horizontal"          centered
+          sx={{
+            "& .MuiTabs-flexContainer": {
+              flexWrap: "wrap",
+            },
+          }}>
             <Tab label="Overall" />
             <Tab label="Graphs" />
             <Tab label="Weapons" />

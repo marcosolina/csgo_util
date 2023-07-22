@@ -61,9 +61,9 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
         <Grid container spacing={3} alignItems="center" justifyContent="center">
           <Grid item xs={6}>
             <Paper elevation={3}>
-              <Typography variant="h1" align="center" style={{ color: matchData.team1_total_wins > 7 ? 'green' : 'red' }}>{matchData.team1_total_wins}</Typography>
+              <Typography variant="h2" align="center" style={{ color: matchData.team1_total_wins > 7 ? 'green' : 'red' }}>{matchData.team1_total_wins}</Typography>
               <Typography variant="h6" align="center">Team 1</Typography>
-              <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
                   <img src={terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
@@ -81,9 +81,9 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
           </Grid>
           <Grid item xs={6}>
             <Paper elevation={3}>
-              <Typography variant="h1" align="center" style={{ color: matchData.team2_total_wins > 7 ? 'green' : 'red' }}>{matchData.team2_total_wins}</Typography>
+              <Typography variant="h2" align="center" style={{ color: matchData.team2_total_wins > 7 ? 'green' : 'red' }}>{matchData.team2_total_wins}</Typography>
               <Typography variant="h6" align="center">Team 2</Typography>
-              <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
                   <img src={terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
@@ -101,30 +101,34 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
           </Grid>
         </Grid>
       </Box>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="vertical">
+          <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="horizontal"          centered
+          sx={{
+            "& .MuiTabs-flexContainer": {
+              flexWrap: "wrap",
+            },
+          }}>
             <Tab label="Scoreboard" />
             <Tab label="Rounds" />
             <Tab label="Weapons" />
             <Tab label="Duels" />
           </Tabs>
         </Box>
-        <Box sx={{ width: '100%' }}>
-          <TabPanel value={value} index={0}>
-            <MatchScoreboardContent match_id={match_id} />
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <MatchRoundsContent match_id={match_id} />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <MatchWeaponsContent match_id={match_id} />
-          </TabPanel>
-          <TabPanel value={value} index={3}>
-            <MatchKillMatrixContent match_id={match_id} />
-          </TabPanel>
-        </Box>
+        <TabPanel value={value} index={0}>
+          <MatchScoreboardContent match_id={match_id} />
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          <MatchRoundsContent match_id={match_id} />
+        </TabPanel>
+        <TabPanel value={value} index={2}>
+          <MatchWeaponsContent match_id={match_id} />
+        </TabPanel>
+        <TabPanel value={value} index={3}>
+          <MatchKillMatrixContent match_id={match_id} />
+        </TabPanel>
       </Box>
+
     </Box>
   );
 }

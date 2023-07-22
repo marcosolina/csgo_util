@@ -11,22 +11,12 @@ const MatchScoreboardContent: React.FC<MatchScoreboardContentProps> = ({ match_i
   return (
     <Grid container spacing={1}>
       {/* Row 1: 3 4x4 Boxes */}
-      <Grid item xs={12} sm={1} md={1}>
-        <Paper>
-          
-        </Paper>
-      </Grid>
-      <Grid item xs={12} sm={11} md={11}>
+      <Grid item xs={12} sm={12} md={12}>
         <Paper>
           <MatchTeamTable match_id={match_id} team="team1"/>
         </Paper>
       </Grid>
-      <Grid item xs={12} sm={1} md={1}>
-        <Paper>
-          
-        </Paper>
-      </Grid>
-      <Grid item xs={12} sm={11} md={11}>
+      <Grid item xs={12} sm={12} md={12}>
         <Paper>
           <MatchTeamTable match_id={match_id} team="team2"/>
         </Paper>

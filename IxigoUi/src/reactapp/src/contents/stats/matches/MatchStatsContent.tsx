@@ -64,7 +64,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
         <Grid container spacing={3} alignItems="center" justifyContent="center">
           <Grid item xs={6}>
             <Paper elevation={3}>
-              <Typography variant="h2" align="center" style={{ color: matchData.team1_total_wins > 7 ? 'green' : 'red' }}>{matchData.team1_total_wins}</Typography>
+              <Typography variant="h2" align="center" style={{ color: matchData.team1_total_wins > 7 ? 'white' : 'grey' }}>{matchData.team1_total_wins}</Typography>
               <Typography variant="h6" align="center" style={{color:"#90caf9"}}>Team 1</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
@@ -84,7 +84,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
           </Grid>
           <Grid item xs={6}>
             <Paper elevation={3}>
-              <Typography variant="h2" align="center" style={{ color: matchData.team2_total_wins > 7 ? 'green' : 'red' }}>{matchData.team2_total_wins}</Typography>
+              <Typography variant="h2" align="center" style={{ color: matchData.team2_total_wins > 7 ? 'white' : 'grey' }}>{matchData.team2_total_wins}</Typography>
               <Typography variant="h6" align="center" style={{color:"orange"}}>Team 2</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>

@@ -114,7 +114,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
 
     const columns = useMemo(
         () => [
-          { accessorKey: 'usernames' as const, header: 'PLAYER', minSize: 100, Header: createCustomHeader('Player') ,Cell: ({ cell }: { cell: any }) => {
+          { accessorKey: 'usernames' as const, header: `${team.toUpperCase()} PLAYERS`, minSize: 100, Header: createCustomHeader('Player') ,Cell: ({ cell }: { cell: any }) => {
             const username = cell.getValue() as string;
             const steamid = cell.row.original.steamid;
             const selectedStatsContext = useContext(SelectedStatsContext);

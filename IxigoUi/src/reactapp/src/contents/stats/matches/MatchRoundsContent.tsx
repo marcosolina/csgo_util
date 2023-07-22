@@ -18,6 +18,8 @@ import eco from '../../../assets/icons/eco.png';
 import force from '../../../assets/icons/forcebuy.png';
 import full from '../../../assets/icons/fullbuy.png';
 import pistol from '../../../assets/icons/pistol.png';
+import headshot from '../../../assets/icons/hs.png';
+import { weaponImage } from "../weaponImage";
 
 const roundIconImage: { [key: number]: string } = {
   1: bomb,
@@ -372,36 +374,48 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
     const getUsernameAndTeam = (steamid: string) => {
       const player = playerStats.find((player: any) => player.steamid === steamid);
-      return player ? {username: player.usernames, team: player.last_round_team} : {username: steamid, team: 'unknown'};
+      return player ? {username: player.usernames, team: player.last_round_team} : {username: "Bot", team: 'unknown'};
     };
   
     return (
-      <Box
-      sx={{
-        display: 'flex',
-        flexDirection: 'column',
-        margin: 'auto',
-        width: '100%',
-      }}
-    >
-      {events.map((event: any, i) => {
-        const { username: steamidUsername, team: steamidTeam } = getUsernameAndTeam(event.steamid);
-        if (event.victimsteamid) {
-          const { username: victimsteamidUsername, team: victimsteamidTeam } = getUsernameAndTeam(event.victimsteamid);
-          return (
-            <Typography key={i}>
-              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${steamidUsername} (${steamidTeam}) killed ${victimsteamidUsername} (${victimsteamidTeam}) with ${event.weapon}${event.headshot ? ' (headshot)' : ''}`}
-            </Typography>
-          );
-        } else {
-          return (
-            <Typography key={i}>
-              {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${steamidUsername} (${steamidTeam}) ${event.eventtype}`}
-            </Typography>
-          );
-        }
-      })}
-    </Box>
+<Box
+  sx={{
+    display: 'flex',
+    flexDirection: 'column',
+    margin: 'auto',
+    width: '100%',
+  }}
+>
+  {events.map((event: any, i) => {
+    const { username: steamidUsername, team: steamidTeam } = getUsernameAndTeam(event.steamid);
+    if (event.victimsteamid) {
+      const { username: victimsteamidUsername, team: victimsteamidTeam } = getUsernameAndTeam(event.victimsteamid);
+      const { username: assisterUsername, team: assisterTeam } = getUsernameAndTeam(event.victimsteamid);
+      const { username: flashAssisterUsername, team: flashAssisterTeam } = getUsernameAndTeam(event.victimsteamid);
+      return (
+        <Box key={i} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+          <Typography>
+            {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `} 
+            {steamidUsername}
+            {event.assister && ` + ${assisterUsername}`} 
+            {event.flashassist && ` + ${flashAssisterUsername}`}
+          </Typography>
+          <img height="20px" style={{ transform: 'scaleX(-1)', padding: '0 5px'  }} src={weaponImage[event.weapon]} alt={event.weapon} />
+          {event.headshot && <img height="20px" style={{padding: '0 5px'}} src={headshot} alt="Headshot" />}
+          <Typography>
+            {victimsteamidUsername}
+          </Typography>
+        </Box>
+      );
+    } else {
+      return (
+        <Typography key={i}>
+          {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: ${steamidUsername} ${event.eventtype}`}
+        </Typography>
+      );
+    }
+  })}
+</Box>
     );
   };
   

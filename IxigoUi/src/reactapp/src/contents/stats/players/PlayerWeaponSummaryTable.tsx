@@ -38,7 +38,7 @@ import {
     const { data: weaponData, isError, isLoading } = useQuery<WeaponData[], Error>({
         queryKey: ['playerweapon'+steamid],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/OVERALL_PLAYER_WEAPON_STATS_CACHE");
+          const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/OVERALL_PLAYER_WEAPON_STATS_CACHE?steamID=${steamid}`);
     
             const responses = await Promise.all([
                 fetch(url1.href),

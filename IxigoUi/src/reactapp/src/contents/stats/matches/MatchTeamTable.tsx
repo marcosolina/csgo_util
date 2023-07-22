@@ -258,6 +258,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
              }}
              enableColumnActions={false}
              enableColumnFilters={false}
+             enableDensityToggle={false}
              enableSorting={true}
              enableTopToolbar={true}
              enableBottomToolbar={false}

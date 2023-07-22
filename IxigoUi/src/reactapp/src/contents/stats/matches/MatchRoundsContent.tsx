@@ -21,6 +21,7 @@ import pistol from '../../../assets/icons/pistol.png';
 import headshot from '../../../assets/icons/hs.png';
 import flashbang from '../../../assets/icons/flashbang.png';
 import { weaponImage } from "../weaponImage";
+import { group } from "console";
 
 const roundIconImage: { [key: number]: string } = {
   1: bomb,
@@ -166,17 +167,15 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
           acc.push(foundRound);
         }
         foundRound = foundRound!; 
-        if (round.team === 2) {
+        if ((round.team === 2 && round.round<=7) || (round.team === 3 && round.round>7)) {
           foundRound.team1 = round;
           if (foundRound.killEvents) {
             foundRound.killEvents.push(...killEvents.filter((event: any) => event.round === round.round));
           }
-          
           if (foundRound.roundEvents) {
             foundRound.roundEvents.push(...roundEvents.filter((event: any) => event.round === round.round));
           }
-          
-        } else if (round.team === 3) {
+        } else {
           foundRound.team2 = round;
         }
     
@@ -203,6 +202,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
       setMaxValues(getMaxValues());
       const maxValues = getMaxValues();
+      console.log(groupedData);
       return { matchRounds: groupedData, maxValues , playerStats};
 
     },

@@ -3,6 +3,7 @@ package com.ixigo.demmanager.repositories.implementations;
 import java.lang.reflect.InvocationTargetException;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -16,7 +17,9 @@ import com.ixigo.demmanager.models.database.FunctionsDao;
 import com.ixigo.demmanager.repositories.interfaces.CrudRepo;
 import com.ixigo.library.dao.IxigoDao;
 import com.ixigo.library.dto.IxigoDto;
+import com.ixigo.library.enums.DateFormats;
 import com.ixigo.library.errors.IxigoException;
+import com.ixigo.library.utils.DateUtils;
 
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -28,18 +31,17 @@ public class CrudRepoGeneric implements CrudRepo {
 	private DatabaseClient client;
 
 	@Override
-	public <T extends IxigoDto, D extends IxigoDao<T>> Flux<T> getAll(Class<D> daoClass, Optional<List<String>> whereClause, Optional<List<String>> whereValues) {
+	public <T extends IxigoDto, D extends IxigoDao<T>> Flux<T> getAll(Class<D> daoClass, Optional<Map<String,String>> whereClause) {
 		_LOGGER.trace("Inside CrudRepoGeneric.getAll");
 		try {
 			D dao = daoClass.getConstructor().newInstance();
 
-			if (whereClause.isPresent() && whereClause.isPresent()) {
-				whereClause.get().forEach(dao::addSqlWhereAndClauses);
-				whereValues.get().forEach(v -> {
-					try {
-						BigDecimal number = new BigDecimal(v);
-						dao.addSqlParams(number);
-					} catch (Exception e) {
+			if (whereClause.isPresent() && !whereClause.isEmpty()) {
+				whereClause.get().forEach((k, v) -> {
+					dao.addSqlWhereAndClauses(k);
+					if(!"steamid".equals(k)) {
+						dao.addSqlParams(tryToConvertToSpecificType(v));
+					}else {
 						dao.addSqlParams(v);
 					}
 				});
@@ -51,6 +53,18 @@ public class CrudRepoGeneric implements CrudRepo {
 			_LOGGER.error(e.getMessage());
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
 		}
+	}
+	
+	private Object tryToConvertToSpecificType(String obj) {
+		try {
+			return DateUtils.fromStringToLocalDateTime(obj, DateFormats.DB_TIME_STAMP);
+		} catch (Exception e) {
+			try {
+				return new BigDecimal(obj);
+			} catch (Exception e1) {
+			}
+		}
+		return obj;
 	}
 
 	@Override
@@ -69,12 +83,12 @@ public class CrudRepoGeneric implements CrudRepo {
 
 	@SuppressWarnings("all")
 	@Override
-	public Flux<IxigoDto> getAll(String daoName, Optional<List<String>> whereClause, Optional<List<String>> whereValues) {
+	public Flux<IxigoDto> getAll(String daoName, Optional<Map<String,String>> whereClause) {
 		_LOGGER.trace("Inside CrudRepoGeneric.getAll");
 		try {
 			Class c = Class.forName("com.ixigo.demmanager.models.database." + daoName);
 			IxigoDao dao = (IxigoDao) c.getConstructor().newInstance();
-			return this.getAll(dao.getClass(), whereClause, whereValues);
+			return this.getAll(dao.getClass(), whereClause);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | NoSuchMethodException | SecurityException | ClassNotFoundException e) {
 			e.printStackTrace();
 			_LOGGER.error(e.getMessage());

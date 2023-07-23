@@ -244,7 +244,7 @@ demoFile.gameEvents.on("round_start", e => {
 demoFile.conVars.on("change", e => {
   // Reset player stats when the game is restarted
   if (
-    (e.name === "bot_quota" && e.value === "0") ||
+    //(e.name === "bot_quota" && e.value === "0") || - seems this is only when bot quota is changed - could be mid-game
     e.name === "steamworks_sessionid_server"
   ) {
     playerStats.clear();

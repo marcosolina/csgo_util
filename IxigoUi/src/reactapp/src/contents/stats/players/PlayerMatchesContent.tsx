@@ -316,6 +316,7 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
              }}
              enableColumnActions={false}
              enableColumnFilters
+             enableColumnFilterModes
              enableSorting={true}
              enableTopToolbar={true}
              enableBottomToolbar

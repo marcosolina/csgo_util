@@ -227,6 +227,9 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     if (!data) {
       return null;  // or some placeholder
     }
+    if (!teamData) {
+      return null;  // or some placeholder
+    }
 
     const equipmentValuePercentage = teamData.total_equipment_value / data.maxValues.total_equipment_value * 100;
     const moneySpentPercentage = teamData.total_money_spent / data.maxValues.total_money_spent * 100;

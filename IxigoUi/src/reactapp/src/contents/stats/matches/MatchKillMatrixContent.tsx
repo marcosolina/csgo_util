@@ -19,6 +19,12 @@ interface KillCount {
   victimusername: string;
 }
 
+interface PlayerStats {
+  steamid: string;
+  kills: number;
+  last_round_team: string;
+}
+
 interface KillMatrixContentProps {
   match_id: number;
 }
@@ -36,10 +42,12 @@ const MatchKillMatrixContent: React.FC<KillMatrixContentProps> = ({ match_id }) 
     queryFn: async () => {
         const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_KILL_COUNT_CACHE?match_id=${match_id}`);
         const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
+        const url3 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
 
         const responses = await Promise.all([
             fetch(url1.href),
             fetch(url2.href),
+            fetch(url3.href),
         ]);
 
         const jsons = await Promise.all(responses.map(response => {
@@ -51,14 +59,25 @@ const MatchKillMatrixContent: React.FC<KillMatrixContentProps> = ({ match_id }) 
 
         let killCounts = jsons[0].view_data;
         const users = jsons[1].view_data;
+        const playerStats = jsons[2].view_data;
 
         // Filter killCounts by match_id
         killCounts = killCounts.filter((killCount: any) => killCount.match_id === match_id);
 
-        // Create a lookup table for usernames
+        // Create a lookup table for usernames and player stats
         const usernameLookup: { [steamID: string]: string } = {};
+        const statsLookup: { [steamID: string]: PlayerStats } = {};
         users.forEach((user: User) => {
             usernameLookup[user.steam_id] = user.user_name;
+        });
+        playerStats.forEach((stat: PlayerStats) => {
+            statsLookup[stat.steamid] = stat;
+        });
+        // Create a lookup table for the team of each player
+        const teamLookup: { [player: string]: string } = {};
+        playerStats.forEach((stat: PlayerStats) => {
+            const playerName = usernameLookup[stat.steamid] || stat.steamid;
+            teamLookup[playerName] = stat.last_round_team;
         });
 
         // Replace steamid with username in playerOverallStatsExtended
@@ -67,22 +86,39 @@ const MatchKillMatrixContent: React.FC<KillMatrixContentProps> = ({ match_id }) 
             player.victimusername = usernameLookup[player.victim] || player.victim;
         });
 
-        return killCounts;
+        return {killCounts, statsLookup, teamLookup} ;
     },
     keepPreviousData: true,
 });
 
-  // First, create a list of all unique players
-  const players = useMemo(() => Array.from(new Set(data?.map((kill: KillCount) => kill.killerusername).concat(data?.map((kill: KillCount) => kill.victimusername)))), [data]);
+// First, create a list of all unique players sorted by team and kills
+const players = useMemo(() => {
+  const playerSet = new Set(data?.killCounts.map((kill: KillCount) => kill.killerusername).concat(data?.killCounts.map((kill: KillCount) => kill.victimusername)));
+  const playerList = Array.from(playerSet) as string[];  // Add type assertion here
+  playerList.sort((a: string, b: string) => {
+    const statsA = a && data?.statsLookup[a];
+    const statsB = b && data?.statsLookup[b];
+    if (!statsA || !statsB) {
+      return 0;
+    }
+    if (statsA.last_round_team === statsB.last_round_team) {
+      return statsB.kills - statsA.kills;  // Sort by kills in descending order
+    } else {
+      return statsA.last_round_team.localeCompare(statsB.last_round_team);  // Sort by team in ascending order
+    }
+  });
+  return playerList;
+}, [data]);
 
-  // Then, create a matrix of kills
-  const killMatrix = useMemo(() => players?.map(player => {
-    return players?.map(victim => {
-      // Find the kill count between the current player and victim
-      const killCountObj = data?.find((kill: KillCount) => kill.killerusername === player && kill.victimusername === victim);
-      return killCountObj ? killCountObj.kill_count : 0;
-    });
-  }), [players, data]);
+// Then, create a matrix of kills
+const killMatrix = useMemo(() => players?.map(player => {
+  return players?.map(victim => {
+    // Find the kill count between the current player and victim
+    const killCountObj = data?.killCounts.find((kill: KillCount) => kill.killerusername === player && kill.victimusername === victim);
+    return killCountObj ? killCountObj.kill_count : 0;
+  });
+}), [players, data]);
+
 
   // Calculate the minimum and maximum kill counts per player
   const minMaxKillCounts = useMemo(() => {
@@ -101,20 +137,21 @@ const MatchKillMatrixContent: React.FC<KillMatrixContentProps> = ({ match_id }) 
   }, [players, killMatrix]);
 
 
+// Flatten the matrix into an array of objects
+const flattenedData = useMemo(() => players?.map((player, rowIndex) => {
+  const row: RowData = { "Killer/Victim": player as string, "Team": data?.teamLookup[player] || "Unknown" };
+  players?.forEach((victim, colIndex) => {
+    row[victim as string] = killMatrix ? killMatrix[rowIndex][colIndex] : 0;
+  });
+  return row;
+}), [players, killMatrix, data]);
 
-  // Flatten the matrix into an array of objects
-  const flattenedData = useMemo(() => players?.map((player, rowIndex) => {
-    const row: RowData = { "Killer/Victim": player as string }; // type assertion here
-    players?.forEach((victim, colIndex) => {
-      row[victim as string] = killMatrix ? killMatrix[rowIndex][colIndex] : 0;
-    });
-    return row;
-  }), [players, killMatrix]);
 
 
 // Generate the columns dynamically based on the players
 const columns = useMemo(() => [
-  { id: "Killer/Victim", header: "Killer/Victim", accessorFn: (row: RowData) => row["Killer/Victim"] },
+  { id: "Killer/Victim", header: "Killer    \\    Victim->", accessorFn: (row: RowData) => row["Killer/Victim"] },
+  { id: "Team", header: "Team", accessorFn: (row: RowData) => row["Team"] },
   ...(players?.map(player => ({
     id: player,
     header: player,
@@ -154,12 +191,17 @@ const columns = useMemo(() => [
       data={flattenedData ?? []}
       initialState={{ showColumnFilters: false,
         density: 'compact',
+        columnVisibility: {
+          Team: false,
+        },
+        sorting: [{ id: 'Team', desc: false }],
         pagination: { pageIndex: 0, pageSize: 10 },
         columnPinning: { left: ['Killer/Victim'] },
          }}
       enableColumnFilterModes
       enablePinning
       enableMultiSort
+      enableDensityToggle={false}
       enablePagination
       muiToolbarAlertBannerProps={
         isError

@@ -66,6 +66,53 @@ for i in ${!apps[@]}; do
 EOF
 done
 
+apps=(
+#"IxigoProxy"
+)
+
+
+for i in ${!apps[@]}; do
+  APP_NAME=${apps[$i]}
+  DEPLOY_APP_FOLDER=$BASE_FOLDER/$APP_NAME
+
+  ssh $SSH_ADDRESS_2 mkdir -p $DEPLOY_APP_FOLDER
+  scp $WORKSPACE_FOLDER/$APP_NAME/Scripts/startStop.sh $SSH_ADDRESS_2:$DEPLOY_APP_FOLDER
+  ssh $SSH_ADDRESS_2 chmod +x $DEPLOY_APP_FOLDER/startStop.sh
+  ssh $SSH_ADDRESS_2 $DEPLOY_APP_FOLDER/startStop.sh stop
+  sleep 5
+
+  scp $WORKSPACE_FOLDER/$APP_NAME/target/$APP_NAME*.jar $SSH_ADDRESS_2:$DEPLOY_APP_FOLDER/$APP_NAME.jar
+  ssh -t -t $SSH_ADDRESS_2 << EOF
+  export BASH_ENV=/etc/bash.bashrc && echo "" > $DEPLOY_APP_FOLDER/$APP_NAME.log && $DEPLOY_APP_FOLDER/startStop.sh start && exit
+EOF
+done
+
+
+apps=(
+"IxigoDiscordBot"
+"IxigoEventDispatcher"
+"IxigoPlayersManager"
+"IxigoRconApi"
+"IxigoUi"
+"IxigoNotification"
+)
+
+
+for i in ${!apps[@]}; do
+  APP_NAME=${apps[$i]}
+  DEPLOY_APP_FOLDER=$BASE_FOLDER/$APP_NAME
+
+  ssh $SSH_ADDRESS_3 mkdir -p $DEPLOY_APP_FOLDER
+  scp $WORKSPACE_FOLDER/$APP_NAME/Scripts/startStop.sh $SSH_ADDRESS_3:$DEPLOY_APP_FOLDER
+  ssh $SSH_ADDRESS_3 chmod +x $DEPLOY_APP_FOLDER/startStop.sh
+  ssh $SSH_ADDRESS_3 $DEPLOY_APP_FOLDER/startStop.sh stop
+  sleep 5
+
+  scp $WORKSPACE_FOLDER/$APP_NAME/target/$APP_NAME*.jar $SSH_ADDRESS_3:$DEPLOY_APP_FOLDER/$APP_NAME.jar
+  ssh -t -t $SSH_ADDRESS_3 << EOF
+  export BASH_ENV=/etc/bash.bashrc && echo "" > $DEPLOY_APP_FOLDER/$APP_NAME.log && $DEPLOY_APP_FOLDER/startStop.sh start && exit
+EOF
+done
 
 
 

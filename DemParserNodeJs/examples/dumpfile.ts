@@ -150,6 +150,7 @@ class PlayerStats {
   name: string;
   roundStart: Map<number, boolean>;
   score: number;
+  totalspend: number;
 
   constructor(userid: number, steamid: string, name: string) {
     this.userid = userid;
@@ -157,6 +158,7 @@ class PlayerStats {
     this.name = name;
     this.roundStart = new Map();
     this.score = 0;
+    this.totalspend = 0;
   }
 }
 
@@ -630,6 +632,8 @@ demoFile.gameEvents.on("round_end", e => {
           }
         }
       }
+      const spend = player.resourceProp("m_iTotalCashSpent") - stats.totalspend;
+      stats.totalspend = player.resourceProp("m_iTotalCashSpent")
       allPlayerRoundStats.push({
         username: stats.name,
         steamid: player.steam64Id,
@@ -638,7 +642,7 @@ demoFile.gameEvents.on("round_end", e => {
         clutchchance: clutchChance,
         clutchsuccess: clutchSuccess,
         survived: player.isAlive,
-        moneyspent: player.cashSpendThisRound,
+        moneyspent: spend,
         equipmentvalue: player.roundStartEquipmentValue,
         mvp: player == mvpPlayer
       });

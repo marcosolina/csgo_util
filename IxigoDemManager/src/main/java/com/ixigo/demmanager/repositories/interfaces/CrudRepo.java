@@ -12,7 +12,7 @@ import reactor.core.publisher.Mono;
 
 public interface CrudRepo {
 	public <T extends IxigoDto, D extends IxigoDao<T>> Flux<T> getAll(Class<D> daoClass, Optional<Map<String,String>> whereClause);
-	public Flux<IxigoDto> getAll(String daoName, Optional<Map<String,String>> whereClause);
+	public Flux<IxigoDto> getAll(String tableName, Optional<Map<String,String>> whereClause);
 	public <T extends IxigoDto, D extends IxigoDao<T>> Mono<Boolean> insert(Class<D> daoClass, T dto);
 	public <T extends IxigoDto, D extends IxigoDao<T>> Mono<T> insertAndSelect(Class<D> daoClass, T dto, List<String> sqlWhereAndClausesm, List<Object> sqlParams);
 	

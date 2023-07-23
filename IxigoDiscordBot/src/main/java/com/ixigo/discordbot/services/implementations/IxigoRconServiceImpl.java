@@ -16,7 +16,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import com.google.common.base.Strings;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
 import com.ixigo.discordbot.config.properties.CsgoServerProps;
 import com.ixigo.discordbot.config.properties.RconApiEndPoints;
 import com.ixigo.discordbot.constants.ErrorCodes;
@@ -24,6 +23,7 @@ import com.ixigo.discordbot.enums.TeamType;
 import com.ixigo.discordbot.services.interfaces.IxigoRconService;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
+import com.ixigo.models.rest.RestUser;
 import com.ixigo.playersmanagercontract.models.rest.RestTeams;
 import com.ixigo.rconapi.models.rest.RestRconRequest;
 import com.ixigo.rconapi.models.rest.RestRconResponse;

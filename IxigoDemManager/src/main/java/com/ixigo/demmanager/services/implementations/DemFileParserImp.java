@@ -37,6 +37,7 @@ import com.ixigo.demmanager.models.database.Round_shot_eventsDao;
 import com.ixigo.demmanager.models.database.Round_statsDao;
 import com.ixigo.demmanager.models.database.UsersDto;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcMatchStats;
+import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerMatchStatsExtended;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerRoundStats;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcPlayerStats;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundEvents;
@@ -46,9 +47,11 @@ import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundShotEvents;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcRoundStats;
 import com.ixigo.demmanager.models.svc.demdata.data.SvcUsers;
 import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcNodeJsParseOutput;
+import com.ixigo.demmanager.models.svc.demdata.responses.SvcUserStatsForLastXGames;
 import com.ixigo.demmanager.repositories.interfaces.CrudRepo;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
 import com.ixigo.demmanager.repositories.interfaces.RepoUser;
+import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.demmanager.services.interfaces.NotificationService;
@@ -78,6 +81,8 @@ public class DemFileParserImp implements DemFileParser {
 	private RepoProcessQueue repoQueue;
 	@Autowired
 	private RepoUser repoUser;
+	@Autowired
+	private RepoUserScore repoUserScore;
 	@Autowired
 	private CrudRepo genericRepo;
 	@Autowired
@@ -519,5 +524,31 @@ public class DemFileParserImp implements DemFileParser {
 			return "ParsingError [fileName=" + fileName + ", error=" + error + "]";
 		}
 
+	}
+
+	@Override
+	public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs) throws IxigoException {
+		// @formatter:off
+		return Flux.fromIterable(usersIDs)
+			.map(steamId -> {
+				var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, steamId)
+						.map(mapper::fromDtoToSvc)
+						.collectList()
+						;
+				return Tuples.of(steamId, list);
+			})
+			.flatMap(data -> {
+				String steamId = data.getT1();
+				Mono<List<SvcPlayerMatchStatsExtended>> monoUserScores = data.getT2();
+				
+				return monoUserScores.map(list -> {
+					var stats = new SvcUserStatsForLastXGames();
+					stats.setSteamId(steamId);
+					stats.setScores(list);
+					return stats;
+				});
+			})
+		;
+		// @formatter:on
 	}
 }

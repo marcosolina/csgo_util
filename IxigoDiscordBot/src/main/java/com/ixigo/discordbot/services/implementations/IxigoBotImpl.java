@@ -13,7 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
+import com.ixigo.demmanagercontract.models.rest.demdata.data.RestUsers;
 import com.ixigo.discordbot.commands.errors.IxigoErrorCmd;
 import com.ixigo.discordbot.config.properties.DiscordProps;
 import com.ixigo.discordbot.constants.ErrorCodes;
@@ -35,6 +35,7 @@ import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.validators.ValidationException;
+import com.ixigo.models.rest.RestUser;
 import com.netflix.servo.util.Strings;
 
 import net.dv8tion.jda.api.JDA;
@@ -269,9 +270,9 @@ public class IxigoBotImpl implements IxigoBot {
 				du.setId(userMap.getDiscord_id().toString());
 				du.setName(userMap.getDiscord_name());
 				
-				RestUser ru = new RestUser();
-				ru.setSteamId(userMap.getSteam_id());
-				ru.setUserName(userMap.getSteam_name());
+				RestUsers ru = new RestUsers();
+				ru.setSteam_id(userMap.getSteam_id());
+				ru.setUser_name(userMap.getSteam_name());
 				
 				return new SvcPlayer(du, ru);
 			})
@@ -286,8 +287,8 @@ public class IxigoBotImpl implements IxigoBot {
 			Users_mapDto dto = new Users_mapDto();
 			dto.setDiscord_id(Long.parseLong(p.getDiscordDetails().getId()));
 			dto.setDiscord_name(p.getDiscordDetails().getName());
-			dto.setSteam_id(p.getSteamDetails().getSteamId());
-			dto.setSteam_name(p.getSteamDetails().getUserName());
+			dto.setSteam_id(p.getSteamDetails().getSteam_id());
+			dto.setSteam_name(p.getSteamDetails().getUser_name());
 			return repoUsersMap.insertOrUpdate(dto);
 		}).collect(Collectors.toList());
 		

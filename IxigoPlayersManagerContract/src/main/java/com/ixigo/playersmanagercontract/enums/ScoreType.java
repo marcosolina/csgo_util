@@ -3,157 +3,166 @@ package com.ixigo.playersmanagercontract.enums;
 public enum ScoreType {
 	// @formatter:off
     /**
-     * Round Win Share
-     */
-    RWS("Round Win Share"),
-    /**
      * Kills
      */
     KILLS("Kills"),
     /**
-     * Assists
+     * Team kill friendly fire
      */
-    ASSISTS("Assists"),
+    FF("Team kill friendly fire"),
     /**
-     * Deaths
+     * Half life television rating
      */
-    DEATHS("Deaths"),
+    HLTV("Half life television rating"),
     /**
-     * Kill Death Ratio
+     * Bomb defuse
      */
-    KDR("Kill Death Ratio"),
+    BD("Bomb defuse"),
     /**
-     * Head Shots
+     * One versus three
      */
-    HS("Head Shots"),
+    _1V3("One versus three"),
     /**
-     * Head Shots Percentage
+     * One versus two
      */
-    HSP("Head Shots Percentage"),
+    _1V2("One versus two"),
     /**
-     * Team Kill Friendly Fire
+     * Kill, Assist, Survived or Traded
      */
-    FF("Team Kill Friendly Fire"),
+    KAST("Kill, Assist, Survived or Traded"),
     /**
-     * Entry Kill
+     * One versus one
      */
-    EK("Entry Kill"),
+    _1V1("One versus one"),
     /**
-     * Bomb Planted
+     * Hostage rescued
      */
-    BP("Bomb Planted"),
+    HR("Hostage rescued"),
     /**
-     * Bomb Defused
+     * Bomb planted
      */
-    BD("Bomb Defused"),
+    BP("Bomb planted"),
     /**
-     * Most Valuable Player
+     * Fire damage
      */
-    MVP("Most Valuable Player"),
+    UD("Fire damage"),
+    /**
+     * Kast total
+     */
+    KAST_TOTAL("Kast total"),
+    /**
+     * Round win share
+     */
+    RWS("Round win share"),
     /**
      * Score
      */
     SCORE("Score"),
     /**
-     * Half Life Television Rating
+     * Head shots
      */
-    HLTV("Half Life Television Rating"),
+    HEAD_SHOTS("Head shots"),
     /**
-     * Five Kills
+     * Assists
      */
-    _5K("Five Kills"),
+    ASSISTS("Assists"),
     /**
-     * Four Kills
+     * Four kills
      */
-    _4K("Four Kills"),
+    _4K("Four kills"),
     /**
-     * Three Kills
+     * Two kills
      */
-    _3K("Three Kills"),
+    _2K("Two kills"),
     /**
-     * Two Kills
+     * One versus five
      */
-    _2K("Two Kills"),
+    _1V5("One versus five"),
     /**
-     * One Kill
+     * One versus four
      */
-    _1K("One Kill"),
+    _1V4("One versus four"),
     /**
-     * Trade Kill
+     * Headshot percentage
      */
-    TK("Trade Kill"),
+    HEADSHOT_PERCENTAGE("Headshot percentage"),
     /**
-     * Trade Death
+     * Deaths
      */
-    TD("Trade Death"),
+    DEATHS("Deaths"),
+    
     /**
-     * Kill Per Round
+     * Teammate damage health
      */
-    KPR("Kill Per Round"),
+    FFD("Teammate damage health"),
     /**
-     * Assists Per Round
+     * Entry kill
      */
-    APR("Assists Per Round"),
+    EK("Entry kill"),
     /**
-     * Death Per Round
+     * Most valuable player
      */
-    DPR("Death Per Round"),
+    MVP("Most valuable player"),
     /**
-     * Average Damage Per Round
+     * Death per round
      */
-    ADR("Average Damage Per Round"),
+    DPR("Death per round"),
     /**
-     * Total Damage Health
+     * Round win share total
      */
-    TDH("Total Damage Health"),
+    RWS_TOTAL("Round win share total"),
     /**
-     * Total Damage Armor
+     * Kill per round
      */
-    TDA("Total Damage Armor"),
+    KPR("Kill per round"),
     /**
-     * One Versus One
+     * Average damage per round
      */
-    _1V1("One Versus One"),
+    ADR("Average damage per round"),
     /**
-     * One Versus Two
+     * Trade death
      */
-    _1V2("One Versus Two"),
+    TD("Trade death"),
     /**
-     * One Versus Three
+     * Total damage armor
      */
-    _1V3("One Versus Three"),
+    TDA("Total damage armor"),
     /**
-     * One Versu Four
+     * Five kills
      */
-    _1V4("One Versus Four"),
+    _5K("Five kills"),
     /**
-     * One Versus Five
+     * Three kills
      */
-    _1V5("One Versus Five"),
+    _3K("Three kills"),
     /**
-     * Grenades Thrown Count
+     * Opponent blind time
      */
-    GRENADES("Grenades Thrown Count"),
+    EBT("Opponent blind time"),
     /**
-     * Flashes Thrown Count
+     * Trade kill
      */
-    FLASHES("Flashes Thrown Count"),
+    TK("Trade kill"),
     /**
-     * Smoke Thrown Count
+     * Kill death ratio
      */
-    SMOKES("Smokes Thrown Count"),
+    _KDR("Kill death ratio"),
     /**
-     * Fire Thrown Count
+     * One kill
      */
-    FIRE("Fire Thrown Count"),
+    _1K("One kill"),
     /**
-     * High Explosive Damage
+     * Total damage health
      */
-    HED("High Explosive Damage"),
+    TDH("Total damage health"),
     /**
-     * Fire Damage
+     * Teammate blind time
      */
-    FD("Fire Damage"),
+    FBT("Teammate blind time"),
+    /**
+     * Flash assists
+     */
+    FA("Flash assists"),
     ;
     // @formatter:on
 

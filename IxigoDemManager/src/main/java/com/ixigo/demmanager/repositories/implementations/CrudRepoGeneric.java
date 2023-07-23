@@ -83,9 +83,10 @@ public class CrudRepoGeneric implements CrudRepo {
 
 	@SuppressWarnings("all")
 	@Override
-	public Flux<IxigoDto> getAll(String daoName, Optional<Map<String,String>> whereClause) {
+	public Flux<IxigoDto> getAll(String tableName, Optional<Map<String,String>> whereClause) {
 		_LOGGER.trace("Inside CrudRepoGeneric.getAll");
 		try {
+			String daoName = tableName.toUpperCase().charAt(0) + tableName.substring(1) + "Dao";
 			Class c = Class.forName("com.ixigo.demmanager.models.database." + daoName);
 			IxigoDao dao = (IxigoDao) c.getConstructor().newInstance();
 			return this.getAll(dao.getClass(), whereClause);

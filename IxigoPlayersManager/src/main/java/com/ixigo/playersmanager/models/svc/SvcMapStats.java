@@ -1,42 +1,65 @@
 package com.ixigo.playersmanager.models.svc;
 
+import java.io.Serializable;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
-public class SvcMapStats {
-	private String mapName;
-    private LocalDateTime playedOn;
-    private List<SvcUserMapStats> usersStats;
+import lombok.Getter;
+import lombok.Setter;
 
-    public String getMapName() {
-        return mapName;
-    }
-
-    public void setMapName(String mapName) {
-        this.mapName = mapName;
-    }
-
-    public LocalDateTime getPlayedOn() {
-        return playedOn;
-    }
-
-    public void setPlayedOn(LocalDateTime playedOn) {
-        this.playedOn = playedOn;
-    }
-
-    public List<SvcUserMapStats> getUsersStats() {
-        return usersStats;
-    }
-
-    public void setUsersStats(List<SvcUserMapStats> usersStats) {
-        this.usersStats = usersStats;
-    }
-
-    public boolean addUserMapStats(SvcUserMapStats ums) {
-        if (usersStats == null) {
-            usersStats = new ArrayList<>();
-        }
-        return usersStats.add(ums);
-    }
+@Getter
+@Setter
+public class SvcMapStats implements Serializable{
+	private static final long serialVersionUID = 1L;
+	private BigDecimal kills = BigDecimal.ZERO;
+	private BigDecimal teamKillFriendlyFire = BigDecimal.ZERO;
+	private BigDecimal halfLifeTelevisionRating = BigDecimal.ZERO;
+	private BigDecimal bombDefused = BigDecimal.ZERO;
+	private Long oneVersusThree;
+	private Long oneVersusTwo;
+	/**
+	 * Percentage of rounds where a player did something (get a Kill, Assist, Survived or Traded)
+	 */
+	private BigDecimal kast = BigDecimal.ZERO;
+	private Long oneVersusOne;
+	private BigDecimal hostageRescued = BigDecimal.ZERO;
+	private LocalDateTime matchDate = null;
+	private BigDecimal bombPlanted = BigDecimal.ZERO;
+	private BigDecimal fireDamage = BigDecimal.ZERO;
+	private Long kasttotal = null;
+	private BigDecimal roundWinShare = BigDecimal.ZERO;
+	private Long score;
+	private BigDecimal headShots = BigDecimal.ZERO;
+	private BigDecimal assists = BigDecimal.ZERO;
+	private Long fourKills;
+	private String lastRoundTeam = "";
+	private Long twoKills;
+	private String userName = "";
+	private Long oneVersusFive;
+	private Long oneVersusFour;
+	private BigDecimal headShotsPercentage = BigDecimal.ZERO;
+	private BigDecimal deaths = BigDecimal.ZERO;
+	private Long roundsOnTeam2 = null;
+	private Long roundsOnTeam1 = null;
+	private BigDecimal teammateDamageHealth = BigDecimal.ZERO;
+	private Long roundsplayed = null;
+	private BigDecimal entryKill = BigDecimal.ZERO;
+	private Long mostValuablePlayer;
+	private Long matchId = null;
+	private BigDecimal deathPerRound = BigDecimal.ZERO;
+	private BigDecimal roundWindShareTotal = BigDecimal.ZERO;
+	private BigDecimal killPerRound = BigDecimal.ZERO;
+	private BigDecimal averageDamagePerRound = BigDecimal.ZERO;
+	private String steamId = "";
+	private BigDecimal tradeDeath = BigDecimal.ZERO;
+	private BigDecimal totalDamageArmor = BigDecimal.ZERO;
+	private Long fiveKills;
+	private Long threeKills;
+	private BigDecimal opponentBlindTime = BigDecimal.ZERO;
+	private BigDecimal tradeKill = BigDecimal.ZERO;
+	private BigDecimal killDeathRatio = BigDecimal.ZERO;
+	private Long oneKill;
+	private BigDecimal totalDamageHealth = BigDecimal.ZERO;
+	private BigDecimal teammateBlindTime = BigDecimal.ZERO;
+	private BigDecimal flashAssists = BigDecimal.ZERO;
 }

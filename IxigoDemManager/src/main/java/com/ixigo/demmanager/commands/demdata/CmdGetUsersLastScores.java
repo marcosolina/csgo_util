@@ -1,21 +1,25 @@
 package com.ixigo.demmanager.commands.demdata;
 
+import java.util.List;
+
+import com.ixigo.demmanagercontract.models.rest.demdata.responses.RestUsersScoresResp;
+import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
+
 /**
  * Command dispatched to retrieve the scores of the specific players in the last
  * X matches
  * 
  * @author marco
  *
-public class CmdGetUsersLastScores implements WebCommandRequest<RestUsersScores> {
+ */
+public class CmdGetUsersLastScores implements WebCommandRequest<RestUsersScoresResp> {
 	private Integer numberOfMatches;
 	private List<String> usersIDs;
-	private BigDecimal minPercPlayed;
 
-	public CmdGetUsersLastScores(Integer numberOfMatches, List<String> usersIDs, BigDecimal minPercPlayed) {
+	public CmdGetUsersLastScores(Integer numberOfMatches, List<String> usersIDs) {
 		super();
 		this.numberOfMatches = numberOfMatches;
 		this.usersIDs = usersIDs;
-		this.minPercPlayed = minPercPlayed;
 	}
 
 	public Integer getNumberOfMatches() {
@@ -33,14 +37,4 @@ public class CmdGetUsersLastScores implements WebCommandRequest<RestUsersScores>
 	public void setUsersIDs(List<String> usersIDs) {
 		this.usersIDs = usersIDs;
 	}
-
-	public BigDecimal getMinPercPlayed() {
-		return minPercPlayed;
-	}
-
-	public void setMinPercPlayed(BigDecimal minPercPlayed) {
-		this.minPercPlayed = minPercPlayed;
-	}
 }
-
- */

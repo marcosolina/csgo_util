@@ -91,24 +91,28 @@ const MatchKillMatrixContent: React.FC<KillMatrixContentProps> = ({ match_id }) 
     keepPreviousData: true,
 });
 
-// First, create a list of all unique players sorted by team and kills
 const players = useMemo(() => {
+  if (!data) {
+    return [];
+  }
+
   const playerSet = new Set(data?.killCounts.map((kill: KillCount) => kill.killerusername).concat(data?.killCounts.map((kill: KillCount) => kill.victimusername)));
   const playerList = Array.from(playerSet) as string[];  // Add type assertion here
+
   playerList.sort((a: string, b: string) => {
-    const statsA = a && data?.statsLookup[a];
-    const statsB = b && data?.statsLookup[b];
-    if (!statsA || !statsB) {
+    const teamA = data?.teamLookup[a];
+    const teamB = data?.teamLookup[b];
+    
+    if (teamA && teamB) {
+      return teamA.localeCompare(teamB);
+    } else {
       return 0;
     }
-    if (statsA.last_round_team === statsB.last_round_team) {
-      return statsB.kills - statsA.kills;  // Sort by kills in descending order
-    } else {
-      return statsA.last_round_team.localeCompare(statsB.last_round_team);  // Sort by team in ascending order
-    }
   });
+
   return playerList;
 }, [data]);
+
 
 // Then, create a matrix of kills
 const killMatrix = useMemo(() => players?.map(player => {

@@ -104,7 +104,7 @@ const players = useMemo(() => {
     const teamB = data?.teamLookup[b];
     
     if (teamA && teamB) {
-      return teamA.localeCompare(teamB);
+      return -1*teamA.localeCompare(teamB);
     } else {
       return 0;
     }

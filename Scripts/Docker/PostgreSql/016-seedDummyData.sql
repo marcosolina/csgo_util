@@ -1,6 +1,5 @@
 \c demfiles;
 
-INSERT INTO public.users (steam_id, user_name) VALUES ('', '');
 INSERT INTO public.users (steam_id, user_name) VALUES ('76561198044148171', 'I am Murdock');
 INSERT INTO public.users (steam_id, user_name) VALUES ('76561199111430276', 'ahenderson2509');
 INSERT INTO public.users (steam_id, user_name) VALUES ('76561199107771304', 'vks2020');

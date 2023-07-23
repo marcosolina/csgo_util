@@ -60,6 +60,7 @@ public class ControllerDemFilesManager {
 		return mediator.send(new CmdRemoveDemFileFromQueue(filename));
 	}
 
+	@SuppressWarnings("null")
 	@GetMapping()
 	@ApiOperation(value = "It returns a list the available DEM files in the system")
 	public Mono<ResponseEntity<RestGetFilesResponse>> getListFiles() {

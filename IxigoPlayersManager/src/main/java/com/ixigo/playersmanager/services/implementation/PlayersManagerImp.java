@@ -1,5 +1,6 @@
 package com.ixigo.playersmanager.services.implementation;
 
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
@@ -16,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.util.StringUtils;
 
 import com.ixigo.demmanagercontract.models.enums.UsersScoresQueryParam;
 import com.ixigo.demmanagercontract.models.rest.demdata.data.RestPlayerMatchStatsExtended;
@@ -83,6 +85,28 @@ public class PlayersManagerImp implements PlayersManager {
 	            
 	            if (!v.isEmpty()) {
 	            	// TODO use reflection, loop the methods of the class
+	            	
+	            	try {
+		            	Method[] methods = SvcMapStats.class.getMethods();
+		            	for (int i = 0; i < methods.length; i++) {
+		            		Method mSetter = methods[i];
+		            		if(mSetter.getName().startsWith("set") && mSetter.getParameterTypes().length == 1) {
+		            			if(mSetter.getParameterTypes()[0] == BigDecimal.class) {
+										Method mGetter = SvcMapStats.class.getMethod(mSetter.getName().replace("set", "get"));
+										var z = mGetter::invoke;
+										fromBigDecimalToBidecimalAvg(mGetter::invoke, v, 2);
+		            			}
+	            				if(mSetter.getParameterTypes()[0] == Long.class) {
+		            				
+		            			}
+		            		}
+						}
+	            	} catch (NoSuchMethodException | SecurityException e) {
+	            		e.printStackTrace();
+	            		throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.GENERIC), ErrorCodes.GENERIC);
+	            	}
+	            	
+	            	
 	                uas.setRoundWinShare(           fromBigDecimalToBidecimalAvg(SvcMapStats::getRoundWinShare,             v, 2));
 	                uas.setHeadShotsPercentage(     fromBigDecimalToBidecimalAvg(SvcMapStats::getHeadShotsPercentage,       v, 2));
 	                uas.setHalfLifeTelevisionRating(fromBigDecimalToBidecimalAvg(SvcMapStats::getHalfLifeTelevisionRating,  v, 3));

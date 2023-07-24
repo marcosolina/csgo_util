@@ -26,7 +26,7 @@ public class SvcMapStats implements Serializable{
 	private LocalDateTime matchDate = null;
 	private BigDecimal bombPlanted = BigDecimal.ZERO;
 	private BigDecimal fireDamage = BigDecimal.ZERO;
-	private Long kasttotal = null;
+	private Long kasttotal = 0L;
 	private BigDecimal roundWinShare = BigDecimal.ZERO;
 	private Long score;
 	private BigDecimal headShots = BigDecimal.ZERO;
@@ -39,13 +39,13 @@ public class SvcMapStats implements Serializable{
 	private Long oneVersusFour;
 	private BigDecimal headShotsPercentage = BigDecimal.ZERO;
 	private BigDecimal deaths = BigDecimal.ZERO;
-	private Long roundsOnTeam2 = null;
-	private Long roundsOnTeam1 = null;
+	private Long roundsOnTeam2 = 0L;
+	private Long roundsOnTeam1 = 0L;
 	private BigDecimal teammateDamageHealth = BigDecimal.ZERO;
-	private Long roundsplayed = null;
+	private Long roundsplayed = 0L;
 	private BigDecimal entryKill = BigDecimal.ZERO;
 	private Long mostValuablePlayer;
-	private Long matchId = null;
+	private Long matchId = 0L;
 	private BigDecimal deathPerRound = BigDecimal.ZERO;
 	private BigDecimal roundWindShareTotal = BigDecimal.ZERO;
 	private BigDecimal killPerRound = BigDecimal.ZERO;

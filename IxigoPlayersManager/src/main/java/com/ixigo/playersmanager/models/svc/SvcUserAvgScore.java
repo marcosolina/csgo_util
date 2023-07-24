@@ -23,7 +23,6 @@ public class SvcUserAvgScore {
 	private BigDecimal headShotsPercentage;
 	private BigDecimal teamKillFriendlyFire;
 	private BigDecimal entryKill;
-	private BigDecimal bombPLanted;
 	private BigDecimal bombDefused;
 	private BigDecimal mostValuablePlayer;
 	private BigDecimal score;
@@ -53,4 +52,17 @@ public class SvcUserAvgScore {
 	private BigDecimal highExplosiveDamage;
 	private BigDecimal fireDamage;
 	private BigDecimal matchPlayed;
+	private BigDecimal kast;
+	private BigDecimal hostageRescued;
+	private BigDecimal bombPlanted;
+	private BigDecimal roundWinShareTotal;
+	private BigDecimal teammateDamageHealth;
+	private BigDecimal opponentBlindTime;
+	private BigDecimal teammateBlindTime;
+	private BigDecimal flashAssists;
+	private BigDecimal kasttotal;
+	private BigDecimal roundsOnTeam2;
+	private BigDecimal roundsOnTeam1;
+	private BigDecimal roundsplayed;
+	
 }

@@ -1,3 +1,4 @@
+/*
 package com.ixigo.playersmanager.mappers;
 
 import java.lang.reflect.Field;
@@ -7,7 +8,6 @@ import java.util.List;
 import com.ixigo.demmanagercontract.models.rest.demdata.data.RestPlayerMatchStatsExtended;
 import com.ixigo.playersmanager.models.svc.SvcMapStats;
 
-/*
 public class AnnotationGenerator {
 	public static void main(String[] args) {
         List<String> annotations = generateMappings();

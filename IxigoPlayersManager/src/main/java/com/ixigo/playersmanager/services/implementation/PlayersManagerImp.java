@@ -1,6 +1,5 @@
 package com.ixigo.playersmanager.services.implementation;
 
-import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
@@ -17,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.util.StringUtils;
 
 import com.ixigo.demmanagercontract.models.enums.UsersScoresQueryParam;
 import com.ixigo.demmanagercontract.models.rest.demdata.data.RestPlayerMatchStatsExtended;
@@ -44,15 +42,15 @@ public class PlayersManagerImp implements PlayersManager {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(PlayersManagerImp.class);
 	@Autowired
 	private IxigoMessageResource msgSource;
-    @Autowired
-    private PartitionTeams ixigoPartition;
-    @Autowired
+	@Autowired
+	private PartitionTeams ixigoPartition;
+	@Autowired
 	private IxigoWebClientUtils webClient;
-    @Autowired
-    private DemManagersEndPoints demManagerEndPoints;
-    @Autowired
-    private RestMapper mapper;
-	
+	@Autowired
+	private DemManagersEndPoints demManagerEndPoints;
+	@Autowired
+	private RestMapper mapper;
+
 	@Override
 	public Flux<SvcTeam> generateTwoTeamsForcingSimilarTeamSizes(Integer numberOfMatches, List<String> usersIDs, double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws IxigoException {
 		Flux<SvcUserAvgScore> usersList = getUsersAvg(numberOfMatches, usersIDs, scoreType, minPercPlayed);
@@ -61,7 +59,7 @@ public class PlayersManagerImp implements PlayersManager {
 
 	@Override
 	public Mono<Map<String, SvcUserAvgScore>> getUsersAvgStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs, ScoreType partionByScore, BigDecimal minPercPlayed) throws IxigoException {
-		
+
 		var monoScores = this.getUserScoresFromDemManagerService(numberOfMatches, usersIDs, minPercPlayed);
 		var monoKnownUsers = this.getKnownUsersList();
 		// @formatter:off
@@ -85,188 +83,181 @@ public class PlayersManagerImp implements PlayersManager {
 	            
 	            if (!v.isEmpty()) {
 	            	// TODO use reflection, loop the methods of the class
-	            	
-	            	try {
-		            	Method[] methods = SvcMapStats.class.getMethods();
-		            	for (int i = 0; i < methods.length; i++) {
-		            		Method mSetter = methods[i];
-		            		if(mSetter.getName().startsWith("set") && mSetter.getParameterTypes().length == 1) {
-		            			if(mSetter.getParameterTypes()[0] == BigDecimal.class) {
-										Method mGetter = SvcMapStats.class.getMethod(mSetter.getName().replace("set", "get"));
-										var z = mGetter::invoke;
-										fromBigDecimalToBidecimalAvg(mGetter::invoke, v, 2);
-		            			}
-	            				if(mSetter.getParameterTypes()[0] == Long.class) {
-		            				
-		            			}
-		            		}
-						}
-	            	} catch (NoSuchMethodException | SecurityException e) {
-	            		e.printStackTrace();
-	            		throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.GENERIC), ErrorCodes.GENERIC);
-	            	}
+
 	            	
 	            	
-	                uas.setRoundWinShare(           fromBigDecimalToBidecimalAvg(SvcMapStats::getRoundWinShare,             v, 2));
-	                uas.setHeadShotsPercentage(     fromBigDecimalToBidecimalAvg(SvcMapStats::getHeadShotsPercentage,       v, 2));
-	                uas.setHalfLifeTelevisionRating(fromBigDecimalToBidecimalAvg(SvcMapStats::getHalfLifeTelevisionRating,  v, 3));
-	                uas.setKillPerRound(            fromBigDecimalToBidecimalAvg(SvcMapStats::getKillPerRound,              v, 2));
-	                uas.setDeathPerRound(           fromBigDecimalToBidecimalAvg(SvcMapStats::getDeathPerRound,             v, 2));
-	                uas.setAverageDamagePerRound(   fromBigDecimalToBidecimalAvg(SvcMapStats::getAverageDamagePerRound,     v, 2));
-	                uas.setKillDeathRatio(          fromBigDecimalToBidecimalAvg(SvcMapStats::getKillDeathRatio,           v, 2));
-	                uas.setKills(                   fromBigDecimalToBidecimalAvg(SvcMapStats::getKills,                   v, 2));
-	                uas.setAssists(                 fromBigDecimalToBidecimalAvg(SvcMapStats::getAssists,                 v, 2));
-	                uas.setDeaths(                  fromBigDecimalToBidecimalAvg(SvcMapStats::getDeaths,                  v, 2));
-	                uas.setHeadShots(               fromBigDecimalToBidecimalAvg(SvcMapStats::getHeadShots,               v, 2));
-	                uas.setTeamKillFriendlyFire(    fromBigDecimalToBidecimalAvg(SvcMapStats::getTeamKillFriendlyFire,    v, 2));
-	                uas.setEntryKill(               fromBigDecimalToBidecimalAvg(SvcMapStats::getEntryKill,               v, 2));
-	                uas.setBombPLanted(             fromBigDecimalToBidecimalAvg(SvcMapStats::getBombPlanted,             v, 2));
-	                uas.setBombDefused(             fromBigDecimalToBidecimalAvg(SvcMapStats::getBombDefused,             v, 2));
-	                uas.setTradeKill(               fromBigDecimalToBidecimalAvg(SvcMapStats::getTradeKill,               v, 2));
-	                uas.setTradeDeath(              fromBigDecimalToBidecimalAvg(SvcMapStats::getTradeDeath,              v, 2));
-	                uas.setTotalDamageHealth(       fromBigDecimalToBidecimalAvg(SvcMapStats::getTotalDamageHealth,       v, 2));
-	                uas.setTotalDamageArmor(        fromBigDecimalToBidecimalAvg(SvcMapStats::getTotalDamageArmor,        v, 2));
-	                uas.setFireDamage(              fromBigDecimalToBidecimalAvg(SvcMapStats::getFireDamage,              v, 2));
+	            	uas.setKills(fromBigDecimalToBidecimalAvg(SvcMapStats::getKills, v, 2));
+	            	uas.setTeamKillFriendlyFire(fromBigDecimalToBidecimalAvg(SvcMapStats::getTeamKillFriendlyFire, v, 2));
+	            	uas.setHalfLifeTelevisionRating(fromBigDecimalToBidecimalAvg(SvcMapStats::getHalfLifeTelevisionRating, v, 2));
+	            	uas.setBombDefused(fromBigDecimalToBidecimalAvg(SvcMapStats::getBombDefused, v, 2));
+	            	uas.setFireDamage(fromBigDecimalToBidecimalAvg(SvcMapStats::getFireDamage, v, 2));
+	            	uas.setRoundWinShare(fromBigDecimalToBidecimalAvg(SvcMapStats::getRoundWinShare, v, 2));
+	            	uas.setHeadShots(fromBigDecimalToBidecimalAvg(SvcMapStats::getHeadShots, v, 2));
+	            	uas.setAssists(fromBigDecimalToBidecimalAvg(SvcMapStats::getAssists, v, 2));
+	            	uas.setHeadShotsPercentage(fromBigDecimalToBidecimalAvg(SvcMapStats::getHeadShotsPercentage, v, 2));
+	            	uas.setDeaths(fromBigDecimalToBidecimalAvg(SvcMapStats::getDeaths, v, 2));
+	            	uas.setEntryKill(fromBigDecimalToBidecimalAvg(SvcMapStats::getEntryKill, v, 2));
+	            	uas.setDeathPerRound(fromBigDecimalToBidecimalAvg(SvcMapStats::getDeathPerRound, v, 2));
+	            	uas.setKillPerRound(fromBigDecimalToBidecimalAvg(SvcMapStats::getKillPerRound, v, 2));
+	            	uas.setAverageDamagePerRound(fromBigDecimalToBidecimalAvg(SvcMapStats::getAverageDamagePerRound, v, 2));
+	            	uas.setTradeDeath(fromBigDecimalToBidecimalAvg(SvcMapStats::getTradeDeath, v, 2));
+	            	uas.setTotalDamageArmor(fromBigDecimalToBidecimalAvg(SvcMapStats::getTotalDamageArmor, v, 2));
+	            	uas.setTradeKill(fromBigDecimalToBidecimalAvg(SvcMapStats::getTradeKill, v, 2));
+	            	uas.setKillDeathRatio(fromBigDecimalToBidecimalAvg(SvcMapStats::getKillDeathRatio, v, 2));
+	            	uas.setTotalDamageHealth(fromBigDecimalToBidecimalAvg(SvcMapStats::getTotalDamageHealth, v, 2));
+	            	uas.setKast(fromBigDecimalToBidecimalAvg(SvcMapStats::getKast, v, 2));
+	            	uas.setHostageRescued(fromBigDecimalToBidecimalAvg(SvcMapStats::getHostageRescued, v, 2));
+	            	uas.setBombPlanted(fromBigDecimalToBidecimalAvg(SvcMapStats::getBombPlanted, v, 2));
+	            	uas.setRoundWinShareTotal(fromBigDecimalToBidecimalAvg(SvcMapStats::getRoundWinShareTotal, v, 2));
+	            	uas.setTeammateDamageHealth(fromBigDecimalToBidecimalAvg(SvcMapStats::getTeammateDamageHealth, v, 2));
+	            	uas.setOpponentBlindTime(fromBigDecimalToBidecimalAvg(SvcMapStats::getOpponentBlindTime, v, 2));
+	            	uas.setTeammateBlindTime(fromBigDecimalToBidecimalAvg(SvcMapStats::getTeammateBlindTime, v, 2));
+	            	uas.setFlashAssists(fromBigDecimalToBidecimalAvg(SvcMapStats::getFlashAssists, v, 2));
+
 	                
-	                uas.setOneVersusOne(        fromLongToBidecimalAvg(SvcMapStats::getOneVersusOne,            v, 2));
-	                uas.setOneVersusTwo(        fromLongToBidecimalAvg(SvcMapStats::getOneVersusTwo,            v, 2));
-	                uas.setOneVersusThree(      fromLongToBidecimalAvg(SvcMapStats::getOneVersusThree,          v, 2));
-	                uas.setOneVersusFour(       fromLongToBidecimalAvg(SvcMapStats::getOneVersusFour,           v, 2));
-	                uas.setOneVersusFive(       fromLongToBidecimalAvg(SvcMapStats::getOneVersusFive,           v, 2));
-	                uas.setMostValuablePlayer(  fromLongToBidecimalAvg(SvcMapStats::getMostValuablePlayer,      v, 2));
-	                uas.setScore(               fromLongToBidecimalAvg(SvcMapStats::getScore,                   v, 2));
-	                uas.setFiveKills(           fromLongToBidecimalAvg(SvcMapStats::getFiveKills,               v, 2));
-	                uas.setFourKills(           fromLongToBidecimalAvg(SvcMapStats::getFourKills,               v, 2));
-	                uas.setThreeKills(          fromLongToBidecimalAvg(SvcMapStats::getThreeKills,              v, 2));
-	                uas.setTwoKills(            fromLongToBidecimalAvg(SvcMapStats::getTwoKills,                v, 2));
-	                uas.setOneKill(             fromLongToBidecimalAvg(SvcMapStats::getOneKill,                 v, 2));
+	            	uas.setOneVersusThree(fromLongToBidecimalAvg(SvcMapStats::getOneVersusThree, v, 2));
+	            	uas.setOneVersusTwo(fromLongToBidecimalAvg(SvcMapStats::getOneVersusTwo, v, 2));
+	            	uas.setOneVersusOne(fromLongToBidecimalAvg(SvcMapStats::getOneVersusOne, v, 2));
+	            	uas.setFourKills(fromLongToBidecimalAvg(SvcMapStats::getFourKills, v, 2));
+	            	uas.setTwoKills(fromLongToBidecimalAvg(SvcMapStats::getTwoKills, v, 2));
+	            	uas.setOneVersusFive(fromLongToBidecimalAvg(SvcMapStats::getOneVersusFive, v, 2));
+	            	uas.setOneVersusFour(fromLongToBidecimalAvg(SvcMapStats::getOneVersusFour, v, 2));
+	            	uas.setScore(fromLongToBidecimalAvg(SvcMapStats::getScore, v, 2));
+	            	uas.setMostValuablePlayer(fromLongToBidecimalAvg(SvcMapStats::getMostValuablePlayer, v, 2));
+	            	uas.setFiveKills(fromLongToBidecimalAvg(SvcMapStats::getFiveKills, v, 2));
+	            	uas.setThreeKills(fromLongToBidecimalAvg(SvcMapStats::getThreeKills, v, 2));
+	            	uas.setOneKill(fromLongToBidecimalAvg(SvcMapStats::getOneKill, v, 2));
+	            	uas.setKasttotal(fromLongToBidecimalAvg(SvcMapStats::getKasttotal, v, 2));
+	            	uas.setRoundsOnTeam2(fromLongToBidecimalAvg(SvcMapStats::getRoundsOnTeam2, v, 2));
+	            	uas.setRoundsOnTeam1(fromLongToBidecimalAvg(SvcMapStats::getRoundsOnTeam1, v, 2));
+	            	uas.setRoundsplayed(fromLongToBidecimalAvg(SvcMapStats::getRoundsplayed, v, 2));
+
 	                
 	                //TODO set the values
 	                Function<SvcUserAvgScore, BigDecimal> function = null;
 	                switch (partionByScore) {
 	                case KILLS:
-	                    System.out.println("KILLS");
+	                    function = SvcUserAvgScore::getKills;
 	                    break;
 	                case FF:
-	                    System.out.println("Team kill friendly fire");
+	                	function = SvcUserAvgScore::getTeamKillFriendlyFire;
 	                    break;
 	                case HLTV:
-	                    System.out.println("Half life television rating");
+	                	function = SvcUserAvgScore::getHalfLifeTelevisionRating;
 	                    break;
 	                case BD:
-	                    System.out.println("Bomb defuse");
+	                	function = SvcUserAvgScore::getBombDefused;
 	                    break;
 	                case _1V3:
-	                    System.out.println("One versus three");
+	                	function = SvcUserAvgScore::getOneVersusThree;
 	                    break;
 	                case _1V2:
-	                    System.out.println("One versus two");
+	                	function = SvcUserAvgScore::getOneVersusTwo;
 	                    break;
 	                case KAST:
-	                    System.out.println("Kill, Assist, Survived or Traded");
+	                	function = SvcUserAvgScore::getKast;
 	                    break;
 	                case _1V1:
-	                    System.out.println("One versus one");
+	                	function = SvcUserAvgScore::getOneVersusOne;
 	                    break;
 	                case HR:
-	                    System.out.println("Hostage rescued");
+	                	function = SvcUserAvgScore::getHostageRescued;
 	                    break;
 	                case BP:
-	                    System.out.println("Bomb planted");
+	                	function = SvcUserAvgScore::getBombPlanted;
 	                    break;
 	                case UD:
-	                    System.out.println("Fire damage");
+	                	function = SvcUserAvgScore::getFireDamage;
 	                    break;
 	                case KAST_TOTAL:
-	                    System.out.println("Kast total");
+	                	function = SvcUserAvgScore::getKasttotal;
 	                    break;
 	                case RWS:
-	                    System.out.println("Round win share");
+	                	function = SvcUserAvgScore::getRoundWinShare;
 	                    break;
 	                case SCORE:
-	                    System.out.println("Score");
+	                	function = SvcUserAvgScore::getScore;
 	                    break;
 	                case HEAD_SHOTS:
-	                    System.out.println("Head shots");
+	                	function = SvcUserAvgScore::getHeadShots;
 	                    break;
 	                case ASSISTS:
-	                    System.out.println("Assists");
+	                	function = SvcUserAvgScore::getAssists;
 	                    break;
 	                case _4K:
-	                    System.out.println("Four kills");
+	                	function = SvcUserAvgScore::getFourKills;
 	                    break;
 	                case _2K:
-	                    System.out.println("Two kills");
+	                	function = SvcUserAvgScore::getTwoKills;
 	                    break;
 	                case _1V5:
-	                    System.out.println("One versus five");
+	                	function = SvcUserAvgScore::getOneVersusFive;
 	                    break;
 	                case _1V4:
-	                    System.out.println("One versus four");
+	                	function = SvcUserAvgScore::getOneVersusFour;
 	                    break;
 	                case HEADSHOT_PERCENTAGE:
-	                    System.out.println("Headshot percentage");
+	                	function = SvcUserAvgScore::getHeadShotsPercentage;
 	                    break;
 	                case DEATHS:
-	                    System.out.println("Deaths");
+	                	function = SvcUserAvgScore::getDeaths;
 	                    break;
 	                case FFD:
-	                    System.out.println("Teammate damage health");
+	                	function = SvcUserAvgScore::getTeammateDamageHealth;
 	                    break;
 	                case EK:
-	                    System.out.println("Entry kill");
+	                	function = SvcUserAvgScore::getEntryKill;
 	                    break;
 	                case MVP:
-	                    System.out.println("Most valuable player");
+	                	function = SvcUserAvgScore::getMostValuablePlayer;
 	                    break;
 	                case DPR:
-	                    System.out.println("Death per round");
+	                	function = SvcUserAvgScore::getDeathPerRound;
 	                    break;
 	                case RWS_TOTAL:
-	                    System.out.println("Round win share total");
+	                	function = SvcUserAvgScore::getRoundWinShareTotal;
 	                    break;
 	                case KPR:
-	                    System.out.println("Kill per round");
+	                	function = SvcUserAvgScore::getKillPerRound;
 	                    break;
 	                case ADR:
-	                    System.out.println("Average damage per round");
+	                	function = SvcUserAvgScore::getAverageDamagePerRound;
 	                    break;
 	                case TD:
-	                    System.out.println("Trade death");
+	                	function = SvcUserAvgScore::getTradeDeath;
 	                    break;
 	                case TDA:
-	                    System.out.println("Total damage armor");
+	                	function = SvcUserAvgScore::getTotalDamageArmor;
 	                    break;
 	                case _5K:
-	                    System.out.println("Five kills");
+	                	function = SvcUserAvgScore::getFiveKills;
 	                    break;
 	                case _3K:
-	                    System.out.println("Three kills");
+	                	function = SvcUserAvgScore::getThreeKills;
 	                    break;
 	                case EBT:
-	                    System.out.println("Opponent blind time");
+	                	function = SvcUserAvgScore::getOpponentBlindTime;
 	                    break;
 	                case TK:
-	                    System.out.println("Trade kill");
+	                	function = SvcUserAvgScore::getTradeKill;
 	                    break;
 	                case _KDR:
-	                    System.out.println("Kill death ratio");
+	                	function = SvcUserAvgScore::getKillDeathRatio;
 	                    break;
 	                case _1K:
-	                    System.out.println("One kill");
+	                	function = SvcUserAvgScore::getOneKill;
 	                    break;
 	                case TDH:
-	                    System.out.println("Total damage health");
+	                	function = SvcUserAvgScore::getTotalDamageHealth;
 	                    break;
 	                case FBT:
-	                    System.out.println("Teammate blind time");
+	                	function = SvcUserAvgScore::getTeammateBlindTime;
 	                    break;
 	                case FA:
-	                    System.out.println("Flash assists");
+	                	function = SvcUserAvgScore::getFlashAssists;
 	                    break;
 	                default:
-	                    System.out.println("Unknown ScoreType");
-	                    break;
+	                	throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.SCORE_TYPE_NOT_SUPPORTED), ErrorCodes.SCORE_TYPE_NOT_SUPPORTED);
 	            }
 	                /*
 	                 * This is the value that will be used to split the teams.
@@ -281,46 +272,41 @@ public class PlayersManagerImp implements PlayersManager {
 			return map;
 		});
 		// @formatter:on
-		
+
 	}
-	
-	
-	
+
 	private Mono<Map<String, List<RestPlayerMatchStatsExtended>>> getUserScoresFromDemManagerService(Integer numberOfMatches, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
 		try {
 			URL url = new URL(demManagerEndPoints.getGetDemDataUsersScores());
 			Map<String, String> queryParams = new HashMap<>();
 			queryParams.put(UsersScoresQueryParam.NUMBER_OF_MATCHES.getQueryParamKey(), numberOfMatches.toString());
 			queryParams.put(UsersScoresQueryParam.USERS_STEAM_IDS.getQueryParamKey(), String.join(",", usersIDs));
-	        
-	        _LOGGER.debug(url.toString());
-	        _LOGGER.debug(String.format("Query paramas: %s",queryParams.toString()));
-	        
-			return webClient.performGetRequest(RestUsersScoresResp.class, url, Optional.empty(), Optional.of(queryParams))
-					.map(resp -> resp.getBody().getUserScores());
-		}
-		catch (MalformedURLException e) {
+
+			_LOGGER.debug(url.toString());
+			_LOGGER.debug(String.format("Query paramas: %s", queryParams.toString()));
+
+			return webClient.performGetRequest(RestUsersScoresResp.class, url, Optional.empty(), Optional.of(queryParams)).map(resp -> resp.getBody().getUserScores());
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			_LOGGER.error(e.getMessage());
 			return Mono.error(new IxigoException(HttpStatus.CONFLICT, msgSource.getMessage(ErrorCodes.GENERIC), ErrorCodes.GENERIC));
 		}
 	}
-	
+
 	private Mono<List<RestUsers>> getKnownUsersList() {
 		try {
 			URL url = new URL(demManagerEndPoints.getGetDemDataUsers());
 			_LOGGER.debug(url.toString());
-			 return webClient.performGetRequest(RestUsersResp.class, url, Optional.empty(), Optional.empty()).map(resp -> resp.getBody().getUsers());
-		}
-		catch (MalformedURLException e) {
+			return webClient.performGetRequest(RestUsersResp.class, url, Optional.empty(), Optional.empty()).map(resp -> resp.getBody().getUsers());
+		} catch (MalformedURLException e) {
 			e.printStackTrace();
 			_LOGGER.error(e.getMessage());
-			 return Mono.error(new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.GENERIC), ErrorCodes.GENERIC));
+			return Mono.error(new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.GENERIC), ErrorCodes.GENERIC));
 		}
 	}
 
 	private BigDecimal fromBigDecimalToBidecimalAvg(Function<SvcMapStats, BigDecimal> function, List<SvcMapStats> userRecords, int scale) {
-        // @formatter:off
+		// @formatter:off
         return BigDecimal.valueOf(
                     userRecords.stream()
                     .map(function)
@@ -329,10 +315,10 @@ public class PlayersManagerImp implements PlayersManager {
                     .orElse(0)
                 ).setScale(scale, RoundingMode.DOWN);
         // @formatter:on
-    }
-	
+	}
+
 	private BigDecimal fromLongToBidecimalAvg(ToLongFunction<SvcMapStats> function, List<SvcMapStats> userRecords, int scale) {
-        // @formatter:off
+		// @formatter:off
         return BigDecimal.valueOf(
                     userRecords.stream()
                     .mapToDouble(function::applyAsLong)
@@ -340,10 +326,10 @@ public class PlayersManagerImp implements PlayersManager {
                     .orElse(0)
                 ).setScale(scale, RoundingMode.DOWN);
         // @formatter:on
-    }
-	
+	}
+
 	private Flux<SvcUserAvgScore> getUsersAvg(Integer numberOfMatches, List<String> usersIDs, ScoreType scoreType, BigDecimal minPercPlayed) throws IxigoException {
 		Mono<Map<String, SvcUserAvgScore>> usersAvg = this.getUsersAvgStatsForLastXGames(numberOfMatches, usersIDs, scoreType, minPercPlayed);
 		return usersAvg.map(map -> map.values()).flatMapMany(Flux::fromIterable);
-    }
+	}
 }

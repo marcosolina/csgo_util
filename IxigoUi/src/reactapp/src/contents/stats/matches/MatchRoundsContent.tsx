@@ -190,15 +190,14 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
       // Calculate maximum values
       function getMaxValues() {
-        let maxEquipmentValue = 0;
-        let maxMoneySpent = 0;
+        let maxEither = 0;
 
         for (const round of filteredMatchRounds) {
-          maxEquipmentValue = Math.max(maxEquipmentValue, round.total_equipment_value);
-          maxMoneySpent = Math.max(maxMoneySpent, round.total_money_spent);
+          maxEither = Math.max(maxEither, round.total_equipment_value);
+          maxEither = Math.max(maxEither, round.total_money_spent);
         }
 
-        return { total_equipment_value: maxEquipmentValue, total_money_spent: maxMoneySpent };
+        return { total_equipment_value: maxEither, total_money_spent: maxEither };
       }
 
       setMaxValues(getMaxValues());

@@ -24,6 +24,7 @@ DROP TABLE IF EXISTS round_events CASCADE;
 DROP TABLE IF EXISTS player_stats CASCADE;
 DROP TABLE IF EXISTS player_round_stats CASCADE;
 DROP TABLE IF EXISTS match_stats CASCADE;
+DROP FUNCTION IF EXISTS truncate_tables(username IN VARCHAR) CASCADE;
 
 /*
  * Create the users table
@@ -141,6 +142,18 @@ CREATE TABLE ROUND_STATS (
     match_id INTEGER,
     FOREIGN KEY (match_id) REFERENCES MATCH_STATS(match_id)
 );
+
+CREATE OR REPLACE FUNCTION truncate_tables(username IN VARCHAR) RETURNS void AS $$
+DECLARE
+    statements CURSOR FOR
+        SELECT tablename FROM pg_tables
+        WHERE tableowner = username AND schemaname = 'public';
+BEGIN
+    FOR stmt IN statements LOOP
+        EXECUTE 'TRUNCATE TABLE ' || quote_ident(stmt.tablename) || ' CASCADE;';
+    END LOOP;
+END;
+$$ LANGUAGE plpgsql;
 
 DROP VIEW IF EXISTS ROUND_KILL_EVENTS_EXTENDED CASCADE;
 DROP VIEW IF EXISTS PLAYER_KILL_COUNT CASCADE;

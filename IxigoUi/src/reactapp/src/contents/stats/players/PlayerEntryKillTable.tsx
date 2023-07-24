@@ -118,15 +118,15 @@ const PlayerEntryKIllTable: React.FC<RadarChartProps> = ({ steamid }) => {
         return [
             {
                 'label': `Success`,
-                'Combined': `${(player.ek_success_rate).toFixed(0)}%`,
-                'Ts': `${(player.ekt_success_rate).toFixed(0)}%`,
-                'CTs': `${(player.ekct_success_rate).toFixed(0)}%`,
+                'Combined': `${player.ek_success_rate?(player.ek_success_rate).toFixed(0):0}%`,
+                'Ts': `${player.ekt_success_rate?(player.ekt_success_rate).toFixed(0):0}%`,
+                'CTs': `${player.ekct_success_rate?(player.ekct_success_rate).toFixed(0):0}%`,
             },
             {
                 'label': `Attempts`,
-                'Combined': `${(100*player.ek_success_rate_overall/player.ek_success_rate).toFixed(0)}%`,
-                'Ts': `${(100*player.ekt_success_rate_overall/player.ekt_success_rate).toFixed(0)}%`,
-                'CTs': `${(100*player.ekct_success_rate_overall/player.ekct_success_rate).toFixed(0)}%`,
+                'Combined': `${player.ek_success_rate_overall?(100*player.ek_success_rate_overall/player.ek_success_rate).toFixed(0):0}%`,
+                'Ts': `${player.ekt_success_rate_overall?(100*player.ekt_success_rate_overall/player.ekt_success_rate).toFixed(0):0}%`,
+                'CTs': `${player.ekct_success_rate_overall?(100*player.ekct_success_rate_overall/player.ekct_success_rate).toFixed(0):0}%`,
             }
             // Add more rows if needed
         ];

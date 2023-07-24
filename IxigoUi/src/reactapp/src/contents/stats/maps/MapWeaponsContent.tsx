@@ -35,6 +35,7 @@ interface MapWeaponsContentProps {
     damage_per_hit: number;
     headshotkills_percentage: number;
     shots_fired: number;
+    headshot_percentage: number;
     chest_hit_percentage: number;
     leg_hit_percentage: number;
     stomach_hit_percentage: number;
@@ -151,6 +152,9 @@ interface MapWeaponsContentProps {
             return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
           }},
           { accessorKey: 'shots_fired' as const, header: 'SHOTS', size: smallColSize, Header: createCustomHeader('Shots fired') },
+          { accessorKey: 'headshot_percentage' as const, header: 'HHP', size: smallColSize, Header: createCustomHeader('Head hit percentage'), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
+            return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
+          }},
           { accessorKey: 'chest_hit_percentage' as const, header: 'CHP', size: smallColSize, Header: createCustomHeader('Chest hit percentage'), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
             return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
           }},
@@ -181,9 +185,10 @@ interface MapWeaponsContentProps {
             pagination: { pageIndex: 0, pageSize: 20 },
           }}
              enableGrouping
-             enableColumnFilters={false}
              enableSorting={true}
              enableMultiSort
+             enableColumnFilters={true}
+             enableColumnFilterModes
              enableDensityToggle={false}
              enableBottomToolbar={true}
              enablePagination={true}

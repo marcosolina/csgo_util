@@ -93,7 +93,7 @@ const PlayerRadarChart: React.FC<RadarChartProps> = ({ steamid }) => {
     const ebtZScore = (player.ebt - ebtMean) / ebtStdDev;
 
     const originalValues = [player.kpr, player.hltv_rating, player.adr, player.kast, player.dpr, player.headshot_percentage, player.ud, player.ebt];
-    const descriptions = ['Kills per round', 'HLTV rating','Average Damage per Round', 'KAST%','Deaths Per Round (lower values give higher z-score)','Headshot kill %','Utility Damage','Average Enemy blind time']
+    const descriptions = ['Kills per round', 'HLTV rating','Average Damage per Round', 'Kill/Assist/Survive/TD%','Deaths Per Round (lower values give higher z-score)','Headshot kill %','Utility Damage','Average Enemy blind time']
 
     // Use z-scores in the dataset
     const data = {

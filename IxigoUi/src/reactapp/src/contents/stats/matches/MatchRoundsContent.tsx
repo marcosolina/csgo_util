@@ -259,8 +259,8 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
   const PlayerBlob: React.FC<{ isAlive: boolean, team: 'team1' | 'team2' }> = ({ isAlive, team }) => {
     const data = [
-      { title: 'Alive', value: isAlive ? 100 : 0, color: team == 'team1' ? '#90caf9' : 'orange' },
-      { title: 'Dead', value: isAlive ? 0 : 100, color: 'dimgrey' },
+      { title: 'Survived', value: isAlive ? 100 : 0, color: team == 'team1' ? '#90caf9' : 'orange' },
+      { title: 'Died', value: isAlive ? 0 : 100, color: 'dimgrey' },
     ];
 
     return (

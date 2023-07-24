@@ -123,13 +123,15 @@ import {
           initialState={{ showColumnFilters: false,
             density: 'compact',
             sorting: [{ id: 'kills', desc: true }], //sort by state by default
+            pagination: { pageIndex: 0, pageSize: 20 },
             columnPinning: { left: ['weapon', 'weapon_img'] },
              }}
              enableColumnActions={false}
              enableColumnFilters={true}
+             enableColumnFilterModes
              enableSorting={true}
              enableBottomToolbar={true}
-             enablePagination={false}
+             enablePagination={true}
              enableTopToolbar={true}
              enableDensityToggle={false}
              enableGlobalFilter={false}

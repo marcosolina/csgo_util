@@ -201,6 +201,8 @@ import {
             sorting: [{ id: 'match_date', desc: true }], //sort by state by default
              }}
           enableGrouping
+          enableColumnFilters={true}
+          enableColumnFilterModes
           enablePagination
           enableDensityToggle={false}
           muiToolbarAlertBannerProps={

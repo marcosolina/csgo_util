@@ -83,5 +83,6 @@ export const weaponImage: { [key: string]: string } = {
     'tec9': tec9,
     'ump45': ump45,
     'usp_silencer': usp_silencer,
+    'usp_silencer_off': usp_silencer,
     'xm1014': xm1014
 };

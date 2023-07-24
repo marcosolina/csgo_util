@@ -35,8 +35,8 @@ public class PartitionTeamsIxigo implements PartitionTeams {
 		
 		// @formatter:off
 		return usersList
-			.sort((o1, o2) -> o1.getTeamSplitScore().compareTo(o2.getTeamSplitScore()) * -1)
 			.filter(score -> score != null && score.getTeamSplitScore() != null)
+			.sort((o1, o2) -> o1.getTeamSplitScore().compareTo(o2.getTeamSplitScore()) * -1)
 			.map(score -> Tuples.of(score, score.getTeamSplitScore().doubleValue()))
 			.collectList()
 			.map(tupleList -> {

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PlayerGraphsStatsContent from './PlayerGraphsStatsContent';
 import IxigoSelect from "../../../common/select/IxigoSelect";
 import IxigoSelectMultiple from "../../../common/select/IxigoSelectMultiple";
-import { Box, Grid  } from '@mui/material';
+import { Box, Grid, TextField  } from '@mui/material';
 
 interface PlayerGraphsContentProps {
   steamid: string;
@@ -54,10 +54,13 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
   ];
   const [selectedFieldNames, setSelectedFieldNames] = useState<string[]>(['hltv_rating', 'kills', 'headshot_percentage', 'adr']);
 
+  const [startDate, setStartDate] = useState<Date | null>(null);
+  const [endDate, setEndDate] = useState<Date | null>(null);
+
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}> 
       <Grid container spacing={3}>
-        <Grid item xs={10}>
+        <Grid item md={6} xs={6}>
           <IxigoSelectMultiple
             label="Graphs"
             possibleValues={fieldNamesOptions}
@@ -65,7 +68,7 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
             onChange={setSelectedFieldNames}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item md={2} xs={6}>
           <IxigoSelect
             label="Binning Level"
             possibleValues={binningLevels}
@@ -73,6 +76,25 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
             onChange={value => setBinningLevel(value as 'week' | 'month')}
           />
         </Grid>
+        <Grid item md={2} xs={6}>
+          <TextField
+            label="Start Date"
+            type="date"
+            value={startDate ? startDate.toISOString().substring(0, 10) : ""}
+            onChange={e => setStartDate(new Date(e.target.value))}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+        <Grid item md={2} xs={6}>
+          <TextField
+            label="End Date"
+            type="date"
+            value={endDate ? endDate.toISOString().substring(0, 10) : ""}
+            onChange={e => setEndDate(new Date(e.target.value))}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+
       </Grid>
       {selectedFieldNames.map((fieldName) => {
         const isLastGraph = fieldName === selectedFieldNames[selectedFieldNames.length - 1];
@@ -84,6 +106,8 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
               label={fieldNamesOptions.find(option => option.value === fieldName)?.label || ''}
               binningLevel={binningLevel}
               showXAxisLabels={isLastGraph}
+              startDate={startDate}
+              endDate={endDate}
             />
           </Box>
         );

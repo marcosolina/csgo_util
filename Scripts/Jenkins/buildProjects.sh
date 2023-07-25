@@ -2,6 +2,15 @@
 
 WORKSPACE_FOLDER=$1
 
+# Build the React JS app
+cd $WORKSPACE_FOLDER/IxigoUi/src/reactapp
+npm install
+npm run build
+
+cp -r ./build/* $WORKSPACE_FOLDER/IxigoUi/src/main/resources/static
+
+# Build the C# Dem parser
+#dotnet publish $WORKSPACE_FOLDER/DemParser -r linux-arm64
 
 
 # Build the Java projects
@@ -14,4 +23,15 @@ mvn clean install -f $WORKSPACE_FOLDER/IxigoPlayersManagerContract/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoRconApiContract/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoServerHelperContract/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoNotificationContract/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoConfigServer/pom.xml
 mvn clean package -f $WORKSPACE_FOLDER/IxigoDemManager/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoDiscordBot/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoDiscovery/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoEventDispatcher/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoPlayersManager/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoProxy/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoRconApi/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoServerHelper/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoUi/pom.xml
+mvn clean package -f $WORKSPACE_FOLDER/IxigoNotification/pom.xml
+

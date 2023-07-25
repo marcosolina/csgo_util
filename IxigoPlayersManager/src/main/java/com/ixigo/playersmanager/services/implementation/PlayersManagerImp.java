@@ -52,20 +52,19 @@ public class PlayersManagerImp implements PlayersManager {
 	private RestMapper mapper;
 
 	@Override
-	public Flux<SvcTeam> generateTwoTeamsForcingSimilarTeamSizes(Integer numberOfMatches, List<String> usersIDs, double penaltyWeigth, ScoreType scoreType, BigDecimal minPercPlayed) throws IxigoException {
-		Flux<SvcUserAvgScore> usersList = getUsersAvg(numberOfMatches, usersIDs, scoreType, minPercPlayed);
+	public Flux<SvcTeam> generateTwoTeamsForcingSimilarTeamSizes(Integer numberOfMatches, List<String> usersIDs, double penaltyWeigth, ScoreType scoreType) throws IxigoException {
+		Flux<SvcUserAvgScore> usersList = getUsersAvg(numberOfMatches, usersIDs, scoreType);
 		return ixigoPartition.partitionTheUsersIntoTwoTeams(usersList, penaltyWeigth);
 	}
 
 	@Override
-	public Mono<Map<String, SvcUserAvgScore>> getUsersAvgStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs, ScoreType partionByScore, BigDecimal minPercPlayed) throws IxigoException {
+	public Mono<Map<String, SvcUserAvgScore>> getUsersAvgStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs, ScoreType partionByScore) throws IxigoException {
 
-		var monoScores = this.getUserScoresFromDemManagerService(numberOfMatches, usersIDs, minPercPlayed);
+		var monoScores = this.getUserScoresFromDemManagerService(numberOfMatches, usersIDs);
 		var monoKnownUsers = this.getKnownUsersList();
 		// @formatter:off
 		return Mono.zip(monoScores, monoKnownUsers).map(tuple -> {
-			Map<String, List<SvcMapStats>> usersScores = new HashMap<>();
-			tuple.getT1()
+			Map<String, List<SvcMapStats>> usersScores = tuple.getT1()
 				.entrySet()
 				.stream()
 				.collect(Collectors.toMap(Map.Entry::getKey, entry -> mapper.fromListRestMapStatsToSvcList(entry.getValue())));
@@ -275,7 +274,7 @@ public class PlayersManagerImp implements PlayersManager {
 
 	}
 
-	private Mono<Map<String, List<RestPlayerMatchStatsExtended>>> getUserScoresFromDemManagerService(Integer numberOfMatches, List<String> usersIDs, BigDecimal minPercPlayed) throws IxigoException {
+	private Mono<Map<String, List<RestPlayerMatchStatsExtended>>> getUserScoresFromDemManagerService(Integer numberOfMatches, List<String> usersIDs) throws IxigoException {
 		try {
 			URL url = new URL(demManagerEndPoints.getGetDemDataUsersScores());
 			Map<String, String> queryParams = new HashMap<>();
@@ -328,8 +327,8 @@ public class PlayersManagerImp implements PlayersManager {
         // @formatter:on
 	}
 
-	private Flux<SvcUserAvgScore> getUsersAvg(Integer numberOfMatches, List<String> usersIDs, ScoreType scoreType, BigDecimal minPercPlayed) throws IxigoException {
-		Mono<Map<String, SvcUserAvgScore>> usersAvg = this.getUsersAvgStatsForLastXGames(numberOfMatches, usersIDs, scoreType, minPercPlayed);
+	private Flux<SvcUserAvgScore> getUsersAvg(Integer numberOfMatches, List<String> usersIDs, ScoreType scoreType) throws IxigoException {
+		Mono<Map<String, SvcUserAvgScore>> usersAvg = this.getUsersAvgStatsForLastXGames(numberOfMatches, usersIDs, scoreType);
 		return usersAvg.map(map -> map.values()).flatMapMany(Flux::fromIterable);
 	}
 }

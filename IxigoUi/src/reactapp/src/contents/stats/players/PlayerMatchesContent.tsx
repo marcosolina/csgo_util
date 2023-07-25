@@ -151,7 +151,7 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
             if (!selectedStatsContext) {
               throw new Error('useContext was called outside of the selectedStatsContext provider');
             }
-            const { selectedMatch, setSelectedMatch, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
+            const {  setSelectedMatch, setSelectedSubpage } = selectedStatsContext;
             return (
               <Box 
                 component={Link}
@@ -174,16 +174,15 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
                 {`${formattedDate}, ${formattedTime}`}
               </Box>
             );
-          }},
+          },},
           { accessorKey: "mapName" as const, header: "Map",
             Cell: ({ cell }: { cell: any }) => {
               const mapName = cell.getValue() as string;
-              const steamid = cell.row.original.steamid;
               const selectedStatsContext = useContext(SelectedStatsContext);
               if (!selectedStatsContext) {
                 throw new Error('useContext was called outside of the selectedStatsContext provider');
               }
-              const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage, selectedMap, setSelectedMap } = selectedStatsContext;
+              const { setSelectedSubpage, setSelectedMap } = selectedStatsContext;
               return (
                 <Box 
                   component={Link}

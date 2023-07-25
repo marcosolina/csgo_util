@@ -105,7 +105,7 @@ import { Link } from 'react-router-dom';
               if (!selectedStatsContext) {
                 throw new Error('useContext was called outside of the selectedStatsContext provider');
               }
-              const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
+              const {  setSelectedPlayerSteamID,  setSelectedSubpage } = selectedStatsContext;
               return (
                 <Box 
                   component={Link}

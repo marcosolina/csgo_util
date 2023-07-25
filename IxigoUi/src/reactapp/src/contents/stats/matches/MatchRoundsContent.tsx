@@ -21,7 +21,6 @@ import pistol from '../../../assets/icons/pistol.png';
 import headshot from '../../../assets/icons/hs.png';
 import flashbang from '../../../assets/icons/flashbang.png';
 import { weaponImage } from "../weaponImage";
-import { group } from "console";
 
 const roundIconImage: { [key: number]: string } = {
   1: bomb,
@@ -81,30 +80,6 @@ interface FinanceCellProps {
   maxValues: { total_equipment_value: number, total_money_spent: number } | undefined;
 }
 
-interface RoundEvent {
-  steamid: string;
-  round: number;
-  match_id: number;
-  eventtype: string;
-  eventtime: number;
-}
-
-interface KillEvent {
-  victimsteamid: string;
-  isfirstkill: boolean;
-  match_id: number;
-  eventtime: number;
-  istradekill: boolean;
-  assister: string;
-  steamid: string;
-  weapon: string;
-  flashassister: string;
-  round: number;
-  killerflashed: string;
-  headshot: boolean;
-  istradedeath: boolean;
-}
-
 
 // Define a type that represents a row in your table
 interface TableRound {
@@ -128,7 +103,7 @@ const round_end_reasons: { [key: number]: string } = {
 
 const smallColSize = 5;
 const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => {
-  const [maxValues, setMaxValues] = useState<{ total_equipment_value: number, total_money_spent: number }>({ total_equipment_value: 0, total_money_spent: 0 });
+  const [, setMaxValues] = useState<{ total_equipment_value: number, total_money_spent: number }>({ total_equipment_value: 0, total_money_spent: 0 });
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery<{
     matchRounds: TableRound[],
@@ -218,45 +193,6 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     );
   }
 
-  const FinanceCell: React.FC<FinanceCellProps> = ({ cell, row, team, maxValues }) => {
-    if (!maxValues) {
-      return null;  // or some placeholder
-    }
-    const teamData = cell.row.original[team];
-    if (!data) {
-      return null;  // or some placeholder
-    }
-    if (!teamData) {
-      return null;  // or some placeholder
-    }
-
-    const equipmentValuePercentage = teamData.total_equipment_value / data.maxValues.total_equipment_value * 100;
-    const moneySpentPercentage = teamData.total_money_spent / data.maxValues.total_money_spent * 100;
-
-    return (
-      <div style={{ direction: team === 'team1' ? 'rtl' : 'ltr' }}>
-        <Tooltip title={`Equipment Value: $${teamData.total_equipment_value}`}>
-          <div style={{
-            backgroundColor: 'rgb(75, 192, 192)',
-            borderRadius: '10px',
-            width: `${equipmentValuePercentage}%`,
-            height: '10px'
-          }} />
-        </Tooltip>
-        <Tooltip title={`Cash Spent: $${teamData.total_money_spent}`}>
-          <div style={{
-            backgroundColor: 'orange',
-            borderRadius: '10px',
-            width: `${moneySpentPercentage}%`,
-            height: '10px'
-          }} />
-        </Tooltip>
-      </div>
-    );
-  }
-
-
-
   const PlayerBlob: React.FC<{ isAlive: boolean, team: 'team1' | 'team2' }> = ({ isAlive, team }) => {
     const data = [
       { title: 'Survived', value: isAlive ? 100 : 0, color: team === 'team1' ? '#90caf9' : 'orange' },
@@ -273,28 +209,6 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
           lengthAngle={360}
           animate
         />
-      </div>
-    );
-  }
-  const PlayerCountCell: React.FC<{ cell: any, row: { index: number }, team: 'team1' | 'team2' }> = ({ cell, row, team }) => {
-    const teamData = cell.row.original[team];
-    if (!teamData) {
-      // The data for this team does not exist, possibly because the match is not over yet
-      return null;
-    }
-
-    const { player_count, death_count } = teamData;
-    const playerBlobs = [];
-
-    for (let i = 0; i < player_count; i++) {
-      playerBlobs.push(
-        <PlayerBlob key={i} isAlive={i >= death_count} team={team} />
-      );
-    }
-
-    return (
-      <div style={{ display: 'flex', justifyContent: team === 'team1' ? 'flex-end' : 'flex-start' }}>
-        {team === 'team1' ? playerBlobs : playerBlobs.reverse()}
       </div>
     );
   }
@@ -324,8 +238,71 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
     );
   }
 
-  const columns = useMemo(
-    () => [
+
+
+  const columns = useMemo(() => {
+
+    const PlayerCountCell: React.FC<{ cell: any, row: { index: number }, team: 'team1' | 'team2' }> = ({ cell, row, team }) => {
+      const teamData = cell.row.original[team];
+      if (!teamData) {
+        // The data for this team does not exist, possibly because the match is not over yet
+        return null;
+      }
+
+      const { player_count, death_count } = teamData;
+      const playerBlobs = [];
+
+      for (let i = 0; i < player_count; i++) {
+        playerBlobs.push(
+          <PlayerBlob key={i} isAlive={i >= death_count} team={team} />
+        );
+      }
+
+      return (
+        <div style={{ display: 'flex', justifyContent: team === 'team1' ? 'flex-end' : 'flex-start' }}>
+          {team === 'team1' ? playerBlobs : playerBlobs.reverse()}
+        </div>
+      );
+    }
+
+    const FinanceCell: React.FC<FinanceCellProps> = ({ cell, row, team, maxValues }) => {
+      if (!maxValues) {
+        return null;  // or some placeholder
+      }
+      const teamData = cell.row.original[team];
+      if (!data) {
+        return null;  // or some placeholder
+      }
+      if (!teamData) {
+        return null;  // or some placeholder
+      }
+
+      const equipmentValuePercentage = teamData.total_equipment_value / data.maxValues.total_equipment_value * 100;
+      const moneySpentPercentage = teamData.total_money_spent / data.maxValues.total_money_spent * 100;
+
+      return (
+        <div style={{ direction: team === 'team1' ? 'rtl' : 'ltr' }}>
+          <Tooltip title={`Equipment Value: $${teamData.total_equipment_value}`}>
+            <div style={{
+              backgroundColor: 'rgb(75, 192, 192)',
+              borderRadius: '10px',
+              width: `${equipmentValuePercentage}%`,
+              height: '10px'
+            }} />
+          </Tooltip>
+          <Tooltip title={`Cash Spent: $${teamData.total_money_spent}`}>
+            <div style={{
+              backgroundColor: 'orange',
+              borderRadius: '10px',
+              width: `${moneySpentPercentage}%`,
+              height: '10px'
+            }} />
+          </Tooltip>
+        </div>
+      );
+    }
+
+    return [
       {
         accessorKey: 'team1.total_equipment_value' as const, header: 'Equipment/Spend', size: 150, Header: createCustomHeader('Starting equipment value/cash spent'),
         Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team1' maxValues={data?.maxValues} />
@@ -376,8 +353,8 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
         Cell: (props: { cell: any, row: { index: number } }) => <FinanceCell {...props} team='team2' maxValues={data?.maxValues} />
       },
       { accessorKey: 'round' as const, header: 'R', size: smallColSize, Header: createCustomHeader('Round number') },
-    ],
-    [data],
+    ]
+  }, [data]
   );
 
 

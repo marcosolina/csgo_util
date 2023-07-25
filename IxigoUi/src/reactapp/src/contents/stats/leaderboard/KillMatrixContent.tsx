@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { useMemo } from "react";
 import { IconButton, Tooltip } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -140,7 +140,7 @@ const columns = useMemo(() => [
       );
     },
   })) ?? [])
-], [players]);
+], [players, minMaxKillCounts]);
 
 
 

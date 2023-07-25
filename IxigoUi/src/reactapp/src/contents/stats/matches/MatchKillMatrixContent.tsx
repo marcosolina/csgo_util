@@ -184,7 +184,7 @@ const columns = useMemo(() => [
       );
     },
   })) ?? [])
-], [players]);
+], [players, minMaxKillCounts]);
 
 
 

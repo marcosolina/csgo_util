@@ -121,13 +121,13 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
             if (!selectedStatsContext) {
               throw new Error('useContext was called outside of the selectedStatsContext provider');
             }
-            const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
+            const {  setSelectedPlayerSteamID,  setSelectedSubpage } = selectedStatsContext;
             return (
               <Box 
                 component={Link}
                 to={`/player/${steamid}`}
                 sx={{
-                  color: cell.row.original.last_round_team=='team1'? '#90caf9' : 'orange',
+                  color: cell.row.original.last_round_team === 'team1'? '#90caf9' : 'orange',
                   fontWeight: 'bold',
                   textDecoration: 'none',
                   cursor: 'pointer',
@@ -213,7 +213,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
           { accessorKey: '_1v4' as const, header: '1v4', size: smallColSize, Header: createCustomHeader('1v4 Clutches') },
           { accessorKey: '_1v5' as const, header: '1v5', size: smallColSize, Header: createCustomHeader('1v5 Clutches') },
         ],
-        [],
+        [team],
     );
     
 

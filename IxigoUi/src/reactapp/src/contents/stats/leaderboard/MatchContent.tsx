@@ -14,7 +14,7 @@ import {
     selectedTab: number | null;
   }
   const smallColSize = 5;
-  const MatchContent: React.FC<MatchContentProps> = ({ setSelectedTab, selectedTab }) => {
+  const MatchContent: React.FC<MatchContentProps> = () => {
 
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['matches'],
@@ -63,7 +63,7 @@ import {
             if (!selectedStatsContext) {
               throw new Error('useContext was called outside of the SelectedStatsContext provider');
             }
-            const { selectedMatch, setSelectedMatch, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
+            const { setSelectedMatch, setSelectedSubpage } = selectedStatsContext;
             const date = new Date(matchDate);
             const formattedDate = date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
             const formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
@@ -97,7 +97,7 @@ import {
             if (!selectedStatsContext) {
               throw new Error('useContext was called outside of the SelectedStatsContext provider');
             }
-            const { selectedMap, setSelectedMap, selectedSubpage, setSelectedSubpage } = selectedStatsContext;
+            const { setSelectedMap, setSelectedSubpage } = selectedStatsContext;
             return (
               <Box 
               component={Link}

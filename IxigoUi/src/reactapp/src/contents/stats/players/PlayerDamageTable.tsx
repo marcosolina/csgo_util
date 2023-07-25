@@ -58,7 +58,7 @@ const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
             return Math.max(...playerData.map(p => p.adr));
         }
         return undefined;
-    }, [playerData, steamid]);
+    }, [playerData]);
 
     const columns = useMemo(
         () => [

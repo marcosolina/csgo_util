@@ -1,6 +1,5 @@
-package com.ixigo.playersmanager.controller;
+package com.ixigo.playersmanager.controllers;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -35,15 +34,13 @@ public class PlayersManagerController {
             @RequestParam(name = "numberOfMatches", defaultValue = "50") Integer numberOfMatches,
             @RequestParam("steamIDs") List<String> steamIDs,
             @RequestParam(name = "penaltyWeigth", defaultValue = "0.4") Double penaltyWeigth,
-            @RequestParam(name = "partitionScore", defaultValue = "HLTV") ScoreType partitionScore,
-            @RequestParam(name = "minPercPlayed", defaultValue = "0.9") BigDecimal minPercPlayed) {
+            @RequestParam(name = "partitionScore", defaultValue = "HLTV") ScoreType partitionScore) {
 		_LOGGER.trace("Inside PlayersManagerController.getTeams");
 		return mediator.send(GetTeamsCmd.builder()
 			.numberOfMatches(numberOfMatches)
 			.steamIDs(steamIDs)
 			.penaltyWeigth(penaltyWeigth)
 			.partitionScore(partitionScore)
-			.minPercPlayed(minPercPlayed)
 			.build()
 		);
 		// @formatter:on

@@ -60,7 +60,7 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }}> 
       <Grid container spacing={3}>
-        <Grid item xs={6}>
+        <Grid item md={6} xs={6}>
           <IxigoSelectMultiple
             label="Graphs"
             possibleValues={fieldNamesOptions}
@@ -68,7 +68,7 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
             onChange={setSelectedFieldNames}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item md={2} xs={6}>
           <IxigoSelect
             label="Binning Level"
             possibleValues={binningLevels}
@@ -76,7 +76,7 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
             onChange={value => setBinningLevel(value as 'week' | 'month')}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item md={2} xs={6}>
           <TextField
             label="Start Date"
             type="date"
@@ -85,7 +85,7 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
             InputLabelProps={{ shrink: true }}
           />
         </Grid>
-        <Grid item xs={2}>
+        <Grid item md={2} xs={6}>
           <TextField
             label="End Date"
             type="date"

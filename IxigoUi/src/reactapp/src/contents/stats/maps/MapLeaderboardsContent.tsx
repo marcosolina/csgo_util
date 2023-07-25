@@ -167,7 +167,7 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
             );
           }},
           { accessorKey: 'matches' as const, header: 'M', size: smallColSize, Header: createCustomHeader('Matches'), filterVariant: 'text',
-          filterFn: 'between'},
+          filterFn: 'greaterThan'},
           { accessorKey: "first_weapon" as const, header: "W1" ,size: smallColSize, Header: createCustomHeader("Primary weapon - most kills"), 
             Cell: ({ cell }: { cell: any }) => {
               const weapon = cell.getValue() as string;

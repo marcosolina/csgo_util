@@ -272,6 +272,7 @@ import { Link } from 'react-router-dom';
              }}
           enableColumnFilterModes
           enableDensityToggle={false}
+          enableFilterMatchHighlighting={false}
           enablePinning
           enableMultiSort
           enablePagination

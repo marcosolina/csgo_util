@@ -192,6 +192,7 @@ interface MapWeaponsContentProps {
              enableDensityToggle={false}
              enableBottomToolbar={true}
              enablePagination={true}
+             enableFilterMatchHighlighting={false}
              enableTopToolbar={true}
              enableGlobalFilter={false}
              enableFullScreenToggle={true}

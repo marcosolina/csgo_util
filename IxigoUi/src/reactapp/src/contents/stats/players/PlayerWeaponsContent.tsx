@@ -133,6 +133,7 @@ import {
              enableBottomToolbar={true}
              enablePagination={true}
              enableTopToolbar={true}
+             enableFilterMatchHighlighting={false}
              enableDensityToggle={false}
              enableGlobalFilter={false}
              enableFullScreenToggle={true}

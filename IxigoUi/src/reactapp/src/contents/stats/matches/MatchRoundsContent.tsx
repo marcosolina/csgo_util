@@ -259,7 +259,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
   const PlayerBlob: React.FC<{ isAlive: boolean, team: 'team1' | 'team2' }> = ({ isAlive, team }) => {
     const data = [
-      { title: 'Survived', value: isAlive ? 100 : 0, color: team == 'team1' ? '#90caf9' : 'orange' },
+      { title: 'Survived', value: isAlive ? 100 : 0, color: team === 'team1' ? '#90caf9' : 'orange' },
       { title: 'Died', value: isAlive ? 0 : 100, color: 'dimgrey' },
     ];
 
@@ -411,15 +411,15 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
               <Box key={i} sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                 <Typography>
                   {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `}
-                  <span style={{ color: steamidTeam == 'team1' ? '#90caf9' : 'orange' }}>{steamidUsername}</span>
-                  <span style={{ color: assisterTeam == 'team1' ? '#90caf9' : 'orange' }}>{event.assister && ` + ${assisterUsername}`} </span>
+                  <span style={{ color: steamidTeam === 'team1' ? '#90caf9' : 'orange' }}>{steamidUsername}</span>
+                  <span style={{ color: assisterTeam === 'team1' ? '#90caf9' : 'orange' }}>{event.assister && ` + ${assisterUsername}`} </span>
                   {event.flashassist && <img height="20px" style={{ padding: '0 5px' }} src={flashbang} alt="Flash Assist" />}
-                  <span style={{ color: flashAssisterTeam == 'team1' ? '#90caf9' : 'orange' }}>{event.flashassist && ` + ${flashAssisterUsername}`}</span>
+                  <span style={{ color: flashAssisterTeam === 'team1' ? '#90caf9' : 'orange' }}>{event.flashassist && ` + ${flashAssisterUsername}`}</span>
                 </Typography>
                 <img height="20px" style={{ transform: 'scaleX(-1)', padding: '0 5px' }} src={weaponImage[event.weapon]} alt={event.weapon} />
                 {event.headshot && <img height="20px" style={{ padding: '0 5px' }} src={headshot} alt="Headshot" />}
                 <Typography>
-                  <span style={{ color: victimsteamidTeam == 'team1' ? '#90caf9' : 'orange' }}>{victimsteamidUsername}</span>
+                  <span style={{ color: victimsteamidTeam === 'team1' ? '#90caf9' : 'orange' }}>{victimsteamidUsername}</span>
                 </Typography>
               </Box>
             );
@@ -427,7 +427,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
             return (
               <Typography key={i}>
                 {`${new Date(event.eventtime * 1000).toISOString().substr(14, 5)}: `}
-                <span style={{ color: steamidTeam == 'team1' ? '#90caf9' : 'orange' }}>{steamidUsername + " "}</span>
+                <span style={{ color: steamidTeam === 'team1' ? '#90caf9' : 'orange' }}>{steamidUsername + " "}</span>
                 {eventNameDesc[event.eventtype] ? eventNameDesc[event.eventtype] : event.eventtype}
               </Typography>
             );

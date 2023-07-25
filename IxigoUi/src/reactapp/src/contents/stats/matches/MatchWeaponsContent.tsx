@@ -191,6 +191,7 @@ import { Link } from 'react-router-dom';
              enablePagination={true}
              enableTopToolbar={true}
              enableDensityToggle={false}
+             enableFilterMatchHighlighting={false}
              enableGlobalFilter={false}
              enableFullScreenToggle={true}
              enableColumnOrdering={false}

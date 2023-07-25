@@ -203,6 +203,7 @@ import {
           enableGrouping
           enableColumnFilters={true}
           enableColumnFilterModes
+          enableFilterMatchHighlighting={false}
           enablePagination
           enableDensityToggle={false}
           muiToolbarAlertBannerProps={

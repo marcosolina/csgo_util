@@ -5,7 +5,7 @@ import { IconButton, Tooltip, Box } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { weaponImage } from '../weaponImage';
 import PieChartMini from '../PieChartMini';
-import { MaterialReactTable } from 'material-react-table';
+import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 import {
     useQuery,
   } from 'react-query';
@@ -20,6 +20,71 @@ import { Link } from 'react-router-dom';
 
   interface PlayerMapsContentProps {
     steamid: string;
+  }
+
+  interface PlayerStats {
+    username: string;
+    steamid: string;
+    mapname: string
+    matches: string;
+    rounds: number;
+  
+    first_weapon: string;
+    second_weapon: string;
+    wins: number;
+    loss: number;
+  
+    kills: number;
+    deaths: number;
+    assists: number;
+    kpr: number;
+    dpr: number;
+    kdr: number;
+    fkr: number;
+    ek: number;
+    tk: number;
+
+    mvp: number;
+    hltv_rating: number;
+    rws: number;
+  
+    adr: number;
+    kast: number;
+  
+    _1v1: number;
+    _1v2: number;
+    _1v3: number;
+    _1v4: number;
+    _1v5: number;
+    _1vnp: number;
+  
+    _1k: number;
+    _2k: number;
+    _3k: number;
+    _4k: number;
+    _5k: number;
+  
+    headshots: number;
+    headshot_percentage: number;
+    hr: number;
+  
+    bp: number;
+    ud: number;
+    ffd: number;
+  
+    winlossratio: number;
+    averagewinscore: number;
+  
+    td: number;
+    tda: number;
+    tdh: number;
+  
+    fbt: number;
+    fa: number;
+    ebt: number;
+  
+    ff: number;
+    bd: number;
   }
 
   const smallColSize = 5;
@@ -72,7 +137,7 @@ import { Link } from 'react-router-dom';
         );
       }
 
-      const columns = useMemo(
+      const columns = useMemo<MRT_ColumnDef<PlayerStats>[]>(
         () => [
             { accessorKey: "mapname", header: "Map",
             Cell: ({ cell }: { cell: any }) => {
@@ -106,7 +171,7 @@ import { Link } from 'react-router-dom';
                 </Box>
               );
             }},
-          { accessorKey: "matches", header: "M", Header: createCustomHeader("Matches played") ,size: smallColSize},
+          { accessorKey: "matches", header: "M", Header: createCustomHeader("Matches played") ,size: smallColSize, filterVariant: 'text', filterFn: 'greaterThan'},
           { accessorKey: "hltv_rating", header: "HLTV" , Header: createCustomHeader("HLTV Rating - a weighted sum of K/D ratio, rounds survived ratio and rounds with multiple kills. This is the default rating used in the auto team balancing."),size: smallColSize,
           Cell: ({ cell }: { cell: any }) => {
             const rating = cell.getValue() as number;

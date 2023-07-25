@@ -2,7 +2,7 @@ import React from 'react';
 import { useMemo } from "react";
 import { Tooltip } from '@mui/material';
 import { weaponImage } from '../weaponImage';
-import { MaterialReactTable } from 'material-react-table';
+import { MaterialReactTable, MRT_ColumnDef } from 'material-react-table';
 import PieChartMini from '../PieChartMini';
 import {
     useQuery,
@@ -75,7 +75,7 @@ import {
         );
       }
 
-      const columns = useMemo(
+      const columns = useMemo<MRT_ColumnDef<WeaponData>[]>(
         () => [
           { accessorKey: 'weapon' as const, header: 'WEAPON', size: smallColSize, Header: createCustomHeader('Weapon')},
           { accessorKey: 'weapon_img' as const, header: '', size: smallColSize, Header: createCustomHeader('Weapon'), Cell: ({ cell }: { cell: any }) => {
@@ -83,19 +83,19 @@ import {
             const imageUrl = weaponImage[weapon];
             return imageUrl ? <img src={imageUrl} alt={weapon} style={{  height: '18px' }} /> : null;
           }},
-          { accessorKey: 'kills' as const, header: 'K', size: smallColSize, Header: createCustomHeader('Total kills') },
+          { accessorKey: 'kills' as const, header: 'K', size: smallColSize, Header: createCustomHeader('Total kills'), filterVariant: 'text', filterFn: 'greaterThan'},
           { accessorKey: 'headshotkills' as const, header: 'HSK', size: smallColSize, Header: createCustomHeader('Total headshot kills') },
           { accessorKey: 'damage_per_shot' as const, header: 'DPS', size: smallColSize, Header: createCustomHeader('Damage per shot') },
           { accessorKey: 'accuracy' as const, header: 'ACC', size: smallColSize, Header: createCustomHeader('Accuracy'), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
             return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
           },},
-          { accessorKey: 'hits' as const, header: 'HITS', size: smallColSize, Header: createCustomHeader('Total hits') },
+          { accessorKey: 'hits' as const, header: 'HITS', size: smallColSize, Header: createCustomHeader('Total hits'), filterVariant: 'text', filterFn: 'greaterThan'},
           { accessorKey: 'total_damage' as const, header: 'TDMG', size: smallColSize, Header: createCustomHeader('Total damage') },
           { accessorKey: 'damage_per_hit' as const, header: 'DPH', size: smallColSize, Header: createCustomHeader('Damage per hit') },
           { accessorKey: 'headshotkills_percentage' as const, header: 'HSKP', size: smallColSize, Header: createCustomHeader('Headshot kills percentage'), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
             return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
           }},
-          { accessorKey: 'shots_fired' as const, header: 'SHOTS', size: smallColSize, Header: createCustomHeader('Shots fired') },
+          { accessorKey: 'shots_fired' as const, header: 'SHOTS', size: smallColSize, Header: createCustomHeader('Shots fired') , filterVariant: 'text', filterFn: 'greaterThan'},
           { accessorKey: 'headshot_percentage' as const, header: 'HHP', size: smallColSize, Header: createCustomHeader('Head hit percentage'), Cell: ({ cell, row }: { cell: any, row: { index: number } }) => {
             return <PieChartMini percentage={cell.getValue()} color='darkturquoise' size={22} />;
           }},

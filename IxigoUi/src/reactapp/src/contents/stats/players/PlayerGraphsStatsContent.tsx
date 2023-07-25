@@ -12,9 +12,11 @@ interface PlayerGraphsStatsContentProps {
   label: string;
   binningLevel: 'week' | 'month';
   showXAxisLabels: boolean;
+  startDate?: Date | null; // Add this
+  endDate?: Date | null; // And this
 }
 
-const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ steamid, fieldName, label, binningLevel, showXAxisLabels }) => {
+const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ steamid, fieldName, label, binningLevel, showXAxisLabels, startDate, endDate  }) => {
   const canvasRef = useRef(null);
 
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
@@ -49,6 +51,7 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
       // Sort the data by date
       filteredData.sort((a: any, b: any) => new Date(a.match_date).getTime() - new Date(b.match_date).getTime());
 
+
       // Bin the data by week or month
       const binnedData = new Map();
       filteredData.forEach((item: any) => {
@@ -61,11 +64,27 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
       });
 
       // Get the average field value for each bin
-      const dates = Array.from(binnedData.keys());
-      const fieldValues = Array.from(binnedData.values()).map(items => {
+      let dates = Array.from(binnedData.keys());
+      let fieldValues = Array.from(binnedData.values()).map(items => {
         const total = items.reduce((sum: number, item: any) => sum + item[fieldName], 0);
         return total / items.length;
       });
+
+        // If startDate is defined, filter out any dates before it
+        if (startDate) {
+          const filteredDates = dates.filter(date => new Date(date) >= startDate);
+          const filteredFieldValues = fieldValues.filter((_, i) => new Date(dates[i]) >= startDate);
+          dates = filteredDates;
+          fieldValues = filteredFieldValues;
+        }
+    
+        // If endDate is defined, filter out any dates after it
+        if (endDate) {
+          const filteredDates = dates.filter(date => new Date(date) <= endDate);
+          const filteredFieldValues = fieldValues.filter((_, i) => new Date(dates[i]) <= endDate);
+          dates = filteredDates;
+          fieldValues = filteredFieldValues;
+        }
 
       // Calculate the trendline
       const xMean = dates.reduce((sum, _, i) => sum + i, 0) / dates.length;
@@ -135,7 +154,7 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
         chart.destroy();
       }
     };
-  }, [data, steamid, fieldName, label, binningLevel]);
+  }, [data, steamid, fieldName, label, binningLevel, startDate, endDate]);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading data</div>;

@@ -1,7 +1,7 @@
-import { useMutation } from "react-query";
+import { UseQueryResult, useMutation, useQuery } from "react-query";
 import { SERVICES_URLS } from "../../lib/constants/paths";
 import { createQueryParamString, performGet, useCheckErrorsInResponse } from "../../lib/http-requests/httpRequests";
-import { IGetTeamsRequest, IGetTeamsResponse, IGetTeamsResult } from "./interfaces";
+import { IGetTeamsRequest, IGetTeamsResponse, IGetTeamsResult, IRestGetScoreTypesResponse } from "./interfaces";
 import { useEffect, useRef } from "react";
 import { IxigoResponse, QueryStatus } from "../../lib/http-requests";
 
@@ -27,4 +27,15 @@ export const useGetTeams = (): IGetTeamsResult => {
     status: mutation.status,
     response: mutation.status === QueryStatus.error ? undefined : mutation.data,
   };
+};
+
+/**
+ * It returns the score types extracted from the DEM files
+ * @returns
+ */
+export const useGetScoreTypes = (): UseQueryResult<IxigoResponse<IRestGetScoreTypesResponse>, unknown> => {
+  return useQuery(
+    "getScoreTypes",
+    async () => await performGet<IRestGetScoreTypesResponse>(SERVICES_URLS["players-manager"]["get-scores-type"])
+  );
 };

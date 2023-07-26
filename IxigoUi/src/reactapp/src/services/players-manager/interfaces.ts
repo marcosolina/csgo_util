@@ -13,6 +13,10 @@ export interface IGetTeamsResponse {
   teams: ITeam[];
 }
 
+export interface IRestGetScoreTypesResponse {
+  types: Record<string, string>;
+}
+
 export interface ITeam {
   team_score: number;
   team_members: ITeamPlayer[];

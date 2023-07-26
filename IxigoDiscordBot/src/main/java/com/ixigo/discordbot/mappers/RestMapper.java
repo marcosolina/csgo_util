@@ -22,8 +22,8 @@ public interface RestMapper {
 
 	SvcPlayer fromRestToSvc(RestPlayer svc);
 	
-	@Mapping(source = "user_name", target = "steamId")
-	@Mapping(source = "steam_id", target = "userName")
+	@Mapping(source = "user_name", target = "userName")
+	@Mapping(source = "steam_id", target = "steamId")
 	RestUser fromDemManagerUsersToDiscordBotUser(RestUsers demUsers);
 	
 	RestDiscordUser fromSvcToRest(SvcDiscordUser svc);

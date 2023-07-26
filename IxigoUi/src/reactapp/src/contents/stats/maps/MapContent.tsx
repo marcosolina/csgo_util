@@ -34,11 +34,19 @@ export default function MapContent({ mapName }: MapContentProps) {
     setValue(newValue);
   };
 
-  
+  let mapImageName: string = mapName;
+
+  if (mapImageName.startsWith("workshop_")) {
+    let count: number = 0;
+    mapImageName = mapImageName.replace(/_/g, (match: string): string => {
+      count++;
+      return (count <= 2) ? '-' : match;
+    });
+  }
 
   return (
     <Box sx={{ width: '100%'}}>
-      <Box sx={{borderRadius: '4px' }} textAlign="center" height="70px" style={{ display: 'flex', justifyContent: 'center', backgroundImage: `url(${UI_CONTEXT_PATH}/maps/${mapName}.jpg)`,backgroundPosition: 'center', backgroundSize: '100%',backgroundRepeat: 'no-repeat'}}>
+      <Box sx={{borderRadius: '4px' }} textAlign="center" height="70px" style={{ display: 'flex', justifyContent: 'center', backgroundImage: `url(${UI_CONTEXT_PATH}/maps/${mapImageName}.jpg)`,backgroundPosition: 'center', backgroundSize: '100%',backgroundRepeat: 'no-repeat'}}>
         <Paper elevation={3} style={{  height: "50%", width: "50%", backgroundColor: 'rgba(255, 255, 255, 0.7)' , padding: "5px" }}>
           <Typography variant="h5">Map: { mapName }</Typography>
           </Paper>

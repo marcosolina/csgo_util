@@ -56,10 +56,21 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
   const date = new Date(matchData.match_date);
   const formattedDate = date.toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
   const formattedTime = date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+  let mapImageName: string = matchData.mapname;
+
+  if (mapImageName.startsWith("workshop_")) {
+    let count: number = 0;
+    mapImageName = mapImageName.replace(/_/g, (match: string): string => {
+      count++;
+      return (count <= 2) ? '-' : match;
+    });
+  }
+  
   
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column' }} >
-      <Box sx={{borderRadius: '4px' }} textAlign="center" style={{ backgroundImage: `url(${UI_CONTEXT_PATH}/maps/${matchData.mapname}.jpg)`,backgroundPosition: 'center', backgroundSize: '100%',backgroundRepeat: 'no-repeat'}}>
+      <Box sx={{borderRadius: '4px' }} textAlign="center" style={{ backgroundImage: `url(${UI_CONTEXT_PATH}/maps/${mapImageName}.jpg)`,backgroundPosition: 'center', backgroundSize: '100%',backgroundRepeat: 'no-repeat'}}>
         <Grid item xs={2}>
           <Paper elevation={3} style={{ backgroundColor: 'rgba(255, 255, 255, 0.7)' }}>
             <Typography variant="h4">Match: {matchData.mapname}</Typography>

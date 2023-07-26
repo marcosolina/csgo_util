@@ -697,7 +697,7 @@ demoFile.on("end", e => {
     allRoundHitEvents,
     allRoundEvents
   };
-  //console.log(JSON.stringify(mergedStats, null, 2));
+  console.log(JSON.stringify(mergedStats, null, 2));
 });
 
 demoFile.parseStream(stream);

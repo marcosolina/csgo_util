@@ -72,13 +72,13 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
     <Box sx={{ display: 'flex', flexDirection: 'column' }} >
       <Box sx={{borderRadius: '4px' }} textAlign="center" style={{ backgroundImage: `url(${UI_CONTEXT_PATH}/maps/${mapImageName}.jpg)`,backgroundPosition: 'center', backgroundSize: '100%',backgroundRepeat: 'no-repeat'}}>
         <Grid item xs={2}>
-          <Paper elevation={3} style={{ backgroundColor: 'rgba(255, 255, 255, 0.7)' }}>
+          <Paper elevation={3} style={{ backgroundColor: 'rgba(0, 0, 0, 0.6)' }}>
             <Typography variant="h4">Match: {matchData.mapname}</Typography>
             <Typography variant="h6">{`${formattedDate}, ${formattedTime}`}</Typography>
           </Paper></Grid>
         <Grid container spacing={3} alignItems="center" justifyContent="center">
           <Grid item xs={6} style={{ display: 'flex', justifyContent: 'right' }}>
-            <Paper elevation={3} style={{  width: "50%", backgroundColor: 'rgba(255, 255, 255, 0.7)' , padding: "5px" }}>
+            <Paper elevation={3} style={{  width: "50%", backgroundColor: 'rgba(0, 0, 0, 0.6)' , padding: "5px" }}>
               <Typography variant="h2" align="center" style={{ color: matchData.team1_total_wins > 7 ? 'white' : 'grey' }}>{matchData.team1_total_wins}</Typography>
               <Typography variant="h6" align="center" style={{color:"#90caf9"}}>Team 1</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
@@ -98,7 +98,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
             </Paper>
           </Grid>
           <Grid item xs={6} style={{ display: 'flex', justifyContent: 'left' }}>
-            <Paper elevation={3} style={{ width: "50%", backgroundColor: 'rgba(255, 255, 255, 0.7)', padding: "5px" }}>
+            <Paper elevation={3} style={{ width: "50%", backgroundColor: 'rgba(0, 0, 0, 0.6)', padding: "5px" }}>
               <Typography variant="h2" align="center" style={{ color: matchData.team2_total_wins > 7 ? 'white' : 'grey' }}>{matchData.team2_total_wins}</Typography>
               <Typography variant="h6" align="center" style={{color:"orange"}}>Team 2</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>

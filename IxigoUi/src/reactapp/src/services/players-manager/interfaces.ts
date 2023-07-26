@@ -6,7 +6,6 @@ export interface IGetTeamsRequest {
   numberOfMatches?: number;
   penaltyWeigth?: number;
   partitionScore?: string;
-  minPercPlayed?: number;
 }
 
 export interface IGetTeamsResponse {

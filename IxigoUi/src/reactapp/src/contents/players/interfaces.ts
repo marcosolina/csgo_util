@@ -6,7 +6,6 @@ import { ITeam } from "../../services/players-manager";
 export interface IPlayersContent {
   state: QueryStatus;
   penaltyWeight: number;
-  percPlayed: number;
   matchesToConsider: number;
   scoreType: string;
   listOfSelectedPlayers: string[];
@@ -14,7 +13,6 @@ export interface IPlayersContent {
   possibleScoreTypesValues: IxigoPossibleValue[];
 
   setPenaltyWeight: (p: number) => void;
-  setPercPlayed: (p: number) => void;
   setMatchesToConsider: (r: number) => void;
   setScoreType: (s: string) => void;
   setListOfSelectedPlayers: (l: string[]) => void;

@@ -19,6 +19,7 @@ interface IPlayerRoundStats {
   clutchsuccess: boolean;
   survived: boolean;
   moneyspent: number;
+  moneysaved: number;
   equipmentvalue: number;
   mvp: boolean;
 }
@@ -117,32 +118,22 @@ class MapStats {
 class RoundStats {
   roundNumber: number;
   winnerSide: TeamNumber;
-  moneySpentTerrorists: number;
-  moneySpentCT: number;
   deathsTerrorists: number;
   deathsCT: number;
   reasonEndRound: number;
-  equipmentValueTerrorists: number;
-  equipmentValueCT: number;
   terroristSteamIDs: string[];
   ctSteamIDs: string[];
 
   constructor(roundNumber: number) {
     this.winnerSide = TeamNumber.Unassigned;
-    this.moneySpentTerrorists = 0;
-    this.moneySpentCT = 0;
     this.deathsTerrorists = 0;
     this.deathsCT = 0;
     this.reasonEndRound = 0;
     this.roundNumber = roundNumber;
-    this.equipmentValueTerrorists = 0;
-    this.equipmentValueCT = 0;
     this.terroristSteamIDs = [];
     this.ctSteamIDs = [];
   }
 }
-
-let steamIdToName: Map<string, string> = new Map();
 
 class PlayerStats {
   userid: number;
@@ -151,6 +142,7 @@ class PlayerStats {
   roundStart: Map<number, boolean>;
   score: number;
   totalspend: number;
+  totalsaved: number;
 
   constructor(userid: number, steamid: string, name: string) {
     this.userid = userid;
@@ -159,6 +151,7 @@ class PlayerStats {
     this.roundStart = new Map();
     this.score = 0;
     this.totalspend = 0;
+    this.totalsaved = 0;
   }
 }
 
@@ -633,8 +626,11 @@ demoFile.gameEvents.on("round_end", e => {
         }
       }
       const spend = player.resourceProp("m_iTotalCashSpent") - stats.totalspend;
-      stats.totalspend = player.resourceProp("m_iTotalCashSpent")
-      allPlayerRoundStats.push({
+      const cumulativeSaved = player.getIndexedProps("m_iMatchStats_MoneySaved").reduce((a: number, b: number) => a + b, 0)
+      const saved = cumulativeSaved - stats.totalsaved;
+      stats.totalsaved = cumulativeSaved;
+      stats.totalspend = player.resourceProp("m_iTotalCashSpent");
+      let prs = {
         username: stats.name,
         steamid: player.steam64Id,
         round: currentRound,
@@ -643,9 +639,12 @@ demoFile.gameEvents.on("round_end", e => {
         clutchsuccess: clutchSuccess,
         survived: player.isAlive,
         moneyspent: spend,
+        moneysaved: saved,
         equipmentvalue: player.roundStartEquipmentValue,
         mvp: player == mvpPlayer
-      });
+      }
+      console.log(prs);
+      allPlayerRoundStats.push(prs);
     }
   }
 });
@@ -698,7 +697,7 @@ demoFile.on("end", e => {
     allRoundHitEvents,
     allRoundEvents
   };
-  console.log(JSON.stringify(mergedStats, null, 2));
+  //console.log(JSON.stringify(mergedStats, null, 2));
 });
 
 demoFile.parseStream(stream);

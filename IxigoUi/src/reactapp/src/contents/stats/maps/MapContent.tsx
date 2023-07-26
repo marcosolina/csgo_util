@@ -1,8 +1,9 @@
 import React from 'react';
-import { Box, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Tab, Tabs, Typography, Paper } from '@mui/material';
 import MapLeaderboardsContent from './MapLeaderboardsContent';
 import MapWeaponsContent from './MapWeaponsContent';
 import MapMatchesContent from './MapMatchesContent';
+import { UI_CONTEXT_PATH } from "../../../lib/constants";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -36,9 +37,11 @@ export default function MapContent({ mapName }: MapContentProps) {
   
 
   return (
-    <Box sx={{ width: '100%' }}>
-      <Box textAlign="center">
+    <Box sx={{ width: '100%'}}>
+      <Box sx={{borderRadius: '4px' }} textAlign="center" height="70px" style={{ display: 'flex', justifyContent: 'center', backgroundImage: `url(${UI_CONTEXT_PATH}/maps/${mapName}.jpg)`,backgroundPosition: 'center', backgroundSize: '100%',backgroundRepeat: 'no-repeat'}}>
+        <Paper elevation={3} style={{  height: "50%", width: "50%", backgroundColor: 'rgba(255, 255, 255, 0.7)' , padding: "5px" }}>
           <Typography variant="h5">Map: { mapName }</Typography>
+          </Paper>
         </Box>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" orientation="horizontal"          centered

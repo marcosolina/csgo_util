@@ -7,6 +7,7 @@ import MatchKillMatrixContent from './MatchKillMatrixContent';
 import { useQuery } from 'react-query';
 import terroristLogo from '../../../assets/icons/T.png';
 import ctLogo from '../../../assets/icons/CT.png';
+import { UI_CONTEXT_PATH } from "../../../lib/constants";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -68,13 +69,13 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
               <Typography variant="h6" align="center" style={{color:"#90caf9"}}>Team 1</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
-                  <img src={terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
+                  <img src={UI_CONTEXT_PATH + terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
                     {matchData.team1_wins_as_t}
                   </div>
                 </div>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
-                  <img src={ctLogo} alt='CT logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
+                  <img src={UI_CONTEXT_PATH + ctLogo} alt='CT logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
                     {matchData.team1_wins_as_ct}
                   </div>
@@ -88,13 +89,13 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
               <Typography variant="h6" align="center" style={{color:"orange"}}>Team 2</Typography>
               <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
-                  <img src={terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
+                  <img src={UI_CONTEXT_PATH + terroristLogo} alt='Terrorist logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
                     {matchData.team2_wins_as_t}
                   </div>
                 </div>
                 <div style={{ position: 'relative', width: 25, height: 25 }}>
-                  <img src={ctLogo} alt='CT logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
+                  <img src={UI_CONTEXT_PATH + ctLogo} alt='CT logo' style={{ width: '100%', height: '100%', opacity: 0.5 }} />
                   <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: 'white', fontWeight: 'bold' }}>
                     {matchData.team2_wins_as_ct}
                   </div>

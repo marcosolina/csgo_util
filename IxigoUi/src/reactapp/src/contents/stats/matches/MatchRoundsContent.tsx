@@ -21,6 +21,7 @@ import pistol from '../../../assets/icons/pistol.png';
 import headshot from '../../../assets/icons/hs.png';
 import flashbang from '../../../assets/icons/flashbang.png';
 import { weaponImage } from "../weaponImage";
+import { UI_CONTEXT_PATH } from "../../../lib/constants";
 
 const roundIconImage: { [key: number]: string } = {
   1: bomb,
@@ -34,7 +35,7 @@ const roundIconImage: { [key: number]: string } = {
 
 const roundTypeIconImage: { [key: string]: string } = {
   'pistol': pistol,
-  'eco': eco,
+  'eco': UI_CONTEXT_PATH + eco,
   'force buy': force,
   'full buy': full
 }
@@ -230,7 +231,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
 
     return (
       <div style={{ position: 'relative', width: 25, height: 25 }}>
-        <img src={logo} alt={isTerrorist ? 'Terrorist logo' : 'CT logo'} style={{ width: '100%', height: '100%', opacity: imageOpacity }} />
+        <img src={UI_CONTEXT_PATH + logo} alt={isTerrorist ? 'Terrorist logo' : 'CT logo'} style={{ width: '100%', height: '100%', opacity: imageOpacity }} />
         <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', color: colour, fontWeight: 'bold' }}>
           {team === 'team1' ? team1_score : team2_score}
         </div>

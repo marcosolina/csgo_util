@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -330,5 +331,12 @@ public class PlayersManagerImp implements PlayersManager {
 	private Flux<SvcUserAvgScore> getUsersAvg(Integer numberOfMatches, List<String> usersIDs, ScoreType scoreType) throws IxigoException {
 		Mono<Map<String, SvcUserAvgScore>> usersAvg = this.getUsersAvgStatsForLastXGames(numberOfMatches, usersIDs, scoreType);
 		return usersAvg.map(map -> map.values()).flatMapMany(Flux::fromIterable);
+	}
+
+	@Override
+	public Mono<Map<String, String>> mapOfAvailableScores() {
+		Map<String, String> map = new HashMap<>();
+		Arrays.stream(ScoreType.values()).forEach(s -> map.put(s.name(), s.getDesc()));
+		return Mono.just(map);
 	}
 }

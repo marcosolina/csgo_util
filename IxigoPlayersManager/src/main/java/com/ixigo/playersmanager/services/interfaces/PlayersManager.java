@@ -37,4 +37,11 @@ public interface PlayersManager {
 	 * @throws IxigoException
 	 */
 	public Mono<Map<String, SvcUserAvgScore>> getUsersAvgStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs, ScoreType partionByScore) throws IxigoException;
+	
+	/**
+     * It returns a map of available scores
+     * 
+     * @return
+     */
+    public Mono<Map<String, String>> mapOfAvailableScores();
 }

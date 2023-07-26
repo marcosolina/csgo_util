@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
+import com.ixigo.playersmanager.commands.CmdGetScoreType;
 import com.ixigo.playersmanager.commands.GetTeamsCmd;
 import com.ixigo.playersmanagercontract.enums.ScoreType;
+import com.ixigo.playersmanagercontract.models.rest.RestScoreTypes;
 import com.ixigo.playersmanagercontract.models.rest.RestTeams;
 
 import io.swagger.annotations.ApiOperation;
@@ -44,5 +46,12 @@ public class PlayersManagerController {
 			.build()
 		);
 		// @formatter:on
+	}
+	
+	@GetMapping("/scorestype")
+	@ApiOperation(value = "It will return a map of the score types that you can pass when call the team creation API")
+	public Mono<ResponseEntity<RestScoreTypes>> getScoreType() {
+		_LOGGER.trace("Inside ControllerDemData.getScoreType");
+		return mediator.send(new CmdGetScoreType());
 	}
 }

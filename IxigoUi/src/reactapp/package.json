@@ -63,5 +63,6 @@
     "@types/chart.js": "^2.9.37",
     "@types/react-i18next": "^8.1.0",
     "@types/react-query": "^1.2.9"
-  }
+  },
+  "homepage": "/ixigoui"
 }

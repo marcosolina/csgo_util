@@ -93,7 +93,7 @@ import { Link } from 'react-router-dom';
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['playermapstats'+steamid],
         queryFn: async () => {
-            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED?steamid=${steamid}`);
+            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?steamid=${steamid}`);
             const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
     
             const responses = await Promise.all([
@@ -142,12 +142,11 @@ import { Link } from 'react-router-dom';
             { accessorKey: "mapname", header: "Map",
             Cell: ({ cell }: { cell: any }) => {
               const mapName = cell.getValue() as string;
-              const steamid = cell.row.original.steamid;
               const selectedStatsContext = useContext(SelectedStatsContext);
               if (!selectedStatsContext) {
                 throw new Error('useContext was called outside of the selectedStatsContext provider');
               }
-              const { selectedPlayerSteamID, setSelectedPlayerSteamID, selectedSubpage, setSelectedSubpage, selectedMap, setSelectedMap } = selectedStatsContext;
+              const { setSelectedSubpage, setSelectedMap } = selectedStatsContext;
               return (
                 <Box 
                   component={Link}
@@ -256,7 +255,7 @@ import { Link } from 'react-router-dom';
           { accessorKey: "_1v4", header: "1v4",size: smallColSize , Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 4 players still alive on the opponents team)")},
           { accessorKey: "_1v5", header: "1v5" ,size: smallColSize, Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 5 or more player still alive on the opponents team)")},
         ],
-        [data],
+        [],
       );
       
 

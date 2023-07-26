@@ -260,7 +260,7 @@ import { Link } from 'react-router-dom';
           { accessorKey: "_1v4" as const, header: "1v4",size: smallColSize , Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 4 players still alive on the opponents team)")},
           { accessorKey: "_1v5" as const, header: "1v5" ,size: smallColSize, Header: createCustomHeader("Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 5 or more player still alive on the opponents team)")},
         ],
-        [data],
+        [],
       );
       
 

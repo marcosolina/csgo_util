@@ -23,7 +23,7 @@ const LANG_BASE_PATH = "page.home";
 const BaseLayout = () => {
   const { t } = useTranslation();
   const [value, setValue] = useState(0);
-  const [selectedTab, setSelectedTab] = useState<number | null>(null);
+  const [, setSelectedTab] = useState<number | null>(null);
   const [searchParams] = useSearchParams();
   const location = useLocation();
   const history = useNavigate();
@@ -44,7 +44,6 @@ const BaseLayout = () => {
   }, [searchParams, selectedPlayerSteamID, value]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    console.log(`newValue: ${newValue}`);
     setValue(newValue);
     setSelectedTab(newValue);
     const newPath = `${location.pathname}?${QUERY_PARAMS.TAB}=${newValue}`;

@@ -19,7 +19,7 @@ interface PlayerGraphsStatsContentProps {
 const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ steamid, fieldName, label, binningLevel, showXAxisLabels, startDate, endDate  }) => {
   const canvasRef = useRef(null);
 
-  const { data, isError, isFetching, isLoading, refetch } = useQuery({
+  const { data, isError, isLoading } = useQuery({
     queryKey: ['playerradar'],
     queryFn: async () => {
       const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`);
@@ -154,7 +154,7 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
         chart.destroy();
       }
     };
-  }, [data, steamid, fieldName, label, binningLevel, startDate, endDate]);
+  }, [data, steamid, fieldName, label, binningLevel, showXAxisLabels, startDate, endDate]);
 
   if (isLoading) return <div>Loading...</div>;
   if (isError) return <div>Error loading data</div>;

@@ -8,7 +8,6 @@ import PlayerMatchesContent from './PlayerMatchesContent';
 import {
   useQuery,
 } from 'react-query';
-import { useLoaderData } from 'react-router-dom';
 
 interface TabPanelProps {
   children?: React.ReactNode;

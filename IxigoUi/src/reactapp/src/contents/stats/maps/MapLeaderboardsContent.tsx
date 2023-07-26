@@ -90,7 +90,7 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
   const { data: matchData, isError, isLoading, refetch } = useQuery<PlayerMatch[], Error>({
       queryKey: ['mapleaderboard' + mapName],
       queryFn: async () => {
-          const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED?mapname=${mapName}`);
+          const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?mapname=${mapName}`);
           const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
           const responses = await Promise.all([
               fetch(url1.href),

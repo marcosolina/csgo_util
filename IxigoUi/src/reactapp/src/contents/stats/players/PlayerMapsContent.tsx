@@ -93,7 +93,7 @@ import { Link } from 'react-router-dom';
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['playermapstats'+steamid],
         queryFn: async () => {
-            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED?steamid=${steamid}`);
+            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?steamid=${steamid}`);
             const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
     
             const responses = await Promise.all([

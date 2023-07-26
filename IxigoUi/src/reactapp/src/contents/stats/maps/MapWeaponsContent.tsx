@@ -48,7 +48,7 @@ interface MapWeaponsContentProps {
     const { data: weaponData, isError, isLoading } = useQuery<WeaponData[], Error>({
         queryKey: ['mapplayerweapon'+mapName],
         queryFn: async () => {
-            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MAP_PLAYER_WEAPON_STATS?mapname=${mapName}`);
+            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MAP_PLAYER_WEAPON_STATS_CACHE?mapname=${mapName}`);
             const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
             const responses = await Promise.all([
                 fetch(url1.href),

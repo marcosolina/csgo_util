@@ -99,7 +99,7 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
       queryKey: ['playermatch' + steamid],
       queryFn: async () => {
           const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`);
-          const url2 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS`);
+          const url2 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS_CACHE`);
           const responses = await Promise.all([
               fetch(url1.href),
               fetch(url2.href)

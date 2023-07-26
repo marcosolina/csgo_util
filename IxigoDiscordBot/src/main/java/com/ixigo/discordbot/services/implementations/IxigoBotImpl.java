@@ -227,11 +227,11 @@ public class IxigoBotImpl implements IxigoBot {
 	public Mono<Boolean> kickTheBots() throws IxigoException {
 		return getBotConfig(BotConfigKey.KICK_BOTS)
 				.map(config -> Boolean.parseBoolean(config.getConfigVal()))
-				.map(configActive -> {
+				.flatMap(configActive -> {
 					if(configActive) {
-						rconService.kickTheBots();
+						return rconService.kickTheBots();
 					}
-					return configActive;
+					return Mono.just(configActive);
 				});
 	}
 

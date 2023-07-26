@@ -82,6 +82,7 @@ public class IxigoRconServiceImpl implements IxigoRconService {
 	@Override
 	public Mono<Boolean> kickTheBots() throws IxigoException {
 		_LOGGER.trace("Inside IxigoRconServiceImpl.kickTheBots");
+		_LOGGER.debug("Kicking the bots");
 		return sendRconCommand("bot_kick").map(resp -> resp.getStatusCode().is2xxSuccessful());
 	}
 

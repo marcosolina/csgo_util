@@ -14,11 +14,7 @@ export const SERVICES_URLS = {
     "post-parse-all-files": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/parse/all",
     "get-dem-data-users": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/users",
     "get-dem-data-users-scores": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/usersscores",
-    "get-charts-data-maps-played": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/mapsplayed",
-    "get-charts-avg-players-scores-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/avgplayersscore",
-    "get-charts-team-score-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/scorepermap",
-    "get-charts-avg-teams-scores-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/avgteamscore",
-    "get-stats-view": "https://marco.selfip.net/ixigoproxy" + "/ixigo-dem-manager/demmanager/charts/view/"
+    "get-stats": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/view",
   },
   "event-dispatcher": {
     "gateway-path": "ixigo-event-dispatcher",

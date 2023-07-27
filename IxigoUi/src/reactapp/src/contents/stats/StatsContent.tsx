@@ -1,43 +1,26 @@
-// StatsContent.tsx
-import React, { ReactNode } from 'react';
-import LeaderboardContent from './leaderboard/LeaderboardContent';
-import MatchContent from './leaderboard/MatchContent';
-import KillMatrixContent from './leaderboard/KillMatrixContent';
-import { Typography, Box } from '@mui/material';
+import { Typography, Box } from "@mui/material";
 
-interface LayoutProps {
-  children: ReactNode;
-}
-
-interface StatsContentProps {
-  setSelectedTab: React.Dispatch<React.SetStateAction<number | null>>;
-  selectedTab: number | null;  // Make sure this line is included in the interface
-}
-
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const StatsContent = () => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1em' }}>
-      {children}
-    </div>
+    <>
+      <Box textAlign="center">
+        <Typography variant="h5">Leaderboard</Typography>
+      </Box>
+      <LeaderboardContent />
+      <Box textAlign="center">
+        <Typography variant="h5">Recent Matches</Typography>
+      </Box>
+      {
+        //<MatchContent setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
+      }
+      <Box textAlign="center">
+        <Typography variant="h5">Kills Matrix</Typography>
+      </Box>
+      {
+        //<KillMatrixContent setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
+      }
+    </>
   );
 };
-
-
-const StatsContent: React.FC<StatsContentProps> = ({ setSelectedTab, selectedTab }) => (
-  <Layout>
-    <Box textAlign="center">
-      <Typography variant="h5">Leaderboard</Typography>
-    </Box>
-    <LeaderboardContent setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
-    <Box textAlign="center">
-      <Typography variant="h5">Recent Matches</Typography>
-    </Box>
-    <MatchContent setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
-    <Box textAlign="center">
-      <Typography variant="h5">Kills Matrix</Typography>
-    </Box>
-    <KillMatrixContent setSelectedTab={setSelectedTab} selectedTab={selectedTab} />
-  </Layout>
-);
 
 export default StatsContent;

@@ -7,6 +7,7 @@ import PieChartMini from '../PieChartMini';
 import {
     useQuery,
   } from 'react-query';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 
   interface PlayerWeaponProps {
@@ -40,7 +41,7 @@ import {
     const { data: weaponData, isError, isLoading } = useQuery<WeaponData[], Error>({
         queryKey: ['playerweapon'+steamid],
         queryFn: async () => {
-            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/OVERALL_PLAYER_WEAPON_STATS_CACHE?steamid=${steamid}`);
+            const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}OVERALL_PLAYER_WEAPON_STATS_CACHE?steamid=${steamid}`);
     
             const responses = await Promise.all([
                 fetch(url1.href),

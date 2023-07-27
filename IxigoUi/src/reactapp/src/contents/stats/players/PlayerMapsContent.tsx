@@ -10,6 +10,7 @@ import {
     useQuery,
   } from 'react-query';
 import { Link } from 'react-router-dom';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 
   interface User {
@@ -93,8 +94,8 @@ import { Link } from 'react-router-dom';
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['playermapstats'+steamid],
         queryFn: async () => {
-            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?steamid=${steamid}`);
-            const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
+            const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?steamid=${steamid}`);
+            const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}USERS`);
     
             const responses = await Promise.all([
                 fetch(url1.href),

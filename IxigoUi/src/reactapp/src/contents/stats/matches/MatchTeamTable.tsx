@@ -8,6 +8,7 @@ import {
     useQuery,
   } from 'react-query';
 import { Link } from 'react-router-dom';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 interface TeamMatchProps {
   match_id: number;
@@ -84,7 +85,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
   const { data: matchData, isError, isFetching, isLoading } = useQuery<TeamMatch[], Error>({
       queryKey: ['matchteam' + match_id + team],
       queryFn: async () => {
-          const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
+          const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
   
           const responses = await Promise.all([
               fetch(url1.href),

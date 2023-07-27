@@ -8,6 +8,7 @@ import { useQuery } from 'react-query';
 import terroristLogo from '../../../assets/icons/T.png';
 import ctLogo from '../../../assets/icons/CT.png';
 import { UI_CONTEXT_PATH } from "../../../lib/constants";
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -39,7 +40,7 @@ export default function MatchPage({ match_id }: MatchStatsContentProps) {
   };
 
   const { data: matchData, isLoading } = useQuery(['match', match_id], async () => {
-    const url = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS?match_id=${match_id}`);
+    const url = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}MATCH_RESULTS?match_id=${match_id}`);
     const response = await fetch(url.href);
 
     if (!response.ok) {

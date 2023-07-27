@@ -22,6 +22,7 @@ import headshot from '../../../assets/icons/hs.png';
 import flashbang from '../../../assets/icons/flashbang.png';
 import { weaponImage } from "../weaponImage";
 import { UI_CONTEXT_PATH } from "../../../lib/constants";
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 const roundIconImage: { [key: number]: string } = {
   1: bomb,
@@ -113,10 +114,10 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
   }>({
     queryKey: ['matchrounds' + match_id],
     queryFn: async () => {
-      const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ROUND_SCORECARD_CACHE?match_id=${match_id}`);
-      const url2 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_kill_events?match_id=${match_id}`);
-      const url3 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/round_events?match_id=${match_id}`);
-      const url4 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
+      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}ROUND_SCORECARD_CACHE?match_id=${match_id}`);
+      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}round_kill_events?match_id=${match_id}`);
+      const url3 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}round_events?match_id=${match_id}`);
+      const url4 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
 
       const responses = await Promise.all([
         fetch(url1.href),

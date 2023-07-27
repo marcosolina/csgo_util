@@ -5,6 +5,7 @@ import {
 import Chart from 'chart.js/auto';
 import 'chartjs-adapter-date-fns';
 import { startOfWeek, startOfMonth, format } from 'date-fns';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 interface PlayerGraphsStatsContentProps {
   steamid: string;
@@ -22,7 +23,7 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
   const { data, isError, isLoading } = useQuery({
     queryKey: ['playerradar'],
     queryFn: async () => {
-      const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`);
+      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`);
   
       const responses = await Promise.all([
         fetch(url1.href),

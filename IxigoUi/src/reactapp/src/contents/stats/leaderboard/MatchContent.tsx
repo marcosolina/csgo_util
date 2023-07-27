@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import {
     useQuery,
   } from 'react-query';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
   interface MatchContentProps {
     setSelectedTab: React.Dispatch<React.SetStateAction<number | null>>;
@@ -19,7 +20,7 @@ import {
     const { data, isError, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['matches'],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_RESULTS_CACHE");
+            const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}MATCH_RESULTS_CACHE`);
     
             const responses = await Promise.all([
                 fetch(url1.href),

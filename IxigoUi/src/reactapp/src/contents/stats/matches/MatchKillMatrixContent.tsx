@@ -4,6 +4,7 @@ import { IconButton, Tooltip } from '@mui/material';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { MaterialReactTable } from 'material-react-table';
 import { useQuery } from 'react-query';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 interface User {
   steam_id: string;
@@ -40,9 +41,9 @@ const MatchKillMatrixContent: React.FC<KillMatrixContentProps> = ({ match_id }) 
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: ['killmatrix' + match_id],
     queryFn: async () => {
-        const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_KILL_COUNT_CACHE?match_id=${match_id}`);
-        const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
-        const url3 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
+        const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_MATCH_KILL_COUNT_CACHE?match_id=${match_id}`);
+        const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}USERS`);
+        const url3 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`);
 
         const responses = await Promise.all([
             fetch(url1.href),

@@ -9,6 +9,7 @@ import {
     useQuery,
   } from 'react-query';
 import { Link } from 'react-router-dom';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 
   interface MatchWeaponProps {
@@ -47,8 +48,8 @@ import { Link } from 'react-router-dom';
     const { data: weaponData, isError, isLoading } = useQuery<WeaponData[], Error>({
         queryKey: ['matchplayerweapon' +match_id],
         queryFn: async () => {
-            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/MATCH_PLAYER_WEAPON_STATS_CACHE?match_id=${match_id}`);
-            const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
+            const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}MATCH_PLAYER_WEAPON_STATS_CACHE?match_id=${match_id}`);
+            const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}USERS`);
             const responses = await Promise.all([
                 fetch(url1.href),
                 fetch(url2.href),

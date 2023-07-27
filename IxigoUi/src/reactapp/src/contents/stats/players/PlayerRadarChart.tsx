@@ -3,6 +3,7 @@ import { Radar } from 'react-chartjs-2';
 import * as ss from 'simple-statistics';
 import { useQuery } from 'react-query';
 import { TooltipItem } from 'chart.js';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 // Define your types for the player data
 interface PlayerData {
@@ -26,7 +27,7 @@ const PlayerRadarChart: React.FC<RadarChartProps> = ({ steamid }) => {
     const { data: playerData, isError, isLoading } = useQuery<PlayerData[], Error>({
         queryKey: ['leaderboard'+steamid],
         queryFn: async (): Promise<PlayerData[]> => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE");
+            const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE`);
 
             const responses = await Promise.all([
                 fetch(url1.href),

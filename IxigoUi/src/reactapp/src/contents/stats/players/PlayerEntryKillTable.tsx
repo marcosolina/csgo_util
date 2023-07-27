@@ -4,6 +4,7 @@ import { MaterialReactTable } from 'material-react-table';
 import { useMemo } from "react";
 import PieChartMini from '../PieChartMini';
 import { Typography, Box, LinearProgress, Tooltip } from '@mui/material';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 interface PlayerData {
     steamid: string;
@@ -33,7 +34,7 @@ const PlayerEntryKIllTable: React.FC<RadarChartProps> = ({ steamid }) => {
     const { data: playerData, isError, isLoading, isFetching } = useQuery<PlayerData[], Error>({
         queryKey: ['entrykill' +steamid],
         queryFn: async (): Promise<PlayerData[]> => {
-            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/ENTRY_KILL_STATS_EXTENDED_CACHE?steamid=${steamid}`);
+            const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}ENTRY_KILL_STATS_EXTENDED_CACHE?steamid=${steamid}`);
 
             const responses = await Promise.all([
                 fetch(url1.href),

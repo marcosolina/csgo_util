@@ -4,6 +4,7 @@ import { MaterialReactTable } from 'material-react-table';
 import { useMemo } from "react";
 import PieChartMini from '../PieChartMini';
 import { Typography, Box, LinearProgress, Tooltip } from '@mui/material';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 interface PlayerData {
     _1v1p: number;
@@ -33,7 +34,7 @@ const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
     const { data: playerData, isError, isLoading, isFetching } = useQuery<PlayerData[], Error>({
         queryKey: ['clutch'+steamid],
         queryFn: async (): Promise<PlayerData[]> => {
-            const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_CLUTCH_STATS_CACHE?steamid=${steamid}`);
+            const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_CLUTCH_STATS_CACHE?steamid=${steamid}`);
 
             const responses = await Promise.all([
                 fetch(url1.href),

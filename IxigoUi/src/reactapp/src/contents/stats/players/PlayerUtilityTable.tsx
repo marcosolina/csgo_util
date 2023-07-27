@@ -3,6 +3,7 @@ import { useQuery } from 'react-query';
 import { MaterialReactTable } from 'material-react-table';
 import { useMemo } from "react";
 import { Typography, Box, LinearProgress, Tooltip } from '@mui/material';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 
 // Define your types for the player data
@@ -23,7 +24,7 @@ const PlayerUtilityTable: React.FC<RadarChartProps> = ({ steamid }) => {
     const { data: playerData, isError, isLoading, isFetching } = useQuery<PlayerData[], Error>({
         queryKey: ['leaderboard'+steamid],
         queryFn: async () => {
-            const url1 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE");
+            const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE`);
     
             const responses = await Promise.all([
                 fetch(url1.href),

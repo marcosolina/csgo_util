@@ -10,6 +10,7 @@ import {
     useQuery,
   } from 'react-query';
 import { Link } from 'react-router-dom';
+import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 interface MapLeaderboardsContentProps {
   mapName: string;
@@ -90,8 +91,8 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
   const { data: matchData, isError, isLoading, refetch } = useQuery<PlayerMatch[], Error>({
       queryKey: ['mapleaderboard' + mapName],
       queryFn: async () => {
-          const url1 = new URL(`https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?mapname=${mapName}`);
-          const url2 = new URL("https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/charts/view/USERS");
+          const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?mapname=${mapName}`);
+          const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}USERS`);
           const responses = await Promise.all([
               fetch(url1.href),
               fetch(url2.href),

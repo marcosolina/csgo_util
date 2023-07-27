@@ -9,80 +9,19 @@ import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
-import { ISteamUser } from "./interfaces";
+import { IPlayerStats, ISteamUser } from "./interfaces";
 
-interface LeaderboardContentProps {
-  setSelectedTab: React.Dispatch<React.SetStateAction<number | null>>;
-  selectedTab: number | null;
+const SMALL_COL_SIZE = 5;
+
+function createCustomHeader(tooltipText: string) {
+  return ({ column }: { column: any }) => (
+    <Tooltip title={tooltipText}>
+      <span>{column.columnDef.header}</span>
+    </Tooltip>
+  );
 }
 
-interface PlayerStats {
-  username: string;
-  steamid: string;
-  mapname: string;
-  matches: string;
-  rounds: number;
-
-  first_weapon: string;
-  second_weapon: string;
-  wins: number;
-  loss: number;
-
-  kills: number;
-  deaths: number;
-  assists: number;
-  kpr: number;
-  dpr: number;
-  kdr: number;
-  fkr: number;
-  ek: number;
-  tk: number;
-
-  mvp: number;
-  hltv_rating: number;
-  rws: number;
-
-  adr: number;
-  kast: number;
-
-  _1v1: number;
-  _1v2: number;
-  _1v3: number;
-  _1v4: number;
-  _1v5: number;
-  _1vnp: number;
-
-  _1k: number;
-  _2k: number;
-  _3k: number;
-  _4k: number;
-  _5k: number;
-
-  headshots: number;
-  headshot_percentage: number;
-  hr: number;
-
-  bp: number;
-  ud: number;
-  ffd: number;
-
-  winlossratio: number;
-  averagewinscore: number;
-
-  td: number;
-  tda: number;
-  tdh: number;
-
-  fbt: number;
-  fa: number;
-  ebt: number;
-
-  ff: number;
-  bd: number;
-}
-
-const smallColSize = 5;
-const LeaderboardContent: React.FC<LeaderboardContentProps> = ({ setSelectedTab, selectedTab }) => {
+const LeaderboardContent = () => {
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: ["leaderboard"],
     queryFn: async () => {
@@ -121,15 +60,7 @@ const LeaderboardContent: React.FC<LeaderboardContentProps> = ({ setSelectedTab,
     keepPreviousData: true,
   });
 
-  function createCustomHeader(tooltipText: string) {
-    return ({ column }: { column: any }) => (
-      <Tooltip title={tooltipText}>
-        <span>{column.columnDef.header}</span>
-      </Tooltip>
-    );
-  }
-
-  const columns = useMemo<MRT_ColumnDef<PlayerStats>[]>(
+  const columns = useMemo<MRT_ColumnDef<IPlayerStats>[]>(
     () => [
       {
         accessorKey: "username" as const,

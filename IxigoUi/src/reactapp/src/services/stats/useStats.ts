@@ -1,5 +1,5 @@
 import { UseQueryResult, useQuery } from "react-query";
-import { IGetStatsRequest } from "./interfaces";
+import { IGetStatsRequest, IGetStatsResponse } from "./interfaces";
 import { IxigoResponse } from "../../lib/http-requests";
 import { SERVICES_URLS } from "../../lib/constants/paths";
 import { createQueryParamString, performGet } from "../../lib/http-requests/httpRequests";
@@ -10,11 +10,16 @@ import { createQueryParamString, performGet } from "../../lib/http-requests/http
  * @param request
  * @returns
  */
-export function useGetStats<T>(request: IGetStatsRequest<T>): UseQueryResult<IxigoResponse<T>, unknown> {
+export function useGetStats<T>(
+  request: IGetStatsRequest<T>
+): UseQueryResult<IxigoResponse<IGetStatsResponse<T>>, unknown> {
   const queryString = createQueryParamString({ ...request.queryParams });
   return useQuery(
     ["getStats", request.viewName, queryString],
-    async () => await performGet<T>(`${SERVICES_URLS["dem-manager"]["get-stats"]}/${request.viewName}${queryString}`),
+    async () =>
+      await performGet<IGetStatsResponse<T>>(
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/${request.viewName}${queryString}`
+      ),
     {
       enabled: !!request.viewName,
     }

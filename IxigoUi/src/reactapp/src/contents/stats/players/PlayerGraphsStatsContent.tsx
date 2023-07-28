@@ -1,43 +1,51 @@
-import React, { useEffect, useRef } from 'react';
-import {
-  useQuery,
-} from 'react-query';
-import Chart from 'chart.js/auto';
-import 'chartjs-adapter-date-fns';
-import { startOfWeek, startOfMonth, format } from 'date-fns';
+import React, { useEffect, useRef } from "react";
+import { useQuery } from "react-query";
+import Chart from "chart.js/auto";
+import "chartjs-adapter-date-fns";
+import { startOfWeek, startOfMonth, format } from "date-fns";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
 
 interface PlayerGraphsStatsContentProps {
   steamid: string;
   fieldName: string;
   label: string;
-  binningLevel: 'week' | 'month';
+  binningLevel: "week" | "month";
   showXAxisLabels: boolean;
   startDate?: Date | null; // Add this
   endDate?: Date | null; // And this
 }
 
-const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ steamid, fieldName, label, binningLevel, showXAxisLabels, startDate, endDate  }) => {
+const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({
+  steamid,
+  fieldName,
+  label,
+  binningLevel,
+  showXAxisLabels,
+  startDate,
+  endDate,
+}) => {
   const canvasRef = useRef(null);
 
   const { data, isError, isLoading } = useQuery({
-    queryKey: ['playerradar'],
+    queryKey: ["playerradar"],
     queryFn: async () => {
-      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`);
-  
-      const responses = await Promise.all([
-        fetch(url1.href),
-      ]);
-  
-      const jsons = await Promise.all(responses.map(response => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
-        return response.json();
-      }));
-  
+      const url1 = new URL(
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`
+      );
+
+      const responses = await Promise.all([fetch(url1.href)]);
+
+      const jsons = await Promise.all(
+        responses.map((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+          return response.json();
+        })
+      );
+
       const matchResults = jsons[0].view_data;
-  
+
       return matchResults;
     },
     keepPreviousData: true,
@@ -48,16 +56,15 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
     if (data) {
       // Filter the data based on the steamid
       const filteredData = data.filter((item: any) => item.steamid === steamid);
-      
+
       // Sort the data by date
       filteredData.sort((a: any, b: any) => new Date(a.match_date).getTime() - new Date(b.match_date).getTime());
-
 
       // Bin the data by week or month
       const binnedData = new Map();
       filteredData.forEach((item: any) => {
-        const dateFn = binningLevel === 'week' ? startOfWeek : startOfMonth; // Choose the correct date function
-        const binnedDate = format(dateFn(new Date(item.match_date)), 'yyyy-MM-dd');
+        const dateFn = binningLevel === "week" ? startOfWeek : startOfMonth; // Choose the correct date function
+        const binnedDate = format(dateFn(new Date(item.match_date)), "yyyy-MM-dd");
         if (!binnedData.has(binnedDate)) {
           binnedData.set(binnedDate, []);
         }
@@ -66,26 +73,26 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
 
       // Get the average field value for each bin
       let dates = Array.from(binnedData.keys());
-      let fieldValues = Array.from(binnedData.values()).map(items => {
+      let fieldValues = Array.from(binnedData.values()).map((items) => {
         const total = items.reduce((sum: number, item: any) => sum + item[fieldName], 0);
         return total / items.length;
       });
 
-        // If startDate is defined, filter out any dates before it
-        if (startDate) {
-          const filteredDates = dates.filter(date => new Date(date) >= startDate);
-          const filteredFieldValues = fieldValues.filter((_, i) => new Date(dates[i]) >= startDate);
-          dates = filteredDates;
-          fieldValues = filteredFieldValues;
-        }
-    
-        // If endDate is defined, filter out any dates after it
-        if (endDate) {
-          const filteredDates = dates.filter(date => new Date(date) <= endDate);
-          const filteredFieldValues = fieldValues.filter((_, i) => new Date(dates[i]) <= endDate);
-          dates = filteredDates;
-          fieldValues = filteredFieldValues;
-        }
+      // If startDate is defined, filter out any dates before it
+      if (startDate) {
+        const filteredDates = dates.filter((date) => new Date(date) >= startDate);
+        const filteredFieldValues = fieldValues.filter((_, i) => new Date(dates[i]) >= startDate);
+        dates = filteredDates;
+        fieldValues = filteredFieldValues;
+      }
+
+      // If endDate is defined, filter out any dates after it
+      if (endDate) {
+        const filteredDates = dates.filter((date) => new Date(date) <= endDate);
+        const filteredFieldValues = fieldValues.filter((_, i) => new Date(dates[i]) <= endDate);
+        dates = filteredDates;
+        fieldValues = filteredFieldValues;
+      }
 
       // Calculate the trendline
       const xMean = dates.reduce((sum, _, i) => sum + i, 0) / dates.length;
@@ -106,7 +113,7 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
 
       if (canvasRef.current) {
         chart = new Chart(canvasRef.current, {
-          type: 'line',
+          type: "line",
           data: {
             labels: dates,
             datasets: [
@@ -115,17 +122,17 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
                 label: label,
                 data: fieldValues,
                 fill: false,
-                borderColor: 'rgb(75, 192, 192)',
+                borderColor: "rgb(75, 192, 192)",
                 tension: 0.1,
               },
               // This is your trendline
               {
-                label: 'Trendline',
+                label: "Trendline",
                 data: trendline,
                 fill: false,
                 pointRadius: 0,
-                borderColor: 'rgba(255, 255, 255, 0.5)', 
-                borderDash: [5, 5], 
+                borderColor: "rgba(255, 255, 255, 0.5)",
+                borderDash: [5, 5],
                 tension: 0.1,
               },
             ],
@@ -134,19 +141,19 @@ const PlayerGraphsStatsContent: React.FC<PlayerGraphsStatsContentProps> = ({ ste
             maintainAspectRatio: false,
             scales: {
               x: {
-                type: 'time',
+                type: "time",
                 time: {
-                  unit: binningLevel
+                  unit: binningLevel,
                 },
                 display: showXAxisLabels,
                 ticks: {
-                    autoSkip: false,
-                    maxRotation: 90,
-                    minRotation: 90
-                }
-              }
-            }
-          }
+                  autoSkip: false,
+                  maxRotation: 90,
+                  minRotation: 90,
+                },
+              },
+            },
+          },
         });
       }
     }

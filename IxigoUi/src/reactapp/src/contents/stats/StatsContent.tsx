@@ -1,4 +1,5 @@
 import { Typography, Box } from "@mui/material";
+import LeaderboardContent from "./leaderboard/LeaderboardContent";
 
 const StatsContent = () => {
   return (

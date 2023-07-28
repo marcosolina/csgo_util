@@ -5,5 +5,5 @@ export interface IGetStatsRequest<T> {
 
 export interface IGetStatsResponse<T> {
   view_name: string;
-  view_data: T;
+  view_data: T[];
 }

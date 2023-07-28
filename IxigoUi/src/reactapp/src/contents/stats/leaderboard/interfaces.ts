@@ -1,3 +1,6 @@
+import { MRT_ColumnDef } from "material-react-table";
+import { QueryStatus } from "react-query";
+
 export interface ISteamUser {
   steam_id: string;
   user_name: string;
@@ -66,4 +69,10 @@ export interface IPlayerStats {
 
   ff: number;
   bd: number;
+}
+
+export interface ILeaderboardContent {
+  state: QueryStatus;
+  columns: MRT_ColumnDef<IPlayerStats>[];
+  data: IPlayerStats[];
 }

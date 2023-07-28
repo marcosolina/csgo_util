@@ -1,4 +1,4 @@
-import { IAvgPlayerScorePerMap } from "../../../services";
+import { IAvgPlayerScorePerMap } from "../../../services/charts";
 import { ChartData, ChartOptions, registerables, Chart } from "chart.js";
 import { Radar } from "react-chartjs-2";
 import { QueryStatus } from "../../../lib/http-requests";

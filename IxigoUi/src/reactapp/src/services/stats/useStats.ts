@@ -14,7 +14,7 @@ export function useGetStats<T>(request: IGetStatsRequest<T>): UseQueryResult<Ixi
   const queryString = createQueryParamString({ ...request.queryParams });
   return useQuery(
     ["getStats", request.viewName, queryString],
-    async () => await performGet<T>(`${SERVICES_URLS["dem-manager"]["get-stats"]}/${request.viewName}${queryString}`),
+    async () => await performGet<T>(`${SERVICES_URLS["dem-manager"]["get-stats-view"]}/${request.viewName}${queryString}`),
     {
       enabled: !!request.viewName,
     }

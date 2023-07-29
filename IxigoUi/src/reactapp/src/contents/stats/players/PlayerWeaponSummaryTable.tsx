@@ -1,7 +1,7 @@
 import React from "react";
 import { useMemo } from "react";
 import { Tooltip } from "@mui/material";
-import { weaponImage } from "../weaponImage";
+import { WEAPONG_IMAGE } from "../weaponImage";
 import { MaterialReactTable } from "material-react-table";
 import { useQuery } from "react-query";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
@@ -85,7 +85,7 @@ const PlayerWeaponSummaryTable: React.FC<PlayerWeaponProps> = ({ steamid }) => {
         Header: createCustomHeader("Weapon"),
         Cell: ({ cell }: { cell: any }) => {
           const weapon = cell.getValue() as string;
-          const imageUrl = weaponImage[weapon];
+          const imageUrl = WEAPONG_IMAGE[weapon];
           return imageUrl ? <img src={imageUrl} alt={weapon} style={{ height: "18px" }} /> : null;
         },
       },

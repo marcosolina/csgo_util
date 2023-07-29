@@ -8,7 +8,7 @@ import { SnackbarKey, SnackbarProvider, useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { RconContentProvider } from "./contents/rcon/indext";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PlayersContentProvider } from "./contents/players/indext";
 
 const darkTheme = createTheme({
@@ -27,7 +27,6 @@ const SnackbarCloseButton: React.FC<{ snackbarKey: SnackbarKey }> = ({ snackbarK
   );
 };
 
-
 const App = () => {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -40,24 +39,26 @@ const App = () => {
     },
   });
 
-
   return (
-      <BrowserRouter>
-        <SnackbarProvider maxSnack={10} action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
-          <I18nextProvider i18n={i18n}>
-            <ThemeProvider theme={darkTheme}>
-              <CssBaseline />
-              <QueryClientProvider client={queryClient}>
-                <RconContentProvider>
-                  <PlayersContentProvider>
-                    <BaseLayout />
-                  </PlayersContentProvider>
-                </RconContentProvider>
-              </QueryClientProvider>
-            </ThemeProvider>
-          </I18nextProvider>
-        </SnackbarProvider>
-      </BrowserRouter>
+    <BrowserRouter>
+      <SnackbarProvider maxSnack={10} action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
+        <I18nextProvider i18n={i18n}>
+          <ThemeProvider theme={darkTheme}>
+            <CssBaseline />
+            <QueryClientProvider client={queryClient}>
+              <RconContentProvider>
+                <PlayersContentProvider>
+                  <Routes>
+                    <Route path="/" element={<BaseLayout />} />
+                    <Route path="/:tabid/*" element={<BaseLayout />} />
+                  </Routes>
+                </PlayersContentProvider>
+              </RconContentProvider>
+            </QueryClientProvider>
+          </ThemeProvider>
+        </I18nextProvider>
+      </SnackbarProvider>
+    </BrowserRouter>
   );
 };
 

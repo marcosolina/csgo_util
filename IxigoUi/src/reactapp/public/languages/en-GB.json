@@ -9,12 +9,12 @@
     "home": {
       "title": "IXI-GO: Monday Nights",
       "tabs": {
-        "0": "Dem Files",
-        "1": "Teams",
-        "2": "Stats",
-        "3": "Rcon",
-        "4": "Discord Bot",
-        "5": "Join us"
+        "demfiles": "Dem Files",
+        "teams": "Teams",
+        "stats": "Stats",
+        "rcon": "Rcon",
+        "discordbot": "Discord Bot",
+        "joinus": "Join us"
       }
     },
     "discord": {

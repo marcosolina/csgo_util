@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
-import { SelectedStatsContext } from "../SelectedStatsContext";
 import { useMemo } from "react";
 import { Tooltip, Box } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
-import PieChartMini from "../PieChartMini";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
+import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 
 interface TeamMatchProps {
   match_id: number;
@@ -127,11 +126,13 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
         Cell: ({ cell }: { cell: any }) => {
           const username = cell.getValue() as string;
           const steamid = cell.row.original.steamid;
+          /*
           const selectedStatsContext = useContext(SelectedStatsContext);
           if (!selectedStatsContext) {
             throw new Error("useContext was called outside of the selectedStatsContext provider");
           }
           const { setSelectedPlayerSteamID, setSelectedSubpage } = selectedStatsContext;
+          */
           return (
             <Box
               component={Link}
@@ -146,9 +147,11 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
                 },
               }}
               onClick={(e) => {
+                /*
                 e.preventDefault(); // Prevent the link from navigating
                 setSelectedPlayerSteamID(steamid);
                 setSelectedSubpage("player");
+                */
               }}
             >
               {username}

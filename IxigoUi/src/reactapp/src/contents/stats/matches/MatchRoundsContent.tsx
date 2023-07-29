@@ -18,7 +18,7 @@ import full from "../../../assets/icons/fullbuy.png";
 import pistol from "../../../assets/icons/pistol.png";
 import headshot from "../../../assets/icons/hs.png";
 import flashbang from "../../../assets/icons/flashbang.png";
-import { weaponImage } from "../weaponImage";
+import { WEAPONG_IMAGE } from "../weaponImage";
 import { UI_CONTEXT_PATH } from "../../../lib/constants";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
 
@@ -467,7 +467,7 @@ const MatchRoundsContent: React.FC<MatchRoundsContentProps> = ({ match_id }) => 
                   <img
                     height="20px"
                     style={{ transform: "scaleX(-1)", padding: "0 5px" }}
-                    src={weaponImage[event.weapon]}
+                    src={WEAPONG_IMAGE[event.weapon]}
                     alt={event.weapon}
                   />
                   {event.headshot && <img height="20px" style={{ padding: "0 5px" }} src={headshot} alt="Headshot" />}

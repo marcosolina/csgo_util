@@ -1,13 +1,12 @@
 import React, { useContext } from "react";
-import { SelectedStatsContext } from "../SelectedStatsContext";
 import { useMemo } from "react";
 import { Tooltip, Box } from "@mui/material";
-import { weaponImage } from "../weaponImage";
+import { WEAPONG_IMAGE } from "../weaponImage";
 import { MaterialReactTable } from "material-react-table";
-import PieChartMini from "../PieChartMini";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
+import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 
 interface MapWeaponsContentProps {
   mapName: string;
@@ -106,11 +105,13 @@ const MapWeaponsContent: React.FC<MapWeaponsContentProps> = ({ mapName }) => {
         Cell: ({ cell }: { cell: any }) => {
           const username = cell.getValue() as string;
           const steamid = cell.row.original.steamid;
+          /*
           const selectedStatsContext = useContext(SelectedStatsContext);
           if (!selectedStatsContext) {
             throw new Error("useContext was called outside of the selectedStatsContext provider");
           }
           const { setSelectedPlayerSteamID, setSelectedSubpage } = selectedStatsContext;
+          */
           return (
             <Box
               component={Link}
@@ -125,9 +126,11 @@ const MapWeaponsContent: React.FC<MapWeaponsContentProps> = ({ mapName }) => {
                 },
               }}
               onClick={(e) => {
+                /*
                 e.preventDefault(); // Prevent the link from navigating
                 setSelectedPlayerSteamID(steamid);
                 setSelectedSubpage("player");
+                */
               }}
             >
               {username}
@@ -143,7 +146,7 @@ const MapWeaponsContent: React.FC<MapWeaponsContentProps> = ({ mapName }) => {
         Header: createCustomHeader("Weapon"),
         Cell: ({ cell }: { cell: any }) => {
           const weapon = cell.getValue() as string;
-          const imageUrl = weaponImage[weapon];
+          const imageUrl = WEAPONG_IMAGE[weapon];
           return imageUrl ? <img src={imageUrl} alt={weapon} style={{ height: "18px" }} /> : null;
         },
       },

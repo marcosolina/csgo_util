@@ -1,14 +1,13 @@
 import React, { useContext } from "react";
-import { SelectedStatsContext } from "../SelectedStatsContext";
 import { useMemo } from "react";
 import { IconButton, Tooltip, Box } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { weaponImage } from "../weaponImage";
-import PieChartMini from "../PieChartMini";
+import { WEAPONG_IMAGE } from "../weaponImage";
 import { MaterialReactTable, MRT_ColumnDef } from "material-react-table";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
+import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 
 interface User {
   steam_id: string;
@@ -139,11 +138,13 @@ const PlayerMapsContent: React.FC<PlayerMapsContentProps> = ({ steamid }) => {
         header: "Map",
         Cell: ({ cell }: { cell: any }) => {
           const mapName = cell.getValue() as string;
+          /*
           const selectedStatsContext = useContext(SelectedStatsContext);
           if (!selectedStatsContext) {
             throw new Error("useContext was called outside of the selectedStatsContext provider");
           }
           const { setSelectedSubpage, setSelectedMap } = selectedStatsContext;
+          */
           return (
             <Box
               component={Link}
@@ -158,9 +159,11 @@ const PlayerMapsContent: React.FC<PlayerMapsContentProps> = ({ steamid }) => {
                 },
               }}
               onClick={(e) => {
+                /*
                 e.preventDefault(); // Prevent the link from navigating
                 setSelectedMap(mapName);
                 setSelectedSubpage("map");
+                */
               }}
             >
               {mapName}
@@ -217,7 +220,7 @@ const PlayerMapsContent: React.FC<PlayerMapsContentProps> = ({ steamid }) => {
         Header: createCustomHeader("Primary weapon - most kills"),
         Cell: ({ cell }: { cell: any }) => {
           const weapon = cell.getValue() as string;
-          const imageUrl = weaponImage[weapon];
+          const imageUrl = WEAPONG_IMAGE[weapon];
           return imageUrl ? <img src={imageUrl} alt={weapon} style={{ height: "18px" }} /> : null;
         },
       },
@@ -228,7 +231,7 @@ const PlayerMapsContent: React.FC<PlayerMapsContentProps> = ({ steamid }) => {
         Header: createCustomHeader("Secondary weapon"),
         Cell: ({ cell }: { cell: any }) => {
           const weapon = cell.getValue() as string;
-          const imageUrl = weaponImage[weapon];
+          const imageUrl = WEAPONG_IMAGE[weapon];
           return imageUrl ? <img src={imageUrl} alt={weapon} style={{ height: "18px" }} /> : null;
         },
       },

@@ -1,6 +1,6 @@
 import { AppBar, Container, Tab, Tabs, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import DemFilesContent from "../../contents/dem-files/DemFilesContent";
 import DiscordBotContent from "../../contents/discord-bot/DiscordBotContent";
@@ -10,30 +10,30 @@ import StatsContent from "../../contents/stats/StatsContent";
 import ServerInfoContent from "../../contents/server-info/ServerInfoContent";
 import Case from "../switch-case/Case";
 import Switch from "../switch-case/Switch";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
-import { QUERY_PARAMS } from "../../lib/constants";
+import { useNavigate, useParams } from "react-router-dom";
 
 const LANG_BASE_PATH = "page.home";
 
+const TABS = {
+  DEMFILES: "demfiles",
+  TEAMS: "teams",
+  STATS: "stats",
+  RCON: "rcon",
+  DISCORDBOT: "discordbot",
+  JOINUS: "joinus",
+};
+
 const BaseLayout = () => {
   const { t } = useTranslation();
-  const [selectedTab, setSelectedTab] = useState(0);
-  const [searchParams] = useSearchParams();
-  const location = useLocation();
+  let { tabid } = useParams();
+  const [selectedTab, setSelectedTab] = useState(tabid || TABS.DEMFILES);
   const history = useNavigate();
 
-  useEffect(() => {
-    if (searchParams.has(QUERY_PARAMS.TAB) && parseInt(searchParams.get(QUERY_PARAMS.TAB) as string) < 6) {
-      const newValue = parseInt(searchParams.get(QUERY_PARAMS.TAB) as string);
-      setSelectedTab(newValue);
-    }
-  }, [searchParams, selectedTab]);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setSelectedTab(newValue);
-    const newPath = `${location.pathname}?${QUERY_PARAMS.TAB}=${newValue}`;
-    location.search = `?${QUERY_PARAMS.TAB}=${newValue}`;
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    const newPath = `/${newValue}`;
+    console.log(newPath);
     history(newPath);
+    setSelectedTab(newValue);
   };
 
   return (
@@ -55,34 +55,34 @@ const BaseLayout = () => {
             },
           }}
         >
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.0`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.1`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.2`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.3`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.4`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.5`)} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.DEMFILES}`)} value={TABS.DEMFILES} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.TEAMS}`)} value={TABS.TEAMS} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.STATS}`)} value={TABS.STATS} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.RCON}`)} value={TABS.RCON} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.DISCORDBOT}`)} value={TABS.DISCORDBOT} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.JOINUS}`)} value={TABS.JOINUS} />
         </Tabs>
       </Box>
 
       <Container>
         <Box sx={{ m: "2rem" }} />
         <Switch value={selectedTab}>
-          <Case case={0}>
+          <Case case={TABS.DEMFILES}>
             <DemFilesContent />
           </Case>
-          <Case case={1}>
+          <Case case={TABS.TEAMS}>
             <PlayersContent />
           </Case>
-          <Case case={2}>
+          <Case case={TABS.STATS}>
             <StatsContent />
           </Case>
-          <Case case={3}>
+          <Case case={TABS.RCON}>
             <RconContent />
           </Case>
-          <Case case={4}>
+          <Case case={TABS.DISCORDBOT}>
             <DiscordBotContent />
           </Case>
-          <Case case={5}>
+          <Case case={TABS.JOINUS}>
             <ServerInfoContent />
           </Case>
         </Switch>

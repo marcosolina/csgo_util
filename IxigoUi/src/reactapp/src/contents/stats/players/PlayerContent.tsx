@@ -7,6 +7,7 @@ import PlayerMapsContent from "./PlayerMapsContent";
 import PlayerMatchesContent from "./PlayerMatchesContent";
 import { useQuery } from "react-query";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
+import { useParams } from "react-router-dom";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -33,11 +34,8 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-interface PlayerPageProps {
-  steamid: string;
-}
-
-export default function PlayerPage({ steamid }: PlayerPageProps) {
+export default function PlayerPage() {
+  let { steamid } = useParams();
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -57,6 +55,10 @@ export default function PlayerPage({ steamid }: PlayerPageProps) {
   });
 
   const userName = userData || steamid; // use user_name if available, fallback to steamid
+
+  if (!steamid) {
+    return null; // TODO return a "warining" component or something similar
+  }
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>

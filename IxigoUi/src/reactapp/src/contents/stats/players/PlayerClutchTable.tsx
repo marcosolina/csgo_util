@@ -2,9 +2,9 @@ import React from "react";
 import { useQuery } from "react-query";
 import { MaterialReactTable } from "material-react-table";
 import { useMemo } from "react";
-import PieChartMini from "../PieChartMini";
 import { Typography, Box, LinearProgress, Tooltip } from "@mui/material";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
+import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 
 interface PlayerData {
   _1v1p: number;

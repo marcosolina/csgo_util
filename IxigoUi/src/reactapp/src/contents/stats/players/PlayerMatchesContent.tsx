@@ -1,12 +1,11 @@
 import React, { useContext } from "react";
-import { SelectedStatsContext } from "../SelectedStatsContext";
 import { useMemo } from "react";
 import { Tooltip, Box } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
-import PieChartMini from "../PieChartMini";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
+import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 
 interface PlayerMatchesContentProps {
   steamid: string;
@@ -154,11 +153,13 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
           const dateF = new Date(date);
           const formattedDate = dateF.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" });
           const formattedTime = dateF.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
+          /*
           const selectedStatsContext = useContext(SelectedStatsContext);
           if (!selectedStatsContext) {
             throw new Error("useContext was called outside of the selectedStatsContext provider");
           }
           const { setSelectedMatch, setSelectedSubpage } = selectedStatsContext;
+          */
           return (
             <Box
               component={Link}
@@ -173,9 +174,11 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
                 },
               }}
               onClick={(e) => {
+                /*
                 e.preventDefault(); // Prevent the link from navigating
                 setSelectedMatch(match_id);
                 setSelectedSubpage("match");
+                */
               }}
             >
               {`${formattedDate}, ${formattedTime}`}
@@ -188,11 +191,13 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
         header: "Map",
         Cell: ({ cell }: { cell: any }) => {
           const mapName = cell.getValue() as string;
+          /*
           const selectedStatsContext = useContext(SelectedStatsContext);
           if (!selectedStatsContext) {
             throw new Error("useContext was called outside of the selectedStatsContext provider");
           }
           const { setSelectedSubpage, setSelectedMap } = selectedStatsContext;
+          */
           return (
             <Box
               component={Link}
@@ -207,9 +212,11 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
                 },
               }}
               onClick={(e) => {
+                /*
                 e.preventDefault(); // Prevent the link from navigating
                 setSelectedMap(mapName);
                 setSelectedSubpage("map");
+                */
               }}
             >
               {mapName}

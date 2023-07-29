@@ -75,4 +75,5 @@ export interface ILeaderboardContent {
   state: QueryStatus;
   columns: MRT_ColumnDef<IPlayerStats>[];
   data: IPlayerStats[];
+  refetch: () => void;
 }

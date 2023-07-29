@@ -5,4 +5,5 @@ export * from "./dialog";
 export * from "./input";
 export * from "./select";
 export * from "./switch";
+export * from "./loading";
 export * from "./pie-chart-mini";

@@ -164,6 +164,7 @@
     },
     "stats": {
       "leaderboard": {
+        "title": "Leaderboard",
         "column-headers": {
           "username": { "tooltip": "Name", "header": "Name" },
           "matches": { "tooltip": "Matches", "header": "M" },

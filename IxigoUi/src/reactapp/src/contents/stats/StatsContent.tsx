@@ -4,9 +4,6 @@ import LeaderboardContent from "./leaderboard/LeaderboardContent";
 const StatsContent = () => {
   return (
     <>
-      <Box textAlign="center">
-        <Typography variant="h5">Leaderboard</Typography>
-      </Box>
       <LeaderboardContent />
       <Box textAlign="center">
         <Typography variant="h5">Recent Matches</Typography>

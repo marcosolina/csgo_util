@@ -1,6 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { ILeaderboardContent, IPlayerStats, ISteamUser } from "./interfaces";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { MRT_ColumnDef } from "material-react-table";
 import { IGetStatsRequest, useGetStats } from "../../../services";
 import { combineQueryStatuses } from "../../../lib/queries/queriesFunctions";
@@ -93,6 +93,7 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
     const cols: MRT_ColumnDef<IPlayerStats>[] = [];
     COLUMNS_ORDER.forEach((key) => {
       cols.push({
+        id: key,
         accessorFn: (row) => {
           if (!row.hasOwnProperty("hltv_rating")) {
             console.log(row);
@@ -108,6 +109,11 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
 
     return cols;
   }, [t]);
+
+  const refetch = useCallback(() => {
+    qUsersRequest.refetch();
+    qPLayersStatsRequest.refetch();
+  }, [qUsersRequest, qPLayersStatsRequest]);
 
   // Create the data
   useEffect(() => {
@@ -139,5 +145,6 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
     columns,
     state: queriesState,
     data,
+    refetch,
   };
 };

@@ -1,21 +1,31 @@
-import { IconButton, Tooltip, Box } from "@mui/material";
+import { IconButton, Tooltip, Box, Typography } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
 import { MaterialReactTable } from "material-react-table";
 import { useLeaderboardContent } from "./useLeaderboardContent";
 import { QueryStatus } from "../../../lib/http-requests";
 import Switch from "../../../common/switch-case/Switch";
 import Case from "../../../common/switch-case/Case";
+import TableLoading from "../../../common/loading/table-loading/TableLoading";
+import { useTranslation } from "react-i18next";
+
+const STRING_PREFIX = "page.stats.leaderboard";
 
 const LeaderboardContent = () => {
-  const { columns, data, state } = useLeaderboardContent();
+  const { t } = useTranslation();
+  const { columns, data, state, refetch } = useLeaderboardContent();
 
   return (
     <Switch value={state}>
-      <Case case={QueryStatus.loading}>loading</Case>
+      <Case case={QueryStatus.loading}>
+        <TableLoading />
+      </Case>
       <Case case={QueryStatus.success}>
+        <Box textAlign="center">
+          <Typography variant="h5">{t(`${STRING_PREFIX}.title`)}</Typography>
+        </Box>
         <MaterialReactTable
           columns={columns}
-          data={data || []} //data is undefined on first render  ?.data ?? []
+          data={data}
           initialState={{
             showColumnFilters: false,
             density: "compact",
@@ -40,11 +50,7 @@ const LeaderboardContent = () => {
           }
           renderTopToolbarCustomActions={() => (
             <Tooltip arrow title="Refresh Data">
-              <IconButton
-                onClick={() => {
-                  /* TODO call refetch */
-                }}
-              >
+              <IconButton onClick={refetch}>
                 <RefreshIcon />
               </IconButton>
             </Tooltip>

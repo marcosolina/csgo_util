@@ -96,18 +96,18 @@ function createColumnDefinition(
       const rating = cell.getValue() as number;
       const decimals = 2;
 
+      let color: "info" | "warning" | "success" | "error" = "error";
       if (rating >= 1.5) {
-        return <Chip label={rating.toFixed(decimals)} color="info" />;
+        color = "info";
       }
-
       if (rating >= 0.85 && rating < 1.1) {
-        return <Chip label={rating.toFixed(decimals)} color="warning" />;
+        color = "warning";
       }
       if (rating >= 1.1 && rating < 1.5) {
-        return <Chip label={rating.toFixed(decimals)} color="success" />;
+        color = "success";
       }
 
-      return <Chip label={rating.toFixed(decimals)} color="error" />;
+      return <Chip size="small" label={rating.toFixed(decimals)} color={color} />;
     };
   }
 

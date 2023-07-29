@@ -5,7 +5,11 @@ import { MRT_ColumnDef } from "material-react-table";
 import { IGetStatsRequest, useGetStats } from "../../../services";
 import { combineQueryStatuses } from "../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../lib/http-requests";
-import { Tooltip } from "@mui/material";
+import { Chip } from "@mui/material";
+import { TFunction } from "i18next";
+import { WEAPONG_IMAGE } from "../weaponImage";
+import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
+import customHeader from "../../../common/material-table/custom-header/customHeader";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.leaderboard.column-headers";
 const SMALL_COL_SIZE = 5;
@@ -69,12 +73,60 @@ const COLUMNS_ORDER: string[] = [
   "_1v5",
 ];
 
-function createCustomHeader(tooltipText: string) {
-  return ({ column }: { column: any }) => (
-    <Tooltip title={tooltipText}>
-      <span>{column.columnDef.header}</span>
-    </Tooltip>
-  );
+function createColumnDefinition(
+  key: string,
+  t: TFunction<"translation", undefined, "translation">
+): MRT_ColumnDef<IPlayerStats> {
+  const cell: MRT_ColumnDef<IPlayerStats> = {
+    id: key,
+    accessorFn: (row) => {
+      if (!row.hasOwnProperty("hltv_rating")) {
+        console.log(row);
+      }
+      const value = row[key as keyof IPlayerStats];
+      return value;
+    },
+    header: t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.header`),
+    size: SMALL_COL_SIZE,
+    Header: customHeader<IPlayerStats>(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
+  };
+
+  if (key === "hltv_rating") {
+    cell.Cell = ({ cell }: { cell: any }) => {
+      const rating = cell.getValue() as number;
+      const decimals = 2;
+
+      if (rating >= 1.5) {
+        return <Chip label={rating.toFixed(decimals)} color="info" />;
+      }
+
+      if (rating >= 0.85 && rating < 1.1) {
+        return <Chip label={rating.toFixed(decimals)} color="warning" />;
+      }
+      if (rating >= 1.1 && rating < 1.5) {
+        return <Chip label={rating.toFixed(decimals)} color="success" />;
+      }
+
+      return <Chip label={rating.toFixed(decimals)} color="error" />;
+    };
+  }
+
+  if (key === "first_weapon" || key === "second_weapon") {
+    cell.Cell = ({ cell }: { cell: any }) => {
+      const value = cell.getValue() as string;
+      const imageUrl = WEAPONG_IMAGE[value];
+      return imageUrl ? <img src={imageUrl} alt={value} style={{ height: "18px" }} /> : null;
+    };
+  }
+
+  if (key === "headshot_percentage" || key === "_1vnp") {
+    cell.Cell = ({ cell }: { cell: any }) => {
+      const value = cell.getValue() as number;
+      return <PieChartMini percentage={value} color="darkturquoise" size={22} />;
+    };
+  }
+
+  return cell;
 }
 
 export const useLeaderboardContent = (): ILeaderboardContent => {
@@ -92,21 +144,8 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
   const columns = useMemo<MRT_ColumnDef<IPlayerStats>[]>(() => {
     const cols: MRT_ColumnDef<IPlayerStats>[] = [];
     COLUMNS_ORDER.forEach((key) => {
-      cols.push({
-        id: key,
-        accessorFn: (row) => {
-          if (!row.hasOwnProperty("hltv_rating")) {
-            console.log(row);
-          }
-          const value = row[key as keyof IPlayerStats];
-          return value;
-        },
-        header: t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.header`),
-        size: SMALL_COL_SIZE,
-        Header: createCustomHeader(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
-      });
+      cols.push(createColumnDefinition(key, t));
     });
-
     return cols;
   }, [t]);
 

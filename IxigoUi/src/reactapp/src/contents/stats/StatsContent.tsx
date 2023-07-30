@@ -5,6 +5,7 @@ import { Breadcrumbs, Typography } from "@mui/material";
 import Link from "@mui/material/Link";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
+import MatchContent from "./match/MatchContent";
 
 const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
 
@@ -36,6 +37,7 @@ const StatsContent = () => {
           element={
             <>
               <LeaderboardContent />
+              <MatchContent />
               {
                 //<Box textAlign="center">
                 //<Typography variant="h5">Recent Matches</Typography>

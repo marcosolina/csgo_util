@@ -77,3 +77,15 @@ export interface IPlayerStats {
   ff: number;
   bd: number;
 }
+
+
+export interface IMatchResults {
+  match_date: string;
+  match_id: number;
+  mapname: string;
+  team1_total_wins: number;
+  team2_total_wins: number;
+  total_t_wins: number;
+  total_ct_wins: number;
+  score_differential: number;
+}

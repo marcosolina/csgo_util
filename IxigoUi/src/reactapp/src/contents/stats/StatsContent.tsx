@@ -1,10 +1,35 @@
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import LeaderboardContent from "./leaderboard/LeaderboardContent";
 import PlayerContent from "./players/PlayerContent";
+import { Breadcrumbs, Typography } from "@mui/material";
+import Link from "@mui/material/Link";
+import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
+
+const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
 
 const StatsContent = () => {
+  const { t } = useTranslation();
+  const location = useLocation();
+  const pathnames = location.pathname.split("/").filter((x) => x);
+
+  const paths = useMemo(() => {
+    const paths = [];
+    for (let i = 0; i < pathnames.length; i++) {
+      paths.push(`/${pathnames.slice(0, i + 1).join("/")}`);
+    }
+    return paths;
+  }, [pathnames]);
+
   return (
     <>
+      <Breadcrumbs aria-label="breadcrumb">
+        {paths.map((path, index) => (
+          <Link underline="hover" color="inherit" href={path} key={index}>
+            {t(`${BREAD_CRUMBS_TEXT}.${path}`, pathnames[index])}
+          </Link>
+        ))}
+      </Breadcrumbs>
       <Routes>
         <Route
           path="/"

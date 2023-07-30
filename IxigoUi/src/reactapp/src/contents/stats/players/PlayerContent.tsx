@@ -54,6 +54,7 @@ export default function PlayerPage() {
     return json.view_data.find((user: any) => user.steam_id === steamid)?.user_name;
   });
 
+  // TODO get the user name with the generic hook: const qUsersRequest = useGetStats(USERS_REQUEST);
   const userName = userData || steamid; // use user_name if available, fallback to steamid
 
   if (!steamid) {

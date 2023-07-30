@@ -5,19 +5,8 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { MaterialReactTable } from "material-react-table";
 import { useQuery } from "react-query";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
-
-interface User {
-  steam_id: string;
-  user_name: string;
-}
-
-interface KillCount {
-  kill_count: number;
-  victim: string;
-  killer: string;
-  killerusername: string;
-  victimusername: string;
-}
+import { ISteamUser } from "../../../services";
+import { IKillCount } from "./interfaces";
 
 interface KillMatrixContentProps {
   setSelectedTab: React.Dispatch<React.SetStateAction<number | null>>;
@@ -54,7 +43,7 @@ const KillMatrixContent: React.FC<KillMatrixContentProps> = ({ setSelectedTab, s
 
       // Create a lookup table for usernames
       const usernameLookup: { [steamID: string]: string } = {};
-      users.forEach((user: User) => {
+      users.forEach((user: ISteamUser) => {
         usernameLookup[user.steam_id] = user.user_name;
       });
 
@@ -75,8 +64,8 @@ const KillMatrixContent: React.FC<KillMatrixContentProps> = ({ setSelectedTab, s
       Array.from(
         new Set(
           data
-            ?.map((kill: KillCount) => kill.killerusername)
-            .concat(data?.map((kill: KillCount) => kill.victimusername))
+            ?.map((kill: IKillCount) => kill.killerusername)
+            .concat(data?.map((kill: IKillCount) => kill.victimusername))
         )
       ),
     [data]
@@ -89,7 +78,7 @@ const KillMatrixContent: React.FC<KillMatrixContentProps> = ({ setSelectedTab, s
         return players?.map((victim) => {
           // Find the kill count between the current player and victim
           const killCountObj = data?.find(
-            (kill: KillCount) => kill.killerusername === player && kill.victimusername === victim
+            (kill: IKillCount) => kill.killerusername === player && kill.victimusername === victim
           );
           return killCountObj ? killCountObj.kill_count : 0;
         });

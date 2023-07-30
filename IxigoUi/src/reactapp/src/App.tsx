@@ -49,7 +49,7 @@ const App = () => {
               <RconContentProvider>
                 <PlayersContentProvider>
                   <Routes>
-                    <Route path="/" element={<BaseLayout />} />
+                    <Route path="/*" element={<BaseLayout />} />
                     <Route path="/:tabid/*" element={<BaseLayout />} />
                   </Routes>
                 </PlayersContentProvider>

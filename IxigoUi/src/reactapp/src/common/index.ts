@@ -8,3 +8,4 @@ export * from "./switch";
 export * from "./loading";
 export * from "./pie-chart-mini";
 export * from "./material-table";
+export * from "./hltv-chip";

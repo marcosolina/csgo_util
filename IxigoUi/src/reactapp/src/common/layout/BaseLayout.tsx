@@ -31,7 +31,6 @@ const BaseLayout = () => {
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     const newPath = `/${newValue}`;
-    console.log(newPath);
     history(newPath);
     setSelectedTab(newValue);
   };

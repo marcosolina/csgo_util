@@ -1,3 +1,4 @@
+// TODO see if we need this anymore
 export interface IUseStatsContentResult {
   selectedPlayerSteamID: string;
   setSelectedPlayerSteamID: (selectedPlayerSteamID: string) => void;

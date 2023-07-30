@@ -1,26 +1,20 @@
 import { useTranslation } from "react-i18next";
-import { ILeaderboardContent, IPlayerStats, ISteamUser } from "./interfaces";
+import { ILeaderboardContent } from "./interfaces";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { MRT_ColumnDef } from "material-react-table";
-import { IGetStatsRequest, useGetStats } from "../../../services";
+import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
+import { IPlayerStats, useGetStats, USERS_REQUEST, PLAYERS_STATS__REQUEST } from "../../../services";
 import { combineQueryStatuses } from "../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../lib/http-requests";
-import { Chip } from "@mui/material";
+import { Chip, Link } from "@mui/material";
 import { TFunction } from "i18next";
 import { WEAPONG_IMAGE } from "../weaponImage";
 import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 import customHeader from "../../../common/material-table/custom-header/customHeader";
+import { useLocation, useNavigate } from "react-router-dom";
+import HltvChip from "../../../common/hltv-chip/HltvChip";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.leaderboard.column-headers";
 const SMALL_COL_SIZE = 5;
-
-const USERS_REQUEST: IGetStatsRequest<ISteamUser> = {
-  viewName: "users",
-};
-
-const PLAYERS_STATS__REQUEST: IGetStatsRequest<IPlayerStats> = {
-  viewName: "PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE",
-};
 
 const COLUMNS_ORDER: string[] = [
   "username",
@@ -75,44 +69,38 @@ const COLUMNS_ORDER: string[] = [
 
 function createColumnDefinition(
   key: string,
-  t: TFunction<"translation", undefined, "translation">
+  t: TFunction<"translation", undefined, "translation">,
+  userClickHandler: (steamid: string) => void
 ): MRT_ColumnDef<IPlayerStats> {
   const cell: MRT_ColumnDef<IPlayerStats> = {
     id: key,
-    accessorFn: (row) => {
-      if (!row.hasOwnProperty("hltv_rating")) {
-        console.log(row);
-      }
-      const value = row[key as keyof IPlayerStats];
-      return value;
-    },
+    accessorFn: (row) => row[key as keyof IPlayerStats],
     header: t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.header`),
     size: SMALL_COL_SIZE,
     Header: customHeader<IPlayerStats>(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
   };
 
+  if (key === "username") {
+    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
+      const username = cell.getValue() as string;
+      const steamid = cell.row.original.steamid;
+      return (
+        <Link component="button" onClick={() => userClickHandler(steamid)}>
+          {username}
+        </Link>
+      );
+    };
+  }
+
   if (key === "hltv_rating") {
-    cell.Cell = ({ cell }: { cell: any }) => {
+    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
       const rating = cell.getValue() as number;
-      const decimals = 2;
-
-      let color: "info" | "warning" | "success" | "error" = "error";
-      if (rating >= 1.5) {
-        color = "info";
-      }
-      if (rating >= 0.85 && rating < 1.1) {
-        color = "warning";
-      }
-      if (rating >= 1.1 && rating < 1.5) {
-        color = "success";
-      }
-
-      return <Chip size="small" label={rating.toFixed(decimals)} color={color} />;
+      return <HltvChip rating={rating} />;
     };
   }
 
   if (key === "first_weapon" || key === "second_weapon") {
-    cell.Cell = ({ cell }: { cell: any }) => {
+    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
       const value = cell.getValue() as string;
       const imageUrl = WEAPONG_IMAGE[value];
       return imageUrl ? <img src={imageUrl} alt={value} style={{ height: "18px" }} /> : null;
@@ -120,7 +108,7 @@ function createColumnDefinition(
   }
 
   if (key === "headshot_percentage" || key === "_1vnp") {
-    cell.Cell = ({ cell }: { cell: any }) => {
+    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
       const value = cell.getValue() as number;
       return <PieChartMini percentage={value} color="darkturquoise" size={22} />;
     };
@@ -131,7 +119,17 @@ function createColumnDefinition(
 
 export const useLeaderboardContent = (): ILeaderboardContent => {
   const { t } = useTranslation();
+  const history = useNavigate();
+  const location = useLocation();
   const [data, setData] = useState<IPlayerStats[]>([]);
+
+  const userNameClickHandler = useCallback(
+    (steamid: string) => {
+      const newPath = `${location.pathname}/player/${steamid}`;
+      history(newPath);
+    },
+    [history, location.pathname]
+  );
 
   // Get the data
   const qUsersRequest = useGetStats(USERS_REQUEST);
@@ -144,10 +142,10 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
   const columns = useMemo<MRT_ColumnDef<IPlayerStats>[]>(() => {
     const cols: MRT_ColumnDef<IPlayerStats>[] = [];
     COLUMNS_ORDER.forEach((key) => {
-      cols.push(createColumnDefinition(key, t));
+      cols.push(createColumnDefinition(key, t, userNameClickHandler));
     });
     return cols;
-  }, [t]);
+  }, [t, userNameClickHandler]);
 
   const refetch = useCallback(() => {
     qUsersRequest.refetch();

@@ -163,6 +163,10 @@
       }
     },
     "stats": {
+      "breadcrumbs": {
+        "/stats": "Stats",
+        "/stats/player": "Player"
+      },
       "leaderboard": {
         "title": "Leaderboard",
         "column-headers": {

@@ -34,6 +34,9 @@ const MatchContent = () => {
             sorting: [{ id: "match_date", desc: true }], //sort by state by default
           }}
           enableGrouping
+          enableColumnFilters={true}
+          enableColumnFilterModes
+          enableFilterMatchHighlighting={false}
           enablePagination
           enableDensityToggle={false}
           muiToolbarAlertBannerProps={

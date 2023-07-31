@@ -38,6 +38,7 @@ function createColumnDefinition(
   };
 
   if (key === "match_date") {
+    cell.enableGrouping = false;
     cell.Cell = ({ cell }: { cell: MRT_Cell<IMatchResults> }) => {
       const matchDate = cell.getValue() as string;
       const match_id = cell.row.original.match_id;
@@ -73,6 +74,8 @@ function createColumnDefinition(
   }
 
   if (key === "team1_total_wins" || key === "team2_total_wins") {
+    cell.enableGrouping = false;
+    cell.enableColumnActions = false;
     cell.Cell = ({ cell }: { cell: MRT_Cell<IMatchResults> }) => {
       const score = cell.getValue() as number;
       const alignment = key === "team1_total_wins" ? "flex-end" : "flex-start";
@@ -86,7 +89,6 @@ function createColumnDefinition(
   
   if (key === "total_t_wins" || key === "total_ct_wins") {
     cell.enableGrouping = false;
-    //cell.enableFilter = false;
     cell.aggregationFn = "mean" as any;
     cell.AggregatedCell = ({ cell }: { cell: any }) => {
       const meanScore = cell.getValue().toFixed(2);

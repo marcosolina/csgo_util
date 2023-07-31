@@ -643,7 +643,6 @@ demoFile.gameEvents.on("round_end", e => {
         equipmentvalue: player.roundStartEquipmentValue,
         mvp: player == mvpPlayer
       }
-      console.log(prs);
       allPlayerRoundStats.push(prs);
     }
   }

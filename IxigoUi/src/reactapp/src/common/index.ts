@@ -9,3 +9,4 @@ export * from "./loading";
 export * from "./pie-chart-mini";
 export * from "./material-table";
 export * from "./hltv-chip";
+export * from "./score-chip";

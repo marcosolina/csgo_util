@@ -4,11 +4,12 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
 import { useGetStats, IMatchResults, MATCH_RESULTS_REQUEST } from "../../../services";
 import { QueryStatus } from "../../../lib/http-requests";
-import { Link, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import { TFunction } from "i18next";
 import customHeader from "../../../common/material-table/custom-header/customHeader";
 import { useLocation, useNavigate } from "react-router-dom";
 import ScoreChip from "../../../common/score-chip/ScoreChip";
+import TableLink from '../../../common/table-link/TableLink';
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.match.column-headers";
 const SMALL_COL_SIZE = 5;
@@ -48,12 +49,7 @@ function createColumnDefinition(
       const formattedTime = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   
       return (
-        <Link
-          component="button"
-          onClick={() => matchClickHandler(match_id)}
-        >
-          {`${formattedDate}, ${formattedTime}`}
-        </Link>
+        <TableLink text={`${formattedDate}, ${formattedTime}`} onClickHandler={() => matchClickHandler(match_id)} />
       );
     };
   }
@@ -63,12 +59,7 @@ function createColumnDefinition(
       const map = cell.getValue() as string;
   
       return (
-        <Link
-          component="button"
-          onClick={() => mapNameClickHandler(map)}
-        >
-          {map}
-        </Link>
+        <TableLink text={map} onClickHandler={() => mapNameClickHandler(map)} />
       );
     };
   }

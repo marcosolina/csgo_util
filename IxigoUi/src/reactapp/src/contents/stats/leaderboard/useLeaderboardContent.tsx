@@ -5,7 +5,7 @@ import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
 import { IPlayerStats, useGetStats, USERS_REQUEST, PLAYERS_STATS__REQUEST } from "../../../services";
 import { combineQueryStatuses } from "../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../lib/http-requests";
-import { Chip, Link } from "@mui/material";
+import TableLink from '../../../common/table-link/TableLink';
 import { TFunction } from "i18next";
 import { WEAPONG_IMAGE } from "../weaponImage";
 import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
@@ -85,9 +85,7 @@ function createColumnDefinition(
       const username = cell.getValue() as string;
       const steamid = cell.row.original.steamid;
       return (
-        <Link component="button" onClick={() => userClickHandler(steamid)}>
-          {username}
-        </Link>
+        <TableLink text={username} onClickHandler={() => userClickHandler(steamid)} />
       );
     };
   }

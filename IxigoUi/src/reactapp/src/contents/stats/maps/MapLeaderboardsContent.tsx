@@ -91,9 +91,9 @@ const MapLeaderboardsContent: React.FC<MapLeaderboardsContentProps> = ({ mapName
     queryKey: ["mapleaderboard" + mapName],
     queryFn: async () => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?mapname=${mapName}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?mapname=${mapName}`
       );
-      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}USERS`);
+      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/USERS`);
       const responses = await Promise.all([fetch(url1.href), fetch(url2.href)]);
 
       const jsons = await Promise.all(

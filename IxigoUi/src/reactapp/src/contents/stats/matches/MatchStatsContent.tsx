@@ -37,16 +37,15 @@ function TabPanel(props: TabPanelProps) {
 }
 
 export default function MatchPage() {
-  let { match_id_path } = useParams();
+  let { match_id } = useParams();
   const [value, setValue] = React.useState(0);
-  const match_id = Number(match_id_path);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   const { data: matchData, isLoading } = useQuery(["match", match_id], async () => {
-    const url = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}MATCH_RESULTS?match_id=${match_id}`);
+    const url = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/MATCH_RESULTS?match_id=${match_id}`);
     const response = await fetch(url.href);
 
     if (!response.ok) {
@@ -54,12 +53,13 @@ export default function MatchPage() {
     }
 
     const json = await response.json();
-    return json.view_data.find((match: any) => match.match_id === match_id);
+    return json.view_data.find((match: any) => match.match_id == match_id);
   });
 
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
+  console.log(matchData)
   const date = new Date(matchData.match_date);
   const formattedDate = date.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" });
   const formattedTime = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
@@ -224,16 +224,16 @@ export default function MatchPage() {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          <MatchScoreboardContent match_id={match_id} />
+          <MatchScoreboardContent match_id={Number(match_id)} />
         </TabPanel>
         <TabPanel value={value} index={1}>
-          <MatchRoundsContent match_id={match_id} />
+          <MatchRoundsContent match_id={Number(match_id)} />
         </TabPanel>
         <TabPanel value={value} index={2}>
-          <MatchWeaponsContent match_id={match_id} />
+          <MatchWeaponsContent match_id={Number(match_id)} />
         </TabPanel>
         <TabPanel value={value} index={3}>
-          <MatchKillMatrixContent match_id={match_id} />
+          <MatchKillMatrixContent match_id={Number(match_id)} />
         </TabPanel>
       </Box>
     </Box>

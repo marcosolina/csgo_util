@@ -97,9 +97,9 @@ const PlayerMatchesContent: React.FC<PlayerMatchesContentProps> = ({ steamid }) 
     queryKey: ["playermatch" + steamid],
     queryFn: async () => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_MATCH_STATS_EXTENDED_CACHE?steamid=${steamid}`
       );
-      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}MATCH_RESULTS_CACHE`);
+      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/MATCH_RESULTS_CACHE`);
       const responses = await Promise.all([fetch(url1.href), fetch(url2.href)]);
 
       const jsons = await Promise.all(

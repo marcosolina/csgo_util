@@ -42,11 +42,11 @@ const MatchKillMatrixContent: React.FC<KillMatrixContentProps> = ({ match_id }) 
     queryKey: ["killmatrix" + match_id],
     queryFn: async () => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_MATCH_KILL_COUNT_CACHE?match_id=${match_id}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_MATCH_KILL_COUNT_CACHE?match_id=${match_id}`
       );
-      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}USERS`);
+      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/USERS`);
       const url3 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`
       );
 
       const responses = await Promise.all([fetch(url1.href), fetch(url2.href), fetch(url3.href)]);

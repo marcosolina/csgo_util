@@ -89,9 +89,9 @@ const PlayerMapsContent: React.FC<PlayerMapsContentProps> = ({ steamid }) => {
     queryKey: ["playermapstats" + steamid],
     queryFn: async () => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?steamid=${steamid}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE?steamid=${steamid}`
       );
-      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}USERS`);
+      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/USERS`);
 
       const responses = await Promise.all([fetch(url1.href), fetch(url2.href)]);
 

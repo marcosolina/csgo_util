@@ -39,7 +39,7 @@ const PlayerEntryKIllTable: React.FC<RadarChartProps> = ({ steamid }) => {
     queryKey: ["entrykill" + steamid],
     queryFn: async (): Promise<PlayerData[]> => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}ENTRY_KILL_STATS_EXTENDED_CACHE?steamid=${steamid}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/ENTRY_KILL_STATS_EXTENDED_CACHE?steamid=${steamid}`
       );
 
       const responses = await Promise.all([fetch(url1.href)]);

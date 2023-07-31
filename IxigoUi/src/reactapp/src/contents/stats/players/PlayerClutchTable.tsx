@@ -39,7 +39,7 @@ const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
   } = useQuery<PlayerData[], Error>({
     queryKey: ["clutch" + steamid],
     queryFn: async (): Promise<PlayerData[]> => {
-      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_CLUTCH_STATS_CACHE?steamid=${steamid}`);
+      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_CLUTCH_STATS_CACHE?steamid=${steamid}`);
 
       const responses = await Promise.all([fetch(url1.href)]);
 

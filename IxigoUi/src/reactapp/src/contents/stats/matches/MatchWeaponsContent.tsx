@@ -48,9 +48,9 @@ const MatchWeaponsContent: React.FC<MatchWeaponProps> = ({ match_id }) => {
     queryKey: ["matchplayerweapon" + match_id],
     queryFn: async () => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}MATCH_PLAYER_WEAPON_STATS_CACHE?match_id=${match_id}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/MATCH_PLAYER_WEAPON_STATS_CACHE?match_id=${match_id}`
       );
-      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}USERS`);
+      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/USERS`);
       const responses = await Promise.all([fetch(url1.href), fetch(url2.href)]);
 
       const jsons = await Promise.all(

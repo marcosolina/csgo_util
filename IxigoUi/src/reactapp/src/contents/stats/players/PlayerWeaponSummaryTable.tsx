@@ -40,7 +40,7 @@ const PlayerWeaponSummaryTable: React.FC<PlayerWeaponProps> = ({ steamid }) => {
     queryKey: ["playerweapon" + steamid],
     queryFn: async () => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}OVERALL_PLAYER_WEAPON_STATS_CACHE?steamid=${steamid}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/OVERALL_PLAYER_WEAPON_STATS_CACHE?steamid=${steamid}`
       );
 
       const responses = await Promise.all([fetch(url1.href)]);

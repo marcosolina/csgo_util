@@ -26,7 +26,7 @@ const PlayerWinRateTable: React.FC<RadarChartProps> = ({ steamid }) => {
     queryKey: ["leaderboard" + steamid],
     queryFn: async () => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE?steamID=${steamid}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE?steamID=${steamid}`
       );
 
       const responses = await Promise.all([fetch(url1.href)]);

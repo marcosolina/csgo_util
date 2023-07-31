@@ -31,7 +31,7 @@ const PlayerRadarChart: React.FC<RadarChartProps> = ({ steamid }) => {
   } = useQuery<PlayerData[], Error>({
     queryKey: ["leaderboard" + steamid],
     queryFn: async (): Promise<PlayerData[]> => {
-      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE`);
+      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE`);
 
       const responses = await Promise.all([fetch(url1.href)]);
 

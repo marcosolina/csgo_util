@@ -24,8 +24,8 @@ const KillMatrixContent: React.FC<KillMatrixContentProps> = ({ setSelectedTab, s
   const { data, isError, isFetching, isLoading, refetch } = useQuery({
     queryKey: ["killmatrix"],
     queryFn: async () => {
-      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}player_kill_count_cache`);
-      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}USERS`);
+      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/player_kill_count_cache`);
+      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/USERS`);
 
       const responses = await Promise.all([fetch(url1.href), fetch(url2.href)]);
 

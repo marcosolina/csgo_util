@@ -49,9 +49,9 @@ const MapWeaponsContent: React.FC<MapWeaponsContentProps> = ({ mapName }) => {
     queryKey: ["mapplayerweapon" + mapName],
     queryFn: async () => {
       const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}MAP_PLAYER_WEAPON_STATS_CACHE?mapname=${mapName}`
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/MAP_PLAYER_WEAPON_STATS_CACHE?mapname=${mapName}`
       );
-      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}USERS`);
+      const url2 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/USERS`);
       const responses = await Promise.all([fetch(url1.href), fetch(url2.href)]);
 
       const jsons = await Promise.all(

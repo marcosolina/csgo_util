@@ -1,6 +1,8 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import LeaderboardContent from "./leaderboard/LeaderboardContent";
 import PlayerContent from "./players/PlayerContent";
+import MatchStatsContent from "./matches/MatchStatsContent";
+import MapContent from "./maps/MapContent";
 import { Breadcrumbs, Typography } from "@mui/material";
 import Link from "@mui/material/Link";
 import { useMemo } from "react";
@@ -52,6 +54,8 @@ const StatsContent = () => {
           }
         />
         <Route path="/player/:steamid" element={<PlayerContent />} />
+        <Route path="/match/:match_id" element={<MatchStatsContent />} />
+        <Route path="/map/:mapName" element={<MapContent />} />
       </Routes>
     </>
   );

@@ -9,6 +9,7 @@ import terroristLogo from "../../../assets/icons/T.png";
 import ctLogo from "../../../assets/icons/CT.png";
 import { UI_CONTEXT_PATH } from "../../../lib/constants";
 import { SERVICES_URLS } from "../../../lib/constants/paths";
+import { useParams } from "react-router-dom";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -35,12 +36,11 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-interface MatchStatsContentProps {
-  match_id: number;
-}
-
-export default function MatchPage({ match_id }: MatchStatsContentProps) {
+export default function MatchPage() {
+  let { match_id_path } = useParams();
   const [value, setValue] = React.useState(0);
+  const match_id = Number(match_id_path);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };

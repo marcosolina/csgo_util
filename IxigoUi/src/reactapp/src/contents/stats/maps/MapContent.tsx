@@ -4,6 +4,7 @@ import MapLeaderboardsContent from './MapLeaderboardsContent';
 import MapWeaponsContent from './MapWeaponsContent';
 import MapMatchesContent from './MapMatchesContent';
 import { UI_CONTEXT_PATH } from "../../../lib/constants";
+import { useParams } from "react-router-dom";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -24,12 +25,13 @@ function TabPanel(props: TabPanelProps) {
   );
 }
 
-interface MapContentProps {
-  mapName: string;
-}
 
-export default function MapContent({ mapName }: MapContentProps) {
+export default function MapContent() {
+  let { mapName } = useParams();
   const [value, setValue] = React.useState(0);
+  if (!mapName) {
+    return null; // TODO return a "warining" component or something similar
+  }
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };

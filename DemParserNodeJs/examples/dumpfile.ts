@@ -19,7 +19,7 @@ interface IPlayerRoundStats {
   clutchsuccess: boolean;
   survived: boolean;
   moneyspent: number;
-  moneysaved: number;
+  //moneysaved: number;
   equipmentvalue: number;
   mvp: boolean;
 }
@@ -639,7 +639,7 @@ demoFile.gameEvents.on("round_end", e => {
         clutchsuccess: clutchSuccess,
         survived: player.isAlive,
         moneyspent: spend,
-        moneysaved: saved,
+        //moneysaved: saved,
         equipmentvalue: player.roundStartEquipmentValue,
         mvp: player == mvpPlayer
       }

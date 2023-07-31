@@ -1,2 +1,2 @@
-export * from "./ScoreChip";
+export * from "./CellChip";
 export * from "./interfaces";

@@ -11,7 +11,7 @@ import { WEAPONG_IMAGE } from "../weaponImage";
 import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 import customHeader from "../../../common/material-table/custom-header/customHeader";
 import { useLocation, useNavigate } from "react-router-dom";
-import HltvChip from "../../../common/hltv-chip/HltvChip";
+import CellChip from "../../../common/cell-chip/CellChip";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.leaderboard.column-headers";
 const SMALL_COL_SIZE = 5;
@@ -93,7 +93,7 @@ function createColumnDefinition(
   if (key === "hltv_rating") {
     cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
       const rating = cell.getValue() as number;
-      return <HltvChip rating={rating} />;
+      return <CellChip value={rating} type="rating" />;
     };
   }
 

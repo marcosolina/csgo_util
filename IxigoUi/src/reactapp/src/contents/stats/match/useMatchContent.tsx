@@ -8,7 +8,7 @@ import { Box } from "@mui/material";
 import { TFunction } from "i18next";
 import customHeader from "../../../common/material-table/custom-header/customHeader";
 import { useLocation, useNavigate } from "react-router-dom";
-import ScoreChip from "../../../common/score-chip/ScoreChip";
+import CellChip from "../../../common/cell-chip/CellChip";
 import TableLink from '../../../common/table-link/TableLink';
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.match.column-headers";
@@ -72,7 +72,7 @@ function createColumnDefinition(
       const alignment = key === "team1_total_wins" ? "flex-end" : "flex-start";
       return (
         <div style={{ display: "flex", justifyContent: alignment, alignItems: "center", height: "100%" }}>
-          <ScoreChip score={score} />
+          <CellChip value={score} type="score" />
         </div>
       );
     };

@@ -28,6 +28,9 @@ const PlayersContent = () => {
     <Switch value={qUsersRequest.status}>
       <Case case={QueryStatus.loading}>
         <Skeleton animation="wave" height={HEIGHT} />
+        <Skeleton animation="wave" height={HEIGHT} />
+        <Skeleton animation="wave" height={HEIGHT} />
+        <Skeleton animation="wave" height={HEIGHT} />
       </Case>
       <Case case={QueryStatus.success}>
         <List>

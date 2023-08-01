@@ -43,13 +43,13 @@ const MatchContent = () => {
             state === QueryStatus.error
               ? {
                   color: "error",
-                  children: "Error loading data",
+                  children: t(`${STRING_PREFIX}.error-loading-data`),
                 }
               : undefined
           }
           renderTopToolbarCustomActions={() => (
-            <Tooltip arrow title="Refresh Data">
-              <IconButton onClick={() => refetch()}>
+            <Tooltip arrow title={t(`${STRING_PREFIX}.refresh-data`)}>
+              <IconButton onClick={refetch}>
                 <RefreshIcon />
               </IconButton>
             </Tooltip>

@@ -1,5 +1,5 @@
-import { Link } from '@mui/material';
-import { ITableLinkProps } from './interfaces';  // adjust the path according to your project structure
+import { Link } from "@mui/material";
+import { ITableLinkProps } from "./interfaces"; // adjust the path according to your project structure
 
 const TableLink: React.FC<ITableLinkProps> = ({ text, onClickHandler }) => {
   return (
@@ -15,6 +15,7 @@ const TableLink: React.FC<ITableLinkProps> = ({ text, onClickHandler }) => {
         },
       }}
       onClick={(e) => {
+        e.preventDefault();
         onClickHandler();
       }}
     >

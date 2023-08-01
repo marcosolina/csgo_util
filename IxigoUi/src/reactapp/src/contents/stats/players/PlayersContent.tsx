@@ -8,8 +8,6 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight";
 import { useNavigate } from "react-router-dom";
 import { useMemo } from "react";
 
-const LANG_BASE_PATH = "page.stats.player";
-
 const HEIGHT = 60;
 
 const PlayersContent = () => {

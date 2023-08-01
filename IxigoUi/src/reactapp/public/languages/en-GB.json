@@ -169,6 +169,8 @@
       },
       "leaderboard": {
         "title": "Leaderboard",
+        "refresh-data": "Refresh data",
+        "error-loading-data": "Error loading data",
         "column-headers": {
           "username": { "tooltip": "Name", "header": "Name" },
           "matches": { "tooltip": "Matches", "header": "M" },
@@ -255,6 +257,8 @@
       },
       "match": {
         "title": "Recent Matches",
+        "refresh-data": "Refresh data",
+        "error-loading-data": "Error loading data",
         "column-headers": {
           "match_date": { "tooltip": "Match Date", "header": "Date" },
           "mapname": { "tooltip": "Map Name", "header": "Map" },
@@ -262,7 +266,10 @@
           "team2_total_wins": { "tooltip": "Team 2 Round Wins", "header": "" },
           "total_t_wins": { "tooltip": "Total Terrorist Wins", "header": "T Wins" },
           "total_ct_wins": { "tooltip": "Total Counter Terrorist Wins", "header": "CT Wins" },
-          "score_differential": { "tooltip": "Score Differential between Terrorists and CTs", "header": "Score Differential" }
+          "score_differential": {
+            "tooltip": "Score Differential between Terrorists and CTs",
+            "header": "Score Differential"
+          }
         }
       }
     }

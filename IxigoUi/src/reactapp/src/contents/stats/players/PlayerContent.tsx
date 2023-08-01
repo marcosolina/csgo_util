@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Tab, Tabs, Typography, Container, Skeleton } from "@mui/material";
-import PlayerStatsContent from "./PlayerStatsContent";
+import PlayerStatsContent from "./players-stats/PlayerStatsContent";
 import PlayerGraphsContent from "./PlayerGraphsContent";
 import PlayerWeaponsContent from "./PlayerWeaponsContent";
 import PlayerMapsContent from "./PlayerMapsContent";
@@ -23,7 +23,7 @@ const TABS = {
   MATCHES: "matches",
 };
 
-export default function PlayerPage() {
+const PlayerPage = () => {
   const { t } = useTranslation();
   let { steamid, playertab } = useParams();
   const [selectedTab, setSelectedTab] = useState(playertab || TABS.OVERALL);
@@ -54,7 +54,7 @@ export default function PlayerPage() {
   }
 
   return (
-    <Container>
+    <>
       <Box textAlign="center">
         <Switch value={qUsersRequest.status}>
           <Case case={QueryStatus.loading}>
@@ -88,7 +88,7 @@ export default function PlayerPage() {
       <Box sx={{ m: "2rem" }} />
       <Switch value={selectedTab}>
         <Case case={TABS.OVERALL}>
-          <PlayerStatsContent steamid={steamid} />
+          <PlayerStatsContent />
         </Case>
         <Case case={TABS.GRAPHS}>
           <PlayerGraphsContent steamid={steamid} />
@@ -103,6 +103,8 @@ export default function PlayerPage() {
           <PlayerMatchesContent steamid={steamid} />
         </Case>
       </Switch>
-    </Container>
+    </>
   );
-}
+};
+
+export default PlayerPage;

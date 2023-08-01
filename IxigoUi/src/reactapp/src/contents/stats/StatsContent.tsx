@@ -8,6 +8,7 @@ import Link from "@mui/material/Link";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import MatchContent from "./match/MatchContent";
+import PlayersContent from "./players/PlayersContent";
 
 const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
 
@@ -53,6 +54,7 @@ const StatsContent = () => {
             </>
           }
         />
+        <Route path="/player" element={<PlayersContent />} />
         <Route path="/player/:steamid" element={<PlayerContent />} />
         <Route path="/player/:steamid/:playertab" element={<PlayerContent />} />
         <Route path="/match/:match_id" element={<MatchStatsContent />} />

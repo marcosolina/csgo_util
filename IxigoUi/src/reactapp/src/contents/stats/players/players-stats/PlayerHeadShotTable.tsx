@@ -3,22 +3,18 @@ import { useQuery } from "react-query";
 import { MaterialReactTable } from "material-react-table";
 import { useMemo } from "react";
 import { Typography, Box, LinearProgress, Tooltip } from "@mui/material";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import { IPlayerStats } from "./interfaces";
 
 interface PlayerData {
   steamid: string;
-  adr: number;
-  tdh: number;
-  tda: number;
-  ffd: number;
-  rounds: number;
+  kills: number;
+  deaths: number;
+  assists: number;
+  headshots: number;
 }
 
-interface RadarChartProps {
-  steamid: string;
-}
-
-const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
+const PlayerHeadShotTable: React.FC<IPlayerStats> = ({ steamid }) => {
   const {
     data: playerData,
     isError,
@@ -27,7 +23,9 @@ const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
   } = useQuery<PlayerData[], Error>({
     queryKey: ["leaderboard" + steamid],
     queryFn: async () => {
-      const url1 = new URL(`${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE`);
+      const url1 = new URL(
+        `${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE?steamID=${steamid}`
+      );
 
       const responses = await Promise.all([fetch(url1.href)]);
 
@@ -58,13 +56,6 @@ const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
     return undefined;
   }, [playerData, steamid]);
 
-  const maxAdr = useMemo(() => {
-    if (playerData) {
-      return Math.max(...playerData.map((p) => p.adr));
-    }
-    return undefined;
-  }, [playerData]);
-
   const columns = useMemo(
     () => [
       { accessorKey: "label" as const, header: "", size: 5 },
@@ -78,20 +69,20 @@ const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
     if (!player) return [];
     return [
       {
-        label: `Damage Health`,
-        value: `${player.tdh.toFixed(0)}`,
+        label: `Kills`,
+        value: `${player.kills.toFixed(0)}`,
       },
       {
-        label: `Damage Armour`,
-        value: `${player.tda.toFixed(0)}`,
+        label: `Deaths`,
+        value: `${player.deaths.toFixed(0)}`,
       },
       {
-        label: `Team Damage`,
-        value: `${player.ffd.toFixed(0)}`,
+        label: `Assists`,
+        value: `${player.assists.toFixed(0)}`,
       },
       {
-        label: `Rounds`,
-        value: `${player.rounds.toFixed(0)}`,
+        label: `Headshots`,
+        value: `${player.headshots.toFixed(0)}`,
       },
       // Add more rows if needed
     ];
@@ -133,17 +124,17 @@ const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
       renderTopToolbarCustomActions={() => (
         <Box width="100%">
           <Typography variant="h5" component="h2" align="center" gutterBottom>
-            Damage/Round
+            Headshot Kill %
           </Typography>
           <Box display="flex" width="100%" alignItems="center">
             <Typography width="100%" component="span">
-              ADR: {player.adr.toFixed(0)}
+              %: {((player.headshots * 100.0) / player.kills).toFixed(0)}%
             </Typography>
             <Box width="100%" mx={2}>
-              <Tooltip title={`${player.adr.toFixed(0)}`} placement="top">
+              <Tooltip title={`${((player.headshots * 100.0) / player.kills).toFixed(0)}%`} placement="top">
                 <LinearProgress
                   variant="determinate"
-                  value={player && maxAdr ? (player.adr / maxAdr) * 100 : 0}
+                  value={(player.headshots * 100.0) / player.kills}
                   color="primary"
                 />
               </Tooltip>
@@ -155,4 +146,4 @@ const PlayerDamageTable: React.FC<RadarChartProps> = ({ steamid }) => {
   );
 };
 
-export default PlayerDamageTable;
+export default PlayerHeadShotTable;

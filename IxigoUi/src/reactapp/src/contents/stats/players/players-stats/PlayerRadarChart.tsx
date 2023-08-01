@@ -3,7 +3,8 @@ import { Radar } from "react-chartjs-2";
 import * as ss from "simple-statistics";
 import { useQuery } from "react-query";
 import { TooltipItem } from "chart.js";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import { IPlayerStats } from "./interfaces";
 
 // Define your types for the player data
 interface PlayerData {
@@ -19,11 +20,7 @@ interface PlayerData {
   ebt: number;
 }
 
-interface RadarChartProps {
-  steamid: string;
-}
-
-const PlayerRadarChart: React.FC<RadarChartProps> = ({ steamid }) => {
+const PlayerRadarChart: React.FC<IPlayerStats> = ({ steamid }) => {
   const {
     data: playerData,
     isError,

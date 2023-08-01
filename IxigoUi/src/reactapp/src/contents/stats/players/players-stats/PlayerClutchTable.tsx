@@ -3,8 +3,9 @@ import { useQuery } from "react-query";
 import { MaterialReactTable } from "material-react-table";
 import { useMemo } from "react";
 import { Typography, Box, LinearProgress, Tooltip } from "@mui/material";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
-import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
+import { IPlayerStats } from "./interfaces";
 
 interface PlayerData {
   _1v1p: number;
@@ -26,11 +27,7 @@ interface PlayerData {
   steamid: string;
 }
 
-interface RadarChartProps {
-  steamid: string;
-}
-
-const PlayerClutchTable: React.FC<RadarChartProps> = ({ steamid }) => {
+const PlayerClutchTable: React.FC<IPlayerStats> = ({ steamid }) => {
   const {
     data: playerData,
     isError,

@@ -1,15 +1,12 @@
 import React from "react";
 import { useMemo } from "react";
 import { Tooltip } from "@mui/material";
-import { WEAPONG_IMAGE } from "../weaponImage";
+import { WEAPONG_IMAGE } from "../../weaponImage";
 import { MaterialReactTable } from "material-react-table";
 import { useQuery } from "react-query";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
-import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
-
-interface PlayerWeaponProps {
-  steamid: string;
-}
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
+import { IPlayerStats } from "./interfaces";
 
 interface WeaponData {
   steamid: string;
@@ -31,7 +28,7 @@ interface WeaponData {
 }
 
 const smallColSize = 5;
-const PlayerWeaponSummaryTable: React.FC<PlayerWeaponProps> = ({ steamid }) => {
+const PlayerWeaponSummaryTable: React.FC<IPlayerStats> = ({ steamid }) => {
   const {
     data: weaponData,
     isError,

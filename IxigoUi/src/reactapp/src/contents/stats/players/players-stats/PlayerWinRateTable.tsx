@@ -3,7 +3,8 @@ import { useQuery } from "react-query";
 import { MaterialReactTable } from "material-react-table";
 import { useMemo } from "react";
 import { Typography, Box, LinearProgress, Tooltip } from "@mui/material";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import { IPlayerStats } from "./interfaces";
 
 interface PlayerData {
   steamid: string;
@@ -12,11 +13,7 @@ interface PlayerData {
   matches: number;
 }
 
-interface RadarChartProps {
-  steamid: string;
-}
-
-const PlayerWinRateTable: React.FC<RadarChartProps> = ({ steamid }) => {
+const PlayerWinRateTable: React.FC<IPlayerStats> = ({ steamid }) => {
   const {
     data: playerData,
     isError,

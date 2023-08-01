@@ -3,7 +3,8 @@ import { useQuery } from "react-query";
 import { MaterialReactTable } from "material-react-table";
 import { useMemo } from "react";
 import { Typography, Box, LinearProgress, Tooltip } from "@mui/material";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import { IPlayerStats } from "./interfaces";
 
 // Define your types for the player data
 interface PlayerData {
@@ -15,11 +16,7 @@ interface PlayerData {
   rounds: number;
 }
 
-interface RadarChartProps {
-  steamid: string;
-}
-
-const PlayerUtilityTable: React.FC<RadarChartProps> = ({ steamid }) => {
+const PlayerUtilityTable: React.FC<IPlayerStats> = ({ steamid }) => {
   const {
     data: playerData,
     isError,

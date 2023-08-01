@@ -3,8 +3,9 @@ import { useQuery } from "react-query";
 import { MaterialReactTable } from "material-react-table";
 import { useMemo } from "react";
 import { Typography, Box, LinearProgress, Tooltip } from "@mui/material";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
-import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
+import { IPlayerStats } from "./interfaces";
 
 interface PlayerData {
   steamid: string;
@@ -25,11 +26,7 @@ interface PlayerData {
   ekct_success_rate_overall: number;
 }
 
-interface RadarChartProps {
-  steamid: string;
-}
-
-const PlayerEntryKIllTable: React.FC<RadarChartProps> = ({ steamid }) => {
+const PlayerEntryKIllTable: React.FC<IPlayerStats> = ({ steamid }) => {
   const {
     data: playerData,
     isError,

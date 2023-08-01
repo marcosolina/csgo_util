@@ -59,7 +59,7 @@ export default function MatchPage() {
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
-  console.log(matchData)
+
   const date = new Date(matchData.match_date);
   const formattedDate = date.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" });
   const formattedTime = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });

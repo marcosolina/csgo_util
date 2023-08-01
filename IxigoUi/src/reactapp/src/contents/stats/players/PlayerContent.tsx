@@ -35,7 +35,6 @@ const PlayerPage = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     const pathParts = location.pathname.split("/").filter((p) => p);
 
-    console.log(pathParts);
     if (pathParts.length > 3) {
       pathParts[3] = newValue;
     } else {

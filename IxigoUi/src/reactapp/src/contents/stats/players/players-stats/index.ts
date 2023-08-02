@@ -3,7 +3,7 @@ export * from "./PlayerClutchTable";
 export * from "./PlayerDamageTable";
 export * from "./PlayerEntryKillTable";
 export * from "./PlayerHeadShotTable";
-export * from "./PlayerRadarChart";
+export * from "./player-radar-chart";
 export * from "./PlayerStatsContent";
 export * from "./PlayerUtilityTable";
 export * from "./PlayerWeaponSummaryTable";

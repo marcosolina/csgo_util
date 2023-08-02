@@ -1,6 +1,6 @@
 export interface IGetStatsRequest<T> {
   viewName: string;
-  queryParams?: T;
+  queryParams?: Partial<T>;
 }
 
 export interface IGetStatsResponse<T> {
@@ -78,7 +78,6 @@ export interface IPlayerStats {
   bd: number;
 }
 
-
 export interface IMatchResults {
   match_date: string;
   match_id: number;
@@ -88,4 +87,17 @@ export interface IMatchResults {
   total_t_wins: number;
   total_ct_wins: number;
   score_differential: number;
+}
+
+export interface IPlayerOverallStats {
+  steamid: string;
+  username: string;
+  kpr: number;
+  hltv_rating: number;
+  adr: number;
+  kast: number;
+  dpr: number;
+  headshot_percentage: number;
+  ud: number;
+  ebt: number;
 }

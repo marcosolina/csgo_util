@@ -101,3 +101,23 @@ export interface IPlayerOverallStats {
   ud: number;
   ebt: number;
 }
+
+export interface IPlayerClutchStats {
+  _1v1p: number;
+  _1v1w: number;
+  _1v1l: number;
+  _1v2p: number;
+  _1v2w: number;
+  _1v2l: number;
+  _1v3p: number;
+  _1v3w: number;
+  _1v3l: number;
+  _1v4p: number;
+  _1v4w: number;
+  _1v4l: number;
+  _1v5p: number;
+  _1v5w: number;
+  _1v5l: number;
+  _1vnp: number;
+  steamid: string;
+}

@@ -1,5 +1,4 @@
 import { QueryStatus } from "react-query";
-import { IPlayerOverallStats } from "../../../../../services/stats";
 
 export interface IPlayerRadarChartProps {
   steamid: string;
@@ -23,5 +22,5 @@ export interface IPlayerRadarChartData {
 export interface IPlayerRadarChartResponse {
   state: QueryStatus;
   chartData?: IPlayerRadarChartData;
-  originalData?: IPlayerOverallStats;
+  originalData?: IPlayerRadarChartData;
 }

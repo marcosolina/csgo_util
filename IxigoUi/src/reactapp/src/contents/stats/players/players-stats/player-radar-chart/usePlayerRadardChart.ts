@@ -1,10 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import {
-  IGetStatsRequest,
-  IPlayerOverallStats,
-  PLAYER_OVERALL_STATS_REQUEST,
-  useGetStats,
-} from "../../../../../services/stats";
+import { IPlayerOverallStats, PLAYER_OVERALL_STATS_REQUEST, useGetStats } from "../../../../../services/stats";
 import { IPlayerRadarChartData, IPlayerRadarChartRequest, IPlayerRadarChartResponse } from "./interfaces";
 import * as ss from "simple-statistics";
 import { QueryStatus } from "../../../../../lib/http-requests";
@@ -19,9 +14,9 @@ export function usePlayerRadarChart(request: IPlayerRadarChartRequest): IPlayerR
       setPlayerStats(qUsersRequest.data.data.view_data.find((player) => player.steamid === request.steamid));
       setPlayersStats(qUsersRequest.data.data.view_data);
     }
-  }, [qUsersRequest.data]);
+  }, [qUsersRequest.status, qUsersRequest.data, request.steamid]);
 
-  const radarChartData = useMemo((): IPlayerRadarChartData | undefined => {
+  const chartData = useMemo((): IPlayerRadarChartData | undefined => {
     if (!playerStats || !playersStats) return undefined;
 
     // Calculate the mean and standard deviation of the metrics
@@ -65,9 +60,23 @@ export function usePlayerRadarChart(request: IPlayerRadarChartRequest): IPlayerR
     };
   }, [playerStats, playersStats]);
 
+  const originalData = useMemo((): IPlayerRadarChartData | undefined => {
+    if (!playerStats) return undefined;
+    return {
+      kprZScore: playerStats.kpr,
+      hltv_ratingZScore: playerStats.hltv_rating,
+      adrZScore: playerStats.adr,
+      kastZScore: playerStats.kast,
+      dprZScore: playerStats.dpr,
+      hspZScore: playerStats.headshot_percentage,
+      udZScore: playerStats.ud,
+      ebtZScore: playerStats.ebt,
+    };
+  }, [playerStats]);
+
   return {
     state: qUsersRequest.status,
-    chartData: radarChartData,
-    originalData: playerStats,
+    chartData,
+    originalData,
   };
 }

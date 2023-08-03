@@ -236,6 +236,23 @@
           "weapons": "Weapons",
           "maps": "Maps",
           "matches": "Matches"
+        },
+        "content": {
+          "overall": {
+            "radar-chart": {
+              "data-set-label": "Player stats",
+              "descriptions": {
+                "kpr": "Kills per round",
+                "hltv": "HLTV rating",
+                "adr": "Average damage per round",
+                "kast": "Kill/Assist/Survival/Trade percentage",
+                "dpr": "Deaths per round (lower values give higher z-score)",
+                "hsp": "Headshot kill %",
+                "ud": "Utility damage",
+                "ebt": "Average enemy blind time"
+              }
+            }
+          }
         }
       },
       "match": {

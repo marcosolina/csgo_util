@@ -1,4 +1,11 @@
-import { IGetStatsRequest, IMatchResults, IPlayerOverallStats, IPlayerStats, ISteamUser } from "./interfaces";
+import {
+  IGetStatsRequest,
+  IMatchResults,
+  IPlayerClutchStats,
+  IPlayerOverallStats,
+  IPlayerStats,
+  ISteamUser,
+} from "./interfaces";
 
 /**
  * It returns the list of Steam users.
@@ -23,4 +30,8 @@ export const MATCH_RESULTS_REQUEST: IGetStatsRequest<IMatchResults> = {
 
 export const PLAYER_OVERALL_STATS_REQUEST: IGetStatsRequest<IPlayerOverallStats> = {
   viewName: "PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE",
+};
+
+export const PLAYER_CLUTCH_STATS_REQUEST: IGetStatsRequest<IPlayerClutchStats> = {
+  viewName: "PLAYER_CLUTCH_STATS_CACHE",
 };

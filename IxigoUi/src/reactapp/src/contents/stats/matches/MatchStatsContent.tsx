@@ -1,9 +1,9 @@
 import React from "react";
 import { Box, Tab, Tabs, Typography, Grid, Paper } from "@mui/material";
-import MatchScoreboardContent from "./MatchScoreboardContent";
-import MatchRoundsContent from "./MatchRoundsContent";
-import MatchWeaponsContent from "./MatchWeaponsContent";
-import MatchKillMatrixContent from "./MatchKillMatrixContent";
+import MatchScoreboardContent from "./match-scoreboard/MatchScoreboardContent";
+import MatchRoundsContent from "./match-rounds/MatchRoundsContent";
+import MatchWeaponsContent from "./match-weapons/MatchWeaponsContent";
+import MatchKillMatrixContent from "./match-kill-matrix/MatchKillMatrixContent";
 import { useQuery } from "react-query";
 import terroristLogo from "../../../assets/icons/T.png";
 import ctLogo from "../../../assets/icons/CT.png";
@@ -59,7 +59,7 @@ export default function MatchPage() {
   if (isLoading) {
     return <Typography>Loading...</Typography>;
   }
-
+  console.log(matchData)
   const date = new Date(matchData.match_date);
   const formattedDate = date.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" });
   const formattedTime = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });

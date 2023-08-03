@@ -1,6 +1,7 @@
 import {
   IGetStatsRequest,
   IMatchResults,
+  IMatchResult,
   IPlayerClutchStats,
   IPlayerOverallStats,
   IPlayerStats,
@@ -25,6 +26,10 @@ export const PLAYERS_STATS__REQUEST: IGetStatsRequest<IPlayerStats> = {
  * It returns the list of Match stats.
  */
 export const MATCH_RESULTS_REQUEST: IGetStatsRequest<IMatchResults> = {
+  viewName: "MATCH_RESULTS_CACHE",
+};
+
+export const MATCH_RESULT_REQUEST: IGetStatsRequest<IMatchResult> = {
   viewName: "MATCH_RESULTS_CACHE",
 };
 

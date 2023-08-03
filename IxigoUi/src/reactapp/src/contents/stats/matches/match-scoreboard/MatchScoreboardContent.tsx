@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Grid, Paper } from '@mui/material';
-import MatchTeamTable from './MatchTeamTable';
+import MatchTeamTable from '../match-team-table/MatchTeamTable';
 
 interface MatchScoreboardContentProps {
   match_id: number;

@@ -5,22 +5,22 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { MaterialReactTable } from "material-react-table";
 import { useQuery } from "react-query";
 import { PieChart } from "react-minimal-pie-chart";
-import terroristLogo from "../../../assets/icons/T.png";
-import ctLogo from "../../../assets/icons/CT.png";
-import bomb from "../../../assets/icons/bomb.png";
-import death from "../../../assets/icons/death.png";
-import defuse from "../../../assets/icons/defuse.png";
-import rescue from "../../../assets/icons/rescue.png";
-import time from "../../../assets/icons/time.png";
-import eco from "../../../assets/icons/eco.png";
-import force from "../../../assets/icons/forcebuy.png";
-import full from "../../../assets/icons/fullbuy.png";
-import pistol from "../../../assets/icons/pistol.png";
-import headshot from "../../../assets/icons/hs.png";
-import flashbang from "../../../assets/icons/flashbang.png";
-import { WEAPONG_IMAGE } from "../weaponImage";
-import { UI_CONTEXT_PATH } from "../../../lib/constants";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
+import terroristLogo from "../../../../assets/icons/T.png";
+import ctLogo from "../../../../assets/icons/CT.png";
+import bomb from "../../../../assets/icons/bomb.png";
+import death from "../../../../assets/icons/death.png";
+import defuse from "../../../../assets/icons/defuse.png";
+import rescue from "../../../../assets/icons/rescue.png";
+import time from "../../../../assets/icons/time.png";
+import eco from "../../../../assets/icons/eco.png";
+import force from "../../../../assets/icons/forcebuy.png";
+import full from "../../../../assets/icons/fullbuy.png";
+import pistol from "../../../../assets/icons/pistol.png";
+import headshot from "../../../../assets/icons/hs.png";
+import flashbang from "../../../../assets/icons/flashbang.png";
+import { WEAPONG_IMAGE } from "../../weaponImage";
+import { UI_CONTEXT_PATH } from "../../../../lib/constants";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
 
 const roundIconImage: { [key: number]: string } = {
   1: bomb,

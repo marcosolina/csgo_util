@@ -9,7 +9,7 @@ import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 const PlayerClutchTable: React.FC<IPlayerClutchTableProps> = ({ steamid }) => {
   const { state } = usePlayerClutch({ steamid });
-
+  // TODO implement the rest
   return (
     <Switch value={state}>
       <Case case={QueryStatus.success}>

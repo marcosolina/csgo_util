@@ -251,6 +251,17 @@
                 "ud": "Utility damage",
                 "ebt": "Average enemy blind time"
               }
+            },
+            "clutch-stats": {
+              "title": "Clutcht stats",
+              "toolbar-label": "1vX",
+              "column-headers": {
+                "1v1": { "tooltip": "One vs one", "header": "1v1" },
+                "1v2": { "tooltip": "Two vs two", "header": "1v2" },
+                "1v3": { "tooltip": "Three vs three", "header": "1v3" },
+                "1v4": { "tooltip": "Four vs four", "header": "1v4" },
+                "1v5": { "tooltip": "Five vs five", "header": "1v5" }
+              }
             }
           }
         }

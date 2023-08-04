@@ -135,3 +135,22 @@ export interface IPlayerClutchStats {
   _1vnp: number;
   steamid: string;
 }
+
+export interface IPlayerEntryKillStats {
+  steamid: string;
+  total_rounds: number;
+  total_rounds_t: number;
+  total_rounds_ct: number;
+  ek_attempts: number;
+  ek_success: number;
+  ekt_attempts: number;
+  ekt_success: number;
+  ekct_attempts: number;
+  ekct_success: number;
+  ek_success_rate: number;
+  ek_success_rate_overall: number;
+  ekt_success_rate: number;
+  ekt_success_rate_overall: number;
+  ekct_success_rate: number;
+  ekct_success_rate_overall: number;
+}

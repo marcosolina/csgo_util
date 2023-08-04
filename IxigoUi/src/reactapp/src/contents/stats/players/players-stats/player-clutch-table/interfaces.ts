@@ -2,7 +2,7 @@ import { MRT_ColumnDef } from "material-react-table";
 import { QueryStatus } from "react-query";
 import { IPlayerClutchStats } from "../../../../../services/stats";
 
-export interface IPlayerData {
+export interface IClutchData {
   "1v1": string;
   "1v2": string;
   "1v3": string;
@@ -20,7 +20,7 @@ export interface IPlayerClutchRequest {
 
 export interface IPlayerClutchResponse {
   state: QueryStatus;
-  columns: MRT_ColumnDef<IPlayerData>[];
-  data: IPlayerData[];
+  columns: MRT_ColumnDef<IClutchData>[];
+  data: IClutchData[];
   playerClutchStats?: IPlayerClutchStats;
 }

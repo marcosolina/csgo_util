@@ -6,6 +6,7 @@ import {
   IPlayerOverallStats,
   IPlayerStats,
   ISteamUser,
+  IPlayerEntryKillStats,
 } from "./interfaces";
 
 /**
@@ -39,4 +40,8 @@ export const PLAYER_OVERALL_STATS_REQUEST: IGetStatsRequest<IPlayerOverallStats>
 
 export const PLAYER_CLUTCH_STATS_REQUEST: IGetStatsRequest<IPlayerClutchStats> = {
   viewName: "PLAYER_CLUTCH_STATS_CACHE",
+};
+
+export const PLAYER_ENTRY_KILL_STATS_REQUEST: IGetStatsRequest<IPlayerEntryKillStats> = {
+  viewName: "ENTRY_KILL_STATS_EXTENDED_CACHE",
 };

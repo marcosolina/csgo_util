@@ -1,5 +1,4 @@
 import { Grid, Paper } from "@mui/material";
-import PlayerEntryKIllTable from "./PlayerEntryKillTable";
 import PlayerWinRateTable from "./PlayerWinRateTable";
 import PlayerHeadShotTable from "./PlayerHeadShotTable";
 import PlayerDamageTable from "./PlayerDamageTable";
@@ -8,6 +7,7 @@ import PlayerWeaponSummaryTable from "./PlayerWeaponSummaryTable";
 import { useParams } from "react-router-dom";
 import PlayerRadarChart from "./player-radar-chart/PlayerRadarChart";
 import PlayerClutchTable from "./player-clutch-table/PlayerClutchTable";
+import PLayerEntryKillTable from "./player-entry-kill-table/PlayerEntryKillTable";
 
 const XS = 12;
 const SM = 6;
@@ -30,9 +30,7 @@ const PlayerStatsContent = () => {
         <PlayerClutchTable steamid={steamid} />
       </Grid>
       <Grid item xs={XS} sm={SM} md={MD}>
-        <Paper>
-          <PlayerEntryKIllTable steamid={steamid} />
-        </Paper>
+        <PLayerEntryKillTable steamid={steamid} />
       </Grid>
 
       {/* Row 2: 1 XS full width box */}

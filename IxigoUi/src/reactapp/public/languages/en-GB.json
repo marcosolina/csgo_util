@@ -262,6 +262,18 @@
                 "1v4": { "tooltip": "Four vs four", "header": "1v4" },
                 "1v5": { "tooltip": "Five vs five", "header": "1v5" }
               }
+            },
+            "entry-kill-stats": {
+              "title": "Entry Kill Stats",
+              "toolbar-label": "Overall",
+              "lblSuccess": "Success",
+              "lblAttempts": "Attempts",
+              "column-headers": {
+                "desc": { "tooltip": "", "header": "" },
+                "all": { "tooltip": "All", "header": "All" },
+                "ts": { "tooltip": "Terrorist", "header": "Ts" },
+                "ct": { "tooltip": "Counter terrorist", "header": "CTs" }
+              }
             }
           }
         }

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { IPlayerClutchStats, PLAYER_CLUTCH_STATS_REQUEST, useGetStats } from "../../../../../services";
-import { IPlayerClutchRequest, IPlayerClutchResponse, IPlayerData } from "./interfaces";
+import { IPlayerClutchRequest, IPlayerClutchResponse, IClutchData } from "./interfaces";
 import { QueryStatus } from "../../../../../lib/http-requests";
 import { TFunction } from "i18next";
 import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
@@ -16,14 +16,14 @@ const COLUMNS_ORDER: string[] = ["1v1", "1v2", "1v3", "1v4", "1v5"];
 function createColumnDefinition(
   key: string,
   t: TFunction<"translation", undefined, "translation">
-): MRT_ColumnDef<IPlayerData> {
-  const cell: MRT_ColumnDef<IPlayerData> = {
+): MRT_ColumnDef<IClutchData> {
+  const cell: MRT_ColumnDef<IClutchData> = {
     id: key,
-    accessorFn: (row) => row[key as keyof IPlayerData],
+    accessorFn: (row) => row[key as keyof IClutchData],
     header: t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.header`),
     size: SMALL_COL_SIZE,
-    Header: customHeader<IPlayerData>(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
-    Cell: ({ cell, row }: { cell: MRT_Cell<IPlayerData>; row: { index: number } }) => {
+    Header: customHeader<IClutchData>(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
+    Cell: ({ cell, row }: { cell: MRT_Cell<IClutchData>; row: { index: number } }) => {
       const percentageString = cell.getValue() as string;
       const percentage = Number(percentageString.slice(0, -1));
       return row.index === 0 ? (
@@ -44,13 +44,13 @@ export function usePlayerClutch(request: IPlayerClutchRequest): IPlayerClutchRes
     copy.queryParams = { steamid: request.steamid };
     return copy;
   }, [request]);
-  const [data, setData] = useState<IPlayerData[]>([]);
+  const [data, setData] = useState<IClutchData[]>([]);
   const [playerClutchStats, setPlayerClutchStats] = useState<IPlayerClutchStats>();
-  const qUsersRequest = useGetStats(getStatsRequest);
+  const qGetStats = useGetStats(getStatsRequest);
 
   // Create the columns
-  const columns = useMemo<MRT_ColumnDef<IPlayerData>[]>(() => {
-    const cols: MRT_ColumnDef<IPlayerData>[] = [];
+  const columns = useMemo<MRT_ColumnDef<IClutchData>[]>(() => {
+    const cols: MRT_ColumnDef<IClutchData>[] = [];
     COLUMNS_ORDER.forEach((key) => {
       cols.push(createColumnDefinition(key, t));
     });
@@ -58,13 +58,13 @@ export function usePlayerClutch(request: IPlayerClutchRequest): IPlayerClutchRes
   }, [t]);
 
   useEffect(() => {
-    if (qUsersRequest.status === QueryStatus.success) {
-      const data = qUsersRequest.data.data?.view_data;
+    if (qGetStats.status === QueryStatus.success) {
+      const data = qGetStats.data.data?.view_data;
       if (!data) return;
 
       const player = data[0];
 
-      const playerData: IPlayerData[] = [];
+      const playerData: IClutchData[] = [];
       playerData.push({
         "1v1": `${player._1v1p.toFixed(0)}%`,
         "1v2": `${player._1v2p.toFixed(0)}%`,
@@ -97,10 +97,10 @@ export function usePlayerClutch(request: IPlayerClutchRequest): IPlayerClutchRes
       setData(playerData);
       setPlayerClutchStats(player);
     }
-  }, [qUsersRequest]);
+  }, [qGetStats]);
 
   return {
-    state: qUsersRequest.status,
+    state: qGetStats.status,
     columns,
     data,
     playerClutchStats,

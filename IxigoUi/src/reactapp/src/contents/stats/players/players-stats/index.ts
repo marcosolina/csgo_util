@@ -1,6 +1,6 @@
 export * from "./interfaces";
 export * from "./PlayerDamageTable";
-export * from "./PlayerEntryKillTable";
+export * from "./player-entry-kill-table";
 export * from "./PlayerHeadShotTable";
 export * from "./player-radar-chart";
 export * from "./player-clutch-table";

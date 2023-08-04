@@ -70,6 +70,7 @@ export function usePlayerEntryKill(request: IPlayerEntryKillRequest): IPlayerEnt
     return cols;
   }, [t]);
 
+  // Setting the table data
   useEffect(() => {
     if (qGetStats.status === QueryStatus.success) {
       const data = qGetStats.data.data?.view_data;

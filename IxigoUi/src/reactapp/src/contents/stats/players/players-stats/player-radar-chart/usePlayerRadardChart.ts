@@ -16,6 +16,7 @@ export function usePlayerRadarChart(request: IPlayerRadarChartRequest): IPlayerR
     }
   }, [qUsersRequest.status, qUsersRequest.data, request.steamid]);
 
+  // Calculate the chart data
   const chartData = useMemo((): IPlayerRadarChartData | undefined => {
     if (!playerStats || !playersStats) return undefined;
 

@@ -45,6 +45,7 @@ export function useMatchStatsContent(request: IMatchContentRequest): IMatchConte
             matchMetadata.mapImageName = mapImageName;
             matchMetadata.formattedDate = formattedDate;
             matchMetadata.formattedTime = formattedTime;
+            setMatchMetadata(matchMetadata);
         }
     }, [qGetStats, t]);
 

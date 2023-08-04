@@ -253,7 +253,7 @@
               }
             },
             "clutch-stats": {
-              "title": "Clutcht stats",
+              "title": "Clutch stats",
               "toolbar-label": "1vX",
               "column-headers": {
                 "1v1": { "tooltip": "One vs one", "header": "1v1" },

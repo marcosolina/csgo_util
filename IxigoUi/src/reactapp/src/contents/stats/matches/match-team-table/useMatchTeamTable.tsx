@@ -72,12 +72,12 @@ const COLUMNS_ORDER: string[] = [
       Header: customHeader<ITeamMatchResults>(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
     };
 
-    if (key === "username") {
+    if (key === "usernames") {
         cell.Cell = ({ cell }: { cell: MRT_Cell<ITeamMatchResults> }) => {
           const username = cell.getValue() as string;
           const steamid = cell.row.original.steamid;
           return (
-            <TableLink text={username} onClickHandler={() => playerClickHandler(steamid)} />
+            <TableLink text={username} color={cell.row.original.last_round_team === "team1" ? "#90caf9" : "orange"} onClickHandler={() => playerClickHandler(steamid)} />
           );
         };
       }

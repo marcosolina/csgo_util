@@ -7,6 +7,7 @@ import {
   IPlayerStats,
   ISteamUser,
   IPlayerEntryKillStats,
+  ITeamMatchResults
 } from "./interfaces";
 
 /**
@@ -32,6 +33,10 @@ export const MATCH_RESULTS_REQUEST: IGetStatsRequest<IMatchResults> = {
 
 export const MATCH_RESULT_REQUEST: IGetStatsRequest<IMatchResult> = {
   viewName: "MATCH_RESULTS_CACHE",
+};
+
+export const MATCH_TEAM_RESULT_REQUEST: IGetStatsRequest<ITeamMatchResults> = {
+  viewName: "PLAYER_MATCH_STATS_EXTENDED_CACHE",
 };
 
 export const PLAYER_OVERALL_STATS_REQUEST: IGetStatsRequest<IPlayerOverallStats> = {

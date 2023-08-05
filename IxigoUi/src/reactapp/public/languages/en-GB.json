@@ -301,6 +301,51 @@
           "rounds": "Rounds",
           "weapons": "Weapons",
           "duels": "Duels"
+        },
+        "teamtable":{
+          "column-headers": {
+            "usernames": { "tooltip": "Player", "header": "Player" },
+            "roundsplayed": { "tooltip": "Rounds Played", "header": "R" },
+            "last_round_team": { "tooltip": "Team", "header": "Team" },
+            "rounds_on_team1": { "tooltip": "Rounds on Team 1", "header": "RNDT1" },
+            "rounds_on_team2": { "tooltip": "Rounds on Team 2", "header": "RNDT2" },
+            "kills": { "tooltip": "Total kills", "header": "K" },
+            "deaths": { "tooltip": "Total deaths", "header": "D" },
+            "assists": { "tooltip": "Total assists", "header": "A" },
+            "score": { "tooltip": "Score", "header": "SCR" },
+            "rws": { "tooltip": "Round Win Share", "header": "RWS" },
+            "headshots": { "tooltip": "Headshots", "header": "HS" },
+            "headshot_percentage": { "tooltip": "Headshot Percentage", "header": "HS%" },
+            "mvp": { "tooltip": "Most Valuable Player", "header": "MVP" },
+            "hltv_rating": { "tooltip": "HLTV Rating", "header": "HLTV" },
+            "adr": { "tooltip": "Average Damage per Round", "header": "ADR" },
+            "kpr": { "tooltip": "Kills Per Round", "header": "KPR" },
+            "dpr": { "tooltip": "Deaths Per Round", "header": "DPR" },
+            "kdr": { "tooltip": "Kill/Death Ratio", "header": "K/D" },
+            "hr": { "tooltip": "Hostages Rescued", "header": "HR" },
+            "bp": { "tooltip": "Bomb Planted", "header": "BP" },
+            "ud": { "tooltip": "Utility Damage", "header": "UD" },
+            "ffd": { "tooltip": "Friendly Fire Damage", "header": "FFD" },
+            "td": { "tooltip": "Trade Deaths", "header": "TD" },
+            "tda": { "tooltip": "Total Damage Armour", "header": "TDA" },
+            "tdh": { "tooltip": "Total Damage Health", "header": "TDH" },
+            "fa": { "tooltip": "Flash Assists", "header": "FA" },
+            "ebt": { "tooltip": "Enemy Blind Time", "header": "EBT" },
+            "fbt": { "tooltip": "Friendly Blind Time", "header": "FBT" },
+            "ek": { "tooltip": "Entry Kills", "header": "EK" },
+            "tk": { "tooltip": "Trade Kills", "header": "TK" },
+            "_1k": { "tooltip": "One Kill", "header": "1K" },
+            "_2k": { "tooltip": "Two Kills", "header": "2K" },
+            "_3k": { "tooltip": "Three Kills", "header": "3K" },
+            "_4k": { "tooltip": "Four Kills", "header": "4K" },
+            "_5k": { "tooltip": "Five Kills", "header": "5K" },
+            "_1v1": { "tooltip": "1v1 Clutches", "header": "1v1" },
+            "_1v2": { "tooltip": "1v2 Clutches", "header": "1v2" },
+            "_1v3": { "tooltip": "1v3 Clutches", "header": "1v3" },
+            "_1v4": { "tooltip": "1v4 Clutches", "header": "1v4" },
+            "_1v5": { "tooltip": "1v5 Clutches", "header": "1v5" }
+          }
+        
         }
       }
     }

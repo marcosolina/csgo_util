@@ -2,46 +2,16 @@ import React, { useContext } from "react";
 import { useMemo } from "react";
 import { Tooltip, Box } from "@mui/material";
 import { MaterialReactTable } from "material-react-table";
-import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
-import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import { QueryStatus } from "../../../../lib/http-requests";
 import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
-import { TeamMatchProps, TeamMatch } from "./interfaces";
+import { useTranslation } from "react-i18next";
+import { useMatchTeamTable } from "./useMatchTeamTable";
+import { ITeamMatchContentRequest } from "./interfaces";
 
-
-const smallColSize = 5;
-const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
-  const {
-    data: matchData,
-    isError,
-    isFetching,
-    isLoading,
-  } = useQuery<TeamMatch[], Error>({
-    queryKey: ["matchteam" + match_id + team],
-    queryFn: async () => {
-      const url1 = new URL(
-        `${SERVICES_URLS["dem-manager"]["get-stats"]}/PLAYER_MATCH_STATS_EXTENDED_CACHE?match_id=${match_id}`
-      );
-
-      const responses = await Promise.all([fetch(url1.href)]);
-
-      const jsons = await Promise.all(
-        responses.map((response) => {
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-          return response.json();
-        })
-      );
-
-      const playerMatchStatsExtended = jsons[0].view_data;
-      let matchData = playerMatchStatsExtended.filter(
-        (p: TeamMatch) => p.match_id === match_id && p.last_round_team === team
-      );
-      return matchData;
-    },
-    keepPreviousData: true,
-  });
+const MatchTeamTable: React.FC<ITeamMatchContentRequest> = ({ match_id, team }) => {
+  const { t } = useTranslation();
+  const { columns, data, state, refetch } = useMatchTeamTable({ match_id, team});
 
   function createCustomHeader(tooltipText: string) {
     return ({ column }: { column: any }) => (
@@ -50,8 +20,8 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
       </Tooltip>
     );
   }
-
-  const columns = useMemo(
+const smallColSize=5;
+  const columnsOld = useMemo(
     () => [
       {
         accessorKey: "usernames" as const,
@@ -235,7 +205,7 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
   return (
     <MaterialReactTable
       columns={columns}
-      data={matchData ?? []}
+      data={data ?? []}
       initialState={{
         showColumnFilters: false,
         columnVisibility: {
@@ -282,19 +252,11 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
       enableFullScreenToggle={false}
       enableHiding={true}
       muiTableBodyRowProps={{ hover: false }}
-      muiToolbarAlertBannerProps={
-        isError
-          ? {
-              color: "error",
-              children: "Error loading data",
-            }
-          : undefined
-      }
-      rowCount={matchData?.length ?? 0}
+      rowCount={data?.length ?? 0}
       state={{
-        isLoading,
-        showAlertBanner: isError,
-        showProgressBars: isFetching,
+        isLoading: state === QueryStatus.loading,
+        showAlertBanner: state === QueryStatus.error,
+        showProgressBars: state === QueryStatus.loading,
       }}
     />
   );

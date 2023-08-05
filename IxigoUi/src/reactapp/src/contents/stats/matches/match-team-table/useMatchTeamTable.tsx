@@ -138,7 +138,7 @@ export const useMatchTeamTable = (
       cols.push(createColumnDefinition(key, request.team, t, playerClickHandler));
     });
     return cols;
-  }, [t, playerClickHandler]);
+  }, [t, playerClickHandler, request]);
 
   const refetch = useCallback(() => {
     qMatchRequest.refetch();
@@ -157,7 +157,7 @@ export const useMatchTeamTable = (
       );
       setData(matchData);
     }
-  }, [qMatchRequest.status, qMatchRequest.data]);
+  }, [qMatchRequest, request]);
 
   return {
     columns,

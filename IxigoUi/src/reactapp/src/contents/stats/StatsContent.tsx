@@ -3,7 +3,7 @@ import LeaderboardContent from "./leaderboard/LeaderboardContent";
 import PlayerContent from "./players/PlayerContent";
 import MatchStatsContent from "./matches/MatchStatsContent";
 import MapContent from "./maps/MapContent";
-import { Breadcrumbs, Typography } from "@mui/material";
+import { Breadcrumbs } from "@mui/material";
 import Link from "@mui/material/Link";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";

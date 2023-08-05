@@ -47,7 +47,7 @@ export function useMatchStatsContent(request: IMatchContentRequest): IMatchConte
             matchMetadata.formattedTime = formattedTime;
             setMatchMetadata(matchMetadata);
         }
-    }, [qGetStats, t]);
+    }, [qGetStats, t, matchMetadata]);
 
 
     return {

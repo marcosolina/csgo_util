@@ -1,17 +1,11 @@
-import React, { useContext } from "react";
-import { useMemo } from "react";
-import { Tooltip, Box } from "@mui/material";
+import React from "react";
 import { MaterialReactTable } from "material-react-table";
-import { Link } from "react-router-dom";
 import { QueryStatus } from "../../../../lib/http-requests";
-import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
-import { useTranslation } from "react-i18next";
 import { useMatchTeamTable } from "./useMatchTeamTable";
 import { ITeamMatchContentRequest } from "./interfaces";
 
 const MatchTeamTable: React.FC<ITeamMatchContentRequest> = ({ match_id, team }) => {
-  const { t } = useTranslation();
-  const { columns, data, state, refetch } = useMatchTeamTable({ match_id, team});
+  const { columns, data, state } = useMatchTeamTable({ match_id, team});
 
   return (
     <MaterialReactTable

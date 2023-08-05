@@ -131,7 +131,7 @@ export const useMatchContent = (): IMatchContent => {
       console.log(newPath)
       history(newPath);
     },
-    [history, location.pathname]
+    [history, location]
   );
 
   // Get the data

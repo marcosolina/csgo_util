@@ -7,7 +7,6 @@ import { QueryStatus } from "../../../lib/http-requests";
 import { Box } from "@mui/material";
 import { TFunction } from "i18next";
 import customHeader from "../../../common/material-table/custom-header/customHeader";
-import { useLocation, useNavigate } from "react-router-dom";
 import CellChip from "../../../common/cell-chip/CellChip";
 import TableLink from '../../../common/table-link/TableLink';
 
@@ -104,32 +103,20 @@ function createColumnDefinition(
 
 export const useMatchContent = (): IMatchContent => {
   const { t } = useTranslation();
-  const history = useNavigate();
-  const location = useLocation();
   const [data, setData] = useState<IMatchResults[]>([]);
 
   const mapNamePathUpdater = useCallback(
     (mapName: string) => {
-      const pathParts = location.pathname.split("/").filter((p) => p);
-      let newPath = `${location.pathname}/map/${mapName}`;
-      if (pathParts.length > 1) {
-        newPath = `/stats/map/${mapName}`
-      }
-      return newPath;
+      return `/stats/map/${mapName}`;
     },
-    [history, location.pathname]
+    []
   );
 
   const matchPathUpdater = useCallback(
     (match_id: number) => {
-      const pathParts = location.pathname.split("/").filter((p) => p);
-      let newPath = `${location.pathname}/match/${match_id}`;
-      if (pathParts.length > 1) {
-        newPath = `/stats/match/${match_id}`
-      }
-      return newPath;
+      return `/stats/match/${match_id}`;
     },
-    [history, location]
+    []
   );
 
   // Get the data

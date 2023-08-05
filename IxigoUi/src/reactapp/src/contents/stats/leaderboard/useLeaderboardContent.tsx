@@ -10,7 +10,6 @@ import { TFunction } from "i18next";
 import { WEAPONG_IMAGE } from "../weaponImage";
 import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 import customHeader from "../../../common/material-table/custom-header/customHeader";
-import { useLocation, useNavigate } from "react-router-dom";
 import CellChip from "../../../common/cell-chip/CellChip";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.leaderboard.column-headers";
@@ -117,16 +116,13 @@ function createColumnDefinition(
 
 export const useLeaderboardContent = (): ILeaderboardContent => {
   const { t } = useTranslation();
-  const history = useNavigate();
-  const location = useLocation();
   const [data, setData] = useState<IPlayerStats[]>([]);
 
   const pathUpdater = useCallback(
     (steamid: string) => {
-      const newPath = `${location.pathname}/player/${steamid}`;
-      return newPath;
+      return `/stats/player/${steamid}`;
     },
-    [history, location.pathname]
+    []
   );
 
   // Get the data

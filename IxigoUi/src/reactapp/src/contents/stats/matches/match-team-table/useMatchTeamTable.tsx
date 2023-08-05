@@ -1,7 +1,6 @@
 import { useTranslation } from "react-i18next";
 import { ITeamMatchContentResponse, ITeamMatchContentRequest } from "./interfaces";
 import { ITeamMatchResults } from "../../../../services/stats";
-import { useLocation, useNavigate } from "react-router-dom";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MATCH_TEAM_RESULT_REQUEST, useGetStats } from "../../../../services";
 import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
@@ -112,20 +111,13 @@ export const useMatchTeamTable = (
     copy.queryParams = { match_id: request.match_id, last_round_team: request.team };
     return copy;
   }, [request]);
-  const history = useNavigate();
-  const location = useLocation();
   const [data, setData] = useState<ITeamMatchResults[]>([]);
 
   const playerPathUpdater = useCallback(
     (steamid: string) => {
-      const pathParts = location.pathname.split("/").filter((p) => p);
-      let newPath = `${location.pathname}/player/${steamid}`;
-      if (pathParts.length > 1) {
-        newPath = `/stats/player/${steamid}`;
-      }
-      return newPath;
+      return `/stats/player/${steamid}`;
     },
-    [location.pathname]
+    []
   );
 
   // Get the data

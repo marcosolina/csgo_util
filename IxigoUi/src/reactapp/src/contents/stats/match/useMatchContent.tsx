@@ -110,7 +110,11 @@ export const useMatchContent = (): IMatchContent => {
 
   const mapNameClickHandler = useCallback(
     (mapName: string) => {
-      const newPath = `${location.pathname}/map/${mapName}`;
+      const pathParts = location.pathname.split("/").filter((p) => p);
+      let newPath = `${location.pathname}/map/${mapName}`;
+      if (pathParts.length > 1) {
+        newPath = `/stats/map/${mapName}`
+      }
       history(newPath);
     },
     [history, location.pathname]
@@ -118,7 +122,13 @@ export const useMatchContent = (): IMatchContent => {
 
   const matchClickHandler = useCallback(
     (match_id: number) => {
-      const newPath = `${location.pathname}/match/${match_id}`;
+      const pathParts = location.pathname.split("/").filter((p) => p);
+      let newPath = `${location.pathname}/match/${match_id}`;
+      if (pathParts.length > 1) {
+        newPath = `/stats/match/${match_id}`
+      }
+      console.log(location)
+      console.log(newPath)
       history(newPath);
     },
     [history, location.pathname]

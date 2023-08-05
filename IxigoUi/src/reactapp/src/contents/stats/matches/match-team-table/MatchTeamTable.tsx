@@ -6,73 +6,8 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import { SERVICES_URLS } from "../../../../lib/constants/paths";
 import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
+import { TeamMatchProps, TeamMatch } from "./interfaces";
 
-interface TeamMatchProps {
-  match_id: number;
-  team: string;
-}
-
-interface TeamMatch {
-  usernames: string;
-  steamid: string;
-
-  roundsplayed: number;
-  rounds_on_team1: number;
-  rounds_on_team2: number;
-  last_round_team: string;
-
-  kills: number;
-  deaths: number;
-  assists: number;
-  kpr: number;
-  dpr: number;
-  kdr: number;
-  ek: number;
-  tk: number;
-
-  _1v1: number;
-  _1v2: number;
-  _1v3: number;
-  _1v4: number;
-  _1v5: number;
-
-  _1k: number;
-  _2k: number;
-  _3k: number;
-  _4k: number;
-  _5k: number;
-
-  headshots: number;
-  headshot_percentage: number;
-  hr: number;
-
-  mvp: number;
-  hltv_rating: number;
-
-  adr: number;
-  kast: number;
-
-  bp: number;
-  ud: number;
-  ffd: number;
-
-  score: number;
-  rws: number;
-
-  td: number;
-  tda: number;
-  tdh: number;
-
-  fbt: number;
-  fa: number;
-  ebt: number;
-
-  match_date: string;
-  match_id: number;
-  team: number;
-  ff: number;
-  bd: number;
-}
 
 const smallColSize = 5;
 const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
@@ -126,13 +61,6 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
         Cell: ({ cell }: { cell: any }) => {
           const username = cell.getValue() as string;
           const steamid = cell.row.original.steamid;
-          /*
-          const selectedStatsContext = useContext(SelectedStatsContext);
-          if (!selectedStatsContext) {
-            throw new Error("useContext was called outside of the selectedStatsContext provider");
-          }
-          const { setSelectedPlayerSteamID, setSelectedSubpage } = selectedStatsContext;
-          */
           return (
             <Box
               component={Link}
@@ -147,11 +75,6 @@ const MatchTeamTable: React.FC<TeamMatchProps> = ({ match_id, team }) => {
                 },
               }}
               onClick={(e) => {
-                /*
-                e.preventDefault(); // Prevent the link from navigating
-                setSelectedPlayerSteamID(steamid);
-                setSelectedSubpage("player");
-                */
               }}
             >
               {username}

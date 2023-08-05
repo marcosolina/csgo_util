@@ -2,10 +2,7 @@
 import React from 'react';
 import { Grid, Paper } from '@mui/material';
 import MatchTeamTable from '../match-team-table/MatchTeamTable';
-
-interface MatchScoreboardContentProps {
-  match_id: number;
-}
+import { MatchScoreboardContentProps } from './interfaces';
 
 const MatchScoreboardContent: React.FC<MatchScoreboardContentProps> = ({ match_id }) => {
   return (

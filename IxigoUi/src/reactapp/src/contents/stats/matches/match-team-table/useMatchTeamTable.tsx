@@ -109,7 +109,7 @@ export const useMatchTeamTable = (
   const { t } = useTranslation();
   const getStatsRequest = useMemo(() => {
     const copy = { ...MATCH_TEAM_RESULT_REQUEST };
-    copy.queryParams = { match_id: request.match_id };
+    copy.queryParams = { match_id: request.match_id, last_round_team: request.team };
     return copy;
   }, [request]);
   const history = useNavigate();
@@ -124,9 +124,11 @@ export const useMatchTeamTable = (
         newPath = `/stats/player/${steamid}`;
       }
       //history(newPath);
+      console.log(location);
+      console.log(newPath);
       return newPath;
     },
-    [history, location.pathname]
+    [location.pathname]
   );
 
   // Get the data
@@ -152,11 +154,7 @@ export const useMatchTeamTable = (
         if (!matchResults) {
           return;
         }
-      let matchData = matchResults.filter(
-        (p: ITeamMatchResults) =>
-          p.match_id === request.match_id && p.last_round_team === request.team
-      );
-      setData(matchData);
+      setData(matchResults);
     }
   }, [qMatchRequest, request]);
 

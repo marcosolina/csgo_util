@@ -116,6 +116,8 @@ export const useMatchContent = (): IMatchContent => {
         newPath = `/stats/map/${mapName}`
       }
       //history(newPath);
+      console.log(location);
+      console.log(newPath);
       return newPath;
     },
     [history, location.pathname]
@@ -129,6 +131,8 @@ export const useMatchContent = (): IMatchContent => {
         newPath = `/stats/match/${match_id}`
       }
       //history(newPath);
+      console.log(location);
+      console.log(newPath);
       return newPath;
     },
     [history, location]

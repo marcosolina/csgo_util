@@ -125,6 +125,8 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
     (steamid: string) => {
       const newPath = `${location.pathname}/player/${steamid}`;
       //history(newPath);
+      console.log(location);
+      console.log(newPath);
       return newPath;
     },
     [history, location.pathname]

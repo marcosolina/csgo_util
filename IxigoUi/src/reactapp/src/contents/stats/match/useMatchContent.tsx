@@ -127,8 +127,6 @@ export const useMatchContent = (): IMatchContent => {
       if (pathParts.length > 1) {
         newPath = `/stats/match/${match_id}`
       }
-      console.log(location)
-      console.log(newPath)
       history(newPath);
     },
     [history, location]

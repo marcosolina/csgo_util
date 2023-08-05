@@ -15,7 +15,6 @@ const TableLink: React.FC<ITableLinkProps> = ({ text, onClickHandler, color="whi
         },
       }}
       onClick={(e) => {
-        e.preventDefault();
         onClickHandler();
       }}
     >

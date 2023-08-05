@@ -61,6 +61,7 @@ const COLUMNS_ORDER: string[] = [
 
   function createColumnDefinition(
     key: string,
+    team: string,
     t: TFunction<"translation", undefined, "translation">,
     playerClickHandler: (steamid: string) => void
   ): MRT_ColumnDef<ITeamMatchResults> {
@@ -73,6 +74,7 @@ const COLUMNS_ORDER: string[] = [
     };
 
     if (key === "usernames") {
+        cell.header= t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.${team}header`);
         cell.Cell = ({ cell }: { cell: MRT_Cell<ITeamMatchResults> }) => {
           const username = cell.getValue() as string;
           const steamid = cell.row.original.steamid;
@@ -81,6 +83,7 @@ const COLUMNS_ORDER: string[] = [
           );
         };
       }
+      
 
       if (key === "hltv_rating") {
         cell.Cell = ({ cell }: { cell: MRT_Cell<ITeamMatchResults> }) => {
@@ -131,7 +134,7 @@ export const useMatchTeamTable = (
   const columns = useMemo<MRT_ColumnDef<ITeamMatchResults>[]>(() => {
     const cols: MRT_ColumnDef<ITeamMatchResults>[] = [];
     COLUMNS_ORDER.forEach((key) => {
-      cols.push(createColumnDefinition(key, t, playerClickHandler));
+      cols.push(createColumnDefinition(key, request.team, t, playerClickHandler));
     });
     return cols;
   }, [t, playerClickHandler]);

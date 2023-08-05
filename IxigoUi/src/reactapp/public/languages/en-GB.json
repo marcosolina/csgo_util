@@ -304,7 +304,7 @@
         },
         "teamtable":{
           "column-headers": {
-            "usernames": { "tooltip": "Player", "header": "Player" },
+            "usernames": { "tooltip": "Player", "header": "PLAYER", "team1header": "TEAM1 PLAYERS", "team2header": "TEAM2 PLAYERS" },
             "roundsplayed": { "tooltip": "Rounds Played", "header": "R" },
             "last_round_team": { "tooltip": "Team", "header": "Team" },
             "rounds_on_team1": { "tooltip": "Rounds on Team 1", "header": "RNDT1" },

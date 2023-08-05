@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Tab, Tabs, Typography, Container, Skeleton } from "@mui/material";
+import { Box, Tab, Tabs, Typography, Skeleton } from "@mui/material";
 import PlayerStatsContent from "./players-stats/PlayerStatsContent";
 import PlayerGraphsContent from "./PlayerGraphsContent";
 import PlayerWeaponsContent from "./PlayerWeaponsContent";

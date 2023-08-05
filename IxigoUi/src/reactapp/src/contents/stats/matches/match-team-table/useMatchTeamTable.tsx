@@ -63,7 +63,7 @@ const COLUMNS_ORDER: string[] = [
     key: string,
     team: string,
     t: TFunction<"translation", undefined, "translation">,
-    playerClickHandler: (steamid: string) => void
+    playerPathUpdater: (steamid: string) => string
   ): MRT_ColumnDef<ITeamMatchResults> {
     const cell: MRT_ColumnDef<ITeamMatchResults> = {
       id: key,
@@ -80,7 +80,7 @@ const COLUMNS_ORDER: string[] = [
           const username = cell.getValue() as string;
           const steamid = cell.row.original.steamid;
           return (
-            <TableLink text={username} color={cell.row.original.last_round_team === "team1" ? "#90caf9" : "orange"} onClickHandler={() => playerClickHandler(steamid)} />
+            <TableLink text={username} color={cell.row.original.last_round_team === "team1" ? "#90caf9" : "orange"} to={playerPathUpdater(steamid)} />
           );
         };
       }
@@ -116,14 +116,15 @@ export const useMatchTeamTable = (
   const location = useLocation();
   const [data, setData] = useState<ITeamMatchResults[]>([]);
 
-  const playerClickHandler = useCallback(
+  const playerPathUpdater = useCallback(
     (steamid: string) => {
       const pathParts = location.pathname.split("/").filter((p) => p);
       let newPath = `${location.pathname}/player/${steamid}`;
       if (pathParts.length > 1) {
         newPath = `/stats/player/${steamid}`;
       }
-      history(newPath);
+      //history(newPath);
+      return newPath;
     },
     [history, location.pathname]
   );
@@ -135,10 +136,10 @@ export const useMatchTeamTable = (
   const columns = useMemo<MRT_ColumnDef<ITeamMatchResults>[]>(() => {
     const cols: MRT_ColumnDef<ITeamMatchResults>[] = [];
     COLUMNS_ORDER.forEach((key) => {
-      cols.push(createColumnDefinition(key, request.team, t, playerClickHandler));
+      cols.push(createColumnDefinition(key, request.team, t, playerPathUpdater));
     });
     return cols;
-  }, [t, playerClickHandler, request]);
+  }, [t, playerPathUpdater, request]);
 
   const refetch = useCallback(() => {
     qMatchRequest.refetch();

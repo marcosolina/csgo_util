@@ -27,8 +27,8 @@ const COLUMNS_ORDER: string[] = [
 function createColumnDefinition(
   key: string,
   t: TFunction<"translation", undefined, "translation">,
-  mapNameClickHandler: (map: string) => void,
-  matchClickHandler: (matchId: number) => void
+  mapNamePathUpdater: (map: string) => string,
+  matchPathUpdater: (matchId: number) => string
 ): MRT_ColumnDef<IMatchResults> {
   const cell: MRT_ColumnDef<IMatchResults> = {
     id: key,
@@ -49,7 +49,7 @@ function createColumnDefinition(
       const formattedTime = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
   
       return (
-        <TableLink text={`${formattedDate}, ${formattedTime}`} onClickHandler={() => matchClickHandler(match_id)} />
+        <TableLink text={`${formattedDate}, ${formattedTime}`} to={matchPathUpdater(match_id)} />
       );
     };
   }
@@ -59,7 +59,7 @@ function createColumnDefinition(
       const map = cell.getValue() as string;
   
       return (
-        <TableLink text={map} onClickHandler={() => mapNameClickHandler(map)} />
+        <TableLink text={map} to={mapNamePathUpdater(map)} />
       );
     };
   }
@@ -108,26 +108,28 @@ export const useMatchContent = (): IMatchContent => {
   const location = useLocation();
   const [data, setData] = useState<IMatchResults[]>([]);
 
-  const mapNameClickHandler = useCallback(
+  const mapNamePathUpdater = useCallback(
     (mapName: string) => {
       const pathParts = location.pathname.split("/").filter((p) => p);
       let newPath = `${location.pathname}/map/${mapName}`;
       if (pathParts.length > 1) {
         newPath = `/stats/map/${mapName}`
       }
-      history(newPath);
+      //history(newPath);
+      return newPath;
     },
     [history, location.pathname]
   );
 
-  const matchClickHandler = useCallback(
+  const matchPathUpdater = useCallback(
     (match_id: number) => {
       const pathParts = location.pathname.split("/").filter((p) => p);
       let newPath = `${location.pathname}/match/${match_id}`;
       if (pathParts.length > 1) {
         newPath = `/stats/match/${match_id}`
       }
-      history(newPath);
+      //history(newPath);
+      return newPath;
     },
     [history, location]
   );
@@ -139,10 +141,10 @@ export const useMatchContent = (): IMatchContent => {
   const columns = useMemo<MRT_ColumnDef<IMatchResults>[]>(() => {
     const cols: MRT_ColumnDef<IMatchResults>[] = [];
     COLUMNS_ORDER.forEach((key) => {
-      cols.push(createColumnDefinition(key, t, mapNameClickHandler, matchClickHandler));
+      cols.push(createColumnDefinition(key, t, mapNamePathUpdater, matchPathUpdater));
     });
     return cols;
-  }, [t, mapNameClickHandler, matchClickHandler]);
+  }, [t, mapNamePathUpdater, matchPathUpdater]);
 
   const refetch = useCallback(() => {
     qMatchRequest.refetch();

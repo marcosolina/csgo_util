@@ -70,7 +70,7 @@ const COLUMNS_ORDER: string[] = [
 function createColumnDefinition(
   key: string,
   t: TFunction<"translation", undefined, "translation">,
-  userClickHandler: (steamid: string) => void
+  userPathUpdater: (steamid: string) => string
 ): MRT_ColumnDef<IPlayerStats> {
   const cell: MRT_ColumnDef<IPlayerStats> = {
     id: key,
@@ -85,7 +85,7 @@ function createColumnDefinition(
       const username = cell.getValue() as string;
       const steamid = cell.row.original.steamid;
       return (
-        <TableLink text={username} onClickHandler={() => userClickHandler(steamid)} />
+        <TableLink text={username} to={userPathUpdater(steamid)} />
       );
     };
   }
@@ -121,10 +121,11 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
   const location = useLocation();
   const [data, setData] = useState<IPlayerStats[]>([]);
 
-  const userNameClickHandler = useCallback(
+  const pathUpdater = useCallback(
     (steamid: string) => {
       const newPath = `${location.pathname}/player/${steamid}`;
-      history(newPath);
+      //history(newPath);
+      return newPath;
     },
     [history, location.pathname]
   );
@@ -140,10 +141,10 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
   const columns = useMemo<MRT_ColumnDef<IPlayerStats>[]>(() => {
     const cols: MRT_ColumnDef<IPlayerStats>[] = [];
     COLUMNS_ORDER.forEach((key) => {
-      cols.push(createColumnDefinition(key, t, userNameClickHandler));
+      cols.push(createColumnDefinition(key, t, pathUpdater));
     });
     return cols;
-  }, [t, userNameClickHandler]);
+  }, [t, pathUpdater]);
 
   const refetch = useCallback(() => {
     qUsersRequest.refetch();

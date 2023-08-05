@@ -1,10 +1,12 @@
-import { Link } from "@mui/material";
-import { ITableLinkProps } from "./interfaces"; // adjust the path according to your project structure
+import { Link as RouterLink } from 'react-router-dom';
+import MuiLink from '@mui/material/Link';
+import { ITableLinkProps } from "./interfaces";
 
-const TableLink: React.FC<ITableLinkProps> = ({ text, onClickHandler, color="white" }) => {
+const TableLink: React.FC<ITableLinkProps> = ({ text, to, color="white" }) => {
   return (
-    <Link
-      component="button"
+    <MuiLink
+      component={RouterLink}
+      to={to}
       sx={{
         color: color,
         fontWeight: "bold",
@@ -14,12 +16,9 @@ const TableLink: React.FC<ITableLinkProps> = ({ text, onClickHandler, color="whi
           textDecoration: "underline",
         },
       }}
-      onClick={(e) => {
-        onClickHandler();
-      }}
     >
       {text}
-    </Link>
+    </MuiLink>
   );
 };
 

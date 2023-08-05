@@ -74,7 +74,8 @@ const COLUMNS_ORDER: string[] = [
     };
 
     if (key === "usernames") {
-        cell.header= t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.${team}header`);
+        cell.header = t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.${team}header`);
+        cell.size = 100;
         cell.Cell = ({ cell }: { cell: MRT_Cell<ITeamMatchResults> }) => {
           const username = cell.getValue() as string;
           const steamid = cell.row.original.steamid;

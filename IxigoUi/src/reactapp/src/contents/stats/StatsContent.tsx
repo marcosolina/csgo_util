@@ -58,6 +58,7 @@ const StatsContent = () => {
         <Route path="/player/:steamid" element={<PlayerContent />} />
         <Route path="/player/:steamid/:playertab" element={<PlayerContent />} />
         <Route path="/match/:match_id" element={<MatchStatsContent />} />
+        <Route path="/match/:match_id/:matchtab" element={<MatchStatsContent />} />
         <Route path="/map/:mapName" element={<MapContent />} />
       </Routes>
     </>

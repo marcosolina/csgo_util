@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Tab,
@@ -16,44 +16,31 @@ import { QueryStatus } from "../../../lib/http-requests";
 import terroristLogo from "../../../assets/icons/T.png";
 import ctLogo from "../../../assets/icons/CT.png";
 import { UI_CONTEXT_PATH } from "../../../lib/constants";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMatchStatsContent } from "./useMatchStatsContent";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import { TeamScoreCard } from "./match-scoreboard/TeamScoreCard";
+import { useTranslation } from "react-i18next";
+import Switch from "../../../common/switch-case/Switch";
+import Case from "../../../common/switch-case/Case";
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
+const LANG_BASE_PATH = "page.stats.match";
 
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography component="div">{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
+const HEIGHT = 60;
+const TABS = {
+  SCOREBOARD: "scoreboard",
+  ROUNDS: "rounds",
+  WEAPONS: "weapons",
+  DUELS: "duels",
+};
 
-export default function MatchPage() {
-  let { match_id } = useParams();
+const MatchPage = () => {
+  const { t } = useTranslation();
+  let { match_id, matchtab } = useParams();
   const matchIdNumber = Number(match_id);
-  const [value, setValue] = React.useState(0);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const [selectedTab, setSelectedTab] = useState(matchtab || TABS.SCOREBOARD);
+  const history = useNavigate();
+  const location = useLocation();
 
   const {
     state,
@@ -61,8 +48,22 @@ export default function MatchPage() {
     matchMetadata,
   } = useMatchStatsContent({ match_id: matchIdNumber });
 
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    const pathParts = location.pathname.split("/").filter((p) => p);
+
+    if (pathParts.length > 3) {
+      pathParts[3] = newValue;
+    } else {
+      pathParts.push(newValue);
+    }
+
+    const newPath = pathParts.join("/");
+    history(`/${newPath}`);
+    setSelectedTab(newValue);
+  };
+
   if (state === QueryStatus.loading) {
-    return <Skeleton animation="wave" style={{ height: "100%" }} />;
+    return <Skeleton animation="wave" height={HEIGHT} />;
   }
 
   if (state === QueryStatus.success && matchData) {
@@ -102,7 +103,7 @@ export default function MatchPage() {
                     totalWins={matchData.team1_total_wins}
                     winsAsT={matchData.team1_wins_as_t}
                     winsAsCt={matchData.team1_wins_as_ct}
-                    teamName="Team 1"
+                    teamName={`${t(`${LANG_BASE_PATH}.team`)} 1`}
                     color="#90caf9"
                     alignment="right"
                     terroristLogo={UI_CONTEXT_PATH + terroristLogo}
@@ -118,7 +119,7 @@ export default function MatchPage() {
                     totalWins={matchData.team2_total_wins}
                     winsAsT={matchData.team2_wins_as_t}
                     winsAsCt={matchData.team2_wins_as_ct}
-                    teamName="Team 2"
+                    teamName={`${t(`${LANG_BASE_PATH}.team`)} 2`}
                     color="orange"
                     alignment="left"
                     terroristLogo={UI_CONTEXT_PATH + terroristLogo}
@@ -130,7 +131,7 @@ export default function MatchPage() {
         <Box sx={{ width: "100%" }}>
           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
             <Tabs
-              value={value}
+              value={selectedTab}
               onChange={handleChange}
               aria-label="basic tabs example"
               orientation="horizontal"
@@ -141,24 +142,27 @@ export default function MatchPage() {
                 },
               }}
             >
-              <Tab label="Scoreboard" />
-              <Tab label="Rounds" />
-              <Tab label="Weapons" />
-              <Tab label="Duels" />
+            <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.SCOREBOARD}`)} value={TABS.SCOREBOARD} />
+            <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.ROUNDS}`)} value={TABS.ROUNDS} />
+            <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.WEAPONS}`)} value={TABS.WEAPONS} />
+            <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.DUELS}`)} value={TABS.DUELS} />
             </Tabs>
           </Box>
-          <TabPanel value={value} index={0}>
-            <MatchScoreboardContent match_id={Number(match_id)} />
-          </TabPanel>
-          <TabPanel value={value} index={1}>
-            <MatchRoundsContent match_id={Number(match_id)} />
-          </TabPanel>
-          <TabPanel value={value} index={2}>
-            <MatchWeaponsContent match_id={Number(match_id)} />
-          </TabPanel>
-          <TabPanel value={value} index={3}>
-            <MatchKillMatrixContent match_id={Number(match_id)} />
-          </TabPanel>
+          <Box sx={{ m: "2rem" }} />
+            <Switch value={selectedTab}>
+              <Case case={TABS.SCOREBOARD}>
+                <MatchScoreboardContent match_id={Number(match_id)} />
+              </Case>
+              <Case case={TABS.ROUNDS}>
+                <MatchRoundsContent match_id={Number(match_id)} />
+              </Case>
+              <Case case={TABS.WEAPONS}>
+                <MatchWeaponsContent match_id={Number(match_id)} />
+              </Case>
+              <Case case={TABS.DUELS}>
+                <MatchKillMatrixContent match_id={Number(match_id)} />
+              </Case>
+            </Switch>
         </Box>
       </Box>
     );
@@ -166,3 +170,5 @@ export default function MatchPage() {
 
   return <ErrorOutlineIcon color="error" fontSize="large" />;
 }
+
+export default MatchPage;

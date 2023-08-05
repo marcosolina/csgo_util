@@ -282,6 +282,8 @@
         "title": "Recent Matches",
         "refresh-data": "Refresh data",
         "error-loading-data": "Error loading data",
+        "team": "Team",
+        "header": "Match",
         "column-headers": {
           "match_date": { "tooltip": "Match Date", "header": "Date" },
           "mapname": { "tooltip": "Map Name", "header": "Map" },
@@ -293,6 +295,12 @@
             "tooltip": "Score Differential between Terrorists and CTs",
             "header": "Score Differential"
           }
+        },
+        "tabs": {
+          "scoreboard": "Scoreboard",
+          "rounds": "Rounds",
+          "weapons": "Weapons",
+          "duels": "Duels"
         }
       }
     }

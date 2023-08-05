@@ -123,9 +123,6 @@ export const useMatchTeamTable = (
       if (pathParts.length > 1) {
         newPath = `/stats/player/${steamid}`;
       }
-      //history(newPath);
-      console.log(location);
-      console.log(newPath);
       return newPath;
     },
     [location.pathname]

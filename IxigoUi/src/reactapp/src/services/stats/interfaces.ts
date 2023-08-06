@@ -13,6 +13,48 @@ export interface ISteamUser {
   user_name: string;
 }
 
+export interface IMatchRound {
+  match_id: number;
+  round: number;
+  team: number;
+  player_count: number;
+  death_count: number;
+  winner_team: string;
+  total_money_spent: number;
+  total_equipment_value: number;
+  round_end_reason: number;
+  round_type: string;
+  t_score: number;
+  ct_score: number;
+  team1_score: number;
+  team2_score: number;
+}
+
+export interface IRoundEvent {
+  steamid: string;
+  round: number;
+  match_id: number;
+  eventtype: string;
+  eventtime: number;
+}
+
+export interface IRoundKillEvent {
+  victimsteamid: string;
+  isfirstkill: boolean;
+  match_id: number;
+  eventtime: number;
+  istradekill: boolean;
+  assister: string;
+  steamid: string;
+  weapon: string;
+  flashassister: string;
+  round: number;
+  killerflashed: string;
+  headshot: boolean;
+  istradedeath: boolean;
+}
+
+
 export interface IPlayerStats {
   username: string;
   steamid: string;

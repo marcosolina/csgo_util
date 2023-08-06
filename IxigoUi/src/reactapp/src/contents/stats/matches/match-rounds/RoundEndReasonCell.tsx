@@ -40,11 +40,6 @@ const round_end_reasons: { [key: number]: string } = {
     const { round_end_reason} = teamData;
     const imageUrl = roundIconImage[round_end_reason];
     const reasonText = round_end_reasons[round_end_reason];
-    console.log("Rendering RoundEndReasonCell", {
-        round_end_reason,
-        imageUrl,
-        reasonText,
-      });
     return imageUrl ? (
       <Tooltip title={reasonText}>
         <img src={imageUrl} alt={reasonText} style={{ height: '30px' }} />

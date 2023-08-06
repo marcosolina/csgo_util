@@ -60,7 +60,6 @@ function createColumnDefinition(
       t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)
     ),
   };
-  console.log(key);
   if (key.endsWith(".total_equipment_value")) {
     cell.Cell = (props: { cell: any; row: { index: number } }) => (
       <FinanceCell
@@ -90,7 +89,6 @@ function createColumnDefinition(
   }
 
   if (key.endsWith(".round_type")) {
-    console.log("round_type INNN");
     cell.Cell = (props: { cell: any; row: { index: number }  }) => (
       <RoundTypeCell {...props} team={key.startsWith("team1") ? "team1" : "team2"}/>
     );

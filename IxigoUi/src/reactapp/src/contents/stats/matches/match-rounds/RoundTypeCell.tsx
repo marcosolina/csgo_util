@@ -27,7 +27,6 @@ import { UI_CONTEXT_PATH } from "../../../../lib/constants";
     }
     const { round_type} = teamData;
     const imageUrl = roundTypeIconImage[round_type];
-    console.log(cell);
     return imageUrl ? (
       <Tooltip title={round_type}>
         <img src={imageUrl} alt={round_type} style={{ height: '30px' }} />

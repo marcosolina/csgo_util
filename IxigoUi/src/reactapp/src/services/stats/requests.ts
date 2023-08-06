@@ -8,6 +8,9 @@ import {
   ISteamUser,
   IPlayerEntryKillStats,
   ITeamMatchResults,
+  IMatchRound,
+  IRoundKillEvent,
+  IRoundEvent
   IWeaponData,
 } from "./interfaces";
 
@@ -38,6 +41,18 @@ export const MATCH_RESULT_REQUEST: IGetStatsRequest<IMatchResult> = {
 
 export const MATCH_TEAM_RESULT_REQUEST: IGetStatsRequest<ITeamMatchResults> = {
   viewName: "PLAYER_MATCH_STATS_EXTENDED_CACHE",
+};
+
+export const ROUND_SCORECARD_REQUEST: IGetStatsRequest<IMatchRound> = {
+  viewName: "ROUND_SCORECARD_CACHE",
+};
+
+export const ROUND_KILL_EVENTS_REQUEST: IGetStatsRequest<IRoundKillEvent> = {
+  viewName: "ROUND_KILL_EVENTS",
+};
+
+export const ROUND_EVENTS_REQUEST: IGetStatsRequest<IRoundEvent> = {
+  viewName: "ROUND_EVENTS",
 };
 
 export const PLAYER_OVERALL_STATS_REQUEST: IGetStatsRequest<IPlayerOverallStats> = {

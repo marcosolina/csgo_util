@@ -258,3 +258,21 @@ export interface IPlayerEntryKillStats {
   ekct_success_rate: number;
   ekct_success_rate_overall: number;
 }
+
+export interface IWeaponData {
+  weapon: string;
+  kills: number;
+  headshotkills: number;
+  damage_per_shot: number;
+  accuracy: number;
+  hits: number;
+  damage_per_hit: number;
+  headshotkills_percentage: number;
+  shots_fired: number;
+  chest_hit_percentage: number;
+  stomach_hit_percentage: number;
+  arm_hit_percentage: number;
+  leg_hit_percentage: number;
+  steamid: string;
+  total_damage: number;
+}

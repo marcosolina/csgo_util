@@ -3,11 +3,11 @@ import PlayerWinRateTable from "./PlayerWinRateTable";
 import PlayerHeadShotTable from "./PlayerHeadShotTable";
 import PlayerDamageTable from "./PlayerDamageTable";
 import PlayerUtilityTable from "./PlayerUtilityTable";
-import PlayerWeaponSummaryTable from "./PlayerWeaponSummaryTable";
 import { useParams } from "react-router-dom";
 import PlayerRadarChart from "./player-radar-chart/PlayerRadarChart";
 import PlayerClutchTable from "./player-clutch-table/PlayerClutchTable";
 import PLayerEntryKillTable from "./player-entry-kill-table/PlayerEntryKillTable";
+import PlayerWeaponSummaryTable from "./weapon-summary-table/PlayerWeaponSummaryTable";
 
 const XS = 12;
 const SM = 6;
@@ -35,9 +35,7 @@ const PlayerStatsContent = () => {
 
       {/* Row 2: 1 XS full width box */}
       <Grid item xs={XS}>
-        <Paper>
-          <PlayerWeaponSummaryTable steamid={steamid} />
-        </Paper>
+        <PlayerWeaponSummaryTable steamid={steamid} />
       </Grid>
 
       {/* Row 3: 4 3x2 Boxes */}

@@ -7,7 +7,8 @@ import {
   IPlayerStats,
   ISteamUser,
   IPlayerEntryKillStats,
-  ITeamMatchResults
+  ITeamMatchResults,
+  IWeaponData,
 } from "./interfaces";
 
 /**
@@ -49,4 +50,8 @@ export const PLAYER_CLUTCH_STATS_REQUEST: IGetStatsRequest<IPlayerClutchStats> =
 
 export const PLAYER_ENTRY_KILL_STATS_REQUEST: IGetStatsRequest<IPlayerEntryKillStats> = {
   viewName: "ENTRY_KILL_STATS_EXTENDED_CACHE",
+};
+
+export const OVERALL_PLAYER_WEAPON_STATS_REQUEST: IGetStatsRequest<IWeaponData> = {
+  viewName: "OVERALL_PLAYER_WEAPON_STATS_CACHE",
 };

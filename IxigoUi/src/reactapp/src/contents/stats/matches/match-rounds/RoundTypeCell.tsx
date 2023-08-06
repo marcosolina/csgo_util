@@ -15,13 +15,22 @@ import { UI_CONTEXT_PATH } from "../../../../lib/constants";
   };
   
 
-  const RoundTypeCell: React.FC<{ cell: any }> = ({ cell }) => {
-    const type = cell.getValue() as string;
-    const imageUrl = roundTypeIconImage[type];
+  const RoundTypeCell: React.FC<{ cell: any; row: { index: number }; team: "team1" | "team2" }> = ({
+    cell,
+    row,
+    team,
+  }) => {
+    const teamData = cell.row.original[team];
+    if (!teamData) {
+      // The data for this team does not exist, possibly because the match is not over yet
+      return null;
+    }
+    const { round_type} = teamData;
+    const imageUrl = roundTypeIconImage[round_type];
     console.log(cell);
     return imageUrl ? (
-      <Tooltip title={type}>
-        <img src={imageUrl} alt={type} style={{ height: '30px' }} />
+      <Tooltip title={round_type}>
+        <img src={imageUrl} alt={round_type} style={{ height: '30px' }} />
       </Tooltip>
     ) : null;
   };

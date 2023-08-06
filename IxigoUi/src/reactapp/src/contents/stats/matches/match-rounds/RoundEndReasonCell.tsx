@@ -27,10 +27,24 @@ const round_end_reasons: { [key: number]: string } = {
     13: "Hostages have not been rescued!",
   };
 
-  const RoundEndReasonCell: React.FC<{ cell: any }> = ({ cell }) => {
-    const reason = cell.getValue() as number;
-    const imageUrl = roundIconImage[reason];
-    const reasonText = round_end_reasons[reason];
+  const RoundEndReasonCell: React.FC<{ cell: any; row: { index: number }; team: "team1" | "team2" }> = ({
+    cell,
+    row,
+    team,
+  }) => {
+    const teamData = cell.row.original[team];
+    if (!teamData) {
+      // The data for this team does not exist, possibly because the match is not over yet
+      return null;
+    }
+    const { round_end_reason} = teamData;
+    const imageUrl = roundIconImage[round_end_reason];
+    const reasonText = round_end_reasons[round_end_reason];
+    console.log("Rendering RoundEndReasonCell", {
+        round_end_reason,
+        imageUrl,
+        reasonText,
+      });
     return imageUrl ? (
       <Tooltip title={reasonText}>
         <img src={imageUrl} alt={reasonText} style={{ height: '30px' }} />

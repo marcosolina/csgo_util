@@ -91,14 +91,14 @@ function createColumnDefinition(
 
   if (key.endsWith(".round_type")) {
     console.log("round_type INNN");
-    cell.Cell = (props: { cell: any }) => (
-      <RoundTypeCell {...props} />
+    cell.Cell = (props: { cell: any; row: { index: number }  }) => (
+      <RoundTypeCell {...props} team={key.startsWith("team1") ? "team1" : "team2"}/>
     );
   }
   
   if (key === "team1.round_end_reason") {
-    cell.Cell = (props: { cell: any }) => (
-      <RoundEndReasonCell {...props} />
+    cell.Cell = (props: { cell: any; row: { index: number }  }) => (
+      <RoundEndReasonCell {...props} team={key.startsWith("team1") ? "team1" : "team2"} />
     );
   }
 

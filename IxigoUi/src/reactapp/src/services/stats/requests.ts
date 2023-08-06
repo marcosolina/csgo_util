@@ -10,7 +10,7 @@ import {
   ITeamMatchResults,
   IMatchRound,
   IRoundKillEvent,
-  IRoundEvent
+  IRoundEvent,
   IWeaponData,
 } from "./interfaces";
 

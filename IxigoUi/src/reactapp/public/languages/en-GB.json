@@ -294,6 +294,17 @@
                 "arm_hit_percentage": { "header": "AHP", "tooltip": "Arm hit percentage" },
                 "leg_hit_percentage": { "header": "LHP", "tooltip": "Leg hit percentage" }
               }
+            },
+            "win-rate": {
+              "title": "Win rate",
+              "toolbar-label": "Overall",
+              "column-headers": {
+                "desc": { "tooltip": "Description", "header": "" },
+                "value": { "tooltip": "Value", "header": "" },
+                "row1": { "label": "Played" },
+                "row2": { "label": "Won" },
+                "row3": { "label": "Lost" }
+              }
             }
           }
         }
@@ -322,9 +333,12 @@
           "weapons": "Weapons",
           "duels": "Duels"
         },
-        "roundscorecard":{
+        "roundscorecard": {
           "column-headers": {
-            "team1.total_equipment_value": { "tooltip": "Starting equipment value/cash spent for Team 1", "header": "Equipment/Spend" },
+            "team1.total_equipment_value": {
+              "tooltip": "Starting equipment value/cash spent for Team 1",
+              "header": "Equipment/Spend"
+            },
             "team1.round_type": { "tooltip": "Round Type for Team 1", "header": "Type" },
             "team1.player_count": { "tooltip": "Player Count for Team 1", "header": "Players" },
             "team1.team1_score": { "tooltip": "Team 1 Score", "header": "T1" },
@@ -332,11 +346,14 @@
             "team2.team2_score": { "tooltip": "Team 2 Score", "header": "T2" },
             "team2.player_count": { "tooltip": "Player Count for Team 2", "header": "Players" },
             "team2.round_type": { "tooltip": "Round Type for Team 2", "header": "Type" },
-            "team2.total_equipment_value": { "tooltip": "Starting equipment value/cash spent for Team 2", "header": "Equipment/Spend" },
+            "team2.total_equipment_value": {
+              "tooltip": "Starting equipment value/cash spent for Team 2",
+              "header": "Equipment/Spend"
+            },
             "round": { "tooltip": "Round number", "header": "R" }
           }
         },
-        "teamtable":{
+        "teamtable": {
           "column-headers": {
             "usernames": {
               "tooltip": "Player",

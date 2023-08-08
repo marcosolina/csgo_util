@@ -54,7 +54,6 @@ export interface IRoundKillEvent {
   istradedeath: boolean;
 }
 
-
 export interface IPlayerStats {
   username: string;
   steamid: string;
@@ -208,16 +207,54 @@ export interface ITeamMatchResults {
 }
 
 export interface IPlayerOverallStats {
-  steamid: string;
-  username: string;
-  kpr: number;
+  kills: number;
+  ff: number;
   hltv_rating: number;
-  adr: number;
+  bd: number;
+  _1v3: number;
+  _1v2: number;
   kast: number;
-  dpr: number;
-  headshot_percentage: number;
+  _1v1: number;
+  first_weapon: string;
+  hr: number;
+  fkr: number;
+  bp: number;
   ud: number;
+  rws: number;
+  loss: number;
+  second_weapon: string;
+  headshots: number;
+  _1vnp: number;
+  assists: number;
+  _4k: number;
+  _2k: number;
+  _1v5: number;
+  _1v4: number;
+  headshot_percentage: number;
+  deaths: number;
+  wins: number;
+  averagewinscore: number;
+  winlossratio: number;
+  ffd: number;
+  ek: number;
+  mvp: number;
+  dpr: number;
+  kpr: number;
+  matches: number;
+  adr: number;
+  steamid: string;
+  td: number;
+  tda: number;
+  _5k: number;
+  _3k: number;
   ebt: number;
+  tk: number;
+  kdr: number;
+  _1k: number;
+  tdh: number;
+  fbt: number;
+  fa: number;
+  rounds: number;
 }
 
 export interface IPlayerClutchStats {

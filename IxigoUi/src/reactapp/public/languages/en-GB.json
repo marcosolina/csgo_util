@@ -317,6 +317,18 @@
                 "row3": { "label": "Assists" },
                 "row4": { "label": "Headshots" }
               }
+            },
+            "damage": {
+              "title": "Damage / Round",
+              "toolbar-label": "ADR",
+              "column-headers": {
+                "desc": { "tooltip": "Description", "header": "" },
+                "value": { "tooltip": "Value", "header": "" },
+                "row1": { "label": "Damage health" },
+                "row2": { "label": "Damage armor" },
+                "row3": { "label": "Team damage" },
+                "row4": { "label": "Rounds" }
+              }
             }
           }
         }

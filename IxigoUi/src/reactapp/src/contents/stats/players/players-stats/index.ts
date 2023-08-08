@@ -1,5 +1,5 @@
 export * from "./interfaces";
-export * from "./PlayerDamageTable";
+export * from "./player-damage-table";
 export * from "./player-entry-kill-table";
 export * from "./weapon-summary-table";
 export * from "./player-head-shot-table";

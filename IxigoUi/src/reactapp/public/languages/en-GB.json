@@ -329,6 +329,17 @@
                 "row3": { "label": "Team damage" },
                 "row4": { "label": "Rounds" }
               }
+            },
+            "utility": {
+              "title": "Utility",
+              "toolbar-label": "UD",
+              "column-headers": {
+                "desc": { "tooltip": "Description", "header": "" },
+                "value": { "tooltip": "Value", "header": "" },
+                "row1": { "label": "Flash assists" },
+                "row2": { "label": "Blind time (avg)" },
+                "row3": { "label": "Team blind (avg)" }
+              }
             }
           }
         }

@@ -6,5 +6,5 @@ export * from "./player-head-shot-table";
 export * from "./player-radar-chart";
 export * from "./player-clutch-table";
 export * from "./player-win-rate-table";
+export * from "./player-utility-table";
 export * from "./PlayerStatsContent";
-export * from "./PlayerUtilityTable";

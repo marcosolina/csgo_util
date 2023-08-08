@@ -1,5 +1,4 @@
 import { Grid, Paper } from "@mui/material";
-import PlayerUtilityTable from "./PlayerUtilityTable";
 import { useParams } from "react-router-dom";
 import PlayerRadarChart from "./player-radar-chart/PlayerRadarChart";
 import PlayerClutchTable from "./player-clutch-table/PlayerClutchTable";
@@ -8,6 +7,7 @@ import PlayerWeaponSummaryTable from "./weapon-summary-table/PlayerWeaponSummary
 import PlayerWinRateTable from "./player-win-rate-table/PlayerWinRateTable";
 import PlayerHeadShotTable from "./player-head-shot-table/PlayerHeadShotTable";
 import PlayerDamageTable from "./player-damage-table/PlayerDamageTable";
+import PlayerUtilityTable from "./player-utility-table/PlayerUtilityTable";
 
 const XS = 12;
 const SM = 6;

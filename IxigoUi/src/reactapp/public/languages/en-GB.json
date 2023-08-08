@@ -305,6 +305,18 @@
                 "row2": { "label": "Won" },
                 "row3": { "label": "Lost" }
               }
+            },
+            "head-shots": {
+              "title": "Headshot kill %",
+              "toolbar-label": "%",
+              "column-headers": {
+                "desc": { "tooltip": "Description", "header": "" },
+                "value": { "tooltip": "Value", "header": "" },
+                "row1": { "label": "Kills" },
+                "row2": { "label": "Deaths" },
+                "row3": { "label": "Assists" },
+                "row4": { "label": "Headshots" }
+              }
             }
           }
         }

@@ -2,7 +2,7 @@ export * from "./interfaces";
 export * from "./PlayerDamageTable";
 export * from "./player-entry-kill-table";
 export * from "./weapon-summary-table";
-export * from "./PlayerHeadShotTable";
+export * from "./player-head-shot-table";
 export * from "./player-radar-chart";
 export * from "./player-clutch-table";
 export * from "./player-win-rate-table";

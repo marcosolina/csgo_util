@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import { useMemo } from "react";
 import { Tooltip, Box } from "@mui/material";
 import { WEAPONG_IMAGE } from "../../weaponImage";

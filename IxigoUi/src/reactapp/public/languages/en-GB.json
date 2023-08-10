@@ -436,6 +436,31 @@
             "_1v4": { "tooltip": "1v4 Clutches", "header": "1v4" },
             "_1v5": { "tooltip": "1v5 Clutches", "header": "1v5" }
           }
+        },
+        "weapons": {
+          "title": "Weapons",
+          "refresh-data": "Refresh data",
+          "error-loading-data": "Error loading data",
+          "column-headers": {
+            "username": { "tooltip": "Name", "header": "Name" },
+            "weapon": { "tooltip": "Weapon", "header": "WEAPON" },
+            "weapon_img": { "tooltip": "Weapon Image", "header": "" },
+            "kills": { "tooltip": "Total Kills", "header": "K" },
+            "headshotkills": { "tooltip": "Total Headshot Kills", "header": "HSK" },
+            "damage_per_shot": { "tooltip": "Damage per Shot", "header": "DPS" },
+            "accuracy": { "tooltip": "Accuracy", "header": "ACC" },
+            "hits": { "tooltip": "Total Hits", "header": "HITS" },
+            "total_damage": { "tooltip": "Total Damage", "header": "TDMG" },
+            "damage_per_hit": { "tooltip": "Damage per Hit", "header": "DPH" },
+            "headshotkills_percentage": { "tooltip": "Headshot Kills Percentage", "header": "HSKP" },
+            "shots_fired": { "tooltip": "Shots Fired", "header": "SHOTS" },
+            "headshot_percentage": { "tooltip": "Head Hit Percentage", "header": "HHP" },
+            "chest_hit_percentage": { "tooltip": "Chest Hit Percentage", "header": "CHP" },
+            "stomach_hit_percentage": { "tooltip": "Stomach Hit Percentage", "header": "SHP" },
+            "arm_hit_percentage": { "tooltip": "Arm Hit Percentage", "header": "AHP" },
+            "leg_hit_percentage": { "tooltip": "Leg Hit Percentage", "header": "LHP" }
+          }
+          
         }
       }
     }

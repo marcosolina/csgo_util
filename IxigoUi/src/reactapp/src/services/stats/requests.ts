@@ -12,6 +12,7 @@ import {
   IRoundKillEvent,
   IRoundEvent,
   IWeaponData,
+  IWeaponMatchData,
 } from "./interfaces";
 
 /**
@@ -70,3 +71,8 @@ export const PLAYER_ENTRY_KILL_STATS_REQUEST: IGetStatsRequest<IPlayerEntryKillS
 export const OVERALL_PLAYER_WEAPON_STATS_REQUEST: IGetStatsRequest<IWeaponData> = {
   viewName: "OVERALL_PLAYER_WEAPON_STATS_CACHE",
 };
+
+export const MATCH_PLAYER_WEAPON_STATS_CACHE: IGetStatsRequest<IWeaponMatchData> = {
+  viewName: "MATCH_PLAYER_WEAPON_STATS_CACHE",
+};
+

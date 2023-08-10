@@ -206,6 +206,28 @@ export interface ITeamMatchResults {
   bd: number;
 }
 
+export interface IWeaponMatchData {
+  steamid: string;
+  username: string;
+  match_id: number;
+  kills: number;
+  headshotkills: number;
+  damage_per_shot: number;
+  accuracy: number;
+  hits: number;
+  weapon: string;
+  weapon_img: string;
+  total_damage: number;
+  damage_per_hit: number;
+  headshotkills_percentage: number;
+  shots_fired: number;
+  headshot_percentage: number;
+  chest_hit_percentage: number;
+  leg_hit_percentage: number;
+  stomach_hit_percentage: number;
+  arm_hit_percentage: number;
+}
+
 export interface IPlayerOverallStats {
   kills: number;
   ff: number;

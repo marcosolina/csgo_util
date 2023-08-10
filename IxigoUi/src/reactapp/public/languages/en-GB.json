@@ -461,6 +461,10 @@
             "leg_hit_percentage": { "tooltip": "Leg Hit Percentage", "header": "LHP" }
           }
           
+        },
+        "killmatrix":{
+          "killer": "Killer",
+          "victim": "Victim"
         }
       }
     }

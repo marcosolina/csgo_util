@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Tab, Tabs, Typography, Paper } from '@mui/material';
-import MapLeaderboardsContent from './MapLeaderboardsContent';
-import MapWeaponsContent from './MapWeaponsContent';
-import MapMatchesContent from './MapMatchesContent';
+import MapLeaderboardsContent from './map-leaderboard/MapLeaderboardsContent';
+import MapWeaponsContent from './map-weapons/MapWeaponsContent';
+import MapMatchesContent from './map-matches/MapMatchesContent';
 import { UI_CONTEXT_PATH } from "../../../lib/constants";
 import { useParams } from "react-router-dom";
 

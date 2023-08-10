@@ -5,7 +5,7 @@ import RefreshIcon from "@mui/icons-material/Refresh";
 import { MaterialReactTable } from "material-react-table";
 import { Link } from "react-router-dom";
 import { useQuery } from "react-query";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
 
 interface MapMatchesContentProps {
   mapName: string;

@@ -9,6 +9,7 @@ import {
   IPlayerEntryKillStats,
   ITeamMatchResults,
   IMatchRound,
+  IKillCount,
   IRoundKillEvent,
   IRoundEvent,
   IWeaponData,
@@ -42,6 +43,10 @@ export const MATCH_RESULT_REQUEST: IGetStatsRequest<IMatchResult> = {
 
 export const MATCH_TEAM_RESULT_REQUEST: IGetStatsRequest<ITeamMatchResults> = {
   viewName: "PLAYER_MATCH_STATS_EXTENDED_CACHE",
+};
+
+export const PLAYER_MATCH_KILL_COUNT_CACHE: IGetStatsRequest<IKillCount> = {
+  viewName: "PLAYER_MATCH_KILL_COUNT_CACHE",
 };
 
 export const ROUND_SCORECARD_REQUEST: IGetStatsRequest<IMatchRound> = {

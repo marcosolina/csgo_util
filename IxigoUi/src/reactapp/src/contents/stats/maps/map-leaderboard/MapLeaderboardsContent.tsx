@@ -2,12 +2,12 @@ import React, { useContext } from "react";
 import { useMemo } from "react";
 import { IconButton, Tooltip, Box } from "@mui/material";
 import RefreshIcon from "@mui/icons-material/Refresh";
-import { WEAPONG_IMAGE } from "../weaponImage";
+import { WEAPONG_IMAGE } from "../../weaponImage";
 import { MaterialReactTable, type MRT_ColumnDef } from "material-react-table";
 import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
-import { SERVICES_URLS } from "../../../lib/constants/paths";
-import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
+import { SERVICES_URLS } from "../../../../lib/constants/paths";
+import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
 
 interface MapLeaderboardsContentProps {
   mapName: string;

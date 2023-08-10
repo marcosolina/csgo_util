@@ -54,6 +54,15 @@ export interface IRoundKillEvent {
   istradedeath: boolean;
 }
 
+export interface IKillCount {
+  match_id: number;
+  kill_count: number;
+  victim: string;
+  killer: string;
+  killerusername: string;
+  victimusername: string;
+}
+
 export interface IPlayerStats {
   username: string;
   steamid: string;

@@ -344,6 +344,9 @@
           }
         }
       },
+      "killmatrix": {
+        "title": "Kills Matrix"
+      },
       "match": {
         "title": "Recent Matches",
         "refresh-data": "Refresh data",

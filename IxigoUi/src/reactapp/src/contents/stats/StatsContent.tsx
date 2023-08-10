@@ -9,6 +9,7 @@ import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import MatchContent from "./match/MatchContent";
 import PlayersContent from "./players/PlayersContent";
+import KillMatrixContent from "./kill-matrix/KillMatrixContent";
 
 const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
 
@@ -41,6 +42,7 @@ const StatsContent = () => {
             <>
               <LeaderboardContent />
               <MatchContent />
+              <KillMatrixContent />
               {
                 //<Box textAlign="center">
                 //<Typography variant="h5">Recent Matches</Typography>

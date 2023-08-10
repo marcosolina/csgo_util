@@ -49,6 +49,10 @@ export const PLAYER_MATCH_KILL_COUNT_CACHE: IGetStatsRequest<IKillCount> = {
   viewName: "PLAYER_MATCH_KILL_COUNT_CACHE",
 };
 
+export const PLAYER_KILL_COUNT_CACHE: IGetStatsRequest<IKillCount> = {
+  viewName: "PLAYER_KILL_COUNT_CACHE",
+};
+
 export const ROUND_SCORECARD_REQUEST: IGetStatsRequest<IMatchRound> = {
   viewName: "ROUND_SCORECARD_CACHE",
 };

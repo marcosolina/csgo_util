@@ -16,7 +16,7 @@ const MatchKillMatrixContent: React.FC<IMatchKillMatrixRequest> = ({ match_id })
 
   return (
     <MaterialReactTable
-      columns={columns as any} // cast to 'any' for now
+      columns={columns as any}
       data={flattenedData ?? []}
       initialState={{
         showColumnFilters: false,

@@ -1,6 +1,4 @@
-import { MRT_ColumnDef } from "material-react-table";
 import { QueryStatus } from "react-query";
-import { IPlayerStats } from "../../../../services/stats";
 
 export interface IRowData {
     "Killer/Victim": string;

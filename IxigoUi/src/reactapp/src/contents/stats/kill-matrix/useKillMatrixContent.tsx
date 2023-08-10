@@ -1,53 +1,39 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
-import { useGetStats } from '../../../../services';
-import { combineQueryStatuses } from "../../../../lib/queries/queriesFunctions";
-import { QueryStatus } from "../../../../lib/http-requests";
-import { ISteamUser, USERS_REQUEST } from '../../../../services';
-import { MATCH_TEAM_RESULT_REQUEST, PLAYER_MATCH_KILL_COUNT_CACHE } from '../../../../services';
-import { ITeamMatchResults, IKillCount } from '../../../../services';
-import { IRowData, IMatchKillMatrixRequest, IMatchKillMatrixResponse } from './interfaces';
+import { useGetStats } from '../../../services';
+import { combineQueryStatuses } from "../../../lib/queries/queriesFunctions";
+import { QueryStatus } from "../../../lib/http-requests";
+import { ISteamUser, USERS_REQUEST } from '../../../services';
+import { PLAYER_KILL_COUNT_CACHE } from '../../../services';
+import { ITeamMatchResults, IKillCount } from '../../../services';
+import { IRowData, IKillMatrixResponse } from './interfaces';
 import { useTranslation } from "react-i18next";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.match.killmatrix";
 const SMALL_COL_SIZE = 5;
 
-export const useMatchKillMatrixContent = (request: IMatchKillMatrixRequest): IMatchKillMatrixResponse => {
+export const useKillMatrixContent = (): IKillMatrixResponse => {
     const { t } = useTranslation();
-  const getKillCountsRequest  = useMemo(() => {
-    const copy = { ...PLAYER_MATCH_KILL_COUNT_CACHE };
-    copy.queryParams = { match_id: request.match_id };
-    return copy;
-  }, [request]);
-
-  const getPlayerStatsRequest  = useMemo(() => {
-    const copy = { ...MATCH_TEAM_RESULT_REQUEST };
-    copy.queryParams = { match_id: request.match_id };
-    return copy;
-  }, [request]);
 
   const [data, setData] = useState<any>(null); // Adjust the type as needed
 
   // Get the data
-  const qKillCountsRequest = useGetStats(getKillCountsRequest);
+  const qKillCountsRequest = useGetStats(PLAYER_KILL_COUNT_CACHE);
   const qUsersRequest = useGetStats(USERS_REQUEST);
-  const qPlayerStatsRequest = useGetStats(getPlayerStatsRequest); // Define this request similar to getKillCountsRequest
 
   // Merge the queries statuses into one
-  const queriesState = combineQueryStatuses([qKillCountsRequest, qUsersRequest, qPlayerStatsRequest]);
+  const queriesState = combineQueryStatuses([qKillCountsRequest, qUsersRequest]);
 
   const refetch = useCallback(() => {
     qKillCountsRequest.refetch();
     qUsersRequest.refetch();
-    qPlayerStatsRequest.refetch();
-  }, [qKillCountsRequest, qUsersRequest, qPlayerStatsRequest]);
+  }, [qKillCountsRequest, qUsersRequest]);
 
   // Create the data
   useEffect(() => {
     if (queriesState === QueryStatus.success) {
         let killCounts = qKillCountsRequest.data?.data?.view_data;
         const users = qUsersRequest.data?.data?.view_data;
-        const playerStats = qPlayerStatsRequest.data?.data?.view_data;
-        if (!users || !playerStats|| !killCounts) {
+        if (!users || !killCounts) {
             return;
           }
 
@@ -57,15 +43,6 @@ export const useMatchKillMatrixContent = (request: IMatchKillMatrixRequest): IMa
         users.forEach((user: ISteamUser) => {
             usernameLookup[user.steam_id] = user.user_name;
         });
-        playerStats.forEach((stat: ITeamMatchResults) => {
-            statsLookup[stat.steamid] = stat;
-        });
-        // Create a lookup table for the team of each player
-        const teamLookup: { [player: string]: string } = {};
-        playerStats.forEach((stat: ITeamMatchResults) => {
-            const playerName = usernameLookup[stat.steamid] || stat.steamid;
-            teamLookup[playerName] = stat.last_round_team;
-        });
 
         // Replace steamid with username in playerOverallStatsExtended
         killCounts.forEach((player: any) => {
@@ -73,9 +50,9 @@ export const useMatchKillMatrixContent = (request: IMatchKillMatrixRequest): IMa
             player.victimusername = usernameLookup[player.victim] || player.victim;
         });
 
-        setData({ killCounts, statsLookup, teamLookup });
+        setData({ killCounts, statsLookup });
     }
-  }, [queriesState, qKillCountsRequest.data, qUsersRequest.data, qPlayerStatsRequest.data]);
+  }, [queriesState, qKillCountsRequest.data, qUsersRequest.data]);
 
   const players = useMemo(() => {
     if (!data) {
@@ -88,17 +65,6 @@ export const useMatchKillMatrixContent = (request: IMatchKillMatrixRequest): IMa
           .concat(data?.killCounts.map((kill: IKillCount) => kill.victimusername))
       );
       const playerList = Array.from(playerSet) as string[]; // Add type assertion here
-  
-      playerList.sort((a: string, b: string) => {
-        const teamA = data?.teamLookup[a];
-        const teamB = data?.teamLookup[b];
-  
-        if (teamA && teamB) {
-          return -1 * teamA.localeCompare(teamB);
-        } else {
-          return 0;
-        }
-      });
   
       return playerList;
   }, [data]);
@@ -138,13 +104,13 @@ export const useMatchKillMatrixContent = (request: IMatchKillMatrixRequest): IMa
     const flattenedData = useMemo(
         () =>
         players?.map((player, rowIndex) => {
-            const row: IRowData = { "Killer/Victim": player as string, Team: data?.teamLookup[player] || "Unknown" };
+            const row: IRowData = { "Killer/Victim": player as string };
             players?.forEach((victim, colIndex) => {
             row[victim as string] = killMatrix ? killMatrix[rowIndex][colIndex] : 0;
             });
             return row;
         }),
-        [players, killMatrix, data]
+        [players, killMatrix]
     );
 
     // Generate the columns dynamically based on the players

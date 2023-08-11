@@ -14,6 +14,7 @@ import {
   IRoundEvent,
   IWeaponData,
   IWeaponMatchData,
+  IPlayerMatch
 } from "./interfaces";
 
 /**
@@ -84,4 +85,9 @@ export const OVERALL_PLAYER_WEAPON_STATS_REQUEST: IGetStatsRequest<IWeaponData> 
 export const MATCH_PLAYER_WEAPON_STATS_CACHE: IGetStatsRequest<IWeaponMatchData> = {
   viewName: "MATCH_PLAYER_WEAPON_STATS_CACHE",
 };
+
+export const PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE: IGetStatsRequest<IPlayerMatch> = {
+  viewName: "PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE",
+};
+
 

@@ -10,6 +10,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import { RconContentProvider } from "./contents/rcon/indext";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PlayersContentProvider } from "./contents/players/indext";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 const darkTheme = createTheme({
   palette: {
@@ -40,25 +42,27 @@ const App = () => {
   });
 
   return (
-    <BrowserRouter>
-      <SnackbarProvider maxSnack={10} action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
-        <I18nextProvider i18n={i18n}>
-          <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <QueryClientProvider client={queryClient}>
-              <RconContentProvider>
-                <PlayersContentProvider>
-                  <Routes>
-                    <Route path="/*" element={<BaseLayout />} />
-                    <Route path="/:tabid/*" element={<BaseLayout />} />
-                  </Routes>
-                </PlayersContentProvider>
-              </RconContentProvider>
-            </QueryClientProvider>
-          </ThemeProvider>
-        </I18nextProvider>
-      </SnackbarProvider>
-    </BrowserRouter>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <BrowserRouter>
+        <SnackbarProvider maxSnack={10} action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
+          <I18nextProvider i18n={i18n}>
+            <ThemeProvider theme={darkTheme}>
+              <CssBaseline />
+              <QueryClientProvider client={queryClient}>
+                <RconContentProvider>
+                  <PlayersContentProvider>
+                    <Routes>
+                      <Route path="/*" element={<BaseLayout />} />
+                      <Route path="/:tabid/*" element={<BaseLayout />} />
+                    </Routes>
+                  </PlayersContentProvider>
+                </RconContentProvider>
+              </QueryClientProvider>
+            </ThemeProvider>
+          </I18nextProvider>
+        </SnackbarProvider>
+      </BrowserRouter>
+    </LocalizationProvider>
   );
 };
 

@@ -1,5 +1,5 @@
 export interface IIxigoDate {
-  value?: string;
+  value?: Date;
   label?: string;
   onChange?: (newValue: Date) => void;
   variant?: IxigoDateVariant;

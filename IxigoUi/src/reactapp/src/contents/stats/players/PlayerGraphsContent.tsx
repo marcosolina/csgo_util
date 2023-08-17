@@ -4,12 +4,17 @@ import IxigoSelect from "../../../common/select/IxigoSelect";
 import IxigoSelectMultiple from "../../../common/select/IxigoSelectMultiple";
 import { Box, Grid, TextField } from "@mui/material";
 import PlayersGraphIntputs from "./players-graph/PlayersGraphInputs";
+import PlayersGraphStatsChart from "./players-graph/PlayersGraphStatsChart";
+import { usePlayerGraphContentProvider } from "./players-graph/usePlayersGraphContentProvider";
 
 interface PlayerGraphsContentProps {
   steamid: string;
 }
 
 const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) => {
+  const contentProvider = usePlayerGraphContentProvider();
+  contentProvider.setSteamId(steamid);
+
   const binningLevels = [
     { value: "week", label: "Week" },
     { value: "month", label: "Month" },
@@ -62,10 +67,11 @@ const PlayerGraphsContent: React.FC<PlayerGraphsContentProps> = ({ steamid }) =>
 
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
-
+  console.log("one");
   return (
     <>
       <PlayersGraphIntputs />
+      <PlayersGraphStatsChart />
       <Grid container spacing={3}>
         <Grid item md={6} xs={6}>
           <IxigoSelectMultiple

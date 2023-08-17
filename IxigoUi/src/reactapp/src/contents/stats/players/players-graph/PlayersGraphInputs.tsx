@@ -8,6 +8,12 @@ import Case from "../../../../common/switch-case/Case";
 import { QueryStatus } from "../../../../lib/http-requests";
 import Loading from "./Loading";
 
+const XS = 12;
+const SM = 6;
+const MD = 6;
+const LG = 3;
+const XL = 3;
+
 const PlayersGraphIntputs = () => {
   const contentProvider = usePlayerGraphContentProvider();
   console.log(contentProvider);
@@ -16,7 +22,7 @@ const PlayersGraphIntputs = () => {
     <Switch value={contentProvider.state}>
       <Case case={QueryStatus.success}>
         <Grid container spacing={3}>
-          <Grid item md={6} xs={6}>
+          <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoSelectMultiple
               label="Graphs"
               possibleValues={contentProvider.possibleScoreTypesValues}
@@ -24,7 +30,7 @@ const PlayersGraphIntputs = () => {
               onChange={contentProvider.setGraphsSelected}
             />
           </Grid>
-          <Grid item md={2} xs={6}>
+          <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoSelect
               label="Binning Level"
               possibleValues={contentProvider.possibleBinningValues}
@@ -32,10 +38,10 @@ const PlayersGraphIntputs = () => {
               onChange={contentProvider.setBinningLevel}
             />
           </Grid>
-          <Grid item md={2} xs={6}>
+          <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoDate label="Start date" value={contentProvider.startDate} onChange={contentProvider.setStartDate} />
           </Grid>
-          <Grid item md={2} xs={6}>
+          <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoDate label="End date" value={contentProvider.endDate} onChange={contentProvider.setEndDate} />
           </Grid>
         </Grid>

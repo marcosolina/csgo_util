@@ -61,7 +61,7 @@ export function usePlayerClutch(request: IPlayerClutchRequest): IPlayerClutchRes
   useEffect(() => {
     if (qGetStats.status === QueryStatus.success) {
       const data = qGetStats.data.data?.view_data;
-      if (!data) return;
+      if (!data || data.length < 1) return;
 
       const player = data[0];
 

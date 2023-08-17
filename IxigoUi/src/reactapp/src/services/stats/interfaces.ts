@@ -1,6 +1,7 @@
 export interface IGetStatsRequest<T> {
   viewName: string;
   queryParams?: Partial<T>;
+  enabled?: boolean;
 }
 
 export interface IGetStatsResponse<T> {

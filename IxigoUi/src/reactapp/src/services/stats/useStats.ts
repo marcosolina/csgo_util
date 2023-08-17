@@ -21,7 +21,7 @@ export function useGetStats<T>(
         `${SERVICES_URLS["dem-manager"]["get-stats"]}/${request.viewName}${queryString}`
       ),
     {
-      enabled: !!request.viewName,
+      enabled: !!request.viewName && (request.enabled ?? true),
     }
   );
 }

@@ -11,6 +11,7 @@ import { useTranslation } from "react-i18next";
 import Switch from "../../../common/switch-case/Switch";
 import Case from "../../../common/switch-case/Case";
 import { QueryStatus } from "../../../lib/http-requests";
+import { PlayersGraphProvider } from "./players-graph/PlayersGraphContentProvider";
 
 const LANG_BASE_PATH = "page.stats.player";
 
@@ -90,7 +91,9 @@ const PlayerPage = () => {
           <PlayerStatsContent />
         </Case>
         <Case case={TABS.GRAPHS}>
-          <PlayerGraphsContent steamid={steamid} />
+          <PlayersGraphProvider>
+            <PlayerGraphsContent steamid={steamid} />
+          </PlayersGraphProvider>
         </Case>
         <Case case={TABS.WEAPONS}>
           <PlayerWeaponsContent steamid={steamid} />

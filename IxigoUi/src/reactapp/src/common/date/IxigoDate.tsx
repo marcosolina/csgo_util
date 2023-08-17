@@ -7,7 +7,7 @@ const IxigoDate: React.FC<IIxigoDate> = (props) => {
   const width = props.width === IxigoDateWidth.fitContent ? "" : "100%";
 
   const onChange = (value: Date | null, context: PickerChangeHandlerContext<DateValidationError>) => {
-    if (props.onChange && value) {
+    if (props.onChange) {
       props.onChange(value);
     }
   };
@@ -15,6 +15,8 @@ const IxigoDate: React.FC<IIxigoDate> = (props) => {
   return (
     <DatePicker
       label={props.label}
+      value={props.value}
+      format="dd/MM/yyyy"
       onChange={onChange}
       slotProps={{
         textField: {

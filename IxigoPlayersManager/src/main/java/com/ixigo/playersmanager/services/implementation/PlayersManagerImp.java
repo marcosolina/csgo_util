@@ -136,124 +136,124 @@ public class PlayersManagerImp implements PlayersManager {
 	                //TODO set the values
 	                Function<SvcUserAvgScore, BigDecimal> function = null;
 	                switch (partionByScore) {
-	                case KILLS:
+	                case kills:
 	                    function = SvcUserAvgScore::getKills;
 	                    break;
-	                case FF:
+	                case ffk:
 	                	function = SvcUserAvgScore::getTeamKillFriendlyFire;
 	                    break;
-	                case HLTV:
+	                case hltv_rating:
 	                	function = SvcUserAvgScore::getHalfLifeTelevisionRating;
 	                    break;
-	                case BD:
+	                case bd:
 	                	function = SvcUserAvgScore::getBombDefused;
 	                    break;
-	                case _1V3:
+	                case _1v3:
 	                	function = SvcUserAvgScore::getOneVersusThree;
 	                    break;
-	                case _1V2:
+	                case _1v2:
 	                	function = SvcUserAvgScore::getOneVersusTwo;
 	                    break;
-	                case KAST:
+	                case kast:
 	                	function = SvcUserAvgScore::getKast;
 	                    break;
-	                case _1V1:
+	                case _1v1:
 	                	function = SvcUserAvgScore::getOneVersusOne;
 	                    break;
-	                case HR:
+	                case hr:
 	                	function = SvcUserAvgScore::getHostageRescued;
 	                    break;
-	                case BP:
+	                case bp:
 	                	function = SvcUserAvgScore::getBombPlanted;
 	                    break;
-	                case UD:
+	                case ud:
 	                	function = SvcUserAvgScore::getFireDamage;
 	                    break;
-	                case KAST_TOTAL:
+	                case kast_total:
 	                	function = SvcUserAvgScore::getKasttotal;
 	                    break;
-	                case RWS:
+	                case rws:
 	                	function = SvcUserAvgScore::getRoundWinShare;
 	                    break;
-	                case SCORE:
+	                case score:
 	                	function = SvcUserAvgScore::getScore;
 	                    break;
-	                case HEAD_SHOTS:
+	                case headshots:
 	                	function = SvcUserAvgScore::getHeadShots;
 	                    break;
-	                case ASSISTS:
+	                case assists:
 	                	function = SvcUserAvgScore::getAssists;
 	                    break;
-	                case _4K:
+	                case _4k:
 	                	function = SvcUserAvgScore::getFourKills;
 	                    break;
-	                case _2K:
+	                case _2k:
 	                	function = SvcUserAvgScore::getTwoKills;
 	                    break;
-	                case _1V5:
+	                case _1v5:
 	                	function = SvcUserAvgScore::getOneVersusFive;
 	                    break;
-	                case _1V4:
+	                case _1v4:
 	                	function = SvcUserAvgScore::getOneVersusFour;
 	                    break;
-	                case HEADSHOT_PERCENTAGE:
+	                case headshot_percentage:
 	                	function = SvcUserAvgScore::getHeadShotsPercentage;
 	                    break;
-	                case DEATHS:
+	                case deaths:
 	                	function = SvcUserAvgScore::getDeaths;
 	                    break;
-	                case FFD:
+	                case ffd:
 	                	function = SvcUserAvgScore::getTeammateDamageHealth;
 	                    break;
-	                case EK:
+	                case ek:
 	                	function = SvcUserAvgScore::getEntryKill;
 	                    break;
-	                case MVP:
+	                case mvp:
 	                	function = SvcUserAvgScore::getMostValuablePlayer;
 	                    break;
-	                case DPR:
+	                case dpr:
 	                	function = SvcUserAvgScore::getDeathPerRound;
 	                    break;
-	                case RWS_TOTAL:
+	                case rws_total:
 	                	function = SvcUserAvgScore::getRoundWinShareTotal;
 	                    break;
-	                case KPR:
+	                case kpr:
 	                	function = SvcUserAvgScore::getKillPerRound;
 	                    break;
-	                case ADR:
+	                case adr:
 	                	function = SvcUserAvgScore::getAverageDamagePerRound;
 	                    break;
-	                case TD:
+	                case td:
 	                	function = SvcUserAvgScore::getTradeDeath;
 	                    break;
-	                case TDA:
+	                case tda:
 	                	function = SvcUserAvgScore::getTotalDamageArmor;
 	                    break;
-	                case _5K:
+	                case _5k:
 	                	function = SvcUserAvgScore::getFiveKills;
 	                    break;
-	                case _3K:
+	                case _3k:
 	                	function = SvcUserAvgScore::getThreeKills;
 	                    break;
-	                case EBT:
+	                case ebt:
 	                	function = SvcUserAvgScore::getOpponentBlindTime;
 	                    break;
-	                case TK:
+	                case tk:
 	                	function = SvcUserAvgScore::getTradeKill;
 	                    break;
-	                case _KDR:
+	                case kdr:
 	                	function = SvcUserAvgScore::getKillDeathRatio;
 	                    break;
-	                case _1K:
+	                case _1k:
 	                	function = SvcUserAvgScore::getOneKill;
 	                    break;
-	                case TDH:
+	                case tdh:
 	                	function = SvcUserAvgScore::getTotalDamageHealth;
 	                    break;
-	                case FBT:
+	                case fbt:
 	                	function = SvcUserAvgScore::getTeammateBlindTime;
 	                    break;
-	                case FA:
+	                case fa:
 	                	function = SvcUserAvgScore::getFlashAssists;
 	                    break;
 	                default:

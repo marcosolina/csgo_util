@@ -1,7 +1,7 @@
 export interface IIxigoDate {
-  value?: Date;
+  value: Date | null;
   label?: string;
-  onChange?: (newValue: Date) => void;
+  onChange?: (newValue: Date | null) => void;
   variant?: IxigoDateVariant;
   state?: IxigoDateState;
   width?: IxigoDateWidth;

@@ -1,3 +1,3 @@
-export interface IDummy {
-  dummy: string;
+export interface IPlayerGraphsContentProps {
+  steamId: string;
 }

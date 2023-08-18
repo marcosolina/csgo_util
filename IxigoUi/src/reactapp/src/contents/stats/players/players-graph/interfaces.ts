@@ -1,6 +1,6 @@
 import { QueryStatus } from "react-query";
 import { IxigoPossibleValue } from "../../../../common/select";
-import { ITeamMatchResults } from "../../../../services";
+import { ChartDataset } from "chart.js";
 
 export interface IGraphContentProps {
   steamid: string;
@@ -12,8 +12,8 @@ export enum BinningLevel {
 }
 
 export interface IChartData {
-  label: string;
-  data: number[];
+  labels: string[];
+  datasets: ChartDataset<"line", number[]>[];
 }
 
 export interface IUsePlayersGraphContentResult {
@@ -24,7 +24,7 @@ export interface IUsePlayersGraphContentResult {
   graphsSelected?: string[];
   possibleScoreTypesValues: IxigoPossibleValue[];
   possibleBinningValues: IxigoPossibleValue[];
-  chartData: IChartData[];
+  chartsData: IChartData[];
 
   setSteamId: (val?: string) => void;
   setStartDate?: (val: Date | null) => void;

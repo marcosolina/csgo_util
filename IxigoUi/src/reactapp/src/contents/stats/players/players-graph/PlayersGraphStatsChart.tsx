@@ -2,29 +2,10 @@ import { ChartData, ChartOptions } from "chart.js";
 import { usePlayerGraphContentProvider } from "./usePlayersGraphContentProvider";
 import { BinningLevel } from "./interfaces";
 import { Line } from "react-chartjs-2";
-
-const DATA: ChartData<"line", number[], string> = {
-  labels: [], // Map name
-  datasets: [
-    {
-      label: "",
-      data: [],
-      fill: false,
-      borderColor: "rgb(75, 192, 192)",
-      tension: 0.1,
-    },
-    // This is your trendline
-    {
-      label: "Trendline",
-      data: [],
-      fill: false,
-      pointRadius: 0,
-      borderColor: "rgba(255, 255, 255, 0.5)",
-      borderDash: [5, 5],
-      tension: 0.1,
-    },
-  ],
-};
+import { QueryStatus } from "../../../../lib/http-requests";
+import Switch from "../../../../common/switch-case/Switch";
+import Case from "../../../../common/switch-case/Case";
+import { Grid } from "@mui/material";
 
 const OPTIONS: ChartOptions<"line"> = {
   maintainAspectRatio: false,
@@ -44,12 +25,39 @@ const OPTIONS: ChartOptions<"line"> = {
   },
 };
 
+const XS = 12;
+
 const PlayersGraphStatsChart = () => {
   const contentProvider = usePlayerGraphContentProvider();
-  console.log(contentProvider);
 
-  return null;
-  return <Line data={DATA} options={OPTIONS} />;
+  return (
+    <Switch value={contentProvider.state}>
+      <Case case={QueryStatus.success}>
+        <Grid container spacing={3}>
+          {contentProvider.chartsData.map((chartData, index) => {
+            const data: ChartData<"line", number[], string> = {
+              labels: chartData.labels,
+              datasets: chartData.datasets,
+            };
+
+            const isLastChart = index + 1 === contentProvider.chartsData.length;
+
+            // Dirty but I need a deep copy
+            const options: ChartOptions<"line"> = JSON.parse(JSON.stringify(OPTIONS));
+
+            options!.scales!.x!.display = isLastChart;
+
+            return (
+              <Grid key={index} item xs={XS} height={isLastChart ? 260 : 200}>
+                <Line data={data} options={options} />
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Case>
+      <Case case={QueryStatus.loading}>loading</Case>
+    </Switch>
+  );
 };
 
 export default PlayersGraphStatsChart;

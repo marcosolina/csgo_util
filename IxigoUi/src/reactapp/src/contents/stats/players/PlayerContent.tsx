@@ -92,7 +92,7 @@ const PlayerPage = () => {
         </Case>
         <Case case={TABS.GRAPHS}>
           <PlayersGraphProvider>
-            <PlayerGraphsContent steamid={steamid} />
+            <PlayerGraphsContent steamId={steamid} />
           </PlayersGraphProvider>
         </Case>
         <Case case={TABS.WEAPONS}>

@@ -16,7 +16,6 @@ const XL = 3;
 
 const PlayersGraphIntputs = () => {
   const contentProvider = usePlayerGraphContentProvider();
-  console.log(contentProvider);
 
   return (
     <Switch value={contentProvider.state}>

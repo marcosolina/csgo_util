@@ -1,25 +1,37 @@
-import { ChartData, ChartOptions } from "chart.js";
+import { ChartData, ChartOptions, registerables } from "chart.js";
 import { usePlayerGraphContentProvider } from "./usePlayersGraphContentProvider";
 import { BinningLevel } from "./interfaces";
 import { Line } from "react-chartjs-2";
 import { QueryStatus } from "../../../../lib/http-requests";
 import Switch from "../../../../common/switch-case/Switch";
 import Case from "../../../../common/switch-case/Case";
-import { Grid } from "@mui/material";
+import { Grid, Paper } from "@mui/material";
+import "chartjs-adapter-date-fns";
 
 const OPTIONS: ChartOptions<"line"> = {
   maintainAspectRatio: false,
+
   scales: {
     x: {
       type: "time",
       time: {
         unit: BinningLevel.week,
       },
+      grid: {
+        display: true,
+        color: "rgba(255,255,255,0.2)",
+      },
       display: false,
       ticks: {
         autoSkip: false,
         maxRotation: 90,
         minRotation: 90,
+      },
+    },
+    y: {
+      grid: {
+        display: true,
+        color: "rgba(255,255,255,0.2)",
       },
     },
   },
@@ -49,7 +61,7 @@ const PlayersGraphStatsChart = () => {
 
             return (
               <Grid key={index} item xs={XS} height={isLastChart ? 260 : 200}>
-                <Line data={data} options={options} />
+                <Line datasetIdKey={`chart-${index}`} data={data} options={options} />
               </Grid>
             );
           })}

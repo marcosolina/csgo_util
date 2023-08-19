@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Radar } from "react-chartjs-2";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
-import { ChartData, ChartOptions, TooltipItem } from "chart.js";
+import { ChartData, ChartOptions, TooltipItem, registerables } from "chart.js";
 import { IPlayerRadarChartProps } from "./interfaces";
 import { usePlayerRadarChart } from "./usePlayerRadardChart";
 import { QueryStatus } from "../../../../../lib/http-requests";
@@ -9,10 +9,13 @@ import Switch from "../../../../../common/switch-case/Switch";
 import Case from "../../../../../common/switch-case/Case";
 import { Paper, Skeleton } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import { Chart } from "chart.js";
 
 const LANG_BASE_PATH = "page.stats.player.content.overall.radar-chart";
 
 const LABELS = ["KPR", "HLTV", "ADR", "KAST", "DPR", "HSP", "UD", "EBT"];
+
+Chart.register(...registerables);
 
 const DATA: ChartData<"radar", number[], string> = {
   labels: [],
@@ -114,7 +117,7 @@ const PlayerRadarChart: React.FC<IPlayerRadarChartProps> = ({ steamid }) => {
     <Switch value={state}>
       <Case case={QueryStatus.success}>
         <Paper>
-          <Radar data={data} options={options} redraw={true} />
+          <Radar data={data} options={options} />
         </Paper>
       </Case>
       <Case case={QueryStatus.loading}>

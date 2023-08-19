@@ -5,8 +5,13 @@ import { IxigoPossibleValue } from "../../../../common/select";
 import { combineQueryStatuses } from "../../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../../lib/http-requests";
 import { startOfMonth, startOfWeek, format } from "date-fns";
+import { useTranslation } from "react-i18next";
+
+const SCORE_TYPE_TRANSLATION_PREFIX_PATH = "scoreType";
+const TRANSLATION_PREFIX = "page.stats.player.content.graphs";
 
 export const usePlayersGraphContent = (): IUsePlayersGraphContentResult => {
+  const { t } = useTranslation();
   const [steamId, setSteamId] = useState<string>();
   const [startDate, setStartDate] = useState<Date | null>(null);
   const [endDate, setEndDate] = useState<Date | null>(null);
@@ -37,19 +42,19 @@ export const usePlayersGraphContent = (): IUsePlayersGraphContentResult => {
     Object.keys(scoreTypes).forEach(function (key, index) {
       arr.push({
         value: key,
-        label: scoreTypes[key],
+        label: t(`${SCORE_TYPE_TRANSLATION_PREFIX_PATH}.${key}`),
       });
     });
     arr.sort((a, b) => a.label.localeCompare(b.label));
     return arr;
-  }, [scoreTypes]);
+  }, [scoreTypes, t]);
 
   const possibleBinningValues = useMemo(() => {
     const arr: IxigoPossibleValue[] = [];
-    arr.push({ value: BinningLevel.week, label: "Week" });
-    arr.push({ value: BinningLevel.month, label: "Month" });
+    arr.push({ value: BinningLevel.week, label: t(`${TRANSLATION_PREFIX}.lblBinningLevelWeek`) as string });
+    arr.push({ value: BinningLevel.month, label: t(`${TRANSLATION_PREFIX}.lblBinningLevelMonth`) as string });
     return arr;
-  }, []);
+  }, [t]);
 
   const chartsData = useMemo(() => {
     const chartsData: IChartData[] = [];
@@ -124,7 +129,7 @@ export const usePlayersGraphContent = (): IUsePlayersGraphContentResult => {
             },
             // This is your trendline
             {
-              label: "Trendline",
+              label: t(`${TRANSLATION_PREFIX}.lblTrendline`) as string,
               data: trendline,
               fill: false,
               pointRadius: 0,
@@ -146,6 +151,7 @@ export const usePlayersGraphContent = (): IUsePlayersGraphContentResult => {
     graphsSelected,
     possibleScoreTypesValues,
     qPlayerStatsRequest.data?.data?.view_data,
+    t,
   ]);
 
   return {

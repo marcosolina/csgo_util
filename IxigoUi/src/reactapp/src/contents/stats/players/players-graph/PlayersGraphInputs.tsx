@@ -7,7 +7,9 @@ import Switch from "../../../../common/switch-case/Switch";
 import Case from "../../../../common/switch-case/Case";
 import { QueryStatus } from "../../../../lib/http-requests";
 import Loading from "./Loading";
+import { useTranslation } from "react-i18next";
 
+const TRANSLATION_PREFIX = "page.stats.player.content.graphs.inputs";
 const XS = 12;
 const SM = 6;
 const MD = 6;
@@ -15,6 +17,7 @@ const LG = 3;
 const XL = 3;
 
 const PlayersGraphIntputs = () => {
+  const { t } = useTranslation();
   const contentProvider = usePlayerGraphContentProvider();
 
   return (
@@ -23,7 +26,7 @@ const PlayersGraphIntputs = () => {
         <Grid container spacing={3}>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoSelectMultiple
-              label="Graphs"
+              label={t(`${TRANSLATION_PREFIX}.lblScoreTypeDropDown`) as string}
               possibleValues={contentProvider.possibleScoreTypesValues}
               selectedValues={contentProvider.graphsSelected || []}
               onChange={contentProvider.setGraphsSelected}
@@ -31,17 +34,25 @@ const PlayersGraphIntputs = () => {
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <IxigoSelect
-              label="Binning Level"
+              label={t(`${TRANSLATION_PREFIX}.lblBinningLevel`) as string}
               possibleValues={contentProvider.possibleBinningValues}
               selectedValue={contentProvider.binningLevel || ""}
               onChange={contentProvider.setBinningLevel}
             />
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-            <IxigoDate label="Start date" value={contentProvider.startDate} onChange={contentProvider.setStartDate} />
+            <IxigoDate
+              label={t(`${TRANSLATION_PREFIX}.lblStartDate`) as string}
+              value={contentProvider.startDate}
+              onChange={contentProvider.setStartDate}
+            />
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-            <IxigoDate label="End date" value={contentProvider.endDate} onChange={contentProvider.setEndDate} />
+            <IxigoDate
+              label={t(`${TRANSLATION_PREFIX}.lblEndDate`) as string}
+              value={contentProvider.endDate}
+              onChange={contentProvider.setEndDate}
+            />
           </Grid>
         </Grid>
       </Case>

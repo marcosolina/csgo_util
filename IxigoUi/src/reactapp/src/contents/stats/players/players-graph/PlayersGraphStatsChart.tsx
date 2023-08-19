@@ -1,11 +1,11 @@
-import { ChartData, ChartOptions, registerables } from "chart.js";
+import { ChartData, ChartOptions } from "chart.js";
 import { usePlayerGraphContentProvider } from "./usePlayersGraphContentProvider";
 import { BinningLevel } from "./interfaces";
 import { Line } from "react-chartjs-2";
 import { QueryStatus } from "../../../../lib/http-requests";
 import Switch from "../../../../common/switch-case/Switch";
 import Case from "../../../../common/switch-case/Case";
-import { Grid, Paper } from "@mui/material";
+import { Grid } from "@mui/material";
 import "chartjs-adapter-date-fns";
 
 const OPTIONS: ChartOptions<"line"> = {

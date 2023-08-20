@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Box, Tab, Tabs, Typography, Skeleton } from "@mui/material";
 import PlayerStatsContent from "./players-stats/PlayerStatsContent";
-import PlayerGraphsContent from "./PlayerGraphsContent";
 import PlayerWeaponsContent from "./PlayerWeaponsContent";
 import PlayerMapsContent from "./PlayerMapsContent";
 import PlayerMatchesContent from "./PlayerMatchesContent";
@@ -12,6 +11,7 @@ import Switch from "../../../common/switch-case/Switch";
 import Case from "../../../common/switch-case/Case";
 import { QueryStatus } from "../../../lib/http-requests";
 import { PlayersGraphProvider } from "./players-graph/PlayersGraphContentProvider";
+import PlayerGraphsContent from "./players-graph/PlayerGraphsContent";
 
 const LANG_BASE_PATH = "page.stats.player";
 
@@ -92,7 +92,7 @@ const PlayerPage = () => {
         </Case>
         <Case case={TABS.GRAPHS}>
           <PlayersGraphProvider>
-            <PlayerGraphsContent steamId={steamid} />
+            <PlayerGraphsContent />
           </PlayersGraphProvider>
         </Case>
         <Case case={TABS.WEAPONS}>

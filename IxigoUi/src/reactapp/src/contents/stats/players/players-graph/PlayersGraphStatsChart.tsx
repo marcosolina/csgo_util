@@ -10,7 +10,9 @@ import "chartjs-adapter-date-fns";
 
 const OPTIONS: ChartOptions<"line"> = {
   maintainAspectRatio: false,
-
+  interaction: {
+    intersect: false,
+  },
   scales: {
     x: {
       type: "time",

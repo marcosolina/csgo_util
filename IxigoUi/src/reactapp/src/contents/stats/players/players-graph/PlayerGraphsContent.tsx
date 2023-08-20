@@ -5,7 +5,7 @@ import { usePlayerGraphContentProvider } from "./usePlayersGraphContentProvider"
 import { useParams } from "react-router-dom";
 
 const PlayerGraphsContent = () => {
-  let { steamid } = useParams();
+  const { steamid } = useParams();
   const contentProvider = usePlayerGraphContentProvider();
   useEffect(() => {
     contentProvider.setSteamId(steamid);

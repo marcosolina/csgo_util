@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Box, Tab, Tabs, Typography, Skeleton } from "@mui/material";
 import PlayerStatsContent from "./players-stats/PlayerStatsContent";
-import PlayerWeaponsContent from "./PlayerWeaponsContent";
 import PlayerMapsContent from "./PlayerMapsContent";
 import PlayerMatchesContent from "./PlayerMatchesContent";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
@@ -12,6 +11,7 @@ import Case from "../../../common/switch-case/Case";
 import { QueryStatus } from "../../../lib/http-requests";
 import { PlayersGraphProvider } from "./players-graph/PlayersGraphContentProvider";
 import PlayerGraphsContent from "./players-graph/PlayerGraphsContent";
+import PlayerWeaponsContent from "./players-weapons/PlayersWeaponsContent";
 
 const LANG_BASE_PATH = "page.stats.player";
 
@@ -26,7 +26,7 @@ const TABS = {
 
 const PlayerPage = () => {
   const { t } = useTranslation();
-  let { steamid, playertab } = useParams();
+  const { steamid, playertab } = useParams();
   const [selectedTab, setSelectedTab] = useState(playertab || TABS.OVERALL);
   const history = useNavigate();
   const location = useLocation();
@@ -96,7 +96,7 @@ const PlayerPage = () => {
           </PlayersGraphProvider>
         </Case>
         <Case case={TABS.WEAPONS}>
-          <PlayerWeaponsContent steamid={steamid} />
+          <PlayerWeaponsContent steamId={steamid} />
         </Case>
         <Case case={TABS.MAPS}>
           <PlayerMapsContent steamid={steamid} />

@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Box, Tab, Tabs, Typography, Skeleton } from "@mui/material";
 import PlayerStatsContent from "./players-stats/PlayerStatsContent";
-import PlayerMapsContent from "./PlayerMapsContent";
 import PlayerMatchesContent from "./PlayerMatchesContent";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { USERS_REQUEST, useGetStats } from "../../../services/stats";
@@ -12,6 +11,7 @@ import { QueryStatus } from "../../../lib/http-requests";
 import { PlayersGraphProvider } from "./players-graph/PlayersGraphContentProvider";
 import PlayerGraphsContent from "./players-graph/PlayerGraphsContent";
 import PlayerWeaponsContent from "./players-weapons/PlayersWeaponsContent";
+import PlayerMapsContent from "./players-maps/PlayerMapsContent";
 
 const LANG_BASE_PATH = "page.stats.player";
 
@@ -99,7 +99,7 @@ const PlayerPage = () => {
           <PlayerWeaponsContent steamId={steamid} />
         </Case>
         <Case case={TABS.MAPS}>
-          <PlayerMapsContent steamid={steamid} />
+          <PlayerMapsContent steamId={steamid} />
         </Case>
         <Case case={TABS.MATCHES}>
           <PlayerMatchesContent steamid={steamid} />

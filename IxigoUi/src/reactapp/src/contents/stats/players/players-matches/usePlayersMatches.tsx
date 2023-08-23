@@ -129,7 +129,7 @@ export function usePlayerMatches(request: IPlayersMatchesContentRequest): IPlaye
   const [data, setData] = useState<IPlayersMatchesData[]>([]);
 
   const matchPathUpdater = useCallback((matchId: number) => {
-    return `/stats/matches/${matchId}`; // TODO add context prefix
+    return `/stats/match/${matchId}`; // TODO add context prefix
   }, []);
 
   const mapPathUpdater = useCallback((mapName: string) => {

@@ -101,7 +101,7 @@ export function usePlayersWeapons(request: IPlayerWeaponContentRequest): IPlayer
 
       setData(weaponData.map((weapon) => ({ ...weapon, weapon_img: weapon.weapon })));
     }
-  }, [qGetStats.data?.data]);
+  }, [qGetStats.status, qGetStats.data?.data]);
 
   return {
     state: qGetStats.status,

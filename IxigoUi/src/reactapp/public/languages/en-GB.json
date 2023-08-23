@@ -680,6 +680,16 @@
           "killer": "Killer",
           "victim": "Victim"
         }
+      },
+      "maps": {
+        "weapons": {
+          "refresh": "Refresh data",
+          "error-loading-data": "Error loading data"
+        },
+        "matches": {
+          "refresh": "Refresh data",
+          "error-loading-data": "Error loading data"
+        }
       }
     }
   },

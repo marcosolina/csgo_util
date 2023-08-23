@@ -9,7 +9,7 @@ const PlayerGraphsContent = () => {
   const contentProvider = usePlayerGraphContentProvider();
   useEffect(() => {
     contentProvider.setSteamId(steamid);
-  }, [steamid]);
+  }, [steamid, contentProvider]);
 
   if (!steamid) {
     return null; // return a better component here

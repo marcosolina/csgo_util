@@ -1,9 +1,9 @@
 import { QueryStatus } from "react-query";
-import { IMatchResult } from "../../../services/stats";
+import { IMatchResults } from "../../../services/stats";
 
 export interface IMatchContentResponse {
   state: QueryStatus;
-  data?: IMatchResult;
+  data?: IMatchResults;
   matchMetadata: IMatchMetadata;
 }
 

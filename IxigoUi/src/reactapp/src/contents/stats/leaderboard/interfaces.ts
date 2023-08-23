@@ -1,10 +1,10 @@
 import { MRT_ColumnDef } from "material-react-table";
 import { QueryStatus } from "react-query";
-import { IPlayerStats } from "../../../services/stats";
+import { IPlayerMatch } from "../../../services/stats";
 
 export interface ILeaderboardContent {
   state: QueryStatus;
-  columns: MRT_ColumnDef<IPlayerStats>[];
-  data: IPlayerStats[];
+  columns: MRT_ColumnDef<IPlayerMatch>[];
+  data: IPlayerMatch[];
   refetch: () => void;
 }

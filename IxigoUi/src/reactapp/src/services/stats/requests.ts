@@ -1,10 +1,8 @@
 import {
   IGetStatsRequest,
   IMatchResults,
-  IMatchResult,
   IPlayerClutchStats,
   IPlayerOverallStats,
-  IPlayerStats,
   ISteamUser,
   IPlayerEntryKillStats,
   ITeamMatchResults,
@@ -15,7 +13,7 @@ import {
   IWeaponData,
   IWeaponMatchData,
   IPlayerMatch,
-  IWeaponMapData
+  IWeaponMapData,
 } from "./interfaces";
 
 /**
@@ -28,7 +26,7 @@ export const USERS_REQUEST: IGetStatsRequest<ISteamUser> = {
 /**
  * It returns the list of players stats.
  */
-export const PLAYERS_STATS__REQUEST: IGetStatsRequest<IPlayerStats> = {
+export const PLAYERS_STATS__REQUEST: IGetStatsRequest<IPlayerMatch> = {
   viewName: "PLAYER_OVERALL_STATS_EXTENDED_EXTENDED_CACHE",
 };
 
@@ -36,10 +34,6 @@ export const PLAYERS_STATS__REQUEST: IGetStatsRequest<IPlayerStats> = {
  * It returns the list of Match stats.
  */
 export const MATCH_RESULTS_REQUEST: IGetStatsRequest<IMatchResults> = {
-  viewName: "MATCH_RESULTS_CACHE",
-};
-
-export const MATCH_RESULT_REQUEST: IGetStatsRequest<IMatchResult> = {
   viewName: "MATCH_RESULTS_CACHE",
 };
 
@@ -94,5 +88,3 @@ export const PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE: IGetStatsRequest<IPlayerM
 export const MAP_PLAYER_WEAPON_STATS_CACHE: IGetStatsRequest<IWeaponMapData> = {
   viewName: "MAP_PLAYER_WEAPON_STATS_CACHE",
 };
-
-

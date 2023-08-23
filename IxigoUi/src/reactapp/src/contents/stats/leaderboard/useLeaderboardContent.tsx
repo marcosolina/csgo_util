@@ -2,10 +2,10 @@ import { useTranslation } from "react-i18next";
 import { ILeaderboardContent } from "./interfaces";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
-import { IPlayerStats, useGetStats, USERS_REQUEST, PLAYERS_STATS__REQUEST } from "../../../services";
+import { useGetStats, USERS_REQUEST, PLAYERS_STATS__REQUEST, IPlayerMatch } from "../../../services";
 import { combineQueryStatuses } from "../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../lib/http-requests";
-import TableLink from '../../../common/table-link/TableLink';
+import TableLink from "../../../common/table-link/TableLink";
 import { TFunction } from "i18next";
 import { WEAPONG_IMAGE } from "../weaponImage";
 import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
@@ -70,34 +70,32 @@ function createColumnDefinition(
   key: string,
   t: TFunction<"translation", undefined, "translation">,
   userPathUpdater: (steamid: string) => string
-): MRT_ColumnDef<IPlayerStats> {
-  const cell: MRT_ColumnDef<IPlayerStats> = {
+): MRT_ColumnDef<IPlayerMatch> {
+  const cell: MRT_ColumnDef<IPlayerMatch> = {
     id: key,
-    accessorFn: (row) => row[key as keyof IPlayerStats],
+    accessorFn: (row) => row[key as keyof IPlayerMatch],
     header: t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.header`),
     size: SMALL_COL_SIZE,
-    Header: customHeader<IPlayerStats>(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
+    Header: customHeader<IPlayerMatch>(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
   };
 
   if (key === "username") {
-    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
+    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerMatch> }) => {
       const username = cell.getValue() as string;
       const steamid = cell.row.original.steamid;
-      return (
-        <TableLink text={username} to={userPathUpdater(steamid)} />
-      );
+      return <TableLink text={username} to={userPathUpdater(steamid)} />;
     };
   }
 
   if (key === "hltv_rating") {
-    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
+    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerMatch> }) => {
       const rating = cell.getValue() as number;
       return <CellChip value={rating} type="rating" />;
     };
   }
 
   if (key === "first_weapon" || key === "second_weapon") {
-    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
+    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerMatch> }) => {
       const value = cell.getValue() as string;
       const imageUrl = WEAPONG_IMAGE[value];
       return imageUrl ? <img src={imageUrl} alt={value} style={{ height: "18px" }} /> : null;
@@ -105,7 +103,7 @@ function createColumnDefinition(
   }
 
   if (key === "headshot_percentage" || key === "_1vnp") {
-    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerStats> }) => {
+    cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerMatch> }) => {
       const value = cell.getValue() as number;
       return <PieChartMini percentage={value} color="darkturquoise" size={22} />;
     };
@@ -116,14 +114,11 @@ function createColumnDefinition(
 
 export const useLeaderboardContent = (): ILeaderboardContent => {
   const { t } = useTranslation();
-  const [data, setData] = useState<IPlayerStats[]>([]);
+  const [data, setData] = useState<IPlayerMatch[]>([]);
 
-  const pathUpdater = useCallback(
-    (steamid: string) => {
-      return `/stats/player/${steamid}`;
-    },
-    []
-  );
+  const pathUpdater = useCallback((steamid: string) => {
+    return `/stats/player/${steamid}`;
+  }, []);
 
   // Get the data
   const qUsersRequest = useGetStats(USERS_REQUEST);
@@ -133,8 +128,8 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
   const queriesState = combineQueryStatuses([qUsersRequest, qPLayersStatsRequest]);
 
   // Create the columns
-  const columns = useMemo<MRT_ColumnDef<IPlayerStats>[]>(() => {
-    const cols: MRT_ColumnDef<IPlayerStats>[] = [];
+  const columns = useMemo<MRT_ColumnDef<IPlayerMatch>[]>(() => {
+    const cols: MRT_ColumnDef<IPlayerMatch>[] = [];
     COLUMNS_ORDER.forEach((key) => {
       cols.push(createColumnDefinition(key, t, pathUpdater));
     });
@@ -155,7 +150,7 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
         return;
       }
 
-      const data: IPlayerStats[] = [];
+      const data: IPlayerMatch[] = [];
       playerStats.forEach((playerStat) => {
         const user = users.find((user) => user.steam_id === playerStat.steamid);
         if (!user) {

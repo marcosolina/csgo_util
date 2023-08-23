@@ -11,6 +11,7 @@ import { WEAPONG_IMAGE } from "../weaponImage";
 import PieChartMini from "../../../common/pie-chart-mini/PieChartMini";
 import customHeader from "../../../common/material-table/custom-header/customHeader";
 import CellChip from "../../../common/cell-chip/CellChip";
+import { UI_CONTEXT_PATH } from "../../../lib/constants";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.leaderboard.column-headers";
 const SMALL_COL_SIZE = 5;
@@ -117,7 +118,7 @@ export const useLeaderboardContent = (): ILeaderboardContent => {
   const [data, setData] = useState<IPlayerMatch[]>([]);
 
   const pathUpdater = useCallback((steamid: string) => {
-    return `/stats/player/${steamid}`;
+    return `${UI_CONTEXT_PATH}/stats/player/${steamid}`;
   }, []);
 
   // Get the data

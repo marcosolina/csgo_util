@@ -8,7 +8,8 @@ import { Box } from "@mui/material";
 import { TFunction } from "i18next";
 import customHeader from "../../../common/material-table/custom-header/customHeader";
 import CellChip from "../../../common/cell-chip/CellChip";
-import TableLink from '../../../common/table-link/TableLink';
+import TableLink from "../../../common/table-link/TableLink";
+import { UI_CONTEXT_PATH } from "../../../lib/constants";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.match.column-headers";
 const SMALL_COL_SIZE = 5;
@@ -42,24 +43,20 @@ function createColumnDefinition(
     cell.Cell = ({ cell }: { cell: MRT_Cell<IMatchResults> }) => {
       const matchDate = cell.getValue() as string;
       const match_id = cell.row.original.match_id;
-  
+
       const date = new Date(matchDate);
       const formattedDate = date.toLocaleDateString("en-GB", { year: "numeric", month: "long", day: "numeric" });
       const formattedTime = date.toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit" });
-  
-      return (
-        <TableLink text={`${formattedDate}, ${formattedTime}`} to={matchPathUpdater(match_id)} />
-      );
+
+      return <TableLink text={`${formattedDate}, ${formattedTime}`} to={matchPathUpdater(match_id)} />;
     };
   }
-  
+
   if (key === "mapname") {
     cell.Cell = ({ cell }: { cell: MRT_Cell<IMatchResults> }) => {
       const map = cell.getValue() as string;
-  
-      return (
-        <TableLink text={map} to={mapNamePathUpdater(map)} />
-      );
+
+      return <TableLink text={map} to={mapNamePathUpdater(map)} />;
     };
   }
 
@@ -76,7 +73,7 @@ function createColumnDefinition(
       );
     };
   }
-  
+
   if (key === "total_t_wins" || key === "total_ct_wins") {
     cell.enableGrouping = false;
     cell.aggregationFn = "mean" as any;
@@ -100,24 +97,17 @@ function createColumnDefinition(
   return cell;
 }
 
-
 export const useMatchContent = (): IMatchContent => {
   const { t } = useTranslation();
   const [data, setData] = useState<IMatchResults[]>([]);
 
-  const mapNamePathUpdater = useCallback(
-    (mapName: string) => {
-      return `/stats/map/${mapName}`;
-    },
-    []
-  );
+  const mapNamePathUpdater = useCallback((mapName: string) => {
+    return `${UI_CONTEXT_PATH}/stats/map/${mapName}`;
+  }, []);
 
-  const matchPathUpdater = useCallback(
-    (match_id: number) => {
-      return `/stats/match/${match_id}`;
-    },
-    []
-  );
+  const matchPathUpdater = useCallback((match_id: number) => {
+    return `${UI_CONTEXT_PATH}/stats/match/${match_id}`;
+  }, []);
 
   // Get the data
   const qMatchRequest = useGetStats(MATCH_RESULTS_REQUEST);
@@ -147,7 +137,7 @@ export const useMatchContent = (): IMatchContent => {
         ...match,
         score_differential: match.total_t_wins - match.total_ct_wins,
       }));
-      
+
       setData(matchResults);
     }
   }, [qMatchRequest.status, qMatchRequest.data]);

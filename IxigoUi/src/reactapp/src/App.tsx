@@ -12,6 +12,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PlayersContentProvider } from "./contents/players/indext";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { UI_CONTEXT_PATH } from "./lib/constants";
 
 const darkTheme = createTheme({
   palette: {
@@ -52,8 +53,8 @@ const App = () => {
                 <RconContentProvider>
                   <PlayersContentProvider>
                     <Routes>
-                      <Route path="/*" element={<BaseLayout />} />
-                      <Route path="/:tabid/*" element={<BaseLayout />} />
+                      <Route path={`${UI_CONTEXT_PATH}/*`} element={<BaseLayout />} />
+                      <Route path={`${UI_CONTEXT_PATH}/:tabid/*`} element={<BaseLayout />} />
                     </Routes>
                   </PlayersContentProvider>
                 </RconContentProvider>

@@ -11,6 +11,7 @@ import ServerInfoContent from "../../contents/server-info/ServerInfoContent";
 import Case from "../switch-case/Case";
 import Switch from "../switch-case/Switch";
 import { useNavigate, useParams } from "react-router-dom";
+import { UI_CONTEXT_PATH } from "../../lib/constants";
 
 const LANG_BASE_PATH = "page.home";
 
@@ -30,7 +31,7 @@ const BaseLayout = () => {
   const history = useNavigate();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
-    const newPath = `/${newValue}`;
+    const newPath = `${UI_CONTEXT_PATH}/${newValue}`;
     history(newPath);
     setSelectedTab(newValue);
   };

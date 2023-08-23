@@ -2,15 +2,21 @@ import { useTranslation } from "react-i18next";
 import { IMapLeaderboardRequest, IMapLeaderboardResponse } from "./interfaces";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
-import { IPlayerMatch, useGetStats, USERS_REQUEST, PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE } from "../../../../services";
+import {
+  IPlayerMatch,
+  useGetStats,
+  USERS_REQUEST,
+  PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE,
+} from "../../../../services";
 import { combineQueryStatuses } from "../../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../../lib/http-requests";
-import TableLink from '../../../../common/table-link/TableLink';
+import TableLink from "../../../../common/table-link/TableLink";
 import { TFunction } from "i18next";
 import { WEAPONG_IMAGE } from "../../weaponImage";
 import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
 import customHeader from "../../../../common/material-table/custom-header/customHeader";
 import CellChip from "../../../../common/cell-chip/CellChip";
+import { UI_CONTEXT_PATH } from "../../../../lib/constants";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.leaderboard.column-headers";
 const SMALL_COL_SIZE = 5;
@@ -60,7 +66,6 @@ const COLUMNS_ORDER = [
   "_1v5",
 ];
 
-
 function createColumnDefinition(
   key: string,
   t: TFunction<"translation", undefined, "translation">,
@@ -78,9 +83,7 @@ function createColumnDefinition(
     cell.Cell = ({ cell }: { cell: MRT_Cell<IPlayerMatch> }) => {
       const username = cell.getValue() as string;
       const steamid = cell.row.original.steamid;
-      return (
-        <TableLink text={username} to={userPathUpdater(steamid)} />
-      );
+      return <TableLink text={username} to={userPathUpdater(steamid)} />;
     };
   }
 
@@ -115,16 +118,13 @@ export const useLeaderboardContent = (request: IMapLeaderboardRequest): IMapLead
 
   const getStatsRequest = useMemo(() => {
     const copy = { ...PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE };
-    copy.queryParams = { mapname: request.mapName};
+    copy.queryParams = { mapname: request.mapName };
     return copy;
   }, [request]);
 
-  const pathUpdater = useCallback(
-    (steamid: string) => {
-      return `/stats/player/${steamid}`;
-    },
-    []
-  );
+  const pathUpdater = useCallback((steamid: string) => {
+    return `${UI_CONTEXT_PATH}/stats/player/${steamid}`;
+  }, []);
 
   // Get the data
   const qUsersRequest = useGetStats(USERS_REQUEST);

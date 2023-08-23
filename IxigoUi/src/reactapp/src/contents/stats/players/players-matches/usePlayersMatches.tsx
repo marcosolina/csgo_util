@@ -16,6 +16,7 @@ import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
 import CellChip from "../../../../common/cell-chip/CellChip";
 import { combineQueryStatuses } from "../../../../lib/queries";
 import { QueryStatus } from "../../../../lib/http-requests";
+import { UI_CONTEXT_PATH } from "../../../../lib/constants";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.player.content.matches.column-headers";
 const SMALL_COL_SIZE = 5;
@@ -129,11 +130,11 @@ export function usePlayerMatches(request: IPlayersMatchesContentRequest): IPlaye
   const [data, setData] = useState<IPlayersMatchesData[]>([]);
 
   const matchPathUpdater = useCallback((matchId: number) => {
-    return `/stats/match/${matchId}`; // TODO add context prefix
+    return `${UI_CONTEXT_PATH}/stats/match/${matchId}`;
   }, []);
 
   const mapPathUpdater = useCallback((mapName: string) => {
-    return `/stats/map/${mapName}`; // TODO add context prefix
+    return `${UI_CONTEXT_PATH}/stats/map/${mapName}`;
   }, []);
 
   const queriesState = combineQueryStatuses([qMatchTeam, qMatchResult]);

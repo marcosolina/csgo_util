@@ -16,6 +16,7 @@ import PieChartMini from "../../../../common/pie-chart-mini/PieChartMini";
 import { useTranslation } from "react-i18next";
 import { QueryStatus } from "../../../../lib/http-requests";
 import { combineQueryStatuses } from "../../../../lib/queries";
+import { UI_CONTEXT_PATH } from "../../../../lib/constants";
 
 const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.player.content.maps.column-headers";
 const SMALL_COL_SIZE = 5;
@@ -126,7 +127,7 @@ export function usePlayerMaps(request: IPlayersMapsContentRequest): IPlayersMaps
   const [data, setData] = useState<IPlayerMatch[]>([]);
 
   const mapPathUpdater = useCallback((mapName: string) => {
-    return `/stats/map/${mapName}`; // TODO add context prefix
+    return `${UI_CONTEXT_PATH}/stats/map/${mapName}`;
   }, []);
 
   const qUsersRequest = useGetStats(USERS_REQUEST);
@@ -147,7 +148,7 @@ export function usePlayerMaps(request: IPlayersMapsContentRequest): IPlayersMaps
       cols.push(createColumnDefinition(key, t, mapPathUpdater));
     });
     return cols;
-  }, [t]);
+  }, [t, mapPathUpdater]);
 
   // Create the data
   useEffect(() => {

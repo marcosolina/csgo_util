@@ -10,6 +10,7 @@ import { useTranslation } from "react-i18next";
 import MatchContent from "./match/MatchContent";
 import PlayersContent from "./players/PlayersContent";
 import KillMatrixContent from "./kill-matrix/KillMatrixContent";
+import MapsContent from "./maps/MapsContent";
 
 const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
 
@@ -62,6 +63,7 @@ const StatsContent = () => {
         <Route path="/match" element={<MatchContent />} />
         <Route path="/match/:match_id" element={<MatchStatsContent />} />
         <Route path="/match/:match_id/:matchtab" element={<MatchStatsContent />} />
+        <Route path="/map" element={<MapsContent />} />
         <Route path="/map/:mapName" element={<MapContent />} />
       </Routes>
     </>

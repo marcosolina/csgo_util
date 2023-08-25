@@ -1,13 +1,5 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Tab,
-  Tabs,
-  Typography,
-  Grid,
-  Paper,
-  Skeleton,
-} from "@mui/material";
+import { Box, Tab, Tabs, Typography, Grid, Paper, Skeleton } from "@mui/material";
 import MatchScoreboardContent from "./match-scoreboard/MatchScoreboardContent";
 import MatchRoundsContent from "./match-rounds/MatchRoundsContent";
 import MatchWeaponsContent from "./match-weapons/MatchWeaponsContent";
@@ -42,17 +34,15 @@ const MatchPage = () => {
   const history = useNavigate();
   const location = useLocation();
 
-  const {
-    state,
-    data: matchData,
-    matchMetadata,
-  } = useMatchStatsContent({ match_id: matchIdNumber });
+  const { state, data: matchData, matchMetadata } = useMatchStatsContent({ match_id: matchIdNumber });
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     const pathParts = location.pathname.split("/").filter((p) => p);
 
-    if (pathParts.length > 3) {
-      pathParts[3] = newValue;
+    const length = UI_CONTEXT_PATH === "" ? 3 : 4;
+
+    if (pathParts.length > length) {
+      pathParts[length] = newValue;
     } else {
       pathParts.push(newValue);
     }
@@ -80,51 +70,35 @@ const MatchPage = () => {
           }}
         >
           <Grid item xs={2}>
-            <Paper
-              elevation={3}
-              style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
-            >
+            <Paper elevation={3} style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}>
               <Typography variant="h4">Match: {matchData.mapname}</Typography>
               <Typography variant="h6">{`${matchMetadata.formattedDate}, ${matchMetadata.formattedTime}`}</Typography>
             </Paper>
           </Grid>
-          <Grid
-            container
-            spacing={3}
-            alignItems="center"
-            justifyContent="center"
-          >
-            <Grid
-              item
-              xs={6}
-              style={{ display: "flex", justifyContent: "right" }}
-            >
-                  <TeamScoreCard
-                    totalWins={matchData.team1_total_wins}
-                    winsAsT={matchData.team1_wins_as_t}
-                    winsAsCt={matchData.team1_wins_as_ct}
-                    teamName={`${t(`${LANG_BASE_PATH}.team`)} 1`}
-                    color="#90caf9"
-                    alignment="right"
-                    terroristLogo={UI_CONTEXT_PATH + terroristLogo}
-                    ctLogo={UI_CONTEXT_PATH + ctLogo}
-                  />
+          <Grid container spacing={3} alignItems="center" justifyContent="center">
+            <Grid item xs={6} style={{ display: "flex", justifyContent: "right" }}>
+              <TeamScoreCard
+                totalWins={matchData.team1_total_wins}
+                winsAsT={matchData.team1_wins_as_t}
+                winsAsCt={matchData.team1_wins_as_ct}
+                teamName={`${t(`${LANG_BASE_PATH}.team`)} 1`}
+                color="#90caf9"
+                alignment="right"
+                terroristLogo={UI_CONTEXT_PATH + terroristLogo}
+                ctLogo={UI_CONTEXT_PATH + ctLogo}
+              />
             </Grid>
-            <Grid
-              item
-              xs={6}
-              style={{ display: "flex", justifyContent: "left" }}
-            >
-                  <TeamScoreCard
-                    totalWins={matchData.team2_total_wins}
-                    winsAsT={matchData.team2_wins_as_t}
-                    winsAsCt={matchData.team2_wins_as_ct}
-                    teamName={`${t(`${LANG_BASE_PATH}.team`)} 2`}
-                    color="orange"
-                    alignment="left"
-                    terroristLogo={UI_CONTEXT_PATH + terroristLogo}
-                    ctLogo={UI_CONTEXT_PATH + ctLogo}
-                  />
+            <Grid item xs={6} style={{ display: "flex", justifyContent: "left" }}>
+              <TeamScoreCard
+                totalWins={matchData.team2_total_wins}
+                winsAsT={matchData.team2_wins_as_t}
+                winsAsCt={matchData.team2_wins_as_ct}
+                teamName={`${t(`${LANG_BASE_PATH}.team`)} 2`}
+                color="orange"
+                alignment="left"
+                terroristLogo={UI_CONTEXT_PATH + terroristLogo}
+                ctLogo={UI_CONTEXT_PATH + ctLogo}
+              />
             </Grid>
           </Grid>
         </Box>
@@ -142,33 +116,33 @@ const MatchPage = () => {
                 },
               }}
             >
-            <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.SCOREBOARD}`)} value={TABS.SCOREBOARD} />
-            <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.ROUNDS}`)} value={TABS.ROUNDS} />
-            <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.WEAPONS}`)} value={TABS.WEAPONS} />
-            <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.DUELS}`)} value={TABS.DUELS} />
+              <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.SCOREBOARD}`)} value={TABS.SCOREBOARD} />
+              <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.ROUNDS}`)} value={TABS.ROUNDS} />
+              <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.WEAPONS}`)} value={TABS.WEAPONS} />
+              <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.DUELS}`)} value={TABS.DUELS} />
             </Tabs>
           </Box>
           <Box sx={{ m: "2rem" }} />
-            <Switch value={selectedTab}>
-              <Case case={TABS.SCOREBOARD}>
-                <MatchScoreboardContent match_id={Number(match_id)} />
-              </Case>
-              <Case case={TABS.ROUNDS}>
-                <MatchRoundsContent match_id={Number(match_id)} />
-              </Case>
-              <Case case={TABS.WEAPONS}>
-                <MatchWeaponsContent match_id={Number(match_id)} />
-              </Case>
-              <Case case={TABS.DUELS}>
-                <MatchKillMatrixContent match_id={Number(match_id)} />
-              </Case>
-            </Switch>
+          <Switch value={selectedTab}>
+            <Case case={TABS.SCOREBOARD}>
+              <MatchScoreboardContent match_id={Number(match_id)} />
+            </Case>
+            <Case case={TABS.ROUNDS}>
+              <MatchRoundsContent match_id={Number(match_id)} />
+            </Case>
+            <Case case={TABS.WEAPONS}>
+              <MatchWeaponsContent match_id={Number(match_id)} />
+            </Case>
+            <Case case={TABS.DUELS}>
+              <MatchKillMatrixContent match_id={Number(match_id)} />
+            </Case>
+          </Switch>
         </Box>
       </Box>
     );
   }
 
   return <ErrorOutlineIcon color="error" fontSize="large" />;
-}
+};
 
 export default MatchPage;

@@ -11,6 +11,7 @@ import MatchContent from "./match/MatchContent";
 import PlayersContent from "./players/PlayersContent";
 import KillMatrixContent from "./kill-matrix/KillMatrixContent";
 import MapsContent from "./maps/MapsContent";
+import { UI_CONTEXT_PATH } from "../../lib/constants";
 
 const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
 
@@ -21,6 +22,7 @@ const StatsContent = () => {
 
   const paths = useMemo(() => {
     const paths = [];
+    const startSlice = UI_CONTEXT_PATH === "" ? 0 : 1;
     for (let i = 0; i < pathnames.length; i++) {
       paths.push(`/${pathnames.slice(0, i + 1).join("/")}`);
     }

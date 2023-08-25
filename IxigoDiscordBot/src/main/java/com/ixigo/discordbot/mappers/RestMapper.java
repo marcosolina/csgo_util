@@ -20,6 +20,8 @@ public interface RestMapper {
 
 	RestPlayer fromSvcToRest(SvcPlayer svc);
 
+	@Mapping(source = "steamDetails.userName", target = "steamDetails.user_name")
+	@Mapping(source = "steamDetails.steamId", target = "steamDetails.steam_id")
 	SvcPlayer fromRestToSvc(RestPlayer svc);
 	
 	@Mapping(source = "user_name", target = "userName")

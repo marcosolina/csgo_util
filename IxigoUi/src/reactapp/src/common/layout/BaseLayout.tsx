@@ -11,23 +11,14 @@ import ServerInfoContent from "../../contents/server-info/ServerInfoContent";
 import Case from "../switch-case/Case";
 import Switch from "../switch-case/Switch";
 import { useNavigate, useParams } from "react-router-dom";
-import { UI_CONTEXT_PATH } from "../../lib/constants";
+import { MAIN_TABS, UI_CONTEXT_PATH } from "../../lib/constants";
 
 const LANG_BASE_PATH = "page.home";
 
-const TABS = {
-  DEMFILES: "demfiles",
-  TEAMS: "teams",
-  STATS: "stats",
-  RCON: "rcon",
-  DISCORDBOT: "discordbot",
-  JOINUS: "joinus",
-};
-
 const BaseLayout = () => {
   const { t } = useTranslation();
-  let { tabid } = useParams();
-  const [selectedTab, setSelectedTab] = useState(tabid || TABS.DEMFILES);
+  const { tabid } = useParams();
+  const [selectedTab, setSelectedTab] = useState(tabid || MAIN_TABS.DEMFILES);
   const history = useNavigate();
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -55,34 +46,34 @@ const BaseLayout = () => {
             },
           }}
         >
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.DEMFILES}`)} value={TABS.DEMFILES} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.TEAMS}`)} value={TABS.TEAMS} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.STATS}`)} value={TABS.STATS} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.RCON}`)} value={TABS.RCON} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.DISCORDBOT}`)} value={TABS.DISCORDBOT} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.${TABS.JOINUS}`)} value={TABS.JOINUS} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.DEMFILES}`)} value={MAIN_TABS.DEMFILES} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.TEAMS}`)} value={MAIN_TABS.TEAMS} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.STATS}`)} value={MAIN_TABS.STATS} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.RCON}`)} value={MAIN_TABS.RCON} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.DISCORDBOT}`)} value={MAIN_TABS.DISCORDBOT} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.JOINUS}`)} value={MAIN_TABS.JOINUS} />
         </Tabs>
       </Box>
 
       <Container>
         <Box sx={{ m: "2rem" }} />
         <Switch value={selectedTab}>
-          <Case case={TABS.DEMFILES}>
+          <Case case={MAIN_TABS.DEMFILES}>
             <DemFilesContent />
           </Case>
-          <Case case={TABS.TEAMS}>
+          <Case case={MAIN_TABS.TEAMS}>
             <PlayersContent />
           </Case>
-          <Case case={TABS.STATS}>
+          <Case case={MAIN_TABS.STATS}>
             <StatsContent />
           </Case>
-          <Case case={TABS.RCON}>
+          <Case case={MAIN_TABS.RCON}>
             <RconContent />
           </Case>
-          <Case case={TABS.DISCORDBOT}>
+          <Case case={MAIN_TABS.DISCORDBOT}>
             <DiscordBotContent />
           </Case>
-          <Case case={TABS.JOINUS}>
+          <Case case={MAIN_TABS.JOINUS}>
             <ServerInfoContent />
           </Case>
         </Switch>

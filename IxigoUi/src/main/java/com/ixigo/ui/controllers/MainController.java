@@ -22,7 +22,22 @@ public class MainController {
 	@Autowired
 	private IxigoEndPoints endPoints;
 
-	@GetMapping(value = { "/" })
+	@GetMapping(
+	value = { 
+		"/",
+		"/demfiles",
+		"/demfiles/**",
+		"/teams",
+		"/teams/**",
+		"/stats", 
+		"/stats/**",
+		"/rcon",
+		"/rcon/**",
+		"/discordbot",
+		"/discordbot/**",
+		"/joinus",
+		"/joinus/**",
+	})
 	public String ui(HttpServletRequest request, Model model) {
 		model.addAttribute("js", getJsName());
 		model.addAttribute("css", getCssName());

@@ -12,6 +12,7 @@ import PlayerGraphsContent from "./players-graph/PlayerGraphsContent";
 import PlayerWeaponsContent from "./players-weapons/PlayersWeaponsContent";
 import PlayerMapsContent from "./players-maps/PlayerMapsContent";
 import PlayerMatchesContent from "./players-matches/PlayerMatchesContent";
+import { UI_CONTEXT_PATH } from "../../../lib/constants";
 
 const LANG_BASE_PATH = "page.stats.player";
 
@@ -36,8 +37,10 @@ const PlayerPage = () => {
   const handleChange = (event: React.SyntheticEvent, newValue: string) => {
     const pathParts = location.pathname.split("/").filter((p) => p);
 
-    if (pathParts.length > 3) {
-      pathParts[3] = newValue;
+    const length = UI_CONTEXT_PATH === "" ? 3 : 4;
+
+    if (pathParts.length > length) {
+      pathParts[length] = newValue;
     } else {
       pathParts.push(newValue);
     }

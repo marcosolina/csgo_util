@@ -24,7 +24,7 @@ const StatsContent = () => {
     const paths = [];
     const startSlice = UI_CONTEXT_PATH === "" ? 0 : 1;
     for (let i = 0; i < pathnames.length; i++) {
-      paths.push(`/${pathnames.slice(0, i + 1).join("/")}`);
+      paths.push(`/${pathnames.slice(startSlice, i + 1).join("/")}`);
     }
     return paths;
   }, [pathnames]);

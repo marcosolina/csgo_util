@@ -36,7 +36,7 @@ const StatsContent = () => {
       <Breadcrumbs aria-label="breadcrumb">
         {paths.map((path, index) => (
           <Link underline="hover" color="inherit" href={`${UI_CONTEXT_PATH}${path}`} key={index}>
-            {t(`${BREAD_CRUMBS_TEXT}.${path}`, pathnames[index])}
+            {t(`${BREAD_CRUMBS_TEXT}.${path}`, paths[index])}
           </Link>
         ))}
       </Breadcrumbs>

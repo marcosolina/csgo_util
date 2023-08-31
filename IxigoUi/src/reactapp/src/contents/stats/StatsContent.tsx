@@ -23,6 +23,7 @@ const StatsContent = () => {
   const paths = useMemo(() => {
     const paths = [];
     // TODO check the paths
+    console.log(pathnames);
     const startSlice = UI_CONTEXT_PATH === "" ? 0 : 1;
     for (let i = startSlice; i < pathnames.length; i++) {
       paths.push(`/${pathnames.slice(startSlice, i + 1).join("/")}`);

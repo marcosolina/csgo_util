@@ -5,7 +5,7 @@ import MatchStatsContent from "./matches/MatchStatsContent";
 import MapContent from "./maps/MapContent";
 import { Breadcrumbs } from "@mui/material";
 import Link from "@mui/material/Link";
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import MatchContent from "./match/MatchContent";
 import PlayersContent from "./players/PlayersContent";
@@ -15,28 +15,36 @@ import { UI_CONTEXT_PATH } from "../../lib/constants";
 
 const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
 
+interface IBreadCrumbPaths {
+  keys: string[];
+  values: string[];
+}
+
 const StatsContent = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
-  const [pathNamesWithoutContext, setPathNamesWithoutContext] = useState<string[]>(pathnames);
 
-  const paths = useMemo(() => {
+  const breadcrumbsPaths = useMemo(() => {
     const paths = [];
     const startSlice = UI_CONTEXT_PATH === "" ? 0 : 1;
     for (let i = startSlice; i < pathnames.length; i++) {
       paths.push(`/${pathnames.slice(startSlice, i + 1).join("/")}`);
     }
-    setPathNamesWithoutContext(pathnames.slice(startSlice));
-    return paths;
+
+    const breadcrumbsPaths: IBreadCrumbPaths = {
+      keys: pathnames.slice(startSlice),
+      values: paths,
+    };
+    return breadcrumbsPaths;
   }, [pathnames]);
 
   return (
     <>
       <Breadcrumbs aria-label="breadcrumb">
-        {paths.map((path, index) => (
+        {breadcrumbsPaths.values.map((path, index) => (
           <Link underline="hover" color="inherit" href={`${UI_CONTEXT_PATH}${path}`} key={index}>
-            {t(`${BREAD_CRUMBS_TEXT}.${path}`, pathNamesWithoutContext[index])}
+            {t(`${BREAD_CRUMBS_TEXT}.${path}`, breadcrumbsPaths.keys[index])}
           </Link>
         ))}
       </Breadcrumbs>

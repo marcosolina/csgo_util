@@ -5,7 +5,7 @@ import MatchStatsContent from "./matches/MatchStatsContent";
 import MapContent from "./maps/MapContent";
 import { Breadcrumbs } from "@mui/material";
 import Link from "@mui/material/Link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import MatchContent from "./match/MatchContent";
 import PlayersContent from "./players/PlayersContent";
@@ -19,15 +19,15 @@ const StatsContent = () => {
   const { t } = useTranslation();
   const location = useLocation();
   const pathnames = location.pathname.split("/").filter((x) => x);
+  const [pathNamesWithoutContext, setPathNamesWithoutContext] = useState<string[]>(pathnames);
 
   const paths = useMemo(() => {
     const paths = [];
-    // TODO check the paths
-    console.log(pathnames);
     const startSlice = UI_CONTEXT_PATH === "" ? 0 : 1;
     for (let i = startSlice; i < pathnames.length; i++) {
       paths.push(`/${pathnames.slice(startSlice, i + 1).join("/")}`);
     }
+    setPathNamesWithoutContext(pathnames.slice(startSlice));
     return paths;
   }, [pathnames]);
 
@@ -36,7 +36,7 @@ const StatsContent = () => {
       <Breadcrumbs aria-label="breadcrumb">
         {paths.map((path, index) => (
           <Link underline="hover" color="inherit" href={`${UI_CONTEXT_PATH}${path}`} key={index}>
-            {t(`${BREAD_CRUMBS_TEXT}.${path}`, paths[index])}
+            {t(`${BREAD_CRUMBS_TEXT}.${path}`, pathNamesWithoutContext[index])}
           </Link>
         ))}
       </Breadcrumbs>

@@ -12,7 +12,7 @@ import PlayersContent from "./players/PlayersContent";
 import KillMatrixContent from "./kill-matrix/KillMatrixContent";
 import MapsContent from "./maps/MapsContent";
 import { UI_CONTEXT_PATH } from "../../lib/constants";
-import { ICsgoUser, useGetCsgoPlayers } from "../../services/dem-manager";
+import { ICsgoUser } from "../../services/dem-manager";
 import { useStatsContent } from "./useStatsContent";
 
 const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
@@ -47,7 +47,7 @@ const StatsContent = () => {
       values: paths,
     };
     return breadcrumbsPaths;
-  }, [pathnames]);
+  }, [pathnames, steamUsers]);
 
   return (
     <>

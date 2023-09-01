@@ -9,10 +9,6 @@ export interface IRestFileInfo {
   url: string;
 }
 
-export interface IRestGetScoreTypesResponse {
-  types: Record<string, string>;
-}
-
 export interface IRestGetCsgoUsersResponse {
   users: ICsgoUser[];
 }

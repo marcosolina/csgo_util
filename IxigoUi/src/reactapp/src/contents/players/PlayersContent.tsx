@@ -62,7 +62,6 @@ const PlayersContent = () => {
       timeOut = setTimeout(() => {
         getTeams({
           steamIDs: players,
-          minPercPlayed: pContent.percPlayed,
           numberOfMatches: pContent.matchesToConsider,
           partitionScore: pContent.scoreType,
           penaltyWeigth: pContent.penaltyWeight,
@@ -95,14 +94,6 @@ const PlayersContent = () => {
               possibleValues={pContent.possibleScoreTypesValues}
               selectedValue={pContent.scoreType}
               onChange={(v) => pContent.setScoreType(v)}
-            />
-          </Grid>
-          <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-            <IxigoSelect
-              label={t(`${BASE_LANGUAGE_PATH}.labels.lblMinPercPlayed`) as string}
-              possibleValues={pContent.possiblePercPlayedValues}
-              selectedValue={`${pContent.percPlayed}`}
-              onChange={(v) => pContent.setPercPlayed(parseInt(v))}
             />
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>

@@ -1,0 +1,25 @@
+package com.ixigo.demmanager.models.svc.demdata.data;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class SvcRoundHitEvents implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private String steamid = "";
+	private String weapon = "";
+	private Long damagearmour = null;
+	private Long round = null;
+	private String victimsteamid = "";
+	private Long hitgroup = null;
+	private Long match_id = null;
+	private Long damagehealth = null;
+	private BigDecimal eventtime = BigDecimal.ZERO;
+	private BigDecimal blindtime = BigDecimal.ZERO;
+
+}

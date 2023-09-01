@@ -1,7 +1,7 @@
 import { ImageList, ImageListItem, ImageListItemBar } from "@mui/material";
 import { useTranslation } from "react-i18next";
-import { QUERY_PARAMS, UI_CONTEXT_PATH } from "../../lib/constants";
-import { useSearchParams } from "react-router-dom";
+import { MAIN_TABS, QUERY_PARAMS, UI_CONTEXT_PATH } from "../../lib/constants";
+import { useParams, useSearchParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import IxigoDialog from "../../common/dialog/IxigoDialog";
 
@@ -13,6 +13,7 @@ const ARR = ["ixigo-logo", "discord-logo", "telegram-logo"];
 
 const ServerInfoContent = () => {
   const { t } = useTranslation();
+  const { tabid } = useParams();
   const [searchParams] = useSearchParams();
   const [popupBlocked, setPopupBlocked] = useState<boolean>(false);
 
@@ -39,14 +40,10 @@ const ServerInfoContent = () => {
   const dialogButtonHandler = () => setPopupBlocked(false);
 
   useEffect(() => {
-    if (
-      searchParams.has(QUERY_PARAMS.TAB) &&
-      parseInt(searchParams.get(QUERY_PARAMS.TAB) as string) === 5 &&
-      searchParams.get(QUERY_PARAMS.JOIN_IXIGO) === "true"
-    ) {
+    if (tabid === MAIN_TABS.JOINUS && searchParams.get(QUERY_PARAMS.JOIN_IXIGO) === "true") {
       clickHandler("ixigo-logo");
     }
-  }, [searchParams]);
+  }, [tabid, searchParams]);
 
   return (
     <>

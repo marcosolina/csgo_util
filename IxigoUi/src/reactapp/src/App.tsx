@@ -8,8 +8,11 @@ import { SnackbarKey, SnackbarProvider, useSnackbar } from "notistack";
 import { IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { RconContentProvider } from "./contents/rcon/indext";
-import { BrowserRouter } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { PlayersContentProvider } from "./contents/players/indext";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
+import { UI_CONTEXT_PATH } from "./lib/constants";
 
 const darkTheme = createTheme({
   palette: {
@@ -40,22 +43,27 @@ const App = () => {
   });
 
   return (
-    <BrowserRouter>
-      <SnackbarProvider maxSnack={10} action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
-        <I18nextProvider i18n={i18n}>
-          <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <QueryClientProvider client={queryClient}>
-              <RconContentProvider>
-                <PlayersContentProvider>
-                  <BaseLayout />
-                </PlayersContentProvider>
-              </RconContentProvider>
-            </QueryClientProvider>
-          </ThemeProvider>
-        </I18nextProvider>
-      </SnackbarProvider>
-    </BrowserRouter>
+    <LocalizationProvider dateAdapter={AdapterDateFns}>
+      <BrowserRouter>
+        <SnackbarProvider maxSnack={10} action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}>
+          <I18nextProvider i18n={i18n}>
+            <ThemeProvider theme={darkTheme}>
+              <CssBaseline />
+              <QueryClientProvider client={queryClient}>
+                <RconContentProvider>
+                  <PlayersContentProvider>
+                    <Routes>
+                      <Route path={`${UI_CONTEXT_PATH}/*`} element={<BaseLayout />} />
+                      <Route path={`${UI_CONTEXT_PATH}/:tabid/*`} element={<BaseLayout />} />
+                    </Routes>
+                  </PlayersContentProvider>
+                </RconContentProvider>
+              </QueryClientProvider>
+            </ThemeProvider>
+          </I18nextProvider>
+        </SnackbarProvider>
+      </BrowserRouter>
+    </LocalizationProvider>
   );
 };
 

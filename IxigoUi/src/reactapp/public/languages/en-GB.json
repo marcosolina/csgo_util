@@ -9,12 +9,12 @@
     "home": {
       "title": "IXI-GO: Monday Nights",
       "tabs": {
-        "0": "Dem Files",
-        "1": "Teams",
-        "2": "Charts",
-        "3": "Rcon",
-        "4": "Discord Bot",
-        "5": "Join us"
+        "demfiles": "Dem Files",
+        "teams": "Teams",
+        "stats": "Stats",
+        "rcon": "Rcon",
+        "discordbot": "Discord Bot",
+        "joinus": "Join us"
       }
     },
     "discord": {
@@ -37,33 +37,6 @@
     "demFiles": {
       "errors": {
         "loading": "Sorry something went wrong"
-      }
-    },
-    "charts": {
-      "mapPlayedCount": {
-        "title": "Number of times a map was played"
-      },
-      "avgPlayersScorePerMap": {
-        "title": "Average score per map",
-        "lblScoreTypes": "Score type",
-        "lblDpUsers": "Players",
-        "lblDpMaps": "Maps",
-        "lblMatchCount": "Last matches to consider",
-        "txtHelpMatchCount": "Zero means all available",
-        "txtHelpDpMaps": "No selection means all maps available"
-      },
-      "teamScorePerMap": {
-        "title": "HLTV Team score per map",
-        "lblDpMap": "Map",
-        "lblMatchCount": "Last matches to consider",
-        "txtHelpMatchCount": "Zero means all available"
-      },
-      "avgTeamsScorePerMap": {
-        "title": "Teams average score per map",
-        "lblScoreTypes": "Score type",
-        "lblDpMaps": "Maps",
-        "lblMatchCount": "Last matches to consider",
-        "txtHelpMatchCount": "Zero means all available"
       }
     },
     "serverInfo": {
@@ -161,7 +134,606 @@
           }
         }
       }
+    },
+    "stats": {
+      "breadcrumbs": {
+        "/stats": "Stats",
+        "/stats/player": "Player"
+      },
+      "leaderboard": {
+        "title": "Leaderboard",
+        "refresh-data": "Refresh data",
+        "error-loading-data": "Error loading data",
+        "column-headers": {
+          "username": { "tooltip": "Name", "header": "Name" },
+          "matches": { "tooltip": "Matches", "header": "M" },
+          "hltv_rating": {
+            "tooltip": "HLTV Rating - a weighted sum of K/D ratio, rounds survived ratio and rounds with multiple kills. This is the default rating used in the auto team balancing.",
+            "header": "HLTV"
+          },
+          "first_weapon": { "tooltip": "Primary weapon - most kills", "header": "W1" },
+          "second_weapon": { "tooltip": "Secondary weapon", "header": "W2" },
+          "averagewinscore": { "tooltip": "Average Match Score Difference", "header": "SCR+" },
+          "winlossratio": { "tooltip": "Win Loss Ratio", "header": "W/L" },
+          "kills": { "tooltip": "Total kills", "header": "KILLS" },
+          "rws": {
+            "tooltip": "Round Win Share - average ratio of the amount of damage done by the player as a proportion of the total damage done by the winning team in each round",
+            "header": "RWS"
+          },
+          "kast": {
+            "tooltip": "Ratio of rounds with either a kill, an assist, survived or a trade death averaged across all matches.",
+            "header": "KAST"
+          },
+          "headshot_percentage": { "tooltip": "Headshot kill percentage", "header": "HS%" },
+          "_1vnp": {
+            "tooltip": "Total successful clutch rounds (rounds won where a player's last teammate died with players still alive on the opponents team)",
+            "header": "1vN%"
+          },
+          "ebt": { "tooltip": "Average enemy blind time per match", "header": "EBT" },
+          "mvp": { "tooltip": "Total MVP (Most Valuable Player) rounds", "header": "MVP" },
+          "assists": { "tooltip": "Total assists", "header": "A" },
+          "deaths": { "tooltip": "Total deaths", "header": "D" },
+          "kdr": { "tooltip": "Kill/Death ratio", "header": "K/D" },
+          "adr": { "tooltip": "Average damage per round", "header": "ADR" },
+          "kpr": { "tooltip": "Average kills per round", "header": "K/R" },
+          "dpr": { "tooltip": "Average deaths per round", "header": "D/R" },
+          "headshots": { "tooltip": "Total headshot kills", "header": "HS" },
+          "rounds": { "tooltip": "Number of rounds played", "header": "R" },
+          "wins": { "tooltip": "Total matches won", "header": "Won" },
+          "loss": { "tooltip": "Total matches lost", "header": "Lost" },
+          "ff": { "tooltip": "Total friendly fire/team kills", "header": "FF" },
+          "ek": { "tooltip": "Total entry kills (first kills of the round)", "header": "EK" },
+          "bp": { "tooltip": "Total bombs planted", "header": "BP" },
+          "bd": { "tooltip": "Total bombs defused", "header": "BD" },
+          "hr": { "tooltip": "Total hostages rescued", "header": "HR" },
+          "_5k": { "tooltip": "Total rounds with 5 or more kills", "header": "5K" },
+          "_4k": { "tooltip": "Total rounds with exactly 4 kills", "header": "4K" },
+          "_3k": { "tooltip": "Total rounds with exactly 3 kills", "header": "3K" },
+          "_2k": { "tooltip": "Total rounds with exactly 2 kills", "header": "2K" },
+          "_1k": { "tooltip": "Total rounds with exactly 1 kills", "header": "1K" },
+          "tk": { "tooltip": "Total trade kills (kills within 5 seconds of a teammate dying)", "header": "TK" },
+          "td": { "tooltip": "Total trade deaths (deaths within 5 seconds of an opponent dying)", "header": "TD" },
+          "tdh": { "tooltip": "Total damage to health", "header": "TDH" },
+          "tda": { "tooltip": "Total damage to armour", "header": "TDA" },
+          "ffd": { "tooltip": "Total damage to team mates", "header": "FFD" },
+          "fbt": { "tooltip": "Average team mate blind time per match", "header": "FBT" },
+          "ud": {
+            "tooltip": "Average utility damage (HE grenades, molotovs plus incediary) damage per match",
+            "header": "UD"
+          },
+          "fkr": { "tooltip": "Percentage of first kill rounds", "header": "EK%" },
+          "fa": {
+            "tooltip": "Total flash assist kills - where teammate kills an opponent blinded by your flash",
+            "header": "FA"
+          },
+          "_1v1": {
+            "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 1 player still alive on the opponents team)",
+            "header": "1v1"
+          },
+          "_1v2": {
+            "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 2 players still alive on the opponents team)",
+            "header": "1v2"
+          },
+          "_1v3": {
+            "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 3 players still alive on the opponents team)",
+            "header": "1v3"
+          },
+          "_1v4": {
+            "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 4 players still alive on the opponents team)",
+            "header": "1v4"
+          },
+          "_1v5": {
+            "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 5 or more player still alive on the opponents team)",
+            "header": "1v5"
+          }
+        }
+      },
+      "player": {
+        "title": "Player: ",
+        "tabs": {
+          "overall": "Overall",
+          "graphs": "Graphs",
+          "weapons": "Weapons",
+          "maps": "Maps",
+          "matches": "Matches"
+        },
+        "content": {
+          "overall": {
+            "radar-chart": {
+              "data-set-label": "Player stats",
+              "descriptions": {
+                "kpr": "Kills per round",
+                "hltv": "HLTV rating",
+                "adr": "Average damage per round",
+                "kast": "Kill/Assist/Survival/Trade percentage",
+                "dpr": "Deaths per round (lower values give higher z-score)",
+                "hsp": "Headshot kill %",
+                "ud": "Utility damage",
+                "ebt": "Average enemy blind time"
+              }
+            },
+            "clutch-stats": {
+              "title": "Clutch stats",
+              "toolbar-label": "1vX",
+              "column-headers": {
+                "1v1": { "tooltip": "One vs one", "header": "1v1" },
+                "1v2": { "tooltip": "Two vs two", "header": "1v2" },
+                "1v3": { "tooltip": "Three vs three", "header": "1v3" },
+                "1v4": { "tooltip": "Four vs four", "header": "1v4" },
+                "1v5": { "tooltip": "Five vs five", "header": "1v5" }
+              }
+            },
+            "entry-kill-stats": {
+              "title": "Entry Kill Stats",
+              "toolbar-label": "Overall",
+              "lblSuccess": "Success",
+              "lblAttempts": "Attempts",
+              "column-headers": {
+                "desc": { "tooltip": "", "header": "" },
+                "all": { "tooltip": "All", "header": "All" },
+                "ts": { "tooltip": "Terrorist", "header": "Ts" },
+                "ct": { "tooltip": "Counter terrorist", "header": "CTs" }
+              }
+            },
+            "weapons-stats": {
+              "error-loading-data": "Error loading data",
+              "column-headers": {
+                "weapon": { "header": "Weapon", "tooltip": "Weapon" },
+                "weapon_img": { "header": "", "tooltip": "Weapon" },
+                "kills": { "header": "K", "tooltip": "  Total kills" },
+                "headshotkills": { "header": "HSK", "tooltip": "Total headshot kills" },
+                "damage_per_shot": { "header": "DPS", "tooltip": "Damage per shot" },
+                "accuracy": { "header": "ACC", "tooltip": "Accuracy" },
+                "hits": { "header": "HITS", "tooltip": "Total hits" },
+                "total_damage": { "header": "TDMG", "tooltip": "Total damage" },
+                "damage_per_hit": { "header": "DPH", "tooltip": "Damage per hit" },
+                "headshotkills_percentage": { "header": "HSKP", "tooltip": "Headshot kills percentage" },
+                "shots_fired": { "header": "SHOTS", "tooltip": "Shots fired" },
+                "chest_hit_percentage": { "header": "CHP", "tooltip": "Chest hit percentage" },
+                "stomach_hit_percentage": { "header": "SHP", "tooltip": "Stomach hit percentage" },
+                "arm_hit_percentage": { "header": "AHP", "tooltip": "Arm hit percentage" },
+                "leg_hit_percentage": { "header": "LHP", "tooltip": "Leg hit percentage" }
+              }
+            },
+            "win-rate": {
+              "title": "Win rate",
+              "toolbar-label": "Overall",
+              "column-headers": {
+                "desc": { "tooltip": "Description", "header": "" },
+                "value": { "tooltip": "Value", "header": "" },
+                "row1": { "label": "Played" },
+                "row2": { "label": "Won" },
+                "row3": { "label": "Lost" }
+              }
+            },
+            "head-shots": {
+              "title": "Headshot kill %",
+              "toolbar-label": "%",
+              "column-headers": {
+                "desc": { "tooltip": "Description", "header": "" },
+                "value": { "tooltip": "Value", "header": "" },
+                "row1": { "label": "Kills" },
+                "row2": { "label": "Deaths" },
+                "row3": { "label": "Assists" },
+                "row4": { "label": "Headshots" }
+              }
+            },
+            "damage": {
+              "title": "Damage / Round",
+              "toolbar-label": "ADR",
+              "column-headers": {
+                "desc": { "tooltip": "Description", "header": "" },
+                "value": { "tooltip": "Value", "header": "" },
+                "row1": { "label": "Damage health" },
+                "row2": { "label": "Damage armor" },
+                "row3": { "label": "Team damage" },
+                "row4": { "label": "Rounds" }
+              }
+            },
+            "utility": {
+              "title": "Utility",
+              "toolbar-label": "UD",
+              "column-headers": {
+                "desc": { "tooltip": "Description", "header": "" },
+                "value": { "tooltip": "Value", "header": "" },
+                "row1": { "label": "Flash assists" },
+                "row2": { "label": "Blind time (avg)" },
+                "row3": { "label": "Team blind (avg)" }
+              }
+            }
+          },
+          "graphs": {
+            "inputs": {
+              "lblScoreTypeDropDown": "Graphs",
+              "lblBinningLevel": "Binning level",
+              "lblStartDate": "Start date",
+              "lblEndDate": "End date"
+            },
+            "lblTrendline": "Trendline",
+            "lblBinningLevelWeek": "Week",
+            "lblBinningLevelMonth": "Month"
+          },
+          "weapons": {
+            "error-loading-data": "Error loading data",
+            "column-headers": {
+              "username": { "tooltip": "Name", "header": "Name" },
+              "weapon": { "tooltip": "Weapon", "header": "WEAPON" },
+              "weapon_img": { "tooltip": "Weapon Image", "header": "" },
+              "kills": { "tooltip": "Total Kills", "header": "K" },
+              "headshotkills": { "tooltip": "Total Headshot Kills", "header": "HSK" },
+              "damage_per_shot": { "tooltip": "Damage per Shot", "header": "DPS" },
+              "accuracy": { "tooltip": "Accuracy", "header": "ACC" },
+              "hits": { "tooltip": "Total Hits", "header": "HITS" },
+              "total_damage": { "tooltip": "Total Damage", "header": "TDMG" },
+              "damage_per_hit": { "tooltip": "Damage per Hit", "header": "DPH" },
+              "headshotkills_percentage": { "tooltip": "Headshot Kills Percentage", "header": "HSKP" },
+              "shots_fired": { "tooltip": "Shots Fired", "header": "SHOTS" },
+              "headshot_percentage": { "tooltip": "Head Hit Percentage", "header": "HHP" },
+              "chest_hit_percentage": { "tooltip": "Chest Hit Percentage", "header": "CHP" },
+              "stomach_hit_percentage": { "tooltip": "Stomach Hit Percentage", "header": "SHP" },
+              "arm_hit_percentage": { "tooltip": "Arm Hit Percentage", "header": "AHP" },
+              "leg_hit_percentage": { "tooltip": "Leg Hit Percentage", "header": "LHP" }
+            }
+          },
+          "maps": {
+            "refresh-data": "Refresh data",
+            "error-loading-data": "Error loading data",
+            "column-headers": {
+              "mapname": { "tooltip": "Map", "header": "Map" },
+              "username": { "tooltip": "Name", "header": "Name" },
+              "matches": { "tooltip": "Matches", "header": "M" },
+              "hltv_rating": {
+                "tooltip": "HLTV Rating - a weighted sum of K/D ratio, rounds survived ratio and rounds with multiple kills. This is the default rating used in the auto team balancing.",
+                "header": "HLTV"
+              },
+              "first_weapon": { "tooltip": "Primary weapon - most kills", "header": "W1" },
+              "second_weapon": { "tooltip": "Secondary weapon", "header": "W2" },
+              "averagewinscore": { "tooltip": "Average Match Score Difference", "header": "SCR+" },
+              "winlossratio": { "tooltip": "Win Loss Ratio", "header": "W/L" },
+              "kills": { "tooltip": "Total kills", "header": "KILLS" },
+              "rws": {
+                "tooltip": "Round Win Share - average ratio of the amount of damage done by the player as a proportion of the total damage done by the winning team in each round",
+                "header": "RWS"
+              },
+              "kast": {
+                "tooltip": "Ratio of rounds with either a kill, an assist, survived or a trade death averaged across all matches.",
+                "header": "KAST"
+              },
+              "headshot_percentage": { "tooltip": "Headshot kill percentage", "header": "HS%" },
+              "_1vnp": {
+                "tooltip": "Total successful clutch rounds (rounds won where a player's last teammate died with players still alive on the opponents team)",
+                "header": "1vN%"
+              },
+              "ebt": { "tooltip": "Average enemy blind time per match", "header": "EBT" },
+              "mvp": { "tooltip": "Total MVP (Most Valuable Player) rounds", "header": "MVP" },
+              "assists": { "tooltip": "Total assists", "header": "A" },
+              "deaths": { "tooltip": "Total deaths", "header": "D" },
+              "kdr": { "tooltip": "Kill/Death ratio", "header": "K/D" },
+              "adr": { "tooltip": "Average damage per round", "header": "ADR" },
+              "kpr": { "tooltip": "Average kills per round", "header": "K/R" },
+              "dpr": { "tooltip": "Average deaths per round", "header": "D/R" },
+              "headshots": { "tooltip": "Total headshot kills", "header": "HS" },
+              "rounds": { "tooltip": "Number of rounds played", "header": "R" },
+              "wins": { "tooltip": "Total matches won", "header": "Won" },
+              "loss": { "tooltip": "Total matches lost", "header": "Lost" },
+              "ff": { "tooltip": "Total friendly fire/team kills", "header": "FF" },
+              "ek": { "tooltip": "Total entry kills (first kills of the round)", "header": "EK" },
+              "bp": { "tooltip": "Total bombs planted", "header": "BP" },
+              "bd": { "tooltip": "Total bombs defused", "header": "BD" },
+              "hr": { "tooltip": "Total hostages rescued", "header": "HR" },
+              "_5k": { "tooltip": "Total rounds with 5 or more kills", "header": "5K" },
+              "_4k": { "tooltip": "Total rounds with exactly 4 kills", "header": "4K" },
+              "_3k": { "tooltip": "Total rounds with exactly 3 kills", "header": "3K" },
+              "_2k": { "tooltip": "Total rounds with exactly 2 kills", "header": "2K" },
+              "_1k": { "tooltip": "Total rounds with exactly 1 kills", "header": "1K" },
+              "tk": { "tooltip": "Total trade kills (kills within 5 seconds of a teammate dying)", "header": "TK" },
+              "td": { "tooltip": "Total trade deaths (deaths within 5 seconds of an opponent dying)", "header": "TD" },
+              "tdh": { "tooltip": "Total damage to health", "header": "TDH" },
+              "tda": { "tooltip": "Total damage to armour", "header": "TDA" },
+              "ffd": { "tooltip": "Total damage to team mates", "header": "FFD" },
+              "fbt": { "tooltip": "Average team mate blind time per match", "header": "FBT" },
+              "ud": {
+                "tooltip": "Average utility damage (HE grenades, molotovs plus incediary) damage per match",
+                "header": "UD"
+              },
+              "fkr": { "tooltip": "Percentage of first kill rounds", "header": "EK%" },
+              "fa": {
+                "tooltip": "Total flash assist kills - where teammate kills an opponent blinded by your flash",
+                "header": "FA"
+              },
+              "_1v1": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 1 player still alive on the opponents team)",
+                "header": "1v1"
+              },
+              "_1v2": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 2 players still alive on the opponents team)",
+                "header": "1v2"
+              },
+              "_1v3": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 3 players still alive on the opponents team)",
+                "header": "1v3"
+              },
+              "_1v4": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 4 players still alive on the opponents team)",
+                "header": "1v4"
+              },
+              "_1v5": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 5 or more player still alive on the opponents team)",
+                "header": "1v5"
+              }
+            }
+          },
+          "matches": {
+            "refresh-data": "Refresh data",
+            "error-loading-data": "Error loading data",
+            "column-headers": {
+              "match_date": { "tooltip": "Date", "header": "Date" },
+              "roundsplayed": { "tooltip": "Rounds played", "header": "RNDS" },
+              "score": { "tooltip": "Score", "header": "SCR" },
+              "mapName": { "tooltip": "Map", "header": "Map" },
+              "username": { "tooltip": "Name", "header": "Name" },
+              "matches": { "tooltip": "Matches", "header": "M" },
+              "hltv_rating": {
+                "tooltip": "HLTV Rating - a weighted sum of K/D ratio, rounds survived ratio and rounds with multiple kills. This is the default rating used in the auto team balancing.",
+                "header": "HLTV"
+              },
+              "first_weapon": { "tooltip": "Primary weapon - most kills", "header": "W1" },
+              "second_weapon": { "tooltip": "Secondary weapon", "header": "W2" },
+              "averagewinscore": { "tooltip": "Average Match Score Difference", "header": "SCR+" },
+              "winlossratio": { "tooltip": "Win Loss Ratio", "header": "W/L" },
+              "kills": { "tooltip": "Total kills", "header": "KILLS" },
+              "rws": {
+                "tooltip": "Round Win Share - average ratio of the amount of damage done by the player as a proportion of the total damage done by the winning team in each round",
+                "header": "RWS"
+              },
+              "kast": {
+                "tooltip": "Ratio of rounds with either a kill, an assist, survived or a trade death averaged across all matches.",
+                "header": "KAST"
+              },
+              "headshot_percentage": { "tooltip": "Headshot kill percentage", "header": "HS%" },
+              "_1vnp": {
+                "tooltip": "Total successful clutch rounds (rounds won where a player's last teammate died with players still alive on the opponents team)",
+                "header": "1vN%"
+              },
+              "ebt": { "tooltip": "Average enemy blind time per match", "header": "EBT" },
+              "mvp": { "tooltip": "Total MVP (Most Valuable Player) rounds", "header": "MVP" },
+              "assists": { "tooltip": "Total assists", "header": "A" },
+              "deaths": { "tooltip": "Total deaths", "header": "D" },
+              "kdr": { "tooltip": "Kill/Death ratio", "header": "K/D" },
+              "adr": { "tooltip": "Average damage per round", "header": "ADR" },
+              "kpr": { "tooltip": "Average kills per round", "header": "K/R" },
+              "dpr": { "tooltip": "Average deaths per round", "header": "D/R" },
+              "headshots": { "tooltip": "Total headshot kills", "header": "HS" },
+              "rounds": { "tooltip": "Number of rounds played", "header": "R" },
+              "wins": { "tooltip": "Total matches won", "header": "Won" },
+              "loss": { "tooltip": "Total matches lost", "header": "Lost" },
+              "ff": { "tooltip": "Total friendly fire/team kills", "header": "FF" },
+              "ek": { "tooltip": "Total entry kills (first kills of the round)", "header": "EK" },
+              "bp": { "tooltip": "Total bombs planted", "header": "BP" },
+              "bd": { "tooltip": "Total bombs defused", "header": "BD" },
+              "hr": { "tooltip": "Total hostages rescued", "header": "HR" },
+              "_5k": { "tooltip": "Total rounds with 5 or more kills", "header": "5K" },
+              "_4k": { "tooltip": "Total rounds with exactly 4 kills", "header": "4K" },
+              "_3k": { "tooltip": "Total rounds with exactly 3 kills", "header": "3K" },
+              "_2k": { "tooltip": "Total rounds with exactly 2 kills", "header": "2K" },
+              "_1k": { "tooltip": "Total rounds with exactly 1 kills", "header": "1K" },
+              "tk": { "tooltip": "Total trade kills (kills within 5 seconds of a teammate dying)", "header": "TK" },
+              "td": { "tooltip": "Total trade deaths (deaths within 5 seconds of an opponent dying)", "header": "TD" },
+              "tdh": { "tooltip": "Total damage to health", "header": "TDH" },
+              "tda": { "tooltip": "Total damage to armour", "header": "TDA" },
+              "ffd": { "tooltip": "Total damage to team mates", "header": "FFD" },
+              "fbt": { "tooltip": "Average team mate blind time per match", "header": "FBT" },
+              "ud": {
+                "tooltip": "Average utility damage (HE grenades, molotovs plus incediary) damage per match",
+                "header": "UD"
+              },
+              "fkr": { "tooltip": "Percentage of first kill rounds", "header": "EK%" },
+              "fa": {
+                "tooltip": "Total flash assist kills - where teammate kills an opponent blinded by your flash",
+                "header": "FA"
+              },
+              "_1v1": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 1 player still alive on the opponents team)",
+                "header": "1v1"
+              },
+              "_1v2": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 2 players still alive on the opponents team)",
+                "header": "1v2"
+              },
+              "_1v3": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 3 players still alive on the opponents team)",
+                "header": "1v3"
+              },
+              "_1v4": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 4 players still alive on the opponents team)",
+                "header": "1v4"
+              },
+              "_1v5": {
+                "tooltip": "Total successful 1v1 clutch rounds (rounds won where a player's last teammate died with 5 or more player still alive on the opponents team)",
+                "header": "1v5"
+              }
+            }
+          }
+        }
+      },
+      "killmatrix": {
+        "title": "Kills Matrix"
+      },
+      "match": {
+        "title": "Recent Matches",
+        "refresh-data": "Refresh data",
+        "error-loading-data": "Error loading data",
+        "team": "Team",
+        "header": "Match",
+        "column-headers": {
+          "match_date": { "tooltip": "Match Date", "header": "Date" },
+          "mapname": { "tooltip": "Map Name", "header": "Map" },
+          "team1_total_wins": { "tooltip": "Team 1 Round Wins", "header": "" },
+          "team2_total_wins": { "tooltip": "Team 2 Round Wins", "header": "" },
+          "total_t_wins": { "tooltip": "Total Terrorist Wins", "header": "T Wins" },
+          "total_ct_wins": { "tooltip": "Total Counter Terrorist Wins", "header": "CT Wins" },
+          "score_differential": {
+            "tooltip": "Score Differential between Terrorists and CTs",
+            "header": "Score Differential"
+          }
+        },
+        "tabs": {
+          "scoreboard": "Scoreboard",
+          "rounds": "Rounds",
+          "weapons": "Weapons",
+          "duels": "Duels"
+        },
+        "roundscorecard": {
+          "column-headers": {
+            "team1.total_equipment_value": {
+              "tooltip": "Starting equipment value/cash spent for Team 1",
+              "header": "Equipment/Spend"
+            },
+            "team1.round_type": { "tooltip": "Round Type for Team 1", "header": "Type" },
+            "team1.player_count": { "tooltip": "Player Count for Team 1", "header": "Players" },
+            "team1.team1_score": { "tooltip": "Team 1 Score", "header": "T1" },
+            "team1.round_end_reason": { "tooltip": "Round End Reason for Team 1", "header": "" },
+            "team2.team2_score": { "tooltip": "Team 2 Score", "header": "T2" },
+            "team2.player_count": { "tooltip": "Player Count for Team 2", "header": "Players" },
+            "team2.round_type": { "tooltip": "Round Type for Team 2", "header": "Type" },
+            "team2.total_equipment_value": {
+              "tooltip": "Starting equipment value/cash spent for Team 2",
+              "header": "Equipment/Spend"
+            },
+            "round": { "tooltip": "Round number", "header": "R" }
+          }
+        },
+        "teamtable": {
+          "column-headers": {
+            "usernames": {
+              "tooltip": "Player",
+              "header": "PLAYER",
+              "team1header": "TEAM1 PLAYERS",
+              "team2header": "TEAM2 PLAYERS"
+            },
+            "roundsplayed": { "tooltip": "Rounds Played", "header": "R" },
+            "last_round_team": { "tooltip": "Team", "header": "Team" },
+            "rounds_on_team1": { "tooltip": "Rounds on Team 1", "header": "RNDT1" },
+            "rounds_on_team2": { "tooltip": "Rounds on Team 2", "header": "RNDT2" },
+            "kills": { "tooltip": "Total kills", "header": "K" },
+            "deaths": { "tooltip": "Total deaths", "header": "D" },
+            "assists": { "tooltip": "Total assists", "header": "A" },
+            "score": { "tooltip": "Score", "header": "SCR" },
+            "rws": { "tooltip": "Round Win Share", "header": "RWS" },
+            "headshots": { "tooltip": "Headshots", "header": "HS" },
+            "headshot_percentage": { "tooltip": "Headshot Percentage", "header": "HS%" },
+            "mvp": { "tooltip": "Most Valuable Player", "header": "MVP" },
+            "hltv_rating": { "tooltip": "HLTV Rating", "header": "HLTV" },
+            "adr": { "tooltip": "Average Damage per Round", "header": "ADR" },
+            "kpr": { "tooltip": "Kills Per Round", "header": "KPR" },
+            "dpr": { "tooltip": "Deaths Per Round", "header": "DPR" },
+            "kdr": { "tooltip": "Kill/Death Ratio", "header": "K/D" },
+            "hr": { "tooltip": "Hostages Rescued", "header": "HR" },
+            "bp": { "tooltip": "Bomb Planted", "header": "BP" },
+            "ud": { "tooltip": "Utility Damage", "header": "UD" },
+            "ffd": { "tooltip": "Friendly Fire Damage", "header": "FFD" },
+            "td": { "tooltip": "Trade Deaths", "header": "TD" },
+            "tda": { "tooltip": "Total Damage Armour", "header": "TDA" },
+            "tdh": { "tooltip": "Total Damage Health", "header": "TDH" },
+            "fa": { "tooltip": "Flash Assists", "header": "FA" },
+            "ebt": { "tooltip": "Enemy Blind Time", "header": "EBT" },
+            "fbt": { "tooltip": "Friendly Blind Time", "header": "FBT" },
+            "ek": { "tooltip": "Entry Kills", "header": "EK" },
+            "tk": { "tooltip": "Trade Kills", "header": "TK" },
+            "_1k": { "tooltip": "One Kill", "header": "1K" },
+            "_2k": { "tooltip": "Two Kills", "header": "2K" },
+            "_3k": { "tooltip": "Three Kills", "header": "3K" },
+            "_4k": { "tooltip": "Four Kills", "header": "4K" },
+            "_5k": { "tooltip": "Five Kills", "header": "5K" },
+            "_1v1": { "tooltip": "1v1 Clutches", "header": "1v1" },
+            "_1v2": { "tooltip": "1v2 Clutches", "header": "1v2" },
+            "_1v3": { "tooltip": "1v3 Clutches", "header": "1v3" },
+            "_1v4": { "tooltip": "1v4 Clutches", "header": "1v4" },
+            "_1v5": { "tooltip": "1v5 Clutches", "header": "1v5" }
+          }
+        },
+        "weapons": {
+          "title": "Weapons",
+          "refresh-data": "Refresh data",
+          "error-loading-data": "Error loading data",
+          "column-headers": {
+            "username": { "tooltip": "Name", "header": "Name" },
+            "weapon": { "tooltip": "Weapon", "header": "WEAPON" },
+            "weapon_img": { "tooltip": "Weapon Image", "header": "" },
+            "kills": { "tooltip": "Total Kills", "header": "K" },
+            "headshotkills": { "tooltip": "Total Headshot Kills", "header": "HSK" },
+            "damage_per_shot": { "tooltip": "Damage per Shot", "header": "DPS" },
+            "accuracy": { "tooltip": "Accuracy", "header": "ACC" },
+            "hits": { "tooltip": "Total Hits", "header": "HITS" },
+            "total_damage": { "tooltip": "Total Damage", "header": "TDMG" },
+            "damage_per_hit": { "tooltip": "Damage per Hit", "header": "DPH" },
+            "headshotkills_percentage": { "tooltip": "Headshot Kills Percentage", "header": "HSKP" },
+            "shots_fired": { "tooltip": "Shots Fired", "header": "SHOTS" },
+            "headshot_percentage": { "tooltip": "Head Hit Percentage", "header": "HHP" },
+            "chest_hit_percentage": { "tooltip": "Chest Hit Percentage", "header": "CHP" },
+            "stomach_hit_percentage": { "tooltip": "Stomach Hit Percentage", "header": "SHP" },
+            "arm_hit_percentage": { "tooltip": "Arm Hit Percentage", "header": "AHP" },
+            "leg_hit_percentage": { "tooltip": "Leg Hit Percentage", "header": "LHP" }
+          }
+        },
+        "killmatrix": {
+          "killer": "Killer",
+          "victim": "Victim"
+        }
+      },
+      "maps": {
+        "weapons": {
+          "refresh": "Refresh data",
+          "error-loading-data": "Error loading data"
+        },
+        "matches": {
+          "refresh": "Refresh data",
+          "error-loading-data": "Error loading data"
+        }
+      }
     }
+  },
+  "scoreType": {
+    "kills": "Total Kills",
+    "deaths": "Total Deaths",
+    "assists": "Total Assists",
+    "score": "Score",
+    "rws": "Round Win Share",
+    "rws_total": "Round Win Share total",
+    "headshots": "Headshots",
+    "headshot_percentage": "Headshot Percentage",
+    "mvp": "Most Valuable Player",
+    "hltv_rating": "HLTV Rating",
+    "adr": "Average Damage per Round",
+    "kpr": "Kills Per Round",
+    "dpr": "Deaths Per Round",
+    "kast": "KAST",
+    "kast_total": "KAST Total",
+    "kdr": "Kill/Death Ratio",
+    "hr": "Hostages Rescued",
+    "bp": "Bomb Planted",
+    "ud": "Utility Damage",
+    "ffd": "Friendly Fire Damage",
+    "ffk": "Friendly Fire kills",
+    "td": "Trade Deaths",
+    "bd": "Bomb defused",
+    "tda": "Total Damage Armour",
+    "tdh": "Total Damage Health",
+    "fa": "Flash Assists",
+    "ebt": "Enemy Blind Time",
+    "fbt": "Friendly Blind Time",
+    "ek": "Entry Kills",
+    "tk": "Trade Kills",
+    "_1k": "One Kill",
+    "_2k": "Two Kills",
+    "_3k": "Three Kills",
+    "_4k": "Four Kills",
+    "_5k": "Five Kills",
+    "_1v1": "1v1 Clutches",
+    "_1v2": "1v2 Clutches",
+    "_1v3": "1v3 Clutches",
+    "_1v4": "1v4 Clutches",
+    "_1v5": "1v5 Clutches"
   },
   "error": {
     "generic": {

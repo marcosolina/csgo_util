@@ -1,15 +1,15 @@
 package com.ixigo.discordbot.models.svc.discord;
 
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUser;
+import com.ixigo.demmanagercontract.models.rest.demdata.data.RestUsers;
 
 public class SvcPlayer {
 	private SvcDiscordUser discordDetails;
-	private RestUser steamDetails;
+	private RestUsers steamDetails;
 
 	public SvcPlayer() {
 	}
 
-	public SvcPlayer(SvcDiscordUser discordDetails, RestUser steamDetails) {
+	public SvcPlayer(SvcDiscordUser discordDetails, RestUsers steamDetails) {
 		super();
 		this.discordDetails = discordDetails;
 		this.steamDetails = steamDetails;
@@ -23,12 +23,11 @@ public class SvcPlayer {
 		this.discordDetails = discordDetails;
 	}
 
-	public RestUser getSteamDetails() {
+	public RestUsers getSteamDetails() {
 		return steamDetails;
 	}
 
-	public void setSteamDetails(RestUser steamDetails) {
+	public void setSteamDetails(RestUsers steamDetails) {
 		this.steamDetails = steamDetails;
 	}
-
 }

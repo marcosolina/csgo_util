@@ -3,7 +3,6 @@ package com.ixigo.demmanagercontract.models.enums;
 public enum UsersScoresQueryParam {
 	NUMBER_OF_MATCHES("numberOfMatches"),
 	USERS_STEAM_IDS("usersIDs"),
-	MINIMUM_PERCE_MATCH_PLAYED("minPercPlayed"),
     ;
     // @formatter:on
 

@@ -12,13 +12,9 @@ export const SERVICES_URLS = {
     "delete-dem-file-from-queue": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/files", // Append the file name as path param
     "post-parse-queued-files": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/parse/queued",
     "post-parse-all-files": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/parse/all",
-    "get-dem-data-scores-type": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/scorestype",
     "get-dem-data-users": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/users",
     "get-dem-data-users-scores": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/demdata/usersscores",
-    "get-charts-data-maps-played": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/mapsplayed",
-    "get-charts-avg-players-scores-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/avgplayersscore",
-    "get-charts-team-score-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/scorepermap",
-    "get-charts-avg-teams-scores-per-map": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/avgteamscore",
+    "get-stats": PROXY_BASE_PATH + "/ixigo-dem-manager/demmanager/charts/view",
   },
   "event-dispatcher": {
     "gateway-path": "ixigo-event-dispatcher",
@@ -31,6 +27,7 @@ export const SERVICES_URLS = {
     "gateway-path": "ixigo-players-manager",
     "base-url": PROXY_BASE_PATH + "/ixigo-players-manager/playersmanager",
     "get-teams": PROXY_BASE_PATH + "/ixigo-players-manager/playersmanager/teams",
+    "get-scores-type": PROXY_BASE_PATH + "/ixigo-players-manager/playersmanager/teams/scorestype",
   },
   "server-helper": {
     "get-maps": PROXY_BASE_PATH + "/ixigo-server-helper/ixigohelper/maps",

@@ -5,13 +5,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
+import com.ixigo.demmanager.enums.ParserEnvironment;
 import com.ixigo.demmanager.services.implementations.ChartsDataImp;
 import com.ixigo.demmanager.services.implementations.DemFileManagerImp;
 import com.ixigo.demmanager.services.implementations.DemFileParserImp;
 import com.ixigo.demmanager.services.implementations.TelegramNotificationService;
 import com.ixigo.demmanager.services.implementations.demprocessor.CmdExecuterImpl;
-import com.ixigo.demmanager.services.implementations.demprocessor.DemProcessorRasp;
-import com.ixigo.demmanager.services.implementations.demprocessor.DemProcessorWindows;
+import com.ixigo.demmanager.services.implementations.demprocessor.nodejs.DemProcessorNodeJsLinux;
+import com.ixigo.demmanager.services.implementations.demprocessor.nodejs.DemProcessorNodeJsWindows;
 import com.ixigo.demmanager.services.interfaces.ChartsData;
 import com.ixigo.demmanager.services.interfaces.CmdExecuter;
 import com.ixigo.demmanager.services.interfaces.DemFileManager;
@@ -57,11 +58,7 @@ public class Services {
 
 	@Bean
 	public DemProcessor getDemProcessor() {
-		switch (props.getParserEnvironment()) {
-		case RASP:
-			return new DemProcessorRasp();
-		default:
-			return new DemProcessorWindows();
-		}
+		boolean runningOnWindows = props.getParserEnvironment() == ParserEnvironment.WINDOWS;
+		return runningOnWindows ? new DemProcessorNodeJsWindows() : new DemProcessorNodeJsLinux();
 	}
 }

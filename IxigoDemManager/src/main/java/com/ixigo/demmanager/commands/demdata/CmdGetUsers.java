@@ -1,6 +1,6 @@
 package com.ixigo.demmanager.commands.demdata;
 
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
+import com.ixigo.demmanagercontract.models.rest.demdata.responses.RestUsersResp;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 
 /**
@@ -9,6 +9,6 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
  * @author marco
  *
  */
-public class CmdGetUsers implements WebCommandRequest<RestUsers> {
+public class CmdGetUsers implements WebCommandRequest<RestUsersResp> {
 
 }

@@ -1,33 +1,30 @@
 import { AppBar, Container, Tab, Tabs, Typography } from "@mui/material";
 import { Box } from "@mui/system";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
-import ChartsContent from "../../contents/charts/ChartsContent";
 import DemFilesContent from "../../contents/dem-files/DemFilesContent";
 import DiscordBotContent from "../../contents/discord-bot/DiscordBotContent";
 import PlayersContent from "../../contents/players/PlayersContent";
 import RconContent from "../../contents/rcon/RconContent";
+import StatsContent from "../../contents/stats/StatsContent";
 import ServerInfoContent from "../../contents/server-info/ServerInfoContent";
 import Case from "../switch-case/Case";
 import Switch from "../switch-case/Switch";
-import { useSearchParams } from "react-router-dom";
-import { QUERY_PARAMS } from "../../lib/constants";
+import { useNavigate, useParams } from "react-router-dom";
+import { MAIN_TABS, UI_CONTEXT_PATH } from "../../lib/constants";
 
 const LANG_BASE_PATH = "page.home";
 
 const BaseLayout = () => {
   const { t } = useTranslation();
-  const [value, setValue] = useState(0);
-  const [searchParams] = useSearchParams();
+  const { tabid } = useParams();
+  const [selectedTab, setSelectedTab] = useState(tabid || MAIN_TABS.DEMFILES);
+  const history = useNavigate();
 
-  useEffect(() => {
-    if (searchParams.has(QUERY_PARAMS.TAB) && parseInt(searchParams.get(QUERY_PARAMS.TAB) as string) < 6) {
-      setValue(parseInt(searchParams.get(QUERY_PARAMS.TAB) as string));
-    }
-  }, [searchParams]);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+    const newPath = `${UI_CONTEXT_PATH}/${newValue}`;
+    history(newPath);
+    setSelectedTab(newValue);
   };
 
   return (
@@ -39,7 +36,7 @@ const BaseLayout = () => {
       </AppBar>
       <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
         <Tabs
-          value={value}
+          value={selectedTab}
           onChange={handleChange}
           aria-label="basic tabs example"
           centered
@@ -49,34 +46,34 @@ const BaseLayout = () => {
             },
           }}
         >
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.0`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.1`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.2`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.3`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.4`)} />
-          <Tab label={t(`${LANG_BASE_PATH}.tabs.5`)} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.DEMFILES}`)} value={MAIN_TABS.DEMFILES} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.TEAMS}`)} value={MAIN_TABS.TEAMS} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.STATS}`)} value={MAIN_TABS.STATS} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.RCON}`)} value={MAIN_TABS.RCON} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.DISCORDBOT}`)} value={MAIN_TABS.DISCORDBOT} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.JOINUS}`)} value={MAIN_TABS.JOINUS} />
         </Tabs>
       </Box>
 
       <Container>
         <Box sx={{ m: "2rem" }} />
-        <Switch value={value}>
-          <Case case={0}>
+        <Switch value={selectedTab}>
+          <Case case={MAIN_TABS.DEMFILES}>
             <DemFilesContent />
           </Case>
-          <Case case={1}>
+          <Case case={MAIN_TABS.TEAMS}>
             <PlayersContent />
           </Case>
-          <Case case={2}>
-            <ChartsContent />
+          <Case case={MAIN_TABS.STATS}>
+            <StatsContent />
           </Case>
-          <Case case={3}>
+          <Case case={MAIN_TABS.RCON}>
             <RconContent />
           </Case>
-          <Case case={4}>
+          <Case case={MAIN_TABS.DISCORDBOT}>
             <DiscordBotContent />
           </Case>
-          <Case case={5}>
+          <Case case={MAIN_TABS.JOINUS}>
             <ServerInfoContent />
           </Case>
         </Switch>

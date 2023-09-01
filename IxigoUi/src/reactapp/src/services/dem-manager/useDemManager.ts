@@ -2,7 +2,7 @@ import { useQuery, UseQueryResult } from "react-query";
 import { SERVICES_URLS } from "../../lib/constants/paths";
 import { IxigoResponse } from "../../lib/http-requests";
 import { performGet } from "../../lib/http-requests/httpRequests";
-import { IRestGetCsgoUsersResponse, IRestGetDemFilesResponse, IRestGetScoreTypesResponse } from "./interfaces";
+import { IRestGetCsgoUsersResponse, IRestGetDemFilesResponse } from "./interfaces";
 
 /**
  * It returns the available DEM files
@@ -16,23 +16,12 @@ export const useGetDemFiles = (): UseQueryResult<IxigoResponse<IRestGetDemFilesR
 };
 
 /**
- * It returns the score types extracted from the DEM files
- * @returns
- */
-export const useGetScoreTypes = (): UseQueryResult<IxigoResponse<IRestGetScoreTypesResponse>, unknown> => {
-  return useQuery(
-    "getScoreTypes",
-    async () => await performGet<IRestGetScoreTypesResponse>(SERVICES_URLS["dem-manager"]["get-dem-data-scores-type"])
-  );
-};
-
-/**
  * It returns a list of Steam IDs extracted from the DEM files
  * @returns
  */
 export const useGetCsgoPlayers = (): UseQueryResult<IxigoResponse<IRestGetCsgoUsersResponse>, unknown> => {
   return useQuery(
     "getCsgoPlayers",
-    async () => await performGet<IRestGetScoreTypesResponse>(SERVICES_URLS["dem-manager"]["get-dem-data-users"])
+    async () => await performGet<IRestGetCsgoUsersResponse>(SERVICES_URLS["dem-manager"]["get-dem-data-users"])
   );
 };

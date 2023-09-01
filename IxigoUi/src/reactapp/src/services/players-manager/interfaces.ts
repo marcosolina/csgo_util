@@ -6,11 +6,14 @@ export interface IGetTeamsRequest {
   numberOfMatches?: number;
   penaltyWeigth?: number;
   partitionScore?: string;
-  minPercPlayed?: number;
 }
 
 export interface IGetTeamsResponse {
   teams: ITeam[];
+}
+
+export interface IRestGetScoreTypesResponse {
+  types: Record<string, string>;
 }
 
 export interface ITeam {

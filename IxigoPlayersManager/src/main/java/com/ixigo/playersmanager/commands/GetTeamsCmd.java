@@ -1,6 +1,5 @@
 package com.ixigo.playersmanager.commands;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
@@ -17,5 +16,4 @@ public class GetTeamsCmd implements WebCommandRequest<RestTeams> {
 	private List<String> steamIDs;
 	private Double penaltyWeigth;
 	private ScoreType partitionScore;
-	private BigDecimal minPercPlayed;
 }

@@ -2,158 +2,46 @@ package com.ixigo.playersmanagercontract.enums;
 
 public enum ScoreType {
 	// @formatter:off
-    /**
-     * Round Win Share
-     */
-    RWS("Round Win Share"),
-    /**
-     * Kills
-     */
-    KILLS("Kills"),
-    /**
-     * Assists
-     */
-    ASSISTS("Assists"),
-    /**
-     * Deaths
-     */
-    DEATHS("Deaths"),
-    /**
-     * Kill Death Ratio
-     */
-    KDR("Kill Death Ratio"),
-    /**
-     * Head Shots
-     */
-    HS("Head Shots"),
-    /**
-     * Head Shots Percentage
-     */
-    HSP("Head Shots Percentage"),
-    /**
-     * Team Kill Friendly Fire
-     */
-    FF("Team Kill Friendly Fire"),
-    /**
-     * Entry Kill
-     */
-    EK("Entry Kill"),
-    /**
-     * Bomb Planted
-     */
-    BP("Bomb Planted"),
-    /**
-     * Bomb Defused
-     */
-    BD("Bomb Defused"),
-    /**
-     * Most Valuable Player
-     */
-    MVP("Most Valuable Player"),
-    /**
-     * Score
-     */
-    SCORE("Score"),
-    /**
-     * Half Life Television Rating
-     */
-    HLTV("Half Life Television Rating"),
-    /**
-     * Five Kills
-     */
-    _5K("Five Kills"),
-    /**
-     * Four Kills
-     */
-    _4K("Four Kills"),
-    /**
-     * Three Kills
-     */
-    _3K("Three Kills"),
-    /**
-     * Two Kills
-     */
-    _2K("Two Kills"),
-    /**
-     * One Kill
-     */
-    _1K("One Kill"),
-    /**
-     * Trade Kill
-     */
-    TK("Trade Kill"),
-    /**
-     * Trade Death
-     */
-    TD("Trade Death"),
-    /**
-     * Kill Per Round
-     */
-    KPR("Kill Per Round"),
-    /**
-     * Assists Per Round
-     */
-    APR("Assists Per Round"),
-    /**
-     * Death Per Round
-     */
-    DPR("Death Per Round"),
-    /**
-     * Average Damage Per Round
-     */
-    ADR("Average Damage Per Round"),
-    /**
-     * Total Damage Health
-     */
-    TDH("Total Damage Health"),
-    /**
-     * Total Damage Armor
-     */
-    TDA("Total Damage Armor"),
-    /**
-     * One Versus One
-     */
-    _1V1("One Versus One"),
-    /**
-     * One Versus Two
-     */
-    _1V2("One Versus Two"),
-    /**
-     * One Versus Three
-     */
-    _1V3("One Versus Three"),
-    /**
-     * One Versu Four
-     */
-    _1V4("One Versus Four"),
-    /**
-     * One Versus Five
-     */
-    _1V5("One Versus Five"),
-    /**
-     * Grenades Thrown Count
-     */
-    GRENADES("Grenades Thrown Count"),
-    /**
-     * Flashes Thrown Count
-     */
-    FLASHES("Flashes Thrown Count"),
-    /**
-     * Smoke Thrown Count
-     */
-    SMOKES("Smokes Thrown Count"),
-    /**
-     * Fire Thrown Count
-     */
-    FIRE("Fire Thrown Count"),
-    /**
-     * High Explosive Damage
-     */
-    HED("High Explosive Damage"),
-    /**
-     * Fire Damage
-     */
-    FD("Fire Damage"),
+	kills("Total Kills"),
+	deaths("Total Deaths"),
+	assists("Total Assists"),
+	score("Score"),
+	rws("Round Win Share"),
+	rws_total("Round Win Share total"),
+	headshots("Headshots"),
+	headshot_percentage("Headshot Percentage"),
+	mvp("Most Valuable Player"),
+	hltv_rating("HLTV Rating"),
+	adr("Average Damage per Round"),
+	kpr("Kills Per Round"),
+	dpr("Deaths Per Round"),
+	kast("KAST"),
+	kast_total("KAST Total"),
+	kdr("Kill/Death Ratio"),
+	hr("Hostages Rescued"),
+	bp("Bomb Planted"),
+	ud("Utility Damage"),
+	ffd("Friendly Fire Damage"),
+	ffk("Friendly Fire kills"),
+	td("Trade Deaths"),
+	bd("Bomb defused"),
+	tda("Total Damage Armour"),
+	tdh("Total Damage Health"),
+	fa("Flash Assists"),
+	ebt("Enemy Blind Time"),
+	fbt("Friendly Blind Time"),
+	ek("Entry Kills"),
+	tk("Trade Kills"),
+	_1k("One Kill"),
+	_2k("Two Kills"),
+	_3k("Three Kills"),
+	_4k("Four Kills"),
+	_5k("Five Kills"),
+	_1v1("1v1 Clutches"),
+	_1v2("1v2 Clutches"),
+	_1v3("1v3 Clutches"),
+	_1v4("1v4 Clutches"),
+	_1v5("1v5 Clutches"),
     ;
     // @formatter:on
 

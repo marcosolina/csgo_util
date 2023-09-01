@@ -5,6 +5,8 @@ logging:
     com:
       ixigo:
         demmanager: DEBUG
+        library:
+          dao: INFO
 
 spring:
   servlet:

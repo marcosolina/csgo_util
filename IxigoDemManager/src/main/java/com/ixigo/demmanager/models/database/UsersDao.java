@@ -1,34 +1,43 @@
 package com.ixigo.demmanager.models.database;
 
+import java.util.Arrays;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ixigo.library.dao.IxigoDao;
 
 import io.r2dbc.spi.Row;
 import io.r2dbc.spi.RowMetadata;
 
-/**
- * DAO representing the DB table which contains the Steam Players info
- * 
- * @author marco
- *
- */
 public class UsersDao extends IxigoDao<UsersDto> {
 
+	private static final Logger _LOGGER = LoggerFactory.getLogger(UsersDao.class);
 	private static final long serialVersionUID = 1L;
+	public static final String tableName = "users";
 	private UsersDto dto = null;
 
 	public UsersDao() {
-		this.setSqlViewName("users");
-		this.setSqlKeys(new String[] { UsersDto.Fields.steam_id });
-		this.setSqlFields(new String[] { UsersDto.Fields.user_name, UsersDto.Fields.steam_id });
+		_LOGGER.trace("Instanciating UsersDao");
+		this.setSqlViewName(tableName);
+		// @formatter:off
+		this.setSqlKeys(new String[] {
+			UsersDto.Fields.steam_id,
+		});
+		this.setSqlAutoincrementalFiles(Arrays.asList(new String[] {
+		}));
+		this.setSqlFields(new String[] {
+			UsersDto.Fields.user_name,
+			UsersDto.Fields.steam_id,
+		});
+		// @formatter:on
 		this.dto = new UsersDto();
 	}
 
 	@Override
 	public UsersDto mappingFunction(Row row, RowMetadata rowMetaData) {
-		UsersDto dto = new UsersDto();
-		dto.setSteam_id(row.get(UsersDto.Fields.steam_id, String.class));
-		dto.setUser_name(row.get(UsersDto.Fields.user_name, String.class));
-		return dto;
+		_LOGGER.trace("Mapping data");
+		return this.genericMappingFunction(new UsersDto(), row, rowMetaData);
 	}
 
 	public String getUser_name() {

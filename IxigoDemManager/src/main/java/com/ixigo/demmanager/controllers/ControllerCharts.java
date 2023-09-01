@@ -1,24 +1,19 @@
 package com.ixigo.demmanager.controllers;
 
-import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.demmanager.commands.charts.CmdGetMapPlayedCount;
-import com.ixigo.demmanager.commands.charts.CmdGetPlayersAvgScorePerMap;
-import com.ixigo.demmanager.commands.charts.CmdGetTeamsAvgScorePerMap;
-import com.ixigo.demmanager.commands.charts.CmdGetTeamsScorePerMap;
-import com.ixigo.demmanagercontract.models.rest.charts.RestMapsPlayed;
-import com.ixigo.demmanagercontract.models.rest.charts.RestPlayersAvgScoresPerMap;
-import com.ixigo.demmanagercontract.models.rest.charts.RestTeamScorePerMap;
-import com.ixigo.demmanagercontract.models.rest.charts.RestTeamsAvgScoresPerMap;
+import com.ixigo.demmanager.commands.charts.CmdGetViewData;
+import com.ixigo.demmanagercontract.models.rest.charts.RestViewData;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import io.swagger.annotations.ApiOperation;
@@ -38,42 +33,10 @@ public class ControllerCharts {
 	@Autowired
 	private WebMediator mediator;
 
-	@GetMapping("/mapsplayed")
+	@GetMapping("/view/{view_name}")
 	@ApiOperation(value = "It will return how many times we played a map")
-	public Mono<ResponseEntity<RestMapsPlayed>> getMapPlayedCount() {
+	public Mono<ResponseEntity<RestViewData>> getViewData(@PathVariable("view_name") String viewName, @RequestParam Map<String,String> allRequestParams) {
 		_LOGGER.trace("Inside ControllerCharts.getMapPlayedCount");
-		return mediator.send(new CmdGetMapPlayedCount());
-	}
-	
-	@GetMapping("/avgplayersscore")
-	@ApiOperation(value = "It will return the average score per map of the players")
-	public Mono<ResponseEntity<RestPlayersAvgScoresPerMap>> getAverageScorePerMap(
-			@RequestParam(name = "steamIds", required = false) List<String> steamIds,
-			@RequestParam(name = "scoreType", required = false) String scoreType,
-			@RequestParam(name = "maps", required = false) List<String> maps,
-			@RequestParam(name = "matchesToConsider", required = false) String matchesToConsider
-			){
-		_LOGGER.trace("Inside ControllerCharts.getAverageScorePerMap");
-		return mediator.send(new CmdGetPlayersAvgScorePerMap(steamIds, scoreType, maps, matchesToConsider));
-	}
-	
-	@GetMapping("/avgteamscore")
-	@ApiOperation(value = "It will return the average score per map of the players")
-	public Mono<ResponseEntity<RestTeamsAvgScoresPerMap>> getAverageTeamScorePerMap(
-			@RequestParam(name = "scoreType", required = false) String scoreType,
-			@RequestParam(name = "maps", required = false) List<String> maps,
-			@RequestParam(name = "matchesToConsider", required = false) String matchesToConsider
-			){
-		_LOGGER.trace("Inside ControllerCharts.getAverageScorePerMap");
-		return mediator.send(new CmdGetTeamsAvgScorePerMap(maps, scoreType,  matchesToConsider));
-	}
-	
-	@GetMapping("/scorepermap")
-	@ApiOperation(value = "It will return the average score per map of the players")
-	public Mono<ResponseEntity<RestTeamScorePerMap>> getTeamsScorePerMap(
-			@RequestParam(name = "map", required = false) String mapName,
-			@RequestParam(name = "matchesToConsider", required = false) String matchesToConsider){
-		_LOGGER.trace("Inside ControllerCharts.getTeamsScorePerMap");
-		return mediator.send(new CmdGetTeamsScorePerMap(mapName, matchesToConsider));
+		return mediator.send(new CmdGetViewData(viewName, allRequestParams));
 	}
 }

@@ -21,7 +21,7 @@ import com.ixigo.demmanagercontract.models.enums.UsersScoresQueryParam;
 import com.ixigo.demmanagercontract.models.rest.charts.RestMapsPlayed;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestMapStats;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestScoreTypes;
-import com.ixigo.demmanagercontract.models.rest.demdata.RestUsers;
+import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersResp;
 import com.ixigo.demmanagercontract.models.rest.demdata.RestUsersScores;
 import com.ixigo.integrationtests.components.SharedResponseEntity;
 import com.ixigo.integrationtests.configuration.properties.DemManagersEndPoints;
@@ -103,7 +103,7 @@ public class DemDataSteps {
 		try {
 			URL url = new URL(endPoints.getGetDemDataUsers());
 			_LOGGER.debug(url.toString());
-			var resp = webClient.performGetRequestNoExceptions(RestUsers.class, url, Optional.empty(), Optional.empty()).block();
+			var resp = webClient.performGetRequestNoExceptions(RestUsersResp.class, url, Optional.empty(), Optional.empty()).block();
 			assertNotNull(resp);
 			sharedCr.setSharedResp(resp);
 		} catch (MalformedURLException e) {
@@ -113,7 +113,7 @@ public class DemDataSteps {
 	}
 	@Then("I should receive {int} users in the response")
 	public void i_should_receive_users_in_the_response(Integer count) {
-		ResponseEntity<RestUsers> resp = sharedCr.getSharedResp(RestUsers.class);
+		ResponseEntity<RestUsersResp> resp = sharedCr.getSharedResp(RestUsersResp.class);
 		assertNotNull(resp);
 		assertNotNull(resp.getBody());
 		assertNotNull(resp.getBody().getUsers());
@@ -121,8 +121,8 @@ public class DemDataSteps {
 	}
 	@Then("the users list should contain the following names:")
 	public void the_users_list_should_contain_the_following_names(DataTable dataTable) {
-		ResponseEntity<RestUsers> resp = sharedCr.getSharedResp(RestUsers.class);
-		RestUsers users = resp.getBody();
+		ResponseEntity<RestUsersResp> resp = sharedCr.getSharedResp(RestUsersResp.class);
+		RestUsersResp users = resp.getBody();
 		dataTable.asList().forEach(userName -> {
 			assertEquals(1, users.getUsers().stream().filter(m -> m.getUserName().equals(userName)).count());
 		});

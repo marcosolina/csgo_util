@@ -1,20 +1,11 @@
-import { useState } from "react";
 import { IUseStatsContentResult } from "./interfaces";
+import { useGetCsgoPlayers } from "../../services/dem-manager";
 
 export const useStatsContent = (): IUseStatsContentResult => {
-  const [selectedPlayerSteamID, setSelectedPlayerSteamID] = useState<string>("");
-  const [selectedMatch, setSelectedMatch] = useState<number>(0);
-  const [selectedMap, setSelectedMap] = useState<string>("");
-  const [selectedSubpage, setSelectedSubpage] = useState<string>("");
+  const qUsers = useGetCsgoPlayers();
 
   return {
-    selectedPlayerSteamID,
-    setSelectedPlayerSteamID,
-    selectedMatch,
-    setSelectedMatch,
-    selectedMap,
-    setSelectedMap,
-    selectedSubpage,
-    setSelectedSubpage,
+    state: qUsers.status,
+    steamUsers: qUsers.data?.data?.users || [],
   };
 };

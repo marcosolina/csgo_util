@@ -1,14 +1,7 @@
-// TODO see if we need this anymore
+import { QueryStatus } from "react-query";
+import { ICsgoUser } from "../../services/dem-manager";
+
 export interface IUseStatsContentResult {
-  selectedPlayerSteamID: string;
-  setSelectedPlayerSteamID: (selectedPlayerSteamID: string) => void;
-
-  selectedMatch: number;
-  setSelectedMatch: (selectedMatch: number) => void;
-
-  selectedMap: string;
-  setSelectedMap: (selectedMap: string) => void;
-
-  selectedSubpage: string;
-  setSelectedSubpage: (selectedSubpage: string) => void;
+  state: QueryStatus;
+  steamUsers: ICsgoUser[];
 }

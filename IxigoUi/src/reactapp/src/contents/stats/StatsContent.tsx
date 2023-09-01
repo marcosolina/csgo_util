@@ -12,6 +12,8 @@ import PlayersContent from "./players/PlayersContent";
 import KillMatrixContent from "./kill-matrix/KillMatrixContent";
 import MapsContent from "./maps/MapsContent";
 import { UI_CONTEXT_PATH } from "../../lib/constants";
+import { ICsgoUser, useGetCsgoPlayers } from "../../services/dem-manager";
+import { useStatsContent } from "./useStatsContent";
 
 const BREAD_CRUMBS_TEXT = "page.stats.breadcrumbs";
 
@@ -20,9 +22,14 @@ interface IBreadCrumbPaths {
   values: string[];
 }
 
+const findSteamName = (steamid: string, steamUsers: ICsgoUser[]): string | undefined => {
+  return steamUsers.find((user) => user.steam_id === steamid)?.user_name;
+};
+
 const StatsContent = () => {
   const { t } = useTranslation();
   const location = useLocation();
+  const { steamUsers } = useStatsContent();
   const pathnames = location.pathname.split("/").filter((x) => x);
 
   const breadcrumbsPaths = useMemo(() => {
@@ -32,8 +39,11 @@ const StatsContent = () => {
       paths.push(`/${pathnames.slice(startSlice, i + 1).join("/")}`);
     }
 
+    const keys = pathnames.slice(startSlice);
+    const steamId = keys.find((key) => !!findSteamName(key, steamUsers));
+
     const breadcrumbsPaths: IBreadCrumbPaths = {
-      keys: pathnames.slice(startSlice),
+      keys: keys.map((key) => (key === steamId ? findSteamName(key, steamUsers) || key : key)),
       values: paths,
     };
     return breadcrumbsPaths;

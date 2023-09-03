@@ -7,7 +7,7 @@ import { IPlayersContent } from "./interfaces";
 export const usePlayersContent = (): IPlayersContent => {
   const [penaltyWeight, setPenaltyWeight] = useState<number>(0.4);
   const [matchesToConsider, setMatchesToConsider] = useState<number>(20);
-  const [scoreType, setScoreType] = useState<string>("HLTV");
+  const [scoreType, setScoreType] = useState<string>("hltv_rating");
   const [listOfSelectedPlayers, setListOfSelectedPlayers] = useState<string[]>([]);
 
   const qScoreTypes = useGetScoreTypes();

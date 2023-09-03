@@ -47,7 +47,7 @@ public class PlayersManagerController {
 		);
 		// @formatter:on
 	}
-	
+
 	@GetMapping("/scorestype")
 	@ApiOperation(value = "It will return a map of the score types that you can pass when call the team creation API")
 	public Mono<ResponseEntity<RestScoreTypes>> getScoreType() {

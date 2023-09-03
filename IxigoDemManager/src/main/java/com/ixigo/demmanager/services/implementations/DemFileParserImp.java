@@ -6,10 +6,7 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -23,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.enums.DemProcessStatus;
-import com.ixigo.demmanager.enums.ScoreType;
 import com.ixigo.demmanager.mappers.SvcMapper;
 import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 import com.ixigo.demmanager.models.database.Match_statsDao;
@@ -152,13 +148,6 @@ public class DemFileParserImp implements DemFileParser {
 			e.printStackTrace();
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.ERROR_READING_DEM_FILE), ErrorCodes.ERROR_READING_DEM_FILE);
 		}
-	}
-
-	@Override
-	public Mono<Map<String, String>> mapOfAvailableScores() {
-		Map<String, String> map = new HashMap<>();
-		Arrays.stream(ScoreType.values()).forEach(s -> map.put(s.name(), s.getDesc()));
-		return Mono.just(map);
 	}
 
 	@Override

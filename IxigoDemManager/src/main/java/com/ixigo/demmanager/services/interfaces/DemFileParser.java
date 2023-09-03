@@ -1,7 +1,6 @@
 package com.ixigo.demmanager.services.interfaces;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 
@@ -22,13 +21,6 @@ public interface DemFileParser {
     public Mono<HttpStatus> processQueuedFiles() throws IxigoException;
     
     public Mono<HttpStatus> queueAndProcessNewFiles() throws IxigoException;
-    
-    /**
-     * It returns a map of available scores
-     * 
-     * @return
-     */
-    public Mono<Map<String, String>> mapOfAvailableScores();
 
     /**
      * It will return a list of all the known users

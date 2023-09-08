@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { IMapWeaponContent, IMapWeaponContentRequest } from "./interfaces";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
-import { IWeaponMapData, useGetStats, USERS_REQUEST, MAP_PLAYER_WEAPON_STATS_CACHE } from "../../../../services";
+import { IWeaponMapData, useGetStats, USERS_REQUEST, MAP_PLAYER_WEAPON_STATS } from "../../../../services";
 import { combineQueryStatuses } from "../../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../../lib/http-requests";
 import TableLink from "../../../../common/table-link/TableLink";
@@ -89,7 +89,7 @@ function createColumnDefinition(
 
 export const useMapWeaponsContent = (request: IMapWeaponContentRequest): IMapWeaponContent => {
   const getStatsRequest = useMemo(() => {
-    const copy = { ...MAP_PLAYER_WEAPON_STATS_CACHE };
+    const copy = { ...MAP_PLAYER_WEAPON_STATS };
     copy.queryParams = { mapname: request.mapName };
     return copy;
   }, [request]);

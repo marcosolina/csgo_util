@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { IMatchWeaponContent, IMatchWeaponContentRequest } from "./interfaces";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
-import { IWeaponMatchData, useGetStats, USERS_REQUEST, MATCH_PLAYER_WEAPON_STATS_CACHE } from "../../../../services";
+import { IWeaponMatchData, useGetStats, USERS_REQUEST, MATCH_PLAYER_WEAPON_STATS } from "../../../../services";
 import { combineQueryStatuses } from "../../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../../lib/http-requests";
 import TableLink from "../../../../common/table-link/TableLink";
@@ -89,7 +89,7 @@ function createColumnDefinition(
 
 export const useMatchWeaponsContent = (request: IMatchWeaponContentRequest): IMatchWeaponContent => {
   const getStatsRequest = useMemo(() => {
-    const copy = { ...MATCH_PLAYER_WEAPON_STATS_CACHE };
+    const copy = { ...MATCH_PLAYER_WEAPON_STATS };
     copy.queryParams = { match_id: request.match_id };
     return copy;
   }, [request]);

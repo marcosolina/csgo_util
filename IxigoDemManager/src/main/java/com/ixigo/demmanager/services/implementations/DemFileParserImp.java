@@ -108,7 +108,11 @@ public class DemFileParserImp implements DemFileParser {
 					 */
 					switch (props.getParserExecutionType()) {
 					case SYNC:
-						return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
+						//return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
+						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
+							_LOGGER.debug("Async queue process completed");
+						})).start();
+						return Mono.just(HttpStatus.ACCEPTED);
 					case ASYNC:
 						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
 							_LOGGER.debug("Async queue process completed");
@@ -217,7 +221,7 @@ public class DemFileParserImp implements DemFileParser {
 		if(props.getProcessFilesInParallel()) {
 			_LOGGER.debug("Parsing dem files in parallel");
 			flux = fileFlux.parallel()
-					.runOn(Schedulers.boundedElastic())
+					.runOn(Schedulers.parallel()) // https://www.vinsguru.com/reactor-schedulers-publishon-vs-subscribeon/
 					.flatMap(function)
 					.sequential();
 		}else {
@@ -518,25 +522,29 @@ public class DemFileParserImp implements DemFileParser {
 	@Override
 	public Flux<SvcUserStatsForLastXGames> getUsersStatsForLastXGames(Integer numberOfMatches, List<String> usersIDs) throws IxigoException {
 		// @formatter:off
+		
 		return Flux.fromIterable(usersIDs)
-			.map(steamId -> {
-				var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, steamId)
-						.map(mapper::fromDtoToSvc)
-						.collectList()
-						;
-				return Tuples.of(steamId, list);
-			})
-			.flatMap(data -> {
-				String steamId = data.getT1();
-				Mono<List<SvcPlayerMatchStatsExtended>> monoUserScores = data.getT2();
-				
-				return monoUserScores.map(list -> {
-					var stats = new SvcUserStatsForLastXGames();
-					stats.setSteamId(steamId);
-					stats.setScores(list);
-					return stats;
-				});
-			})
+		.parallel()
+		.runOn(Schedulers.parallel())
+		.map(steamId -> {
+			var list = repoUserScore.getLastXMatchesScoresForUser(numberOfMatches, steamId)
+					.map(mapper::fromDtoToSvc)
+					.collectList()
+					;
+			return Tuples.of(steamId, list);
+		})
+		.flatMap(data -> {
+			String steamId = data.getT1();
+			Mono<List<SvcPlayerMatchStatsExtended>> monoUserScores = data.getT2();
+			
+			return monoUserScores.map(list -> {
+				var stats = new SvcUserStatsForLastXGames();
+				stats.setSteamId(steamId);
+				stats.setScores(list);
+				return stats;
+			});
+		})
+		.sequential()
 		;
 		// @formatter:on
 	}

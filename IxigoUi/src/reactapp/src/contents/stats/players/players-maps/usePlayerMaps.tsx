@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { IPlayersMapsContentRequest, IPlayersMapsContentResponse } from "./interfaces";
 import {
   IPlayerMatch,
-  PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE,
+  PLAYER_MAP_STATS_EXTENDED_EXTENDED,
   USERS_REQUEST,
   useGetStats,
 } from "../../../../services/stats";
@@ -118,7 +118,7 @@ function createColumnDefinition(
 export function usePlayerMaps(request: IPlayersMapsContentRequest): IPlayersMapsContentResponse {
   const { t } = useTranslation();
   const getStatsRequest = useMemo(() => {
-    const copy = { ...PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE };
+    const copy = { ...PLAYER_MAP_STATS_EXTENDED_EXTENDED };
     copy.queryParams = { steamid: request.steamId };
     copy.enabled = !!request.steamId;
     return copy;

@@ -2,12 +2,7 @@ import { useTranslation } from "react-i18next";
 import { IMapLeaderboardRequest, IMapLeaderboardResponse } from "./interfaces";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { MRT_Cell, MRT_ColumnDef } from "material-react-table";
-import {
-  IPlayerMatch,
-  useGetStats,
-  USERS_REQUEST,
-  PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE,
-} from "../../../../services";
+import { IPlayerMatch, useGetStats, USERS_REQUEST, PLAYER_MAP_STATS_EXTENDED_EXTENDED } from "../../../../services";
 import { combineQueryStatuses } from "../../../../lib/queries/queriesFunctions";
 import { QueryStatus } from "../../../../lib/http-requests";
 import TableLink from "../../../../common/table-link/TableLink";
@@ -117,7 +112,7 @@ export const useLeaderboardContent = (request: IMapLeaderboardRequest): IMapLead
   const [data, setData] = useState<IPlayerMatch[]>([]);
 
   const getStatsRequest = useMemo(() => {
-    const copy = { ...PLAYER_MAP_STATS_EXTENDED_EXTENDED_CACHE };
+    const copy = { ...PLAYER_MAP_STATS_EXTENDED_EXTENDED };
     copy.queryParams = { mapname: request.mapName };
     return copy;
   }, [request]);

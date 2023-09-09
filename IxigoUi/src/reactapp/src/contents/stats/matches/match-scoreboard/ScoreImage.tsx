@@ -1,9 +1,8 @@
-import React from 'react';
+import React from "react";
 import terroristLogo from "../../../../assets/icons/T.png";
 import ctLogo from "../../../../assets/icons/CT.png";
-import { ScoreImageProps } from './interfaces';
-
-
+import { ScoreImageProps } from "./interfaces";
+import { UI_CONTEXT_PATH } from "../../../../lib/constants";
 
 const ScoreImage: React.FC<ScoreImageProps> = ({ teamType, score, opacity = 0.5, color = "white" }) => {
   const logo = teamType === "terrorist" ? terroristLogo : ctLogo;
@@ -12,7 +11,7 @@ const ScoreImage: React.FC<ScoreImageProps> = ({ teamType, score, opacity = 0.5,
   return (
     <div style={{ position: "relative", width: 25, height: 25 }}>
       <img
-        src={logo}
+        src={`${UI_CONTEXT_PATH}${logo}`}
         alt={altText}
         style={{ width: "100%", height: "100%", opacity: opacity }}
       />
@@ -30,6 +29,6 @@ const ScoreImage: React.FC<ScoreImageProps> = ({ teamType, score, opacity = 0.5,
       </div>
     </div>
   );
-}
+};
 
 export default ScoreImage;

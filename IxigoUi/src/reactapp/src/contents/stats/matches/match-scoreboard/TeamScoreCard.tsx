@@ -1,19 +1,9 @@
-import React from 'react';
+import React from "react";
 import { Paper, Typography } from "@mui/material";
-import ScoreImage from './ScoreImage';
+import ScoreImage from "./ScoreImage";
+import { TeamScoreCardProps } from "./interfaces";
 
-interface TeamScoreCardProps {
-  totalWins: number;
-  winsAsT: number;
-  winsAsCt: number;
-  teamName: string;
-  color: string;
-  alignment: "left" | "right";
-  terroristLogo: string;
-  ctLogo: string;
-}
-
-export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({ totalWins, winsAsT, winsAsCt, teamName, color, alignment, terroristLogo, ctLogo }) => {
+export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({ totalWins, winsAsT, winsAsCt, teamName, color }) => {
   return (
     <Paper
       elevation={3}
@@ -32,11 +22,7 @@ export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({ totalWins, winsAsT
       >
         {totalWins}
       </Typography>
-      <Typography
-        variant="h6"
-        align="center"
-        style={{ color: color }}
-      >
+      <Typography variant="h6" align="center" style={{ color: color }}>
         {teamName}
       </Typography>
       <div
@@ -46,9 +32,9 @@ export const TeamScoreCard: React.FC<TeamScoreCardProps> = ({ totalWins, winsAsT
           gap: "10px",
         }}
       >
-      <ScoreImage teamType="terrorist" score={winsAsT} />
-      <ScoreImage teamType="counterTerrorist" score={winsAsCt} />
+        <ScoreImage teamType="terrorist" score={winsAsT} />
+        <ScoreImage teamType="counterTerrorist" score={winsAsCt} />
       </div>
     </Paper>
   );
-}
+};

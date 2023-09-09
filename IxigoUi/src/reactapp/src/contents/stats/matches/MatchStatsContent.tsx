@@ -5,8 +5,6 @@ import MatchRoundsContent from "./match-rounds/MatchRoundsContent";
 import MatchWeaponsContent from "./match-weapons/MatchWeaponsContent";
 import MatchKillMatrixContent from "./match-kill-matrix/MatchKillMatrixContent";
 import { QueryStatus } from "../../../lib/http-requests";
-import terroristLogo from "../../../assets/icons/T.png";
-import ctLogo from "../../../assets/icons/CT.png";
 import { UI_CONTEXT_PATH } from "../../../lib/constants";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMatchStatsContent } from "./useMatchStatsContent";
@@ -83,9 +81,6 @@ const MatchPage = () => {
                 winsAsCt={matchData.team1_wins_as_ct}
                 teamName={`${t(`${LANG_BASE_PATH}.team`)} 1`}
                 color="#90caf9"
-                alignment="right"
-                terroristLogo={UI_CONTEXT_PATH + terroristLogo}
-                ctLogo={UI_CONTEXT_PATH + ctLogo}
               />
             </Grid>
             <Grid item xs={6} style={{ display: "flex", justifyContent: "left" }}>
@@ -95,9 +90,6 @@ const MatchPage = () => {
                 winsAsCt={matchData.team2_wins_as_ct}
                 teamName={`${t(`${LANG_BASE_PATH}.team`)} 2`}
                 color="orange"
-                alignment="left"
-                terroristLogo={UI_CONTEXT_PATH + terroristLogo}
-                ctLogo={UI_CONTEXT_PATH + ctLogo}
               />
             </Grid>
           </Grid>

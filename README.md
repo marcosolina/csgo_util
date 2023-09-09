@@ -85,3 +85,8 @@ Replace the IP with your machine/s IP/s
 ```bash
 mvn archetype:generate -DgroupId=com.ixigo -DartifactId=IxigoPlayersManagerContract -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 ```
+
+- SQL
+  - View Performance:
+    - [Reference one](https://dba.stackexchange.com/questions/151169/are-views-harmful-for-performance-in-postgresql)
+    - [Reference two](https://stackoverflow.com/questions/18794822/performance-differences-between-a-view-and-a-query-with-where-clausule)

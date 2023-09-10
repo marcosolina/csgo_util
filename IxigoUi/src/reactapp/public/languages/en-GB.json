@@ -557,7 +557,9 @@
         }
       },
       "killmatrix": {
-        "title": "Kills Matrix"
+        "title": "Kills Matrix",
+        "refresh-data": "Refresh data",
+        "error-loading-data": "Error loading data"
       },
       "match": {
         "title": "Recent Matches",
@@ -739,5 +741,8 @@
     "generic": {
       "message": "Sorry, something went wrong"
     }
+  },
+  "generic-info": {
+    "reload": "Reload"
   }
 }

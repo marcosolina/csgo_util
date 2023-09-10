@@ -1,12 +1,6 @@
-import { IconButton, Tooltip, Box, Typography } from "@mui/material";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import { MaterialReactTable } from "material-react-table";
 import { useLeaderboardContent } from "./useLeaderboardContent";
-import { QueryStatus } from "../../../lib/http-requests";
-import Switch from "../../../common/switch-case/Switch";
-import Case from "../../../common/switch-case/Case";
-import TableLoading from "../../../common/loading/table-loading/TableLoading";
 import { useTranslation } from "react-i18next";
+import IxigoTable from "../../../common/material-table/IxigoTable";
 
 const STRING_PREFIX = "page.stats.leaderboard";
 
@@ -15,55 +9,17 @@ const LeaderboardContent = () => {
   const { columns, data, state, refetch } = useLeaderboardContent();
 
   return (
-    <Switch value={state}>
-      <Case case={QueryStatus.loading}>
-        <TableLoading />
-      </Case>
-      <Case case={QueryStatus.success}>
-        <Box textAlign="center">
-          <Typography variant="h5">{t(`${STRING_PREFIX}.title`)}</Typography>
-        </Box>
-        <MaterialReactTable
-          columns={columns}
-          data={data}
-          initialState={{
-            showColumnFilters: false,
-            density: "compact",
-            pagination: { pageIndex: 0, pageSize: 10 },
-            sorting: [{ id: "hltv_rating", desc: true }], //sort by state by default
-            columnPinning: { left: ["username", "matches", "hltv_rating"] },
-          }}
-          enableColumnFilterModes
-          enableDensityToggle={false}
-          enablePinning
-          enableMultiSort
-          enableFilterMatchHighlighting={false}
-          enablePagination
-          enableGlobalFilter={true}
-          muiToolbarAlertBannerProps={
-            state === QueryStatus.error
-              ? {
-                  color: "error",
-                  children: t(`${STRING_PREFIX}.error-loading-data`),
-                }
-              : undefined
-          }
-          renderTopToolbarCustomActions={() => (
-            <Tooltip arrow title={t(`${STRING_PREFIX}.refresh-data`)}>
-              <IconButton onClick={refetch}>
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
-          )}
-          rowCount={data?.length ?? 0}
-          state={{
-            isLoading: state === QueryStatus.loading,
-            showAlertBanner: state === QueryStatus.error,
-            showProgressBars: state === QueryStatus.loading,
-          }}
-        />
-      </Case>
-    </Switch>
+    <IxigoTable
+      columns={columns}
+      data={data}
+      state={state}
+      title={t(`${STRING_PREFIX}.title`) as string}
+      columnPinning={{ left: ["username", "matches", "hltv_rating"] }}
+      sorting={[{ id: "hltv_rating", desc: true }]}
+      refetch={refetch}
+      errorMsg={t(`${STRING_PREFIX}.error-loading-data`) as string}
+      refreshMsg={t(`${STRING_PREFIX}.refresh-data`) as string}
+    />
   );
 };
 

@@ -137,6 +137,11 @@ export function usePlayerMatches(request: IPlayersMatchesContentRequest): IPlaye
     return `${UI_CONTEXT_PATH}/stats/map/${mapName}`;
   }, []);
 
+  const refetch = useCallback(() => {
+    qMatchTeam.refetch();
+    qMatchResult.refetch();
+  }, [qMatchTeam, qMatchResult]);
+
   const queriesState = combineQueryStatuses([qMatchTeam, qMatchResult]);
 
   // Create the columns
@@ -178,5 +183,6 @@ export function usePlayerMatches(request: IPlayersMatchesContentRequest): IPlaye
     state: queriesState,
     columns,
     data,
+    refetch,
   };
 }

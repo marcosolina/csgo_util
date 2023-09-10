@@ -5,7 +5,7 @@ import { Line } from "react-chartjs-2";
 import { QueryStatus } from "../../../../lib/http-requests";
 import Switch from "../../../../common/switch-case/Switch";
 import Case from "../../../../common/switch-case/Case";
-import { Grid } from "@mui/material";
+import { Grid, Skeleton } from "@mui/material";
 import "chartjs-adapter-date-fns";
 
 const OPTIONS: ChartOptions<"line"> = {
@@ -40,6 +40,9 @@ const OPTIONS: ChartOptions<"line"> = {
 };
 
 const XS = 12;
+const HEIGHT = 160;
+
+const ROWS = [1, 2, 3];
 
 const PlayersGraphStatsChart = () => {
   const contentProvider = usePlayerGraphContentProvider();
@@ -69,7 +72,17 @@ const PlayersGraphStatsChart = () => {
           })}
         </Grid>
       </Case>
-      <Case case={QueryStatus.loading}>loading</Case>
+      <Case case={QueryStatus.loading}>
+        <Grid container spacing={0}>
+          {ROWS.map((row) => {
+            return (
+              <Grid item xs={XS} key={`r_${row}`}>
+                <Skeleton animation="wave" height={HEIGHT} />
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Case>
     </Switch>
   );
 };

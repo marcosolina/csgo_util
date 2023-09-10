@@ -21,7 +21,34 @@ const IxigoTable = <T extends object>(props: IxigoTableProps<T>) => {
     enableColumnFilters,
     enableFilterMatchHighlighting,
     columnVisibility,
+
+    enableColumnActions,
+    enablePagination,
+    enableSorting,
+    enableBottomToolbar,
+    enableTopToolbar,
+    enableGlobalFilter,
+    enableFullScreenToggle,
+    enableHiding,
+    muiTableBodyRowProps,
+    pagination,
+    renderTopToolbarCustomActions,
   } = props;
+
+  let bodyProps;
+  if (muiTableBodyRowProps) {
+    bodyProps = { hover: false };
+  }
+
+  const customAction = () =>
+    !!refetch && (
+      <Tooltip arrow title={refreshMsg || t(`generic-info.reload`)}>
+        <IconButton onClick={refetch}>
+          <RefreshIcon />
+        </IconButton>
+      </Tooltip>
+    );
+
   return (
     <>
       {title && (
@@ -36,7 +63,7 @@ const IxigoTable = <T extends object>(props: IxigoTableProps<T>) => {
           showColumnFilters: false,
           columnVisibility,
           density: "compact",
-          pagination: { pageIndex: 0, pageSize: 10 },
+          pagination: pagination || { pageIndex: 0, pageSize: 10 },
           sorting: sorting,
           columnPinning: columnPinning || { left: [], right: [] },
         }}
@@ -45,10 +72,17 @@ const IxigoTable = <T extends object>(props: IxigoTableProps<T>) => {
         enableFilterMatchHighlighting={enableFilterMatchHighlighting}
         enableColumnFilterModes
         enableDensityToggle={false}
-        enablePinning
+        enablePinning={enableHiding !== false}
         enableMultiSort
-        enablePagination
-        enableGlobalFilter={true}
+        enableFullScreenToggle={enableFullScreenToggle}
+        enablePagination={enablePagination}
+        enableHiding={enableHiding}
+        enableColumnActions={enableColumnActions}
+        enableSorting={enableSorting}
+        enableBottomToolbar={enableBottomToolbar}
+        enableTopToolbar={enableTopToolbar}
+        muiTableBodyRowProps={bodyProps}
+        enableGlobalFilter={enableGlobalFilter !== undefined ? enableGlobalFilter : true}
         muiToolbarAlertBannerProps={
           state === QueryStatus.error
             ? {
@@ -57,15 +91,7 @@ const IxigoTable = <T extends object>(props: IxigoTableProps<T>) => {
               }
             : undefined
         }
-        renderTopToolbarCustomActions={() =>
-          !!refetch && (
-            <Tooltip arrow title={refreshMsg || t(`generic-info.reload`)}>
-              <IconButton onClick={refetch}>
-                <RefreshIcon />
-              </IconButton>
-            </Tooltip>
-          )
-        }
+        renderTopToolbarCustomActions={renderTopToolbarCustomActions || customAction}
         rowCount={data?.length ?? 0}
         state={{
           isLoading: state === QueryStatus.loading,

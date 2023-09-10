@@ -107,5 +107,6 @@ export function usePlayersWeapons(request: IPlayerWeaponContentRequest): IPlayer
     state: qGetStats.status,
     columns,
     data,
+    refetch: qGetStats.refetch,
   };
 }

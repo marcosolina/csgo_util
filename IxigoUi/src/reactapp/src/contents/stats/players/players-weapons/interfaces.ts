@@ -18,4 +18,5 @@ export interface IPlayerWeaponContentResponse {
   state: QueryStatus;
   columns: MRT_ColumnDef<IWeaponDataDetails>[];
   data: IWeaponDataDetails[];
+  refetch: () => void;
 }

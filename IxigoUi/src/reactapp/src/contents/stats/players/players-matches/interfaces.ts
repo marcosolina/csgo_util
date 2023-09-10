@@ -58,4 +58,5 @@ export interface IPlayersMatchesContentResponse {
   state: QueryStatus;
   columns: MRT_ColumnDef<IPlayersMatchesData>[];
   data: IPlayersMatchesData[];
+  refetch: () => void;
 }

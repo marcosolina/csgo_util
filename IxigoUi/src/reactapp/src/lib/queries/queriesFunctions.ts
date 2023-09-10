@@ -8,11 +8,13 @@ export function combineQueryStatuses(results: UseQueryResult<IxigoResponse<unkno
   const success = (result: UseQueryResult<IxigoResponse<unknown>, unknown>) =>
     result.status === IxigoQueryStatus.success;
 
+  const refeching = (result: UseQueryResult<IxigoResponse<unknown>, unknown>) => result.isRefetching;
+
   if (results.some(error)) {
     return IxigoQueryStatus.error;
   }
 
-  if (results.some(loading)) {
+  if (results.some(loading) || results.some(refeching)) {
     return IxigoQueryStatus.loading;
   }
 

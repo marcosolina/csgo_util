@@ -1,4 +1,4 @@
-import { MRT_ColumnDef, MRT_TableInstance } from "material-react-table";
+import { MRT_ColumnDef, MRT_Row, MRT_TableInstance } from "material-react-table";
 import { ReactNode } from "react";
 import { QueryStatus } from "react-query";
 
@@ -36,6 +36,11 @@ export interface IxigoTableProps<T extends Record<string, any>> {
   enableFullScreenToggle?: boolean;
   enableHiding?: boolean;
   muiTableBodyRowProps?: boolean;
+  enableTableHead?: boolean;
+  enableColumnOrdering?: boolean;
+  expanded?: true | Record<string, boolean>;
+
+  grouping?: string[];
 
   renderTopToolbarCustomActions?: (props: { table: MRT_TableInstance<T> }) => ReactNode;
   refetch?: () => void;
@@ -47,4 +52,6 @@ export interface IxigoTableProps<T extends Record<string, any>> {
   enableFilterMatchHighlighting?: boolean;
 
   columnVisibility?: Record<string, boolean>;
+
+  renderDetailPanel?: (props: { row: MRT_Row<T>; table: MRT_TableInstance<T> }) => ReactNode;
 }

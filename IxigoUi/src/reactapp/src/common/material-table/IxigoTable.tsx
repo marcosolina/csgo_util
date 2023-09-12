@@ -30,9 +30,14 @@ const IxigoTable = <T extends object>(props: IxigoTableProps<T>) => {
     enableGlobalFilter,
     enableFullScreenToggle,
     enableHiding,
+    enableTableHead,
+    enableColumnOrdering,
     muiTableBodyRowProps,
     pagination,
     renderTopToolbarCustomActions,
+    renderDetailPanel,
+    grouping,
+    expanded,
   } = props;
 
   let bodyProps;
@@ -40,14 +45,15 @@ const IxigoTable = <T extends object>(props: IxigoTableProps<T>) => {
     bodyProps = { hover: false };
   }
 
-  const customAction = () =>
-    !!refetch && (
-      <Tooltip arrow title={refreshMsg || t(`generic-info.reload`)}>
-        <IconButton onClick={refetch}>
-          <RefreshIcon />
-        </IconButton>
-      </Tooltip>
-    );
+  const customAction = !!refetch
+    ? () => (
+        <Tooltip arrow title={refreshMsg || t(`generic-info.reload`)}>
+          <IconButton onClick={refetch}>
+            <RefreshIcon />
+          </IconButton>
+        </Tooltip>
+      )
+    : undefined;
 
   return (
     <>
@@ -63,9 +69,11 @@ const IxigoTable = <T extends object>(props: IxigoTableProps<T>) => {
           showColumnFilters: false,
           columnVisibility,
           density: "compact",
+          expanded: expanded || {},
           pagination: pagination || { pageIndex: 0, pageSize: 10 },
           sorting: sorting,
           columnPinning: columnPinning || { left: [], right: [] },
+          grouping: grouping || [],
         }}
         enableGrouping={enableGrouping}
         enableColumnFilters={enableColumnFilters}
@@ -74,9 +82,13 @@ const IxigoTable = <T extends object>(props: IxigoTableProps<T>) => {
         enableDensityToggle={false}
         enablePinning={enableHiding !== false}
         enableMultiSort
+        enableColumnDragging={false}
+        enableColumnOrdering={enableColumnOrdering}
         enableFullScreenToggle={enableFullScreenToggle}
         enablePagination={enablePagination}
         enableHiding={enableHiding}
+        enableTableHead={enableTableHead}
+        renderDetailPanel={renderDetailPanel}
         enableColumnActions={enableColumnActions}
         enableSorting={enableSorting}
         enableBottomToolbar={enableBottomToolbar}

@@ -1,23 +1,16 @@
-import { IconButton, Tooltip } from "@mui/material";
-import RefreshIcon from "@mui/icons-material/Refresh";
-import { MaterialReactTable } from "material-react-table";
+import { MRT_ColumnDef } from "material-react-table";
 import { useMatchRoundsContent } from "./useMatchRoundsContent";
 import { IMatchRoundContentRequest } from "./interfaces";
-import { QueryStatus } from "../../../../lib/http-requests";
+import IxigoTable from "../../../../common/material-table/IxigoTable";
 
 const MatchRoundsContent: React.FC<IMatchRoundContentRequest> = ({ match_id }) => {
-
-  const { columns, data, state, refetch, renderDetailPanel } = useMatchRoundsContent({ match_id});
+  const { columns, data, state, renderDetailPanel } = useMatchRoundsContent({ match_id });
 
   return (
-    <MaterialReactTable
-      columns={columns}
+    <IxigoTable
+      state={state}
+      columns={columns as MRT_ColumnDef<object>[]}
       data={data}
-      initialState={{
-        showColumnFilters: false,
-        density: "compact",
-        sorting: [{ id: "round", desc: false }],
-      }}
       enableColumnActions={false}
       enableColumnFilters={false}
       enableSorting={false}
@@ -29,19 +22,7 @@ const MatchRoundsContent: React.FC<IMatchRoundContentRequest> = ({ match_id }) =
       enableHiding={false}
       enablePagination={false}
       renderDetailPanel={renderDetailPanel}
-      renderTopToolbarCustomActions={() => (
-        <Tooltip arrow title="Refresh Data">
-          <IconButton onClick={() => refetch()}>
-            <RefreshIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-      rowCount={data?.length ?? 0}
-      state={{
-        isLoading: state === QueryStatus.loading,
-        showAlertBanner: state === QueryStatus.error,
-        showProgressBars: state === QueryStatus.loading,
-      }}
+      sorting={[{ id: "round", desc: false }]}
     />
   );
 };

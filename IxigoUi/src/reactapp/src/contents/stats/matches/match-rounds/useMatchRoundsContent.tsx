@@ -1,12 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { ITableRound, IMatchRoundContentRequest } from "./interfaces";
-import {
-  IMatchRound,
-  IRoundEvent,
-  IRoundKillEvent,
-  ITeamMatchResults,
-} from "../../../../services";
-import { useEffect, useMemo, useState } from "react";
+import { IMatchRound, IRoundEvent, IRoundKillEvent, ITeamMatchResults } from "../../../../services";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   MATCH_TEAM_RESULT_REQUEST,
   ROUND_SCORECARD_REQUEST,
@@ -25,11 +20,10 @@ import ScoreCell from "./ScoreCell";
 import RoundTypeCell from "./RoundTypeCell";
 import RoundEndReasonCell from "./RoundEndReasonCell";
 
-
 import { IUseMatchRoundsContentResponse } from "./interfaces";
+import { combineQueryStatuses } from "../../../../lib/queries";
 
-const COL_HEADERS_BASE_TRANSLATION_KEY =
-  "page.stats.match.roundscorecard.column-headers";
+const COL_HEADERS_BASE_TRANSLATION_KEY = "page.stats.match.roundscorecard.column-headers";
 const SMALL_COL_SIZE = 5;
 
 const COLUMNS_ORDER: string[] = [
@@ -45,7 +39,6 @@ const COLUMNS_ORDER: string[] = [
   "round",
 ];
 
-
 function createColumnDefinition(
   key: string,
   maxValue: number,
@@ -56,66 +49,48 @@ function createColumnDefinition(
     accessorFn: (row) => row[key as keyof ITableRound],
     header: t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.header`),
     size: SMALL_COL_SIZE,
-    Header: customHeader<ITableRound>(
-      t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)
-    ),
+    Header: customHeader<ITableRound>(t(`${COL_HEADERS_BASE_TRANSLATION_KEY}.${key}.tooltip`)),
   };
   if (key.endsWith(".total_equipment_value")) {
     cell.Cell = (props: { cell: any; row: { index: number } }) => (
-      <FinanceCell
-        {...props}
-        team={key.startsWith("team1") ? "team1" : "team2"}
-        maxValues={maxValue}
-      />
+      <FinanceCell {...props} team={key.startsWith("team1") ? "team1" : "team2"} maxValues={maxValue} />
     );
   }
 
   if (key.endsWith(".player_count")) {
     cell.Cell = (props: { cell: any; row: { index: number } }) => (
-      <PlayerCountCell
-        {...props}
-        team={key.startsWith("team1") ? "team1" : "team2"}
-      />
+      <PlayerCountCell {...props} team={key.startsWith("team1") ? "team1" : "team2"} />
     );
   }
 
   if (key.endsWith(".team1_score") || key.endsWith(".team2_score")) {
     cell.Cell = (props: { cell: any; row: { index: number } }) => (
-      <ScoreCell
-        {...props}
-        team={key.startsWith("team1") ? "team1" : "team2"}
-      />
+      <ScoreCell {...props} team={key.startsWith("team1") ? "team1" : "team2"} />
     );
   }
 
   if (key.endsWith(".round_type")) {
-    cell.Cell = (props: { cell: any; row: { index: number }  }) => (
-      <RoundTypeCell {...props} team={key.startsWith("team1") ? "team1" : "team2"}/>
+    cell.Cell = (props: { cell: any; row: { index: number } }) => (
+      <RoundTypeCell {...props} team={key.startsWith("team1") ? "team1" : "team2"} />
     );
   }
-  
+
   if (key === "team1.round_end_reason") {
-    cell.Cell = (props: { cell: any; row: { index: number }  }) => (
+    cell.Cell = (props: { cell: any; row: { index: number } }) => (
       <RoundEndReasonCell {...props} team={key.startsWith("team1") ? "team1" : "team2"} />
     );
   }
 
-
   return cell;
 }
 
-
-export const useMatchRoundsContent = (
-  request: IMatchRoundContentRequest
-): IUseMatchRoundsContentResponse => {
+export const useMatchRoundsContent = (request: IMatchRoundContentRequest): IUseMatchRoundsContentResponse => {
   const { t } = useTranslation();
   const [data, setData] = useState<ITableRound[]>([]);
   const [maxValues, setMaxValues] = useState<{ maxValue: number }>({
     maxValue: 0,
   });
-  const [playerStats, setPlayerStats] = useState<ITeamMatchResults[] | null>(
-    null
-  );
+  const [playerStats, setPlayerStats] = useState<ITeamMatchResults[] | null>(null);
 
   // Define the requests
   const qRoundScorecardRequest = useGetStats<IMatchRound>({
@@ -135,58 +110,53 @@ export const useMatchRoundsContent = (
     queryParams: { match_id: request.match_id },
   });
 
+  const refetch = useCallback(() => {
+    qPlayerStatsRequest.refetch();
+    qRoundScorecardRequest.refetch();
+    qRoundEventsRequest.refetch();
+    qRoundKillEventsRequest.refetch();
+  }, [qPlayerStatsRequest, qRoundScorecardRequest, qRoundEventsRequest, qRoundKillEventsRequest]);
+
+  const overallQueriesState = combineQueryStatuses([
+    qPlayerStatsRequest,
+    qRoundScorecardRequest,
+    qRoundEventsRequest,
+    qRoundKillEventsRequest,
+  ]);
+
   // Process the data
   useEffect(() => {
-    if (
-      qRoundScorecardRequest.status === QueryStatus.success &&
-      qRoundKillEventsRequest.status === QueryStatus.success &&
-      qRoundEventsRequest.status === QueryStatus.success &&
-      qPlayerStatsRequest.status === QueryStatus.success
-    ) {
+    if (overallQueriesState === QueryStatus.success) {
       // Extract the data
       const matchRounds = qRoundScorecardRequest.data?.data?.view_data;
       const killEvents = qRoundKillEventsRequest.data?.data?.view_data;
       const roundEvents = qRoundEventsRequest.data?.data?.view_data;
       const playerStats = qPlayerStatsRequest.data?.data?.view_data;
 
-      const groupedData: ITableRound[] = (matchRounds || []).reduce(
-        (acc: ITableRound[], round: IMatchRound) => {
-          let foundRound = acc.find((r) => r.round === round.round);
-          if (!foundRound) {
-            foundRound = {
-              round: round.round,
-              killEvents: [],
-              roundEvents: [],
-            };
-            acc.push(foundRound);
+      const groupedData: ITableRound[] = (matchRounds || []).reduce((acc: ITableRound[], round: IMatchRound) => {
+        let foundRound = acc.find((r) => r.round === round.round);
+        if (!foundRound) {
+          foundRound = {
+            round: round.round,
+            killEvents: [],
+            roundEvents: [],
+          };
+          acc.push(foundRound);
+        }
+        foundRound = foundRound!;
+        if ((round.team === 2 && round.round <= 7) || (round.team === 3 && round.round > 7)) {
+          foundRound.team1 = round;
+          if (foundRound.killEvents && killEvents) {
+            foundRound.killEvents.push(...killEvents.filter((event: any) => event.round === round.round));
           }
-          foundRound = foundRound!;
-          if (
-            (round.team === 2 && round.round <= 7) ||
-            (round.team === 3 && round.round > 7)
-          ) {
-            foundRound.team1 = round;
-            if (foundRound.killEvents && killEvents) {
-              foundRound.killEvents.push(
-                ...killEvents.filter(
-                  (event: any) => event.round === round.round
-                )
-              );
-            }
-            if (foundRound.roundEvents && roundEvents) {
-              foundRound.roundEvents.push(
-                ...roundEvents.filter(
-                  (event: any) => event.round === round.round
-                )
-              );
-            }
-          } else {
-            foundRound.team2 = round;
+          if (foundRound.roundEvents && roundEvents) {
+            foundRound.roundEvents.push(...roundEvents.filter((event: any) => event.round === round.round));
           }
-          return acc;
-        },
-        []
-      );
+        } else {
+          foundRound.team2 = round;
+        }
+        return acc;
+      }, []);
 
       // Calculate maximum values
       const getMaxValues = function () {
@@ -205,6 +175,7 @@ export const useMatchRoundsContent = (
       setPlayerStats(playerStats ?? null);
     }
   }, [
+    overallQueriesState,
     qRoundScorecardRequest,
     qRoundKillEventsRequest,
     qRoundEventsRequest,
@@ -214,9 +185,7 @@ export const useMatchRoundsContent = (
 
   const getUsernameAndTeam = (steamid: string) => {
     if (playerStats) {
-      const player = playerStats.find(
-        (player: any) => player.steamid === steamid
-      );
+      const player = playerStats.find((player: any) => player.steamid === steamid);
       return player
         ? { username: player.usernames, team: player.last_round_team }
         : { username: "Bot", team: "unknown" };
@@ -229,9 +198,7 @@ export const useMatchRoundsContent = (
     const events = [...killEvents, ...roundEvents];
     events.sort((a, b) => a.eventtime - b.eventtime);
 
-    return (
-      <DetailPanel events={events} getUsernameAndTeam={getUsernameAndTeam} />
-    );
+    return <DetailPanel events={events} getUsernameAndTeam={getUsernameAndTeam} />;
   };
 
   // Create the columns
@@ -245,9 +212,9 @@ export const useMatchRoundsContent = (
 
   return {
     columns,
-    state: qRoundScorecardRequest.status,
+    state: overallQueriesState,
     data,
-    refetch: qRoundScorecardRequest.refetch,
+    refetch,
     renderDetailPanel,
   };
 };

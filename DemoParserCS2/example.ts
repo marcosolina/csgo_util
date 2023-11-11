@@ -3,8 +3,7 @@ import {
   parseTicks
 } from "@laihoe/demoparser2";
 
-const filePath =
-  "C:\\temp\\auto-20231009-1930-de_overpass-IXI-GO__Monday_Nights.dem";
+const filePath = process.argv[2]!;
 
 const CT_TEAM_NUM=3;
 const T_TEAM_NUM=2;
@@ -127,7 +126,6 @@ function preprocessRoundTicks(filePath: string): Array<{ start: number, end: num
 
 
 const roundRanges = preprocessRoundTicks(filePath);
-console.log(roundRanges);
 
 function findRoundForTick(tick: number): number | undefined {
   for (let i = 0; i < roundRanges.length; i++) {
@@ -171,8 +169,6 @@ let alivePlayersPerRound = new Map<number, { ct: Set<string>, t: Set<string> }>(
 
 playerDeaths.forEach((event: any) => {
   let round = findRoundForTick(event.tick) ?? -1;
-  console.log(event.tick)
-  console.log(round);
   if (!alivePlayersPerRound.has(round)) {
     alivePlayersPerRound.set(round, { ct: new Set(), t: new Set() });
   }
@@ -189,22 +185,25 @@ playerDeaths.forEach((event: any) => {
         if (player.team_num === T_TEAM_NUM) alivePlayers?.t.delete(event.user_steamid);
       }
     });
-    console.log(alivePlayers);
-    if ((alivePlayers.ct.size === 1 && alivePlayers.t.size > 0) || (alivePlayers.t.size === 1 && alivePlayers.ct.size > 0)) {
-      let survivingPlayerTeam = alivePlayers.ct.size === 1 ? alivePlayers.ct : alivePlayers.t;
-      let survivingPlayer = [...survivingPlayerTeam][0];
-
-      let roundclutchChance = clutchChance.get(round) || [];
-      // Check if the surviving player already has a clutch chance for this round
-      if (!roundclutchChance.some(clutch => clutch.steamID === survivingPlayer)) {
-        let opponentsAlive = survivingPlayerTeam === alivePlayers.ct ? alivePlayers.t.size : alivePlayers.ct.size;
-        roundclutchChance.push({ steamID: survivingPlayer, clutchChance: opponentsAlive, clutchSuccess: false });
-        console.log("Clutch chance: "+survivingPlayer+" : "+ opponentsAlive);
-        clutchChance.set(round, roundclutchChance);
-      }
+    // Check for clutch chances separately for each team
+    if (alivePlayers.ct.size === 1) {
+      let survivingCTPlayer = [...alivePlayers.ct][0];
+      updateClutchChance(round, survivingCTPlayer, alivePlayers.t.size);
+    }
+    if (alivePlayers.t.size === 1) {
+      let survivingTPlayer = [...alivePlayers.t][0];
+      updateClutchChance(round, survivingTPlayer, alivePlayers.ct.size);
     }
   }
 });
+
+function updateClutchChance(round: number, survivingPlayer: string, opponentsAlive: number) {
+  let roundClutchChance = clutchChance.get(round) || [];
+  if (!roundClutchChance.some(clutch => clutch.steamID === survivingPlayer)) {
+    roundClutchChance.push({ steamID: survivingPlayer, clutchChance: opponentsAlive, clutchSuccess: false });
+    clutchChance.set(round, roundClutchChance);
+  }
+}
 
 // Logic for round_end to determine clutch success would follow
 
@@ -369,15 +368,5 @@ const mergedStats: IMergedStats = {
   allRoundEvents,
 };
 
-const shortenedMergedStats = {
-  mapStats,
-  allPlayerStats: allPlayerStats,
-  allRoundStats: allRoundStats,
-  allPlayerRoundStats: allPlayerRoundStats,
-  allRoundKillEvents: allRoundKillEvents.slice(0, 10),
-  allRoundShotEvents: allRoundShotEvents.slice(0, 10),
-  allRoundHitEvents: allRoundHitEvents.slice(0, 10),
-  allRoundEvents: allRoundEvents.slice(0, 10),
-};
 
-console.log(JSON.stringify(shortenedMergedStats, null, 2));
+console.log(JSON.stringify(mergedStats, null, 2));

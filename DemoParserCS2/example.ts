@@ -99,17 +99,27 @@ interface IMergedStats {
   allRoundEvents: IRoundEvents[];
 }
 
+const matchStartTick = parseEvent(filePath, "begin_new_match").pop()?.tick || 0;
+
 function preprocessRoundTicks(filePath: string): Array<{ start: number, end: number }> {
   const roundStartEvents = parseEvent(filePath, "round_start");
-  const roundEndEvents = parseEvent(filePath, "round_officially_ended");
+  const roundEndEvents = parseEvent(filePath, "round_end");
 
-  let roundRanges: Array<{ start: number, end: number }> = []; // Explicit type definition
 
-  for (let i = 0; i < roundStartEvents.length; i++) {
-      roundRanges.push({
-          start: roundStartEvents[i].tick,
-          end: roundEndEvents[i] ? roundEndEvents[i].tick : Number.MAX_SAFE_INTEGER
-      });
+  let roundRanges: Array<{ start: number, end: number }> = [];
+  let startIndex = 0;
+
+  for (let i = 0; i < roundEndEvents.length; i++) {
+    // Skip end events before the official match start
+    if (roundEndEvents[i].tick < matchStartTick) continue;
+
+    // Find the corresponding round_start event based on tick values
+    while (startIndex < roundStartEvents.length && roundStartEvents[startIndex].tick < roundEndEvents[i].tick) {
+      startIndex++;
+    }
+
+    let startTick = startIndex > 0 ? roundStartEvents[startIndex - 1].tick : 0;
+    roundRanges.push({ start: startTick, end: roundEndEvents[i].tick });
   }
 
   return roundRanges;
@@ -117,20 +127,25 @@ function preprocessRoundTicks(filePath: string): Array<{ start: number, end: num
 
 
 const roundRanges = preprocessRoundTicks(filePath);
+console.log(roundRanges);
 
-// Find round for a given tick
 function findRoundForTick(tick: number): number | undefined {
-  return (
-    roundRanges.findIndex((range) => tick >= range.start && tick <= range.end) +
-      1 || undefined
-  );
+  for (let i = 0; i < roundRanges.length; i++) {
+    const nextRoundStart = i + 1 < roundRanges.length ? roundRanges[i + 1].start : Number.MAX_SAFE_INTEGER;
+
+    if (tick >= roundRanges[i].start && tick < nextRoundStart) {
+      return i + 1; // Return the current round index as a 1-based index
+    }
+  }
+  return undefined; // Return undefined if no matching round is found
 }
 
-let mvpEvents = parseEvent(filePath, "round_mvp");
-let roundEndTicks = parseEvent(filePath, "round_end").map((event: any) => event.tick);
+
+
+let mvpEvents = parseEvent(filePath, "round_mvp").filter((event: any) => event.tick >= matchStartTick);
+let roundEndTicks = parseEvent(filePath, "round_end").filter((event: any) => event.tick >= matchStartTick).map((event: any) => event.tick);
 let tickFields = ["equipment_value_this_round", "cash_spent_this_round", "is_alive", "team_num", "player_name"];
 let tickData = parseTicks(filePath, tickFields).filter((tick: any) => roundEndTicks.includes(tick.tick));
-
 
 let allPlayerRoundStats: IPlayerRoundStats[] = tickData.map((tick: any) => {
   let isMVP = mvpEvents.some((mvp: any) => mvp.tick === tick.tick && mvp.user_steamid === tick.steamid);
@@ -140,71 +155,90 @@ let allPlayerRoundStats: IPlayerRoundStats[] = tickData.map((tick: any) => {
     steamID: tick.steamid,
     round: findRoundForTick(tick.tick),
     team: tick.team_num,
-    //clutchChance: calculateClutchChance(tick), // Requires additional logic
-    //clutchSuccess: calculateClutchSuccess(tick), // Requires additional logic
     survived: tick.is_alive,
     moneySpent: tick.cash_spent_this_round,
     equipmentValue: tick.equipment_value_this_round,
+    clutchChance: 0,  //to be updated later
+    clutchSuccess: false,//to be updated later
     mvp: isMVP
   };
 });
 
-// Placeholder for clutch information
-interface ClutchInfo {
-  steamid: string;
-  round: number;
-  opponentsAlive: number;
-  success: boolean;
-}
 
-let clutchChances: ClutchInfo[] = [];
-let playerDeaths = parseEvent(filePath, "player_death",["num_player_alive_ct","num_player_alive_t","team_num"]);
+let playerDeaths = parseEvent(filePath, "player_death").filter((event: any) => event.tick >= matchStartTick);
+let clutchChance = new Map<number, { steamID: string, clutchChance: number, clutchSuccess: boolean }[]>();
+let alivePlayersPerRound = new Map<number, { ct: Set<string>, t: Set<string> }>();
 
-playerDeaths.forEach((deathEvent: any) => {
-  let ctAlive = deathEvent.num_player_alive_ct;
-  let tAlive = deathEvent.num_player_alive_t;
-  let teamOfDeadPlayer = deathEvent.team_num; // Assuming this is available
-  let isClutchChance = false;
-
-  if (teamOfDeadPlayer === CT_TEAM_NUM && ctAlive === 1) { // CT_TEAM_NUM is a constant for CT team number
-    isClutchChance = true;
-  } else if (teamOfDeadPlayer === T_TEAM_NUM && tAlive === 1) { // T_TEAM_NUM is a constant for T team number
-    isClutchChance = true;
+playerDeaths.forEach((event: any) => {
+  let round = findRoundForTick(event.tick) ?? -1;
+  console.log(event.tick)
+  console.log(round);
+  if (!alivePlayersPerRound.has(round)) {
+    alivePlayersPerRound.set(round, { ct: new Set(), t: new Set() });
   }
 
-  if (isClutchChance) {
-    let survivingPlayerSteamId = "3252532";
-    let opponentsAlive = teamOfDeadPlayer === CT_TEAM_NUM ? tAlive : ctAlive;
-    let roundNumber = findRoundForTick(deathEvent.tick);
+  let alivePlayers = alivePlayersPerRound.get(round);
+  if (alivePlayers) {
+    let tickData = parseTicks(filePath, ["is_alive", "team_num", "player_steamid"], [event.tick]);
+    tickData.forEach((player: { is_alive: boolean; team_num: number; player_steamid: string; }) => {
+      if (player.is_alive && event.user_steamid !== player.player_steamid) {
+        if (player.team_num === CT_TEAM_NUM) alivePlayers?.ct.add(player.player_steamid);
+        if (player.team_num === T_TEAM_NUM) alivePlayers?.t.add(player.player_steamid);
+      } else if (event.user_steamid === player.player_steamid) {
+        if (player.team_num === CT_TEAM_NUM) alivePlayers?.ct.delete(event.user_steamid);
+        if (player.team_num === T_TEAM_NUM) alivePlayers?.t.delete(event.user_steamid);
+      }
+    });
+    console.log(alivePlayers);
+    if ((alivePlayers.ct.size === 1 && alivePlayers.t.size > 0) || (alivePlayers.t.size === 1 && alivePlayers.ct.size > 0)) {
+      let survivingPlayerTeam = alivePlayers.ct.size === 1 ? alivePlayers.ct : alivePlayers.t;
+      let survivingPlayer = [...survivingPlayerTeam][0];
 
-    clutchChances.push({
-      steamid: survivingPlayerSteamId,
-      round: roundNumber ?? -1,
-      opponentsAlive: opponentsAlive,
-      success: false // Default to false, to be updated later
+      let roundclutchChance = clutchChance.get(round) || [];
+      // Check if the surviving player already has a clutch chance for this round
+      if (!roundclutchChance.some(clutch => clutch.steamID === survivingPlayer)) {
+        let opponentsAlive = survivingPlayerTeam === alivePlayers.ct ? alivePlayers.t.size : alivePlayers.ct.size;
+        roundclutchChance.push({ steamID: survivingPlayer, clutchChance: opponentsAlive, clutchSuccess: false });
+        console.log("Clutch chance: "+survivingPlayer+" : "+ opponentsAlive);
+        clutchChance.set(round, roundclutchChance);
+      }
+    }
+  }
+});
+
+// Logic for round_end to determine clutch success would follow
+
+let roundEndEvents = parseEvent(filePath, "round_end").filter((event: any) => event.tick >= matchStartTick);
+
+// Logic for round_end to determine clutch success
+roundEndEvents.forEach((endEvent: any) => {
+  let round = findRoundForTick(endEvent.tick) ?? -1;
+  let roundclutchChance = clutchChance.get(round);
+
+  if (roundclutchChance) {
+    roundclutchChance.forEach(clutch => {
+      let endTickData = parseTicks(filePath, ["team_num"], [endEvent.tick]);
+      let clutchPlayerData = endTickData.find((player: any) => player.steamid === clutch.steamID);
+
+      if (clutchPlayerData && clutchPlayerData.team_num === endEvent.winner) {
+        clutch.clutchSuccess = true;
+      }
     });
   }
 });
 
-let roundEndEvents = parseEvent(filePath, "round_end");
-
-// Determine clutch success using roundEndEvents
-roundEndEvents.forEach((endEvent: any) => {
-  clutchChances.forEach(clutch => {
-    if (clutch.round === findRoundForTick(endEvent.tick)) {
-      clutch.success = false;
+// Updating allPlayerRoundStats with clutch information
+allPlayerRoundStats.forEach((stat) => {
+  let roundclutchChance = clutchChance.get(stat.round);
+  if (roundclutchChance) {
+    let clutch = roundclutchChance.find(clutch => clutch.steamID === stat.steamID);
+    if (clutch) {
+      stat.clutchChance = clutch.clutchChance;
+      stat.clutchSuccess = clutch.clutchSuccess;
     }
-  });
-});
-
-// Update allPlayerRoundStats with clutch information
-allPlayerRoundStats.forEach(stat => {
-  let clutch = clutchChances.find(c => c.steamid === stat.steamID && c.round === stat.round);
-  if (clutch) {
-    stat.clutchChance = clutch.opponentsAlive;
-    stat.clutchSuccess = clutch.success;
   }
 });
+
 
 let allRoundStats: IRoundStats[] = roundEndEvents.map((event: any, index: number) => ({
   roundNumber: index + 1, // Assuming rounds are in sequential order
@@ -213,9 +247,9 @@ let allRoundStats: IRoundStats[] = roundEndEvents.map((event: any, index: number
 }));
 
 
-let bombPlantEvents = parseEvent(filePath, "bomb_planted", ["game_time"]);
-let bombDefuseEvents = parseEvent(filePath, "bomb_defused", ["game_time"]);
-let hostageRescueEvents = parseEvent(filePath, "hostage_rescued", ["game_time"]);
+let bombPlantEvents = parseEvent(filePath, "bomb_planted", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
+let bombDefuseEvents = parseEvent(filePath, "bomb_defused", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
+let hostageRescueEvents = parseEvent(filePath, "hostage_rescued", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
 
 let allEvents = [...bombPlantEvents, ...bombDefuseEvents, ...hostageRescueEvents]; // Combine all event arrays
 
@@ -226,7 +260,7 @@ let allRoundEvents: IRoundEvents[] = allEvents.map((event: any) => ({
     round: findRoundForTick(event.tick) ?? -1
 }));
 
-let killEvents = parseEvent(filePath, "player_death", ["game_time", "team_num"]);
+let killEvents = parseEvent(filePath, "player_death", ["game_time", "team_num"]).filter((event: any) => event.tick >= matchStartTick);
 
 let roundKills = new Map<number, { time: number, killer: string, victim: string, victimTeam: number }[]>();
 
@@ -268,7 +302,7 @@ let allRoundKillEvents: IRoundKillEvents[] = killEvents.map((event: any) => {
 });
 
 
-let shotEvents = parseEvent(filePath, "weapon_fire", ["game_time"]);
+let shotEvents = parseEvent(filePath, "weapon_fire", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
 
 let allRoundShotEvents: IRoundShotEvents[] = shotEvents.map((event: any) => ({
   eventType: "weapon_fire",
@@ -278,7 +312,7 @@ let allRoundShotEvents: IRoundShotEvents[] = shotEvents.map((event: any) => ({
   round: findRoundForTick(event.tick),
 }));
 
-let hitEvents = parseEvent(filePath, "player_hurt", ["game_time"]);
+let hitEvents = parseEvent(filePath, "player_hurt", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
 
 let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map((event: any) => ({
   time: event.game_time,
@@ -291,7 +325,7 @@ let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map((event: any) => ({
   damageArmour: event.dmg_armor,
 }));
 
-let flashEvents = parseEvent(filePath, "player_blind", ["game_time"]);
+let flashEvents = parseEvent(filePath, "player_blind", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
 
 // Mapping flash events
 flashEvents.forEach((event: any) => {
@@ -337,9 +371,9 @@ const mergedStats: IMergedStats = {
 
 const shortenedMergedStats = {
   mapStats,
-  allPlayerStats: allPlayerStats.slice(0, 10),
-  allRoundStats: allRoundStats.slice(0, 10),
-  allPlayerRoundStats: allPlayerRoundStats.slice(0, 10),
+  allPlayerStats: allPlayerStats,
+  allRoundStats: allRoundStats,
+  allPlayerRoundStats: allPlayerRoundStats,
   allRoundKillEvents: allRoundKillEvents.slice(0, 10),
   allRoundShotEvents: allRoundShotEvents.slice(0, 10),
   allRoundHitEvents: allRoundHitEvents.slice(0, 10),
@@ -347,4 +381,3 @@ const shortenedMergedStats = {
 };
 
 console.log(JSON.stringify(shortenedMergedStats, null, 2));
-

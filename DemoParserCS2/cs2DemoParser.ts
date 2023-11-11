@@ -127,7 +127,7 @@ function preprocessRoundTicks(filePath: string): Array<{ start: number, end: num
 
 const roundRanges = preprocessRoundTicks(filePath);
 
-function findRoundForTick(tick: number): number | undefined {
+function findRoundForTick(tick: number): number {
   for (let i = 0; i < roundRanges.length; i++) {
     const nextRoundStart = i + 1 < roundRanges.length ? roundRanges[i + 1].start : Number.MAX_SAFE_INTEGER;
 
@@ -135,7 +135,7 @@ function findRoundForTick(tick: number): number | undefined {
       return i + 1; // Return the current round index as a 1-based index
     }
   }
-  return undefined; // Return undefined if no matching round is found
+  return -1; // Return undefined if no matching round is found
 }
 
 
@@ -287,7 +287,7 @@ let allRoundKillEvents: IRoundKillEvents[] = killEvents.map((event: any) => {
   return {
     time: event.game_time,
     steamID: event.attacker_steamid,
-    flashAssister: event.assistedflash,
+    flashAssister: event.assistedflash ? event.assister_steamid : undefined,
     killerFlashed: event.attackerblind,
     round: round,
     victimSteamId: event.user_steamid,
@@ -303,13 +303,47 @@ let allRoundKillEvents: IRoundKillEvents[] = killEvents.map((event: any) => {
 
 let shotEvents = parseEvent(filePath, "weapon_fire", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
 
-let allRoundShotEvents: IRoundShotEvents[] = shotEvents.map((event: any) => ({
-  eventType: "weapon_fire",
-  time: event.game_time,
-  steamID: event.user_steamid,
-  weapon: event.weapon,
-  round: findRoundForTick(event.tick),
-}));
+// Fetch grenade detonation events
+let flashbangDetonateEvents = parseEvent(filePath, "flashbang_detonate", ["game_time"]);
+let heGrenadeDetonateEvents = parseEvent(filePath, "hegrenade_detonate", ["game_time"]);
+let molotovDetonateEvents = parseEvent(filePath, "molotov_detonate", ["game_time"]);
+let smokeGrenadeDetonateEvents = parseEvent(filePath, "smokegrenade_detonate", ["game_time"]);
+
+// Combine all shot and grenade detonation events
+let combinedEvents = [
+  ...shotEvents, 
+  ...flashbangDetonateEvents, 
+  ...heGrenadeDetonateEvents, 
+  ...molotovDetonateEvents, 
+  ...smokeGrenadeDetonateEvents
+].filter((event: any) => event.tick >= matchStartTick);
+
+let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any) => {
+  let weaponType;
+  switch(event.event_name) {
+    case "flashbang_detonate":
+      weaponType = "flashbang";
+      break;
+    case "hegrenade_detonate":
+      weaponType = "hegrenade";
+      break;
+    case "molotovDetonate":
+      weaponType = "inferno";
+      break;
+    case "smokegrenade_detonate":
+      weaponType = "smokegrenade";
+      break;
+    default:
+      weaponType = "weapon_fire";
+  }
+  return {
+    eventType: weaponType,
+    time: event.game_time,
+    steamID: event.user_steamid,
+    weapon: weaponType,
+    round: findRoundForTick(event.tick)
+  };
+});
 
 let hitEvents = parseEvent(filePath, "player_hurt", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
 

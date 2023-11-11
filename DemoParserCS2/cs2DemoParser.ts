@@ -320,27 +320,33 @@ let combinedEvents = [
 
 let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any) => {
   let weaponType;
+  let weapon;
   switch(event.event_name) {
     case "flashbang_detonate":
       weaponType = "flashbang";
+      weapon = "flashbang"
       break;
     case "hegrenade_detonate":
       weaponType = "hegrenade";
+      weapon = "hegrenade"
       break;
     case "molotovDetonate":
       weaponType = "inferno";
+      weapon = "inferno"
       break;
     case "smokegrenade_detonate":
       weaponType = "smokegrenade";
+      weapon = "smokegrenade"
       break;
     default:
       weaponType = "weapon_fire";
+      weapon = event.weapon
   }
   return {
     eventType: weaponType,
     time: event.game_time,
     steamID: event.user_steamid,
-    weapon: weaponType,
+    weapon: weapon,
     round: findRoundForTick(event.tick)
   };
 });

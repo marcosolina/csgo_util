@@ -175,13 +175,15 @@ public class DemFileParserImp implements DemFileParser {
 	private void setMapNameAndTime(File f, SvcNodeJsParseOutput stats) {
 		String[] tmp = f.getName().split("-");
 		String date = tmp[1];
-		String time = tmp[2];
-		String mapName = tmp[4];
+		String time = String.format("%-6s", tmp[2]).replace(' ', '0');
+		String mapName = stats.isCs2DemFile() ? tmp[3] : tmp[4];
+		
+		
 
 		LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(date + "_" + time, DateFormats.FILE_NAME);
 		SvcMatchStats ms = new SvcMatchStats();
 		ms.setMatch_date(ldt);
-		ms.setMapname(cleanMapName(mapName));
+		ms.setMapname(cleanMapName(mapName));// TODO is this a corpse?
 
 		stats.getMapStats().setMapname(mapName);
 		stats.getMapStats().setMatch_date(ldt);

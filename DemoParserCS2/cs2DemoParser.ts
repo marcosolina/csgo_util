@@ -186,11 +186,11 @@ playerDeaths.forEach((event: any) => {
       }
     });
     // Check for clutch chances separately for each team
-    if (alivePlayers.ct.size === 1) {
+    if (alivePlayers.ct.size === 1 && alivePlayers.t.size>0) {
       let survivingCTPlayer = [...alivePlayers.ct][0];
       updateClutchChance(round, survivingCTPlayer, alivePlayers.t.size);
     }
-    if (alivePlayers.t.size === 1) {
+    if (alivePlayers.t.size === 1 && alivePlayers.ct.size>0) {
       let survivingTPlayer = [...alivePlayers.t][0];
       updateClutchChance(round, survivingTPlayer, alivePlayers.ct.size);
     }

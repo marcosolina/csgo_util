@@ -1,6 +1,6 @@
 import { parseEvents, parseTicks, listGameEvents,parseGrenades,parseHeader,parsePlayerInfo } from "@laihoe/demoparser2";
 
-const pathToDemo  = "C:\\temp\\auto-20231009-1930-de_overpass-IXI-GO__Monday_Nights.dem"
+const pathToDemo  = "C:\\temp\\demos\\auto-20231009-1830-cs_italy-IXI-GO__Monday_Nights.dem"
 
 // Get the names of all events
 let eventNames = listGameEvents(pathToDemo);

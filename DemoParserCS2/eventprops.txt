@@ -159,6 +159,14 @@
       'weapon_originalowner_xuid',
       'wipe'
     ],
+      hostage_rescued: [
+    'event_name',
+    'hostage',
+    'site',
+    'tick',
+    'user_name',
+    'user_steamid'
+  ],
     bomb_defused: [ 'event_name', 'site', 'tick', 'user_name', 'user_steamid' ],
     player_disconnect: [
       'PlayerID',

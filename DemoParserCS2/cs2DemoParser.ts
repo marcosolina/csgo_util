@@ -50,7 +50,7 @@ interface IRoundShotEvents {
 }
 
 interface IRoundHitEvents {
-  eventtime: number;
+  time: number;
   steamID: string;
   round: number;
   weapon: string;

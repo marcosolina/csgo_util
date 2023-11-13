@@ -20,6 +20,7 @@ import lombok.Setter;
 @Setter
 public class SvcNodeJsParseOutput implements Serializable {
 	private static final long serialVersionUID = 1L;
+	private boolean isCs2DemFile;
 	private SvcMatchStats mapStats = new SvcMatchStats();
 	private List<SvcPlayerStats> allPlayerStats = new ArrayList<>();
 	private List<SvcRoundStats> allRoundStats = new ArrayList<>();

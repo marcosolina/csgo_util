@@ -15,6 +15,7 @@ import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcNodeJsParseOutput;
 import com.ixigo.demmanager.services.interfaces.CmdExecuter;
+import com.ixigo.demmanager.services.interfaces.DemFileFormatChecker;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.library.errors.IxigoException;
 
@@ -30,6 +31,8 @@ public class DemProcessorNodeJsLinux implements DemProcessor {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemProcessorNodeJsLinux.class);
 
 	@Autowired
+	private DemFileFormatChecker formatChecker;
+	@Autowired
 	private DemFileManagerProps props;
 	@Autowired
 	private CmdExecuter exec;
@@ -38,22 +41,27 @@ public class DemProcessorNodeJsLinux implements DemProcessor {
 	public Mono<SvcNodeJsParseOutput> processDemFile(File demFile) throws IxigoException {
 		_LOGGER.trace("Inside DemProcessorWindows.DemProcessorWindows");
 
-		List<String> cmd = new ArrayList<>();
-		cmd.add("npx");
-		cmd.add("ts-node");
-		cmd.add(props.parserExecPath.toString());
-		cmd.add(demFile.getAbsolutePath());
+		return formatChecker.isCs2DemFile(demFile).flatMap(isCs2DemFile -> {
+			List<String> cmd = new ArrayList<>();
+			cmd.add("npx");
+			cmd.add("ts-node");
 
-		return exec.runCommand(cmd).map(s -> {
-			try {
-				ObjectMapper objectMapper = new ObjectMapper();
-				SvcNodeJsParseOutput output =objectMapper.readValue(s, SvcNodeJsParseOutput.class); 
-				return output;
-			} catch (JsonProcessingException e) {
-				e.printStackTrace();
-				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
-			}
+			cmd.add(isCs2DemFile ? props.parserCs2ExecPath.toString() : props.parserExecPath.toString());
+			cmd.add(demFile.getAbsolutePath());
+
+			return exec.runCommand(cmd).map(s -> {
+				try {
+					ObjectMapper objectMapper = new ObjectMapper();
+					SvcNodeJsParseOutput output = objectMapper.readValue(s, SvcNodeJsParseOutput.class);
+					output.setCs2DemFile(isCs2DemFile);// TODO make it better
+					return output;
+				} catch (JsonProcessingException e) {
+					e.printStackTrace();
+					throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
+				}
+			});
 		});
+
 	}
 
 }

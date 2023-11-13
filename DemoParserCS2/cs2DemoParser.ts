@@ -27,7 +27,7 @@ interface IRoundEvents {
 }
 
 interface IRoundKillEvents {
-  time: number;
+  eventtime: number;
   steamID: string;
   assister: string | undefined;
   flashAssister: string | undefined;
@@ -43,14 +43,14 @@ interface IRoundKillEvents {
 
 interface IRoundShotEvents {
   eventType: string;
-  time: number;
+  eventtime: number;
   steamID: string;
   round: number;
   weapon: string;
 }
 
 interface IRoundHitEvents {
-  time: number;
+  eventtime: number;
   steamID: string;
   round: number;
   weapon: string;
@@ -74,12 +74,12 @@ interface IRoundStats {
 }
 
 class MapStats {
-  date: Date | null;
+  match_date: Date | null;
   mapName: string;
   match_filename: string;
 
   constructor(match_filename: string) {
-    this.date = null;
+    this.match_date = null;
     this.mapName = "";
     this.match_filename = match_filename;
   }
@@ -298,7 +298,7 @@ let allRoundKillEvents: IRoundKillEvents[] = killEvents.map((event: any) => {
   );
 
   return {
-    time: event.game_time,
+    eventtime: event.game_time,
     steamID: event.attacker_steamid,
     flashAssister: event.assistedflash ? event.assister_steamid : undefined,
     killerFlashed: event.attackerblind,
@@ -358,7 +358,7 @@ let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any) => 
   }
   return {
     eventType: weaponType,
-    time: event.game_time,
+    eventtime: event.game_time,
     steamID: event.user_steamid,
     weapon: weapon,
     round: findRoundForTick(event.tick),
@@ -368,7 +368,7 @@ let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any) => 
 let hitEvents = parseEvent(filePath, "player_hurt", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
 
 let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map((event: any) => ({
-  time: event.game_time,
+  eventtime: event.game_time,
   steamID: event.attacker_steamid,
   round: findRoundForTick(event.tick),
   weapon: event.weapon,

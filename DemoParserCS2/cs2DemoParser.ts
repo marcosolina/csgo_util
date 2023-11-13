@@ -21,13 +21,13 @@ interface IPlayerRoundStats {
 
 interface IRoundEvents {
   eventtype: string;
-  eventtime: number;
+  time: number;
   steamid: string;
   round: number;
 }
 
 interface IRoundKillEvents {
-  eventtime: number;
+  time: number;
   steamID: string;
   assister: string | undefined;
   flashAssister: string | undefined;
@@ -43,7 +43,7 @@ interface IRoundKillEvents {
 
 interface IRoundShotEvents {
   eventType: string;
-  eventtime: number;
+  time: number;
   steamID: string;
   round: number;
   weapon: string;
@@ -253,7 +253,7 @@ let allEvents = [...bombPlantEvents, ...bombDefuseEvents, ...hostageRescueEvents
 
 let allRoundEvents: IRoundEvents[] = allEvents.map((event: any) => ({
   eventtype: event.event_name, // This will be "bomb_planted" or "bomb_defused", etc.
-  eventtime: event.game_time,
+  time: event.game_time,
   steamid: event.user_steamid,
   round: findRoundForTick(event.tick) ?? -1,
 }));
@@ -298,7 +298,7 @@ let allRoundKillEvents: IRoundKillEvents[] = killEvents.map((event: any) => {
   );
 
   return {
-    eventtime: event.game_time,
+    time: event.game_time,
     steamID: event.attacker_steamid,
     flashAssister: event.assistedflash ? event.assister_steamid : undefined,
     killerFlashed: event.attackerblind,
@@ -358,7 +358,7 @@ let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any) => 
   }
   return {
     eventType: weaponType,
-    eventtime: event.game_time,
+    time: event.game_time,
     steamID: event.user_steamid,
     weapon: weapon,
     round: findRoundForTick(event.tick),
@@ -368,7 +368,7 @@ let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any) => 
 let hitEvents = parseEvent(filePath, "player_hurt", ["game_time"]).filter((event: any) => event.tick >= matchStartTick);
 
 let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map((event: any) => ({
-  eventtime: event.game_time,
+  time: event.game_time,
   steamID: event.attacker_steamid,
   round: findRoundForTick(event.tick),
   weapon: event.weapon,

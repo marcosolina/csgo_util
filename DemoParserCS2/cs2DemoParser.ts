@@ -152,7 +152,9 @@ let smokeGrenadeDetonateEvents = allEvents.filter((event: any) => event.event_na
 const roundEndTicks = roundEndEvents.map((event: any) => event.tick);
 
 // Get ticks with metadata
-const allTicksArray = parseTicks(filePath, ["equipment_value_this_round", "cash_spent_this_round", "is_alive", "team_num", "player_name", "score", "player_steamid"]);  // Fetch all tick data once
+const allTicksArray = parseTicks(filePath, 
+  ["equipment_value_this_round", "cash_spent_this_round", "is_alive", "team_num", "player_name", "score", "player_steamid"], 
+  allEvents.map((event: any) => event.tick));  // Fetch all tick data once
 
 const tickData = allTicksArray.filter((tick: any) => roundEndTicks.includes(tick.tick));
 const gameEndTick = Math.max(...roundEndEvents.map((event: any) => event.tick));

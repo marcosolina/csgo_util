@@ -156,7 +156,7 @@ const allTicksArray = parseTicks(filePath,
   ["equipment_value_this_round", "cash_spent_this_round", "is_alive", "team_num", "player_name", "score", "player_steamid"], 
   allEvents.map((event: any) => event.tick));  // Fetch all tick data once
 
-const tickData = allTicksArray.filter((tick: any) => roundEndTicks.includes(tick.tick));
+const roundEndTickData = allTicksArray.filter((tick: any) => roundEndTicks.includes(tick.tick));
 const gameEndTick = Math.max(...roundEndEvents.map((event: any) => event.tick));
 
 // Convert the array of tick data into a map for efficient access
@@ -190,7 +190,7 @@ function findRoundForTick(tick: number) {
 
 
 
-let allPlayerRoundStats: IPlayerRoundStats[] = tickData.map((tick: any) => {
+let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData.map((tick: any) => {
   let isMVP = mvpEvents.some((mvp: any) => mvp.tick === tick.tick && mvp.user_steamid === tick.steamid);
 
   return {

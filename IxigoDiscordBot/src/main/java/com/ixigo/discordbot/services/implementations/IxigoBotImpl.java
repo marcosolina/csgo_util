@@ -25,6 +25,8 @@ import com.ixigo.discordbot.models.repo.Users_mapDto;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcPlayer;
+import com.ixigo.discordbot.models.svc.discord.SvcSteamTeams;
+import com.ixigo.discordbot.models.svc.discord.SvcSteamUser;
 import com.ixigo.discordbot.repositories.interfaces.RepoBotConfig;
 import com.ixigo.discordbot.repositories.interfaces.RepoUsersMap;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
@@ -411,5 +413,63 @@ public class IxigoBotImpl implements IxigoBot {
 	@Override
 	public Flux<SvcBotConfig> getBotConfigAll() throws IxigoException {
 		return repoBotConfig.findAllConfig().map(mapper::raceFromDtoSvcToSvc);
+	}
+
+	@Override
+	public Mono<Void> setToVoiceChannel(SvcSteamTeams teams) throws IxigoException {
+		this.moveAllMembersIntoGeneralChannel();
+		// @formatter:off
+		getGuild()
+		.subscribe(guild -> {
+			guild.loadMembers()
+			.onSuccess(members -> moveMemberToVoiceChannel(members, teams))
+			;
+		})
+		;
+		// @formatter:on
+		return Mono.empty();
+	}
+	
+	private void moveMemberToVoiceChannel(List<Member> members, SvcSteamTeams teams) {
+		var terroristIds = teams.getTerrorists().stream().map(SvcSteamUser::getSteamId).toList();
+		var ctIds = teams.getCt().stream().map(SvcSteamUser::getSteamId).toList();
+		
+		var terroristsDiscordIdsMono = repoUsersMap.findAllBySteamId(terroristIds).map(Users_mapDto::getDiscord_id).collectList();
+		var ctDiscordIdsMono = repoUsersMap.findAllBySteamId(ctIds).map(Users_mapDto::getDiscord_id).collectList();
+		
+		//// @formatter:off
+		Mono.zip(terroristsDiscordIdsMono, ctDiscordIdsMono, getGuild())
+			.subscribe(tuple -> {
+				var tDiscIds = tuple.getT1();
+				var ctDiscIds = tuple.getT2();
+				var guild = tuple.getT3();
+				
+				VoiceChannel tVc = guild.getVoiceChannelById(discordProps.getVoiceChannels().getTerrorist());
+				VoiceChannel ctVc = guild.getVoiceChannelById(discordProps.getVoiceChannels().getCt());
+				
+				List<Member> membersInVoiceChat = members.stream()
+						.filter(Objects::nonNull)
+						.filter(m -> !m.getUser().isBot())
+						.filter(m -> m.getVoiceState().inAudioChannel())
+						.collect(Collectors.toList())
+						;
+				
+				var actions = membersInVoiceChat.stream()
+						.filter(m -> tDiscIds.contains(m.getIdLong()))
+						.map(m -> moveMemberToVoiceChannel(guild, m, tVc))
+						.collect(Collectors.toList())
+						;
+				
+				actions.addAll(membersInVoiceChat.stream()
+						.filter(m -> ctDiscIds.contains(m.getIdLong()))
+						.map(m -> moveMemberToVoiceChannel(guild, m, ctVc))
+						.collect(Collectors.toList()))
+						;
+				
+				if(!actions.isEmpty()) {					
+					RestAction.allOf(actions).queue();
+				}
+			});
+		// @formatter:on
 	}
 }

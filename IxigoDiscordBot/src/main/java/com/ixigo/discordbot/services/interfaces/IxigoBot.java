@@ -5,6 +5,7 @@ import java.util.List;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcPlayer;
+import com.ixigo.discordbot.models.svc.discord.SvcSteamTeams;
 import com.ixigo.enums.BotConfigKey;
 import com.ixigo.library.errors.IxigoException;
 
@@ -51,6 +52,8 @@ public interface IxigoBot {
 
 	public abstract Mono<SvcBotConfig> getBotConfig(BotConfigKey key) throws IxigoException;
 	public abstract Flux<SvcBotConfig> getBotConfigAll() throws IxigoException;
+	
+	public abstract Mono<Void> setToVoiceChannel(SvcSteamTeams teams) throws IxigoException;
 	
 	public abstract void sendMessageToGeneralChat(String msg);
 	public abstract void sendEmbedMessageToGeneralChat(MessageEmbed me);

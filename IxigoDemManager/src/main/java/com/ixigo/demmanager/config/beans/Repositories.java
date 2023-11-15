@@ -38,7 +38,7 @@ public class Repositories {
 		// @formatter:off
         PostgresqlConnectionConfiguration.builder()
                 .host(postrgresProps.getHost())
-                .database("demfiles2")
+                .database("demfiles")
                 .username(postrgresProps.getUser())
                 .password(postrgresProps.getPassword())
 //			                .codecRegistrar(

@@ -1,7 +1,7 @@
 export interface IxigoFloatingButtonProps {
   color?: IxigoFloatingButtonColor;
   fixedPosition?: IxigoFloatingButtonFixedPosition;
-  onClick?: () => void;
+  onClick?: (event?: any) => void;
   loading?: boolean;
   tooltip?: string;
   icon?: React.ReactNode;

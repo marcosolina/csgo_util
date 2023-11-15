@@ -1,4 +1,14 @@
-import { Grid, List, ListItem, ListSubheader } from "@mui/material";
+import {
+  Grid,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material";
 import { IxigoTextType } from "../../common/input";
 import IxigoText from "../../common/input/IxigoText";
 import IxigoSelect from "../../common/select/IxigoSelect";
@@ -18,6 +28,10 @@ import { useRconContentProvider } from "../rcon/useRconContentProvider";
 import { useTranslation } from "react-i18next";
 import IxigoFloatingButton from "../../common/floating-button/IxigoFloatingButton";
 import { usePlayersContentProvider } from "./usePlayersContetProvider";
+import React from "react";
+import SafetyDividerIcon from "@mui/icons-material/SafetyDivider";
+import GroupsIcon from "@mui/icons-material/Groups";
+import ForwardIcon from "@mui/icons-material/Forward";
 
 const XS = 12;
 const SM = 12;
@@ -33,6 +47,15 @@ let timeOut = setTimeout(() => {}, 100);
 const PlayersContent = () => {
   const { t } = useTranslation();
   const pContent = usePlayersContentProvider();
+
+  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
 
   const { getTeams, status: getTeamsStatus, response: getTeamsResp } = useGetTeams();
   const { request, queryState, sendCommand } = useRconContentProvider();
@@ -142,12 +165,50 @@ const PlayersContent = () => {
           </Grid>
         </Grid>
         {pContent.listOfSelectedPlayers.length >= MIN_SELECTED_PLAYERS && (
-          <IxigoFloatingButton
-            onClick={setPlayersHandler}
-            tooltip={t(`${BASE_LANGUAGE_PATH}.labels.lblBtnSetPlayers`) as string}
-            loading={queryState === QueryStatus.loading}
-            icon={<SendIcon />}
-          />
+          <>
+            <IxigoFloatingButton
+              onClick={handleClick}
+              tooltip={t(`${BASE_LANGUAGE_PATH}.labels.lblBtnACtions`) as string}
+              loading={queryState === QueryStatus.loading}
+              icon={<ForwardIcon />}
+            />
+            <Menu
+              id="basic-menu"
+              anchorEl={anchorEl}
+              open={open}
+              onClose={handleClose}
+              MenuListProps={{
+                "aria-labelledby": "basic-button",
+              }}
+            >
+              <MenuItem
+                onClick={() => {
+                  handleClose();
+                  setPlayersHandler();
+                }}
+              >
+                <ListItemIcon>
+                  <Tooltip title={t(`${BASE_LANGUAGE_PATH}.labels.lblBtnSetPlayers`) as string}>
+                    <SendIcon />
+                  </Tooltip>
+                </ListItemIcon>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <Tooltip title={t(`${BASE_LANGUAGE_PATH}.labels.lblBtnMoveToVoiceChannel`) as string}>
+                    <SafetyDividerIcon />
+                  </Tooltip>
+                </ListItemIcon>
+              </MenuItem>
+              <MenuItem onClick={handleClose}>
+                <ListItemIcon>
+                  <Tooltip title={t(`${BASE_LANGUAGE_PATH}.labels.lblBtnMoveToGenericVoiceChannel`) as string}>
+                    <GroupsIcon />
+                  </Tooltip>
+                </ListItemIcon>
+              </MenuItem>
+            </Menu>
+          </>
         )}
       </Case>
       <Case case={QueryStatus.error}>

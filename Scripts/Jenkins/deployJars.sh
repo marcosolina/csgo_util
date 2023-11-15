@@ -36,6 +36,16 @@ ssh -t -t $SSH_ADDRESS_1 << EOF
 export BASH_ENV=/etc/bash.bashrc && cd $DEM_APP_FOLDER && npm install --save demofile && exit
 EOF
 
+# Deploy NodeJS DemParser CS2
+DEM_APP_FOLDER=$BASE_FOLDER/DemoParserCS2
+ssh $SSH_ADDRESS_1 mkdir -p $DEM_APP_FOLDER
+ssh $SSH_ADDRESS_1 rm -rf $DEM_APP_FOLDER/*
+scp -r $WORKSPACE_FOLDER/DemoParserCS2/* $SSH_ADDRESS_1:$DEM_APP_FOLDER
+ssh $SSH_ADDRESS_1 chmod +x $DEM_APP_FOLDER
+ssh -t -t $SSH_ADDRESS_1 << EOF
+export BASH_ENV=/etc/bash.bashrc && cd $DEM_APP_FOLDER && npm install && exit
+EOF
+
 # Deply Java apps
 apps=(
 #"IxigoDiscovery"

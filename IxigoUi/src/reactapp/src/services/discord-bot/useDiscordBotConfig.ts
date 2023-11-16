@@ -1,13 +1,16 @@
 import { useMutation, useQuery, UseQueryResult } from "react-query";
 import { SERVICES_URLS } from "../../lib/constants";
 import { IxigoResponse } from "../../lib/http-requests";
-import { performGet, performPut } from "../../lib/http-requests/httpRequests";
+import { performGet, performPost, performPut } from "../../lib/http-requests/httpRequests";
 import {
   BotConfigKey,
   IBotMappedPlayers,
   IDiscordBotConfig,
   IDiscordBotConfigs,
   IDiscordChannelMembers,
+  IMoveToGenericVoiceChannelResult,
+  ISetTeamsInVoiceChannelRequest,
+  ISetTeamsInVoiceChannelResult,
   IUpdateDiscordBotConfigResult,
   IUpdateDiscordMappedPlayersResult,
 } from "./interfaces";
@@ -65,4 +68,31 @@ export const useGetDiscordChannelMembers = (): UseQueryResult<IxigoResponse<IDis
     async () =>
       await performGet<IDiscordChannelMembers>(`${SERVICES_URLS["discord-bot"]["get-discord-channel-members"]}`)
   );
+};
+
+export const useSetTeamsToVoiceChannel = (): ISetTeamsInVoiceChannelResult => {
+  const mutation = useMutation(async (req: ISetTeamsInVoiceChannelRequest) => {
+    return await performPost<{}, ISetTeamsInVoiceChannelRequest>(
+      SERVICES_URLS["discord-bot"]["post-set-to-voice-channel"],
+      req
+    );
+  });
+
+  return {
+    setVoiceChannel: mutation.mutate,
+    status: mutation.status,
+    response: mutation.data,
+  };
+};
+
+export const useMoveToGenericVoiceChannel = (): IMoveToGenericVoiceChannelResult => {
+  const mutation = useMutation(async () => {
+    return await performPost<{}, {}>(SERVICES_URLS["discord-bot"]["post-move-to-general-voice-channel"], {});
+  });
+
+  return {
+    moveToGenericVoiceChannel: mutation.mutate,
+    status: mutation.status,
+    response: mutation.data,
+  };
 };

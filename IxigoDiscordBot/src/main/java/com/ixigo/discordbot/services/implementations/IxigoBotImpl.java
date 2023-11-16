@@ -431,8 +431,8 @@ public class IxigoBotImpl implements IxigoBot {
 	}
 	
 	private void moveMemberToVoiceChannel(List<Member> members, SvcSteamTeams teams) {
-		var terroristIds = teams.getTerrorists().stream().map(SvcSteamUser::getSteamId).toList();
-		var ctIds = teams.getCt().stream().map(SvcSteamUser::getSteamId).toList();
+		var terroristIds = teams.getTerrorists().stream().map(SvcSteamUser::getSteamId).collect(Collectors.toList());
+		var ctIds = teams.getCt().stream().map(SvcSteamUser::getSteamId).collect(Collectors.toList());
 		
 		var terroristsDiscordIdsMono = repoUsersMap.findAllBySteamId(terroristIds).map(Users_mapDto::getDiscord_id).collectList();
 		var ctDiscordIdsMono = repoUsersMap.findAllBySteamId(ctIds).map(Users_mapDto::getDiscord_id).collectList();

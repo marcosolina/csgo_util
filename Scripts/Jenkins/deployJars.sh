@@ -18,6 +18,14 @@ ssh $SSH_ADDRESS_1 mkdir -p $BASE_FOLDER
 ssh $SSH_ADDRESS_2 mkdir -p $BASE_FOLDER
 ssh $SSH_ADDRESS_3 mkdir -p $BASE_FOLDER
 
+
+# Trash and re-create the container
+ssh -t -t $SSH_ADDRESS_1 << EOF
+export BASH_ENV=/etc/bash.bashrc && docker stop $(docker ps -a -q) && docker system prune --all --volumes --force && docker-compose -f /opt/ixigo/Docker/PostgreSql/docker-compose.yml up -d && exit
+EOF
+
+
+
 # Deploy DemParser C#
 #DEM_APP_FOLDER=$BASE_FOLDER/DemParser
 #ssh $SSH_ADDRESS_1 mkdir -p $DEM_APP_FOLDER

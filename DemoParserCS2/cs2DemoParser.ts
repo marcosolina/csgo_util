@@ -114,15 +114,19 @@ const eventNames = [
   "player_blind",
 ];
 
-let allEvents = parseEvents(filePath, eventNames, ["game_time", "team_num"]); // Fetch all events at once
+let allEvents = parseEvents(filePath, eventNames, ["game_time", "team_num", "match_start_time", "game_start_time","is_match_started","total_rounds_played"]); // Fetch all events at once
 
-const matchStartTick = allEvents.find((event: any) => event.event_name === "begin_new_match")?.tick || 0;
 const roundStartEvents = allEvents.filter((event: any) => event.event_name === "round_start");
+// Find the last 'round_start' event with where the match is not started to account for any restarts
+const lastRestartRoundStartEvent = roundStartEvents.slice().reverse().find((event: any) => event.is_match_started == false);
+// Use the tick of this event as the start of the match, or default to 0 if not found
+const matchStartTick = lastRestartRoundStartEvent ? lastRestartRoundStartEvent.tick : 0;
+
 const roundEndEvents = allEvents.filter(
   (event: any) => event.event_name === "round_end" && event.tick >= matchStartTick
 );
 
-function preprocessRoundTicks(filePath: string): Array<{ start: number; end: number }> {
+function preprocessRoundTicks(): Array<{ start: number; end: number }> {
   let roundRanges: Array<{ start: number; end: number }> = [];
   let startIndex = 0;
 
@@ -142,7 +146,7 @@ function preprocessRoundTicks(filePath: string): Array<{ start: number; end: num
   return roundRanges;
 }
 
-const roundRanges = preprocessRoundTicks(filePath);
+const roundRanges = preprocessRoundTicks();
 
 // Filter events ready for use later
 const mvpEvents = allEvents.filter((event: any) => event.event_name === "round_mvp" && event.tick >= matchStartTick);
@@ -209,7 +213,9 @@ function findRoundForTick(tick: number) {
   return -1;
 }
 
-let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData.map((tick: any): IPlayerRoundStats => {
+let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData
+  .filter((tick: any) => tick.team_num === CT_TEAM_NUM || tick.team_num === T_TEAM_NUM)
+  .map((tick: any): IPlayerRoundStats => {
   let isMVP = mvpEvents.some((mvp: any) => mvp.tick === tick.tick && mvp.user_steamid === tick.steamid);
 
   return {
@@ -442,13 +448,18 @@ flashEvents.forEach((event: any) => {
   });
 });
 
-let allPlayerStats: IPlayerStats[] = scoreboard.map(
-  (player: any): IPlayerStats => ({
+let allPlayerStats: IPlayerStats[] = scoreboard
+  .filter((player: any) => {
+    // Find the last tick data for the player
+    const playerLastTickData = allTicksMap.get(gameEndTick).find((tick: any) => tick.steamid === player.steamid);
+    // Check if the player's team_num is either 2 (T_TEAM_NUM) or 3 (CT_TEAM_NUM)
+    return playerLastTickData && (playerLastTickData.team_num === CT_TEAM_NUM || playerLastTickData.team_num === T_TEAM_NUM);
+  })
+  .map((player: any): IPlayerStats => ({
     userName: player.name,
     steamID: player.steamid,
     score: player.score,
-  })
-);
+  }));
 
 // Empty arrays to hold our data
 let mapStats: MapStats;

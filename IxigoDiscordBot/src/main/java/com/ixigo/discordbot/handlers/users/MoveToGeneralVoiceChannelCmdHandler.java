@@ -14,15 +14,15 @@ import com.ixigo.library.mediators.web.interfaces.WebCommandHandler;
 import reactor.core.publisher.Mono;
 
 @Component
-public class MoveToGeneralVoiceChannelCmdHandler implements WebCommandHandler<MoveToGeneralVoiceChannelCmd, Void> {
+public class MoveToGeneralVoiceChannelCmdHandler implements WebCommandHandler<MoveToGeneralVoiceChannelCmd, Boolean> {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(MoveToGeneralVoiceChannelCmdHandler.class);
 	@Autowired
 	private IxigoBot botService;
 	@Override
-	public Mono<ResponseEntity<Void>> handle(MoveToGeneralVoiceChannelCmd cmd) {
+	public Mono<ResponseEntity<Boolean>> handle(MoveToGeneralVoiceChannelCmd cmd) {
 		_LOGGER.trace("Inside MoveToGeneralVoiceChannelCmdHandler.handle");
 		botService.moveAllMembersIntoGeneralChannel();
-		return Mono.just(new ResponseEntity<>(HttpStatus.OK));
+		return Mono.just(new ResponseEntity<>(true, HttpStatus.OK));
 	}
 
 }

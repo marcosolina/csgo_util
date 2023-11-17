@@ -20,9 +20,9 @@ ssh $SSH_ADDRESS_3 mkdir -p $BASE_FOLDER
 
 
 # Trash and re-create the container
-ssh -t -t $SSH_ADDRESS_1 << EOF
+ssh -t -t $SSH_ADDRESS_1 '
 export BASH_ENV=/etc/bash.bashrc && docker stop $(docker ps -a -q) && docker system prune --all --volumes --force && docker-compose -f /opt/ixigo/Docker/PostgreSql/docker-compose.yml up -d && exit
-EOF
+'
 
 
 
@@ -134,4 +134,5 @@ done
 
 
 
-
+sleep 60
+curl --location --request POST 'https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/parse/all'

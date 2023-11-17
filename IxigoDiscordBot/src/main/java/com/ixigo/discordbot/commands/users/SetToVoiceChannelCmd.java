@@ -3,7 +3,7 @@ package com.ixigo.discordbot.commands.users;
 import com.ixigo.library.mediators.web.interfaces.WebCommandRequest;
 import com.ixigo.models.rest.RestSteamTeams;
 
-public class SetToVoiceChannelCmd implements WebCommandRequest<Void> {
+public class SetToVoiceChannelCmd implements WebCommandRequest<Boolean> {
 	private RestSteamTeams teams;
 
 	public SetToVoiceChannelCmd(RestSteamTeams teams) {

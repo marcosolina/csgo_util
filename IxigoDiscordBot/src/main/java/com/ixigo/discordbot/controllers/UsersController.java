@@ -50,13 +50,13 @@ public class UsersController {
 	}
 	
 	@PostMapping(value = "/moveToVoiceChannel")
-	public Mono<ResponseEntity<Void>> setSteamTeamsInVoiceChannels(@RequestBody RestSteamTeams teams){
+	public Mono<ResponseEntity<Boolean>> setSteamTeamsInVoiceChannels(@RequestBody RestSteamTeams teams){
 		_LOGGER.trace("Inside UsersController.setSteamTeamsInVoiceChannels");
 		return mediator.send(new SetToVoiceChannelCmd(teams));
 	}
 	
 	@PostMapping(value = "/moveToGeneralVoiceChannel")
-	public Mono<ResponseEntity<Void>> moveToGeneralVoiceChannel(){
+	public Mono<ResponseEntity<Boolean>> moveToGeneralVoiceChannel(){
 		_LOGGER.trace("Inside UsersController.moveToGeneralVoiceChannel");
 		return mediator.send(new MoveToGeneralVoiceChannelCmd());
 	}

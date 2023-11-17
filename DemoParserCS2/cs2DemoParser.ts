@@ -20,13 +20,13 @@ interface IPlayerRoundStats {
 
 interface IRoundEvents {
   eventtype: string;
-  time: number;
+  eventtime: number;
   steamid: string;
   round: number;
 }
 
 interface IRoundKillEvents {
-  time: number;
+  eventtime: number;
   steamID: string;
   assister: string | undefined;
   flashAssister: string | undefined;
@@ -42,14 +42,14 @@ interface IRoundKillEvents {
 
 interface IRoundShotEvents {
   eventType: string;
-  time: number;
+  eventtime: number;
   steamID: string;
   round: number;
   weapon: string;
 }
 
 interface IRoundHitEvents {
-  time: number;
+  eventtime: number;
   steamID: string;
   round: number;
   weapon: string;
@@ -97,22 +97,32 @@ interface IMergedStats {
 
 // Define all event names we're interested in
 const eventNames = [
-  "begin_new_match", "round_start", "round_end", "round_mvp", 
-  "player_death", "bomb_planted", "bomb_defused", "hostage_rescued", 
-  "weapon_fire", "flashbang_detonate", "hegrenade_detonate", 
-  "molotov_detonate", "smokegrenade_detonate", "player_hurt", 
-  "player_blind"
+  "begin_new_match",
+  "round_start",
+  "round_end",
+  "round_mvp",
+  "player_death",
+  "bomb_planted",
+  "bomb_defused",
+  "hostage_rescued",
+  "weapon_fire",
+  "flashbang_detonate",
+  "hegrenade_detonate",
+  "molotov_detonate",
+  "smokegrenade_detonate",
+  "player_hurt",
+  "player_blind",
 ];
 
-let allEvents = parseEvents(filePath, eventNames,["game_time","team_num"]);  // Fetch all events at once
+let allEvents = parseEvents(filePath, eventNames, ["game_time", "team_num"]); // Fetch all events at once
 
 const matchStartTick = allEvents.find((event: any) => event.event_name === "begin_new_match")?.tick || 0;
 const roundStartEvents = allEvents.filter((event: any) => event.event_name === "round_start");
-const roundEndEvents = allEvents.filter((event: any) => event.event_name === "round_end" && event.tick >= matchStartTick);
+const roundEndEvents = allEvents.filter(
+  (event: any) => event.event_name === "round_end" && event.tick >= matchStartTick
+);
 
 function preprocessRoundTicks(filePath: string): Array<{ start: number; end: number }> {
-
-
   let roundRanges: Array<{ start: number; end: number }> = [];
   let startIndex = 0;
 
@@ -136,7 +146,9 @@ const roundRanges = preprocessRoundTicks(filePath);
 
 // Filter events ready for use later
 const mvpEvents = allEvents.filter((event: any) => event.event_name === "round_mvp" && event.tick >= matchStartTick);
-const playerDeaths = allEvents.filter((event: any) => event.event_name === "player_death" && event.tick >= matchStartTick);
+const playerDeaths = allEvents.filter(
+  (event: any) => event.event_name === "player_death" && event.tick >= matchStartTick
+);
 allEvents = allEvents.filter((event: any) => event.tick >= matchStartTick);
 
 let shotEvents = allEvents.filter((event: any) => event.event_name === "weapon_fire");
@@ -152,9 +164,19 @@ let smokeGrenadeDetonateEvents = allEvents.filter((event: any) => event.event_na
 const roundEndTicks = roundEndEvents.map((event: any) => event.tick);
 
 // Get ticks with metadata
-const allTicksArray = parseTicks(filePath, 
-  ["equipment_value_this_round", "cash_spent_this_round", "is_alive", "team_num", "player_name", "score", "player_steamid"], 
-  allEvents.map((event: any) => event.tick));  // Fetch all tick data once
+const allTicksArray = parseTicks(
+  filePath,
+  [
+    "equipment_value_this_round",
+    "cash_spent_this_round",
+    "is_alive",
+    "team_num",
+    "player_name",
+    "score",
+    "player_steamid",
+  ],
+  allEvents.map((event: any) => event.tick)
+); // Fetch all tick data once
 
 const roundEndTickData = allTicksArray.filter((tick: any) => roundEndTicks.includes(tick.tick));
 const gameEndTick = Math.max(...roundEndEvents.map((event: any) => event.tick));
@@ -179,7 +201,7 @@ function findRoundForTick(tick: number) {
   for (let i = 0; i < roundRanges.length; i++) {
     const nextRoundStart = i + 1 < roundRanges.length ? roundRanges[i + 1].start : Number.MAX_SAFE_INTEGER;
     if (tick >= roundRanges[i].start && tick < nextRoundStart) {
-      roundForTickCache.set(tick, i + 1);  // Cache the result
+      roundForTickCache.set(tick, i + 1); // Cache the result
       return i + 1;
     }
   }
@@ -187,10 +209,7 @@ function findRoundForTick(tick: number) {
   return -1;
 }
 
-
-
-
-let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData.map((tick: any) => {
+let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData.map((tick: any): IPlayerRoundStats => {
   let isMVP = mvpEvents.some((mvp: any) => mvp.tick === tick.tick && mvp.user_steamid === tick.steamid);
 
   return {
@@ -206,7 +225,6 @@ let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData.map((tick: any) 
     mvp: isMVP,
   };
 });
-
 
 let clutchChance = new Map<number, { steamID: string; clutchChance: number; clutchSuccess: boolean }[]>();
 let alivePlayersPerRound = new Map<number, { ct: Set<string>; t: Set<string> }>();
@@ -278,25 +296,29 @@ allPlayerRoundStats.forEach((stat) => {
   }
 });
 
-let allRoundStats: IRoundStats[] = roundEndEvents.map((event: any, index: number) => ({
-  roundNumber: index + 1, // Assuming rounds are in sequential order
-  winnerSide: event.winner, // Mapping might be needed based on how winners are represented
-  reasonEndRound: event.reason, // Assuming reason is a numerical value
-}));
+let allRoundStats: IRoundStats[] = roundEndEvents.map(
+  (event: any, index: number): IRoundStats => ({
+    roundNumber: index + 1, // Assuming rounds are in sequential order
+    winnerSide: event.winner, // Mapping might be needed based on how winners are represented
+    reasonEndRound: event.reason, // Assuming reason is a numerical value
+  })
+);
 
 let allRoundEvents: IRoundEvents[] = allEvents
-  .filter((event: any) => 
-    event.event_name === "bomb_planted" ||
-    event.event_name === "bomb_defused" ||
-    event.event_name === "hostage_rescued"
+  .filter(
+    (event: any) =>
+      event.event_name === "bomb_planted" ||
+      event.event_name === "bomb_defused" ||
+      event.event_name === "hostage_rescued"
   )
-  .map((event: any) => ({
-    eventtype: event.event_name, // Will be one of the filtered event types
-    time: event.game_time,
-    steamid: event.user_steamid,
-    round: findRoundForTick(event.tick) ?? -1,
-  }));
-
+  .map(
+    (event: any): IRoundEvents => ({
+      eventtype: event.event_name, // Will be one of the filtered event types
+      eventtime: event.game_time,
+      steamid: event.user_steamid,
+      round: findRoundForTick(event.tick) ?? -1,
+    })
+  );
 
 let roundKills = new Map<number, { time: number; killer: string; victim: string; victimTeam: number }[]>();
 
@@ -314,7 +336,7 @@ playerDeaths.forEach((event: any) => {
 });
 
 // Second Pass - Determine Trade Kills and Deaths
-let allRoundKillEvents: IRoundKillEvents[] = playerDeaths.map((event: any) => {
+let allRoundKillEvents: IRoundKillEvents[] = playerDeaths.map((event: any): IRoundKillEvents => {
   let round = findRoundForTick(event.tick) ?? -1;
   let kills = roundKills.get(round) || [];
   let isEntryKill = kills.length > 0 && kills[0].time === event.game_time;
@@ -334,7 +356,7 @@ let allRoundKillEvents: IRoundKillEvents[] = playerDeaths.map((event: any) => {
   );
 
   return {
-    time: event.game_time,
+    eventtime: event.game_time,
     steamID: event.attacker_steamid,
     flashAssister: event.assistedflash ? event.assister_steamid : undefined,
     killerFlashed: event.attackerblind,
@@ -343,12 +365,11 @@ let allRoundKillEvents: IRoundKillEvents[] = playerDeaths.map((event: any) => {
     assister: event.assister_steamid,
     weapon: event.weapon,
     headshot: event.headshot,
-    isfirstkill: isEntryKill,
-    istradekill: isTradeKill,
-    istradedeath: isTradeDeath,
+    isFirstKill: isEntryKill,
+    isTradeKill: isTradeKill,
+    isTradeDeath: isTradeDeath,
   };
 });
-
 
 // Combine all shot and grenade detonation events
 let combinedEvents = [
@@ -359,7 +380,7 @@ let combinedEvents = [
   ...smokeGrenadeDetonateEvents,
 ].filter((event: any) => event.tick >= matchStartTick);
 
-let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any) => {
+let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any): IRoundShotEvents => {
   let weaponType;
   let weapon;
   switch (event.event_name) {
@@ -385,31 +406,31 @@ let allRoundShotEvents: IRoundShotEvents[] = combinedEvents.map((event: any) => 
   }
   return {
     eventType: weaponType,
-    time: event.game_time,
+    eventtime: event.game_time,
     steamID: event.user_steamid,
     weapon: weapon,
     round: findRoundForTick(event.tick),
   };
 });
 
-
-
-let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map((event: any) => ({
-  time: event.game_time,
-  steamID: event.attacker_steamid,
-  round: findRoundForTick(event.tick),
-  weapon: event.weapon,
-  victimSteamId: event.user_steamid,
-  hitGroup: event.hitgroup,
-  damageHealth: event.dmg_health,
-  damageArmour: event.dmg_armor,
-}));
-
+let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map(
+  (event: any): IRoundHitEvents => ({
+    eventtime: event.game_time,
+    steamID: event.attacker_steamid,
+    round: findRoundForTick(event.tick),
+    weapon: event.weapon,
+    victimSteamId: event.user_steamid,
+    hitGroup: event.hitgroup,
+    damageHealth: event.dmg_health,
+    damageArmour: event.dmg_armor,
+    blindTime: undefined,
+  })
+);
 
 // Mapping flash events
 flashEvents.forEach((event: any) => {
   allRoundHitEvents.push({
-    time: event.game_time,
+    eventtime: event.game_time,
     steamID: event.attacker_steamid,
     round: findRoundForTick(event.tick) ?? -1,
     weapon: "flashbang",
@@ -421,13 +442,13 @@ flashEvents.forEach((event: any) => {
   });
 });
 
-
-
-let allPlayerStats: IPlayerStats[] = scoreboard.map((player: any) => ({
-  userName: player.name,
-  steamID: player.steamid,
-  score: player.score,
-}));
+let allPlayerStats: IPlayerStats[] = scoreboard.map(
+  (player: any): IPlayerStats => ({
+    userName: player.name,
+    steamID: player.steamid,
+    score: player.score,
+  })
+);
 
 // Empty arrays to hold our data
 let mapStats: MapStats;

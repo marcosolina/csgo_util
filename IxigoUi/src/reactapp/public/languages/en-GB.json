@@ -89,7 +89,10 @@
         "lblScoreType": "Score type",
         "lblMinPercPlayed": "Min % played",
         "lblPenalty": "Penalty weight",
+        "lblBtnACtions": "Actions",
         "lblBtnSetPlayers": "Set these teams on the server",
+        "lblBtnMoveToVoiceChannel": "Move to dedicated voice channel",
+        "lblBtnMoveToGenericVoiceChannel": "Everybody in the same voice channel",
         "lblTeamTerrorist": "Terrorists",
         "lblTeamCt": "Counter Terrorists"
       }

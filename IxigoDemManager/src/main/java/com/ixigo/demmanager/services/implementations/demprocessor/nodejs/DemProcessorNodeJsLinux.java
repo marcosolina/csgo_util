@@ -10,7 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.models.svc.demdata.nodejs.SvcNodeJsParseOutput;
@@ -51,7 +53,9 @@ public class DemProcessorNodeJsLinux implements DemProcessor {
 
 			return exec.runCommand(cmd).map(s -> {
 				try {
-					ObjectMapper objectMapper = new ObjectMapper();
+					ObjectMapper objectMapper = JsonMapper.builder()
+							.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true) // Configure to ignore case during deserialization
+							.build();
 					SvcNodeJsParseOutput output = objectMapper.readValue(s, SvcNodeJsParseOutput.class);
 					output.setCs2DemFile(isCs2DemFile);// TODO make it better
 					return output;

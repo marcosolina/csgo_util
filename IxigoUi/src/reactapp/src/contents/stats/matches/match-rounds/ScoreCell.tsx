@@ -15,7 +15,7 @@ const ScoreCell: React.FC<{ cell: any; row: { index: number }; team: "team1" | "
     const colour = isWinner ? "white" : "dimgrey";
 
     return (
-      <div style={{ position: "relative", width: 25, height: 25 }}>
+      <div style={{ position: "relative", width: 25, height: 25, display: "flex", justifyContent: team === "team1" ? "flex-end" : "flex-start" }}>
         <ScoreImage
           teamType={isTerrorist ? "terrorist" : "counterTerrorist"}
           score={team === "team1" ? team1_score : team2_score}

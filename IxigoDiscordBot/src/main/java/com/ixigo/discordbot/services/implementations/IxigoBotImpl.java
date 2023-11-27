@@ -417,7 +417,6 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Void> setToVoiceChannel(SvcSteamTeams teams) throws IxigoException {
-		this.moveAllMembersIntoGeneralChannel();
 		// @formatter:off
 		getGuild()
 		.subscribe(guild -> {

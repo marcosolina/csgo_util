@@ -71,7 +71,7 @@ CREATE TABLE PLAYER_ROUND_STATS (
 
 CREATE TABLE ROUND_EVENTS (
     eventType               VARCHAR(255),
-    eventtime               NUMERIC(10, 6), 
+    eventtime               NUMERIC(11, 6), 
     steamID                 VARCHAR(255),
     round                   INTEGER,
     match_id                INTEGER,
@@ -79,7 +79,7 @@ CREATE TABLE ROUND_EVENTS (
 );
 
 CREATE TABLE ROUND_KILL_EVENTS (
-    eventtime               NUMERIC(10, 6), 
+    eventtime               NUMERIC(11, 6), 
     steamID                 VARCHAR(255),
     assister                VARCHAR(255),
     flashAssister           VARCHAR(255),
@@ -97,7 +97,7 @@ CREATE TABLE ROUND_KILL_EVENTS (
 
 CREATE TABLE ROUND_SHOT_EVENTS (
     eventType               VARCHAR(255),
-    eventtime               NUMERIC(10, 6), 
+    eventtime               NUMERIC(11, 6), 
     steamID                 VARCHAR(255),
     round                   INTEGER,
     weapon                  VARCHAR(255),
@@ -106,7 +106,7 @@ CREATE TABLE ROUND_SHOT_EVENTS (
 );
 
 CREATE TABLE ROUND_HIT_EVENTS (
-    eventtime               NUMERIC(10, 6), 
+    eventtime               NUMERIC(11, 6), 
     steamID                 VARCHAR(255),
     round                   INTEGER,
     weapon                  VARCHAR(255),

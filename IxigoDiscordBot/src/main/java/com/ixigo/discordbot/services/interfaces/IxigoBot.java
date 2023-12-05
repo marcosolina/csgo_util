@@ -55,6 +55,8 @@ public interface IxigoBot {
 	
 	public abstract Mono<Void> setToVoiceChannel(SvcSteamTeams teams) throws IxigoException;
 	
+	public abstract Mono<Void> balanceMembersInVoiceChannel() throws IxigoException;
+	
 	public abstract void sendMessageToGeneralChat(String msg);
 	public abstract void sendEmbedMessageToGeneralChat(MessageEmbed me);
 }

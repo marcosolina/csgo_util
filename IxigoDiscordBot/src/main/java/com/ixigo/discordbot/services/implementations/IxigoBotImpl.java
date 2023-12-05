@@ -1,5 +1,6 @@
 package com.ixigo.discordbot.services.implementations;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +41,7 @@ import com.ixigo.library.validators.ValidationException;
 import com.ixigo.models.rest.RestUser;
 import com.netflix.servo.util.Strings;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -135,7 +137,7 @@ public class IxigoBotImpl implements IxigoBot {
 	public Flux<SvcDiscordUser> getDiscordUsers() throws IxigoException {
 		var mono = getGuild().map(guild -> {
 			// @formatter:off
-	        return guild.loadMembers().get().stream()
+	        return guild.getMembers().stream()
                     .filter(m -> !m.getUser().isBot())
                     .map(m -> {
                     	SvcDiscordUser du = new SvcDiscordUser();
@@ -470,5 +472,68 @@ public class IxigoBotImpl implements IxigoBot {
 				}
 			});
 		// @formatter:on
+	}
+
+	@Override
+	public Mono<Void> balanceMembersInVoiceChannel() throws IxigoException {
+		// @formatter:off
+		var monoGuild = getGuild();
+		var monoMapping = this.getListOfMappedPlayers().collectList();
+		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
+		
+		Mono.zip(monoGuild, monoMapping, monoRepo)
+			.subscribe(tuple -> {
+				var guild = tuple.getT1();
+				var mapping = tuple.getT2();
+				
+				Bot_configDto config = tuple.getT3();
+				Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
+				
+				guild.loadMembers().onSuccess(members -> {
+					List<Member> membersInVoiceChat = members.stream()
+						.filter(Objects::nonNull)
+						.filter(m -> !m.getUser().isBot())
+						.filter(m -> m.getVoiceState().inAudioChannel())
+						.collect(Collectors.toList())
+						;
+					var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
+					var steamIds = mapping.stream()
+						.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
+						.map(m -> m.getSteamDetails().getSteam_id())
+						.collect(Collectors.toList());
+					
+					if(steamIds.size() < 3) {
+						return;
+					}
+					
+					balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty())
+						.subscribe(teams -> {
+							var cts = teams.getTeams().get(0).getMembers();
+							var terrorists = teams.getTeams().get(1).getMembers();
+							
+							StringBuilder ctMarkdownList = new StringBuilder();
+							cts.forEach(ct -> {
+								ctMarkdownList.append("-" + ct.getUserName() + "\n");
+							});
+							StringBuilder terroristsMarkdownList = new StringBuilder();
+							terrorists.forEach(t -> {
+								terroristsMarkdownList.append("- " + t.getUserName() + "\n");
+							});
+							
+							MessageEmbed me = new EmbedBuilder()
+									.setTitle("Balanced teams")
+									.setColor(new Color(42, 255, 137))
+									.addField("CTs", ctMarkdownList.toString(), true)
+									.addField("Terrorists", terroristsMarkdownList.toString(), true)
+									.build();
+							
+							this.sendEmbedMessageToGeneralChat(me);
+						});
+				})
+				;
+			})
+		;
+		// @formatter:on
+		return Mono.empty();
 	}
 }

@@ -19,7 +19,7 @@ import LoadingTeam from "./LoadingTeam";
 
 const IxigoTeam: React.FC<IIxigoTeamProps> = (props) => {
   return (
-    <Card>
+    <Card variant="outlined">
       <Box sx={{ width: "100%" }}>
         <img src={`${UI_CONTEXT_PATH}${props.picture}`} width={"100%"} alt="" />
       </Box>

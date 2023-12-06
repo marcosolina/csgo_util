@@ -45,7 +45,8 @@ export const SERVICES_URLS = {
     "get-mapped-players": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/mapping",
     "put-mapped-players": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/mapping",
     "get-discord-channel-members": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/discord",
-    "post-set-to-voice-channel": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/moveToVoiceChannel",
+    "post-make-teams-and-move-to-voice-channel":
+      PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/makeTeamsWithUsersInVoiceChannelAndMove",
     "post-move-to-general-voice-channel":
       PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/moveToGeneralVoiceChannel",
   },

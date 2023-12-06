@@ -58,13 +58,8 @@ export interface IDiscordChannelMembers {
   members: IBotDiscordPlayer[];
 }
 
-export interface ISetTeamsInVoiceChannelRequest {
-  terrorist_team: IBotSteamPlayer[];
-  ct_team: IBotSteamPlayer[];
-}
-
-export interface ISetTeamsInVoiceChannelResult {
-  setVoiceChannel: (request: ISetTeamsInVoiceChannelRequest) => void;
+export interface IMakeTeamsWithUsersInVoiceChannelAndMoveResult {
+  makeTeamsAndMoveToVoice: () => void;
   status: QueryStatus;
   response?: IxigoResponse<{}>;
 }

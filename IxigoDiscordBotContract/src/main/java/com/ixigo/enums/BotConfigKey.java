@@ -20,6 +20,11 @@ public enum BotConfigKey {
     /**
      * Boolean - Turn on/off the kick bots
      */
-    KICK_BOTS
+    KICK_BOTS,
+    
+    /**
+     * Boolean - Turn on/off the team balancing and posting the message in the chat when somebody joins / leaves the voice channel
+     */
+    POST_TEAMS_ON_JOIN_LEFT_VOICE_CHANNEL
     // @formatter:on
 }

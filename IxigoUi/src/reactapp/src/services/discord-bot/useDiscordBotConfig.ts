@@ -9,8 +9,7 @@ import {
   IDiscordBotConfigs,
   IDiscordChannelMembers,
   IMoveToGenericVoiceChannelResult,
-  ISetTeamsInVoiceChannelRequest,
-  ISetTeamsInVoiceChannelResult,
+  IMakeTeamsWithUsersInVoiceChannelAndMoveResult,
   IUpdateDiscordBotConfigResult,
   IUpdateDiscordMappedPlayersResult,
 } from "./interfaces";
@@ -70,16 +69,13 @@ export const useGetDiscordChannelMembers = (): UseQueryResult<IxigoResponse<IDis
   );
 };
 
-export const useSetTeamsToVoiceChannel = (): ISetTeamsInVoiceChannelResult => {
-  const mutation = useMutation(async (req: ISetTeamsInVoiceChannelRequest) => {
-    return await performPost<{}, ISetTeamsInVoiceChannelRequest>(
-      SERVICES_URLS["discord-bot"]["post-set-to-voice-channel"],
-      req
-    );
+export const useMakeTeamsWithUsersInVoiceChannelAndMove = (): IMakeTeamsWithUsersInVoiceChannelAndMoveResult => {
+  const mutation = useMutation(async () => {
+    return await performPost<{}, {}>(SERVICES_URLS["discord-bot"]["post-make-teams-and-move-to-voice-channel"], {});
   });
 
   return {
-    setVoiceChannel: mutation.mutate,
+    makeTeamsAndMoveToVoice: mutation.mutate,
     status: mutation.status,
     response: mutation.data,
   };

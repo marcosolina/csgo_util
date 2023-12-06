@@ -13,3 +13,10 @@ export interface IDiscordBotContentResult {
   updateMapping: (mapping: IBotMappedPlayers) => void;
   updateMappingStatus: QueryStatus;
 }
+
+export interface IAction {
+  icon: JSX.Element;
+  name: string;
+  onClick: () => void;
+  loading: boolean;
+}

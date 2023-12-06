@@ -19,12 +19,15 @@
     },
     "discord": {
       "labels": {
+        "lblBtnMoveToVoiceChannel": "Move players to dedicated voice channel",
+        "lblBtnMoveToGenericVoiceChannel": "Everybody in the same voice channel",
         "config": {
           "main": "Bot config",
           "MATCHES_TO_CONSIDER_FOR_TEAM_CREATION": "Matches to consider for team creation",
           "AUTOBALANCE": "Autobalance",
           "KICK_BOTS": "Kick bots",
-          "MOVE_TO_VOICE_CHANNEL": "Move players to specific voice channel"
+          "MOVE_TO_VOICE_CHANNEL": "Move players to specific voice channel",
+          "POST_TEAMS_ON_JOIN_LEFT_VOICE_CHANNEL": "Post teams on join/left voice channel"
         },
         "btnSaveMappings": "Save the mapping",
         "discordUsers": "Discord users",
@@ -91,8 +94,6 @@
         "lblPenalty": "Penalty weight",
         "lblBtnACtions": "Actions",
         "lblBtnSetPlayers": "Set these teams on the server",
-        "lblBtnMoveToVoiceChannel": "Move to dedicated voice channel",
-        "lblBtnMoveToGenericVoiceChannel": "Everybody in the same voice channel",
         "lblTeamTerrorist": "Terrorists",
         "lblTeamCt": "Counter Terrorists"
       }

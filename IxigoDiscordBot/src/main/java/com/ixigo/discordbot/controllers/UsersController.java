@@ -13,13 +13,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ixigo.discordbot.commands.users.GetDiscordUsersCmd;
 import com.ixigo.discordbot.commands.users.GetMappedUsersCmd;
+import com.ixigo.discordbot.commands.users.MakeTeamsAndMoveToVoiceChannelCmd;
 import com.ixigo.discordbot.commands.users.MoveToGeneralVoiceChannelCmd;
 import com.ixigo.discordbot.commands.users.PutMappedUsersCmd;
-import com.ixigo.discordbot.commands.users.SetToVoiceChannelCmd;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.models.rest.RestDiscordUsers;
 import com.ixigo.models.rest.RestMappedPlayers;
-import com.ixigo.models.rest.RestSteamTeams;
 
 import reactor.core.publisher.Mono;
 
@@ -49,10 +48,10 @@ public class UsersController {
 		return mediator.send(new GetDiscordUsersCmd());
 	}
 	
-	@PostMapping(value = "/moveToVoiceChannel")
-	public Mono<ResponseEntity<Boolean>> setSteamTeamsInVoiceChannels(@RequestBody RestSteamTeams teams){
+	@PostMapping(value = "/makeTeamsWithUsersInVoiceChannelAndMove")
+	public Mono<ResponseEntity<Boolean>> setSteamTeamsInVoiceChannels(){
 		_LOGGER.trace("Inside UsersController.setSteamTeamsInVoiceChannels");
-		return mediator.send(new SetToVoiceChannelCmd(teams));
+		return mediator.send(new MakeTeamsAndMoveToVoiceChannelCmd());
 	}
 	
 	@PostMapping(value = "/moveToGeneralVoiceChannel")

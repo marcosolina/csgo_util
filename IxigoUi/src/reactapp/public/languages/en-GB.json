@@ -21,6 +21,10 @@
       "labels": {
         "lblBtnMoveToVoiceChannel": "Move players to dedicated voice channel",
         "lblBtnMoveToGenericVoiceChannel": "Everybody in the same voice channel",
+        "actions": {
+          "title": "Actions",
+          "lblVoiceChannelActions": "Voice channel"
+        },
         "config": {
           "main": "Bot config",
           "MATCHES_TO_CONSIDER_FOR_TEAM_CREATION": "Matches to consider for team creation",
@@ -740,6 +744,18 @@
     "_1v3": "1v3 Clutches",
     "_1v4": "1v4 Clutches",
     "_1v5": "1v5 Clutches"
+  },
+  "services": {
+    "discordbot": {
+      "messages": {
+        "moveToGenericVoiceChannel": {
+          "success": "Done"
+        },
+        "moveToVoiceChannel": {
+          "success": "Done"
+        }
+      }
+    }
   },
   "error": {
     "generic": {

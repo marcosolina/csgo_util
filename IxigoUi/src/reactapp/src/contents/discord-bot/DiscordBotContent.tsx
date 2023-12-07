@@ -1,4 +1,4 @@
-import { Card, CardActions, CardContent, Grid, List, ListItem, ListSubheader, Typography } from "@mui/material";
+import { Card, CardContent, Grid, List, ListItem, ListSubheader, Typography } from "@mui/material";
 import {
   IxigoButtonColor,
   IxigoButtonType,
@@ -113,22 +113,33 @@ const DiscordBotContent = () => {
           <Grid item xs={XS}>
             <Card>
               <CardContent>
-                <Typography color="text.secondary">Actions</Typography>
+                <Typography color="text.secondary" align="center">
+                  {t(`${TRANSLATIONS_BASE_PATH}.actions.title`)}
+                </Typography>
+                <Grid container spacing={DEFAULT_SPACING}>
+                  <Grid item xs={12}>
+                    <Card variant="outlined">
+                      <CardContent>
+                        <Typography color="text.secondary" gutterBottom>
+                          {t(`${TRANSLATIONS_BASE_PATH}.actions.lblVoiceChannelActions`)}
+                        </Typography>
+                        {actions.map((action) => (
+                          <IxigoButton
+                            key={action.name}
+                            text={action.icon}
+                            toolTip={action.name}
+                            onClick={action.onClick}
+                            color={IxigoButtonColor.primary}
+                            variant={IxigoButtonVariant.outlined}
+                            loading={action.loading}
+                            type={IxigoButtonType.justicon}
+                          />
+                        ))}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                </Grid>
               </CardContent>
-              <CardActions>
-                {actions.map((action) => (
-                  <IxigoButton
-                    key={action.name}
-                    text={action.icon}
-                    toolTip={action.name}
-                    onClick={action.onClick}
-                    color={IxigoButtonColor.primary}
-                    variant={IxigoButtonVariant.outlined}
-                    loading={action.loading}
-                    type={IxigoButtonType.justicon}
-                  />
-                ))}
-              </CardActions>
             </Card>
           </Grid>
           <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>

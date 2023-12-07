@@ -1,5 +1,5 @@
 import { useMutation, useQuery, UseQueryResult } from "react-query";
-import { SERVICES_URLS } from "../../lib/constants";
+import { NotistackVariant, SERVICES_URLS } from "../../lib/constants";
 import { IxigoResponse } from "../../lib/http-requests";
 import { performGet, performPost, performPut } from "../../lib/http-requests/httpRequests";
 import {
@@ -13,6 +13,10 @@ import {
   IUpdateDiscordBotConfigResult,
   IUpdateDiscordMappedPlayersResult,
 } from "./interfaces";
+import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
+
+const TRANSLATIONS_BASE_PATH = "services.discordbot.messages";
 
 export const useGetDiscordBotConfig = (
   configKey: BotConfigKey
@@ -70,9 +74,22 @@ export const useGetDiscordChannelMembers = (): UseQueryResult<IxigoResponse<IDis
 };
 
 export const useMakeTeamsWithUsersInVoiceChannelAndMove = (): IMakeTeamsWithUsersInVoiceChannelAndMoveResult => {
-  const mutation = useMutation(async () => {
-    return await performPost<{}, {}>(SERVICES_URLS["discord-bot"]["post-make-teams-and-move-to-voice-channel"], {});
-  });
+  const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
+
+  const mutation = useMutation(
+    async () => {
+      return await performPost<{}, {}>(SERVICES_URLS["discord-bot"]["post-make-teams-and-move-to-voice-channel"], {});
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        enqueueSnackbar(t(`${TRANSLATIONS_BASE_PATH}.moveToVoiceChannel.success`), {
+          variant: NotistackVariant.success,
+        });
+      },
+    }
+  );
 
   return {
     makeTeamsAndMoveToVoice: mutation.mutate,
@@ -82,9 +99,22 @@ export const useMakeTeamsWithUsersInVoiceChannelAndMove = (): IMakeTeamsWithUser
 };
 
 export const useMoveToGenericVoiceChannel = (): IMoveToGenericVoiceChannelResult => {
-  const mutation = useMutation(async () => {
-    return await performPost<{}, {}>(SERVICES_URLS["discord-bot"]["post-move-to-general-voice-channel"], {});
-  });
+  const { enqueueSnackbar } = useSnackbar();
+  const { t } = useTranslation();
+
+  const mutation = useMutation(
+    async () => {
+      return await performPost<{}, {}>(SERVICES_URLS["discord-bot"]["post-move-to-general-voice-channel"], {});
+    },
+    {
+      onSuccess: (data) => {
+        console.log(data);
+        enqueueSnackbar(t(`${TRANSLATIONS_BASE_PATH}.moveToGenericVoiceChannel.success`), {
+          variant: NotistackVariant.success,
+        });
+      },
+    }
+  );
 
   return {
     moveToGenericVoiceChannel: mutation.mutate,

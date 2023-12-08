@@ -171,7 +171,7 @@ const roundEndTicks = roundEndEvents.map((event: any) => event.tick);
 const allTicksArray = parseTicks(
   filePath,
   [
-    "equipment_value_this_round",
+    "round_start_equip_value",
     "cash_spent_this_round",
     "is_alive",
     "team_num",
@@ -217,7 +217,6 @@ let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData
   .filter((tick: any) => tick.team_num === CT_TEAM_NUM || tick.team_num === T_TEAM_NUM)
   .map((tick: any): IPlayerRoundStats => {
   let isMVP = mvpEvents.some((mvp: any) => mvp.tick === tick.tick && mvp.user_steamid === tick.steamid);
-
   return {
     userName: tick.player_name,
     steamID: tick.steamid,
@@ -225,7 +224,7 @@ let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData
     team: tick.team_num,
     survived: tick.is_alive,
     moneySpent: tick.cash_spent_this_round,
-    equipmentValue: tick.equipment_value_this_round,
+    equipmentValue: (tick.round_start_equip_value + tick.cash_spent_this_round),
     clutchChance: 0, //to be updated later
     clutchSuccess: false, //to be updated later
     mvp: isMVP,

@@ -80,4 +80,38 @@ public class RepoUsersMapPostgres implements RepoUsersMap {
 		// @formatter:on
 	}
 
+	@Override
+	public Mono<Users_mapDto> findBySteamId(String steamId) {
+		_LOGGER.trace("Inside RepoUsersMapPostgres.findBySteamId");
+
+		Users_mapDao dao = new Users_mapDao();
+		dao.setSteam_id(steamId);
+
+		return dao.prepareSqlSelectByKey(client).map(dao::mappingFunction).one();
+	}
+
+	@Override
+	public Flux<Users_mapDto> findAllBySteamId(List<String> steamIds) {
+		_LOGGER.trace("Inside RepoUsersMapPostgres.findAllBySteamId");
+		
+		if(steamIds == null || steamIds.isEmpty()) {
+			return Flux.empty();
+		}
+		
+		Users_mapDao dao = new Users_mapDao();
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append("SELECT * FROM " + Users_mapDao.tableName);
+		sql.append(" WHERE " + Users_mapDto.Fields.steam_id);
+		sql.append(" IN (:ids) ");
+		sql.append(" AND "  + Users_mapDto.Fields.discord_id + " IS NOT NULL");
+		
+		// @formatter:off
+		return client.sql(sql.toString())
+			.bind("ids", steamIds)
+			.map(dao::mappingFunction)
+			.all();
+		// @formatter:on
+	}
+
 }

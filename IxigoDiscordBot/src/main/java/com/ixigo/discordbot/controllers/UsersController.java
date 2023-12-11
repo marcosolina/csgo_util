@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,6 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ixigo.discordbot.commands.users.GetDiscordUsersCmd;
 import com.ixigo.discordbot.commands.users.GetMappedUsersCmd;
+import com.ixigo.discordbot.commands.users.MakeTeamsAndMoveToVoiceChannelCmd;
+import com.ixigo.discordbot.commands.users.MoveToGeneralVoiceChannelCmd;
 import com.ixigo.discordbot.commands.users.PutMappedUsersCmd;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.models.rest.RestDiscordUsers;
@@ -43,5 +46,17 @@ public class UsersController {
 	public Mono<ResponseEntity<RestDiscordUsers>> getDiscordUsersList() {
 		_LOGGER.trace("Inside UsersController.getDiscordUsersList");
 		return mediator.send(new GetDiscordUsersCmd());
+	}
+	
+	@PostMapping(value = "/makeTeamsWithUsersInVoiceChannelAndMove")
+	public Mono<ResponseEntity<Boolean>> setSteamTeamsInVoiceChannels(){
+		_LOGGER.trace("Inside UsersController.setSteamTeamsInVoiceChannels");
+		return mediator.send(new MakeTeamsAndMoveToVoiceChannelCmd());
+	}
+	
+	@PostMapping(value = "/moveToGeneralVoiceChannel")
+	public Mono<ResponseEntity<Boolean>> moveToGeneralVoiceChannel(){
+		_LOGGER.trace("Inside UsersController.moveToGeneralVoiceChannel");
+		return mediator.send(new MoveToGeneralVoiceChannelCmd());
 	}
 }

@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "@laihoe/demoparser2": "^0.15.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "typescript": "^5.2.2"
+  }
+}

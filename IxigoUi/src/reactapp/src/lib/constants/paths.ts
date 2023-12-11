@@ -1,5 +1,5 @@
 export const PROXY_BASE_PATH =
-  (window as { [key: string]: any })["srvContextPath"] || "https://marco.selfip.net/ixigoproxy"; //"http://localhost:8763/ixigoproxy";
+  (window as { [key: string]: any })["srvContextPath"] || "http://localhost:8763/ixigoproxy"; //"https://marco.selfip.net/ixigoproxy";
 export const UI_CONTEXT_PATH = (window as { [key: string]: any })["uiContextPath"] || "";
 
 export const SERVICES_URLS = {
@@ -45,6 +45,10 @@ export const SERVICES_URLS = {
     "get-mapped-players": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/mapping",
     "put-mapped-players": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/mapping",
     "get-discord-channel-members": PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/discord",
+    "post-make-teams-and-move-to-voice-channel":
+      PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/makeTeamsWithUsersInVoiceChannelAndMove",
+    "post-move-to-general-voice-channel":
+      PROXY_BASE_PATH + "/ixigo-discord-bot/discordbot/users/moveToGeneralVoiceChannel",
   },
   "ixigo-server": {
     "gateway-path": "ixigo-server-helper",

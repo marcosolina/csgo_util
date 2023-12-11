@@ -13,7 +13,6 @@ const MatchRoundsContent: React.FC<IMatchRoundContentRequest> = ({ match_id }) =
       data={data}
       enableColumnActions={false}
       enableColumnFilters={false}
-      enableSorting={false}
       enableTableHead={true}
       enableTopToolbar={false}
       enableBottomToolbar={false}

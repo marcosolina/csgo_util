@@ -23,6 +23,7 @@ public class DemFileManagerProps {
 	public ParserExecutionType parserExecutionType;
 	public Path parserExecPath;
 	public Boolean processFilesInParallel;
+	public Path parserCs2ExecPath;
 
 	public Path getRootFolder() {
 		return rootFolder;
@@ -62,5 +63,13 @@ public class DemFileManagerProps {
 
 	public void setProcessFilesInParallel(Boolean processFilesInParallel) {
 		this.processFilesInParallel = processFilesInParallel;
+	}
+
+	public Path getParserCs2ExecPath() {
+		return parserCs2ExecPath;
+	}
+
+	public void setParserCs2ExecPath(Path parserCs2ExecPath) {
+		this.parserCs2ExecPath = parserCs2ExecPath;
 	}
 }

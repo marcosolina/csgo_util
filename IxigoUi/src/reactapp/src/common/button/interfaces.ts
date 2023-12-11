@@ -10,6 +10,7 @@ export interface IIxigoButton {
   onClick?: () => void;
   loading?: boolean;
   toolTip?: string;
+  type?: IxigoButtonType;
 }
 
 export enum IxigoButtonWidth {
@@ -21,6 +22,11 @@ export enum IxigoButtonVariant {
   contained = "contained",
   text = "",
   outlined = "outlined",
+}
+
+export enum IxigoButtonType {
+  square = "square",
+  justicon = "justicon",
 }
 
 export enum IxigoButtonSize {

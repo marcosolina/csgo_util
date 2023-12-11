@@ -18,6 +18,23 @@ ssh $SSH_ADDRESS_1 mkdir -p $BASE_FOLDER
 ssh $SSH_ADDRESS_2 mkdir -p $BASE_FOLDER
 ssh $SSH_ADDRESS_3 mkdir -p $BASE_FOLDER
 
+
+# Trash and re-create the container
+DOCKER_PSQL=$WORKSPACE_FOLDER/Scripts/Docker/PostgreSql
+ssh -t -t $SSH_ADDRESS_1 '
+export BASH_ENV=/etc/bash.bashrc && docker stop $(docker ps -a -q) && docker system prune --all --volumes --force && exit
+'
+#ssh -t -t $SSH_ADDRESS_1 '
+#export BASH_ENV=/etc/bash.bashrc && docker stop $(docker ps -a -q) && docker system prune --all --volumes --force && rm -rf /opt/ixigo/Docker/PostgreSql && exit
+#'
+#scp -r $DOCKER_PSQL $SSH_ADDRESS_1:"/opt/ixigo/Docker"
+
+ssh -t -t $SSH_ADDRESS_1 '
+export BASH_ENV=/etc/bash.bashrc && docker-compose -f /opt/ixigo/Docker/PostgreSql/docker-compose.yml up -d && exit
+'
+
+
+
 # Deploy DemParser C#
 #DEM_APP_FOLDER=$BASE_FOLDER/DemParser
 #ssh $SSH_ADDRESS_1 mkdir -p $DEM_APP_FOLDER
@@ -34,6 +51,16 @@ scp -r $WORKSPACE_FOLDER/DemParserNodeJs/* $SSH_ADDRESS_1:$DEM_APP_FOLDER
 ssh $SSH_ADDRESS_1 chmod +x $DEM_APP_FOLDER
 ssh -t -t $SSH_ADDRESS_1 << EOF
 export BASH_ENV=/etc/bash.bashrc && cd $DEM_APP_FOLDER && npm install --save demofile && exit
+EOF
+
+# Deploy NodeJS DemParser CS2
+DEM_APP_FOLDER=$BASE_FOLDER/DemoParserCS2
+ssh $SSH_ADDRESS_1 mkdir -p $DEM_APP_FOLDER
+ssh $SSH_ADDRESS_1 rm -rf $DEM_APP_FOLDER/*
+scp -r $WORKSPACE_FOLDER/DemoParserCS2/* $SSH_ADDRESS_1:$DEM_APP_FOLDER
+ssh $SSH_ADDRESS_1 chmod +x $DEM_APP_FOLDER
+ssh -t -t $SSH_ADDRESS_1 << EOF
+export BASH_ENV=/etc/bash.bashrc && cd $DEM_APP_FOLDER && npm install && exit
 EOF
 
 # Deply Java apps
@@ -116,4 +143,5 @@ done
 
 
 
-
+sleep 60
+curl --location --request POST 'https://marco.selfip.net/ixigoproxy/ixigo-dem-manager/demmanager/parse/all'

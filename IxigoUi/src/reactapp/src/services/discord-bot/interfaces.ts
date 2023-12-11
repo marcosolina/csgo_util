@@ -57,3 +57,15 @@ export interface IBotSteamPlayer {
 export interface IDiscordChannelMembers {
   members: IBotDiscordPlayer[];
 }
+
+export interface IMakeTeamsWithUsersInVoiceChannelAndMoveResult {
+  makeTeamsAndMoveToVoice: () => void;
+  status: QueryStatus;
+  response?: IxigoResponse<{}>;
+}
+
+export interface IMoveToGenericVoiceChannelResult {
+  moveToGenericVoiceChannel: () => void;
+  status: QueryStatus;
+  response?: IxigoResponse<{}>;
+}

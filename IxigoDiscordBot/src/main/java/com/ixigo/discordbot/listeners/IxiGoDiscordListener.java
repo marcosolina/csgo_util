@@ -1,5 +1,8 @@
 package com.ixigo.discordbot.listeners;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.ixigo.discordbot.enums.DiscordChatCommands;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
@@ -9,14 +12,34 @@ import com.ixigo.enums.BotConfigValueType;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.entities.channel.middleman.MessageChannel;
+import net.dv8tion.jda.api.events.guild.voice.GuildVoiceUpdateEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 public class IxiGoDiscordListener extends ListenerAdapter {
+	private static final Logger _LOGGER = LoggerFactory.getLogger(IxiGoDiscordListener.class);
 	private IxigoBot ixigoBot;
 
 	public IxiGoDiscordListener(IxigoBot ixigoBot) {
 		this.ixigoBot = ixigoBot;
+	}
+	
+	@Override
+	public void onGuildVoiceUpdate(GuildVoiceUpdateEvent event){
+		var oldChannel = event.getOldValue();
+		var newChannel = event.getNewValue();
+		
+		if(oldChannel == null || newChannel == null) {
+			ixigoBot.balanceMembersInVoiceChannel().subscribe( v -> _LOGGER.debug("Members balanced because somebody joined the voice channel") );
+			/*
+			event
+				.getGuild()
+				.getTextChannelById(this.discordProps.getTextChannels().getGeneral())
+				.sendMessage(event.getVoiceState() + "joined voice channel" + event.getChannelJoined() + ".")
+				.queue();
+				*/
+		}
+		
 	}
 
 	@Override

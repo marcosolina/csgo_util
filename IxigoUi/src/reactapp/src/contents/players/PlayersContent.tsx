@@ -1,4 +1,4 @@
-import { Grid, List, ListItem, ListSubheader } from "@mui/material";
+import { Card, CardContent, Grid, List, ListItem, ListSubheader } from "@mui/material";
 import { IxigoTextType } from "../../common/input";
 import IxigoText from "../../common/input/IxigoText";
 import IxigoSelect from "../../common/select/IxigoSelect";
@@ -78,67 +78,84 @@ const PlayersContent = () => {
         <Loading />
       </Case>
       <Case case={QueryStatus.success}>
-        <Grid container spacing={DEFAULT_SPACING} padding={DEFAULT_SPACING}>
-          <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-            <IxigoText
-              label={t(`${BASE_LANGUAGE_PATH}.labels.lblMatchesToConsider`) as string}
-              value={`${pContent.matchesToConsider}`}
-              type={IxigoTextType.number}
-              step={1}
-              onChange={(v) => pContent.setMatchesToConsider(parseInt(v))}
-            />
-          </Grid>
-          <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-            <IxigoSelect
-              label={t(`${BASE_LANGUAGE_PATH}.labels.lblScoreType`) as string}
-              possibleValues={pContent.possibleScoreTypesValues}
-              selectedValue={pContent.scoreType}
-              onChange={(v) => pContent.setScoreType(v)}
-            />
-          </Grid>
-          <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
-            <IxigoText
-              label={t(`${BASE_LANGUAGE_PATH}.labels.lblPenalty`) as string}
-              type={IxigoTextType.number}
-              value={`${pContent.penaltyWeight}`}
-              step={0.1}
-              onChange={(v) => pContent.setPenaltyWeight(parseFloat(v))}
-            />
-          </Grid>
-          <Grid item xs={12}></Grid>
+        <Card>
+          <CardContent>
+            <Grid container spacing={DEFAULT_SPACING}>
+              <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+                <IxigoText
+                  label={t(`${BASE_LANGUAGE_PATH}.labels.lblMatchesToConsider`) as string}
+                  value={`${pContent.matchesToConsider}`}
+                  type={IxigoTextType.number}
+                  step={1}
+                  onChange={(v) => pContent.setMatchesToConsider(parseInt(v))}
+                />
+              </Grid>
+              <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+                <IxigoSelect
+                  label={t(`${BASE_LANGUAGE_PATH}.labels.lblScoreType`) as string}
+                  possibleValues={pContent.possibleScoreTypesValues}
+                  selectedValue={pContent.scoreType}
+                  onChange={(v) => pContent.setScoreType(v)}
+                />
+              </Grid>
+              <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+                <IxigoText
+                  label={t(`${BASE_LANGUAGE_PATH}.labels.lblPenalty`) as string}
+                  type={IxigoTextType.number}
+                  value={`${pContent.penaltyWeight}`}
+                  step={0.1}
+                  onChange={(v) => pContent.setPenaltyWeight(parseFloat(v))}
+                />
+              </Grid>
+            </Grid>
+          </CardContent>
+        </Card>
+        <Grid container spacing={DEFAULT_SPACING} marginTop={DEFAULT_SPACING}>
           <Grid item xs={XS} sm={SM} md={4} lg={LG} xl={4}>
-            <List
-              sx={{ width: "100%", bgcolor: "background.paper" }}
-              subheader={<ListSubheader>{t(`${BASE_LANGUAGE_PATH}.labels.lblListPlayers`)}</ListSubheader>}
-            >
-              {pContent.csgoPlayers?.map((player) => (
-                <ListItem key={player.steam_id}>
-                  <IxigoSwitch
-                    key={player.steam_id}
-                    label={player.user_name}
-                    value={player.steam_id}
-                    checked={pContent.listOfSelectedPlayers.includes(player.steam_id)}
-                    onChange={onSelectedPlayer}
-                  />
-                </ListItem>
-              ))}
-            </List>
+            <Card>
+              <CardContent>
+                <List
+                  sx={{ width: "100%", bgcolor: "background.paper" }}
+                  subheader={<ListSubheader>{t(`${BASE_LANGUAGE_PATH}.labels.lblListPlayers`)}</ListSubheader>}
+                >
+                  {pContent.csgoPlayers?.map((player) => (
+                    <ListItem key={player.steam_id}>
+                      <IxigoSwitch
+                        key={player.steam_id}
+                        label={player.user_name}
+                        value={player.steam_id}
+                        checked={pContent.listOfSelectedPlayers.includes(player.steam_id)}
+                        onChange={onSelectedPlayer}
+                      />
+                    </ListItem>
+                  ))}
+                </List>
+              </CardContent>
+            </Card>
           </Grid>
-          <Grid item xs={XS} sm={6} md={4} lg={LG} xl={4}>
-            <IxigoTeam
-              picture={terr}
-              title={t(`${BASE_LANGUAGE_PATH}.labels.lblTeamTerrorist`)}
-              team={getTeamsResp?.data?.teams[0]}
-              status={getTeamsStatus}
-            />
-          </Grid>
-          <Grid item xs={XS} sm={6} md={4} lg={LG} xl={4}>
-            <IxigoTeam
-              picture={ct}
-              title={t(`${BASE_LANGUAGE_PATH}.labels.lblTeamCt`)}
-              team={getTeamsResp?.data?.teams[1]}
-              status={getTeamsStatus}
-            />
+          <Grid item xs={XS} sm={SM} md={8} lg={8} xl={8}>
+            <Card>
+              <CardContent>
+                <Grid container spacing={DEFAULT_SPACING}>
+                  <Grid item xs={XS} sm={6}>
+                    <IxigoTeam
+                      picture={terr}
+                      title={t(`${BASE_LANGUAGE_PATH}.labels.lblTeamTerrorist`)}
+                      team={getTeamsResp?.data?.teams[0]}
+                      status={getTeamsStatus}
+                    />
+                  </Grid>
+                  <Grid item xs={XS} sm={6}>
+                    <IxigoTeam
+                      picture={ct}
+                      title={t(`${BASE_LANGUAGE_PATH}.labels.lblTeamCt`)}
+                      team={getTeamsResp?.data?.teams[1]}
+                      status={getTeamsStatus}
+                    />
+                  </Grid>
+                </Grid>
+              </CardContent>
+            </Card>
           </Grid>
         </Grid>
         {pContent.listOfSelectedPlayers.length >= MIN_SELECTED_PLAYERS && (

@@ -1,11 +1,13 @@
 package com.ixigo.discordbot.services.implementations;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -25,6 +27,8 @@ import com.ixigo.discordbot.models.repo.Users_mapDto;
 import com.ixigo.discordbot.models.svc.discord.SvcBotConfig;
 import com.ixigo.discordbot.models.svc.discord.SvcDiscordUser;
 import com.ixigo.discordbot.models.svc.discord.SvcPlayer;
+import com.ixigo.discordbot.models.svc.discord.SvcSteamTeams;
+import com.ixigo.discordbot.models.svc.discord.SvcSteamUser;
 import com.ixigo.discordbot.repositories.interfaces.RepoBotConfig;
 import com.ixigo.discordbot.repositories.interfaces.RepoUsersMap;
 import com.ixigo.discordbot.services.interfaces.IxigoBot;
@@ -36,8 +40,10 @@ import com.ixigo.library.mediators.web.interfaces.WebMediator;
 import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.validators.ValidationException;
 import com.ixigo.models.rest.RestUser;
+import com.ixigo.playersmanagercontract.models.rest.RestUserAvgScore;
 import com.netflix.servo.util.Strings;
 
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
@@ -133,7 +139,7 @@ public class IxigoBotImpl implements IxigoBot {
 	public Flux<SvcDiscordUser> getDiscordUsers() throws IxigoException {
 		var mono = getGuild().map(guild -> {
 			// @formatter:off
-	        return guild.loadMembers().get().stream()
+	        return guild.getMembers().stream()
                     .filter(m -> !m.getUser().isBot())
                     .map(m -> {
                     	SvcDiscordUser du = new SvcDiscordUser();
@@ -411,5 +417,177 @@ public class IxigoBotImpl implements IxigoBot {
 	@Override
 	public Flux<SvcBotConfig> getBotConfigAll() throws IxigoException {
 		return repoBotConfig.findAllConfig().map(mapper::raceFromDtoSvcToSvc);
+	}
+
+	@Override
+	public Mono<Void> makeTeamsAndMoveToVoiceChannel() throws IxigoException {
+		// @formatter:off
+		var monoMapping = this.getListOfMappedPlayers().collectList();
+		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
+		var monoGuild = getGuild();
+		
+		Mono.zip(monoGuild, monoMapping, monoRepo)
+			.subscribe(tuple -> {
+				var guild = tuple.getT1();
+				var userMappings = tuple.getT2();
+				var balanceConfig = tuple.getT3();
+				
+				Integer numberOfMatches = Integer.parseInt(balanceConfig.getConfig_val());
+				
+				guild.loadMembers().onSuccess(members -> {
+					List<Member> membersInVoiceChat = members.stream()
+							.filter(Objects::nonNull)
+							.filter(m -> !m.getUser().isBot())
+							.filter(m -> m.getVoiceState().inAudioChannel())
+							.collect(Collectors.toList())
+							;
+					var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
+					var steamIds = userMappings.stream()
+							.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
+							.map(m -> m.getSteamDetails().getSteam_id())
+							.collect(Collectors.toList());
+					
+					
+					balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty())
+					.subscribe(teams -> {
+						Function<RestUserAvgScore, SvcSteamUser> mapper = m -> {
+							var svc = new SvcSteamUser();
+							svc.setSteamId(m.getSteamID());
+							svc.setUserName(m.getUserName());
+							return svc;
+						}; 
+						var cts = teams.getTeams().get(1).getMembers().stream().map(mapper).collect(Collectors.toList());
+						var terrorists = teams.getTeams().get(0).getMembers().stream().map(mapper).collect(Collectors.toList());
+						
+						var steamTeams = new SvcSteamTeams();
+						steamTeams.setCt(cts);
+						steamTeams.setTerrorists(terrorists);
+						
+						this.moveMemberToVoiceChannel(members, steamTeams);
+					});
+				})
+				;
+			})
+			;
+		// @formatter:on
+		return Mono.empty();
+	}
+	
+	private void moveMemberToVoiceChannel(List<Member> members, SvcSteamTeams teams) {
+		var terroristIds = teams.getTerrorists().stream().map(SvcSteamUser::getSteamId).collect(Collectors.toList());
+		var ctIds = teams.getCt().stream().map(SvcSteamUser::getSteamId).collect(Collectors.toList());
+		
+		var terroristsDiscordIdsMono = repoUsersMap.findAllBySteamId(terroristIds).map(Users_mapDto::getDiscord_id).collectList();
+		var ctDiscordIdsMono = repoUsersMap.findAllBySteamId(ctIds).map(Users_mapDto::getDiscord_id).collectList();
+		
+		//// @formatter:off
+		Mono.zip(terroristsDiscordIdsMono, ctDiscordIdsMono, getGuild())
+			.subscribe(tuple -> {
+				var tDiscIds = tuple.getT1();
+				var ctDiscIds = tuple.getT2();
+				var guild = tuple.getT3();
+				
+				VoiceChannel tVc = guild.getVoiceChannelById(discordProps.getVoiceChannels().getTerrorist());
+				VoiceChannel ctVc = guild.getVoiceChannelById(discordProps.getVoiceChannels().getCt());
+				
+				List<Member> membersInVoiceChat = members.stream()
+						.filter(Objects::nonNull)
+						.filter(m -> !m.getUser().isBot())
+						.filter(m -> m.getVoiceState().inAudioChannel())
+						.collect(Collectors.toList())
+						;
+				
+				var actions = membersInVoiceChat.stream()
+						.filter(m -> tDiscIds.contains(m.getIdLong()))
+						.map(m -> moveMemberToVoiceChannel(guild, m, tVc))
+						.collect(Collectors.toList())
+						;
+				
+				actions.addAll(membersInVoiceChat.stream()
+						.filter(m -> ctDiscIds.contains(m.getIdLong()))
+						.map(m -> moveMemberToVoiceChannel(guild, m, ctVc))
+						.collect(Collectors.toList()))
+						;
+				
+				if(!actions.isEmpty()) {					
+					RestAction.allOf(actions).queue();
+				}
+			});
+		// @formatter:on
+	}
+
+	@Override
+	public Mono<Void> balanceMembersInVoiceChannel() throws IxigoException {
+		
+		var monoOptionEnabled = repoBotConfig.fingConfig(BotConfigKey.POST_TEAMS_ON_JOIN_LEFT_VOICE_CHANNEL);
+		
+		monoOptionEnabled.subscribe(optionEnabled -> {
+			if(!Boolean.parseBoolean(optionEnabled.getConfig_val())) {
+				return;
+			}
+			
+			// @formatter:off
+			var monoGuild = getGuild();
+			var monoMapping = this.getListOfMappedPlayers().collectList();
+			var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
+			
+			Mono.zip(monoGuild, monoMapping, monoRepo)
+			.subscribe(tuple -> {
+				var guild = tuple.getT1();
+				var mapping = tuple.getT2();
+				
+				Bot_configDto config = tuple.getT3();
+				Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
+				
+				guild.loadMembers().onSuccess(members -> {
+					List<Member> membersInVoiceChat = members.stream()
+							.filter(Objects::nonNull)
+							.filter(m -> !m.getUser().isBot())
+							.filter(m -> m.getVoiceState().inAudioChannel())
+							.collect(Collectors.toList())
+							;
+					var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
+					var steamIds = mapping.stream()
+							.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
+							.map(m -> m.getSteamDetails().getSteam_id())
+							.collect(Collectors.toList());
+					
+					if(steamIds.size() < 3) {
+						return;
+					}
+					
+					balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty())
+					.subscribe(teams -> {
+						var cts = teams.getTeams().get(1).getMembers();
+						var terrorists = teams.getTeams().get(0).getMembers();
+						
+						StringBuilder ctMarkdownList = new StringBuilder();
+						cts.forEach(ct -> {
+							ctMarkdownList.append("- " + ct.getUserName() + "\n");
+						});
+						
+						StringBuilder terroristsMarkdownList = new StringBuilder();
+						terrorists.forEach(t -> {
+							terroristsMarkdownList.append("- " + t.getUserName() + "\n");
+						});
+						
+						MessageEmbed me = new EmbedBuilder()
+								.setTitle("Balanced teams")
+								.setColor(new Color(42, 255, 137))
+								.addField("CTs", ctMarkdownList.toString(), true)
+								.addField("          ", "", true)
+								.addField("Terrorists", terroristsMarkdownList.toString(), true)
+								.build();
+						
+						this.sendEmbedMessageToGeneralChat(me);
+					});
+				})
+				;
+			})
+			;
+			// @formatter:on
+		});
+		
+		return Mono.empty();
 	}
 }

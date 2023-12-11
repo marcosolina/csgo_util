@@ -10,6 +10,8 @@ import reactor.core.publisher.Mono;
 public interface RepoUsersMap {
 	public Mono<Boolean> insertOrUpdate(Users_mapDto entity);
 	public Mono<Users_mapDto> findById(Long discordId);
+	public Mono<Users_mapDto> findBySteamId(String steamId);
 	public Flux<Users_mapDto> getAll();
 	public Flux<Users_mapDto> findAllById(List<Long> discordIds);
+	public Flux<Users_mapDto> findAllBySteamId(List<String> steamIds);
 }

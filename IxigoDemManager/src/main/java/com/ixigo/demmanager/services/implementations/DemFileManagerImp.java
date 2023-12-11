@@ -26,17 +26,21 @@ import org.springframework.web.multipart.MultipartFile;
 import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.enums.DemProcessStatus;
+import com.ixigo.demmanager.misc.Utils;
 import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 import com.ixigo.demmanager.models.svc.SvcFileInfo;
 import com.ixigo.demmanager.repositories.interfaces.RepoProcessQueue;
+import com.ixigo.demmanager.services.interfaces.DemFileFormatChecker;
 import com.ixigo.demmanager.services.interfaces.DemFileManager;
 import com.ixigo.library.enums.DateFormats;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.utils.DateUtils;
 
+import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
+import reactor.util.function.Tuples;
 
 /**
  * My implementation of the @DemFileManager
@@ -52,6 +56,8 @@ public class DemFileManagerImp implements DemFileManager {
 	private IxigoMessageResource msgSource;
 	@Autowired
 	private RepoProcessQueue repo;
+	@Autowired
+	private DemFileFormatChecker formatChecker;
 
 	@Override
 	public Mono<Path> store(MultipartFile file) throws IxigoException {
@@ -108,29 +114,35 @@ public class DemFileManagerImp implements DemFileManager {
 				throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC);
 			}
 
-			files.stream().forEach(f -> {
-				String folderName = getFolderFromFileName(f.getName());
-				map.compute(folderName, (k, v) -> {
-					if (v == null) {
-						v = new ArrayList<>();
-					}
-					SvcFileInfo fi = new SvcFileInfo();
-					fi.setName(f.getName());
-					fi.setMapName(getMapFromFileName(f.getName()));
+			Flux.fromStream(files.stream())
+				.flatMap(f -> this.formatChecker.isCs2DemFile(f).map(b -> Tuples.of(f, b)))
+				.subscribe(tuple -> {
+					boolean isCs2DemFile = tuple.getT2();
+					File f = tuple.getT1();
+					
+					String folderName = getFolderFromFileName(f.getName());
+					map.compute(folderName, (k, v) -> {
+						if (v == null) {
+							v = new ArrayList<>();
+						}
+						SvcFileInfo fi = new SvcFileInfo();
+						fi.setName(f.getName());
+						fi.setMapName(Utils.getMapNameFromFile(f, isCs2DemFile));
 
-					// Get length of file in bytes
-					long fileSizeInBytes = f.length();
-					// Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
-					long fileSizeInKB = fileSizeInBytes / 1024;
-					// Convert the KB to MegaBytes (1 MB = 1024 KBytes)
-					long fileSizeInMB = fileSizeInKB / 1024;
+						// Get length of file in bytes
+						long fileSizeInBytes = f.length();
+						// Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+						long fileSizeInKB = fileSizeInBytes / 1024;
+						// Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+						long fileSizeInMB = fileSizeInKB / 1024;
 
-					fi.setSize(new BigDecimal(fileSizeInMB).setScale(2, RoundingMode.DOWN).toString() + " MB");
-					v.add(fi);
+						fi.setSize(new BigDecimal(fileSizeInMB).setScale(2, RoundingMode.DOWN).toString() + " MB");
+						v.add(fi);
 
-					return v;
-				});
-			});
+						return v;
+					});
+				})
+			;
 
 			return map;
 		}).subscribeOn(Schedulers.boundedElastic());
@@ -139,11 +151,6 @@ public class DemFileManagerImp implements DemFileManager {
 	private String getFolderFromFileName(String fileName) {
 		String[] arr = fileName.split("-");
 		return DateUtils.fromLocalDateToString(DateUtils.fromStringToLocalDate(arr[1], DateFormats.FOLDER_NAME), DateFormats.DB_DATE);
-	}
-
-	private String getMapFromFileName(String fileName) {
-		String[] arr = fileName.split("-");
-		return arr[4];
 	}
 
 	private Mono<Path> writeFileInFolder(MultipartFile file) {

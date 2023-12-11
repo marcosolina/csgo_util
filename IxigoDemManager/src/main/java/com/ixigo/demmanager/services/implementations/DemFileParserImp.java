@@ -21,6 +21,7 @@ import com.ixigo.demmanager.config.properties.DemFileManagerProps;
 import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.demmanager.mappers.SvcMapper;
+import com.ixigo.demmanager.misc.Utils;
 import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 import com.ixigo.demmanager.models.database.Match_statsDao;
 import com.ixigo.demmanager.models.database.Match_statsDto;
@@ -51,7 +52,6 @@ import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.demmanager.services.interfaces.NotificationService;
-import com.ixigo.library.enums.DateFormats;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.utils.DateUtils;
@@ -173,15 +173,12 @@ public class DemFileParserImp implements DemFileParser {
 	 * @return
 	 */
 	private void setMapNameAndTime(File f, SvcNodeJsParseOutput stats) {
-		String[] tmp = f.getName().split("-");
-		String date = tmp[1];
-		String time = tmp[2];
-		String mapName = tmp[4];
-
-		LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(date + "_" + time, DateFormats.FILE_NAME);
+		String mapName = Utils.getMapNameFromFile(f, stats.isCs2DemFile());
+		LocalDateTime ldt = Utils.getDateTimeFromFileName(f);
+		
 		SvcMatchStats ms = new SvcMatchStats();
 		ms.setMatch_date(ldt);
-		ms.setMapname(cleanMapName(mapName));
+		ms.setMapname(cleanMapName(mapName));// TODO is this a corpse?
 
 		stats.getMapStats().setMapname(mapName);
 		stats.getMapStats().setMatch_date(ldt);

@@ -116,9 +116,7 @@ const PlayerRadarChart: React.FC<IPlayerRadarChartProps> = ({ steamid }) => {
   return (
     <Switch value={state}>
       <Case case={QueryStatus.success}>
-        <Paper>
-          <Radar data={data} options={options} />
-        </Paper>
+        <Paper>{data.datasets[0].data.length > 0 && <Radar data={data} options={options} />}</Paper>
       </Case>
       <Case case={QueryStatus.loading}>
         <Skeleton animation="wave" style={{ height: "100%" }} />

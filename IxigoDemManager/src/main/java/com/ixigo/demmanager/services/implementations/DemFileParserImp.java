@@ -174,7 +174,7 @@ public class DemFileParserImp implements DemFileParser {
 	 */
 	private void setMapNameAndTime(File f, SvcNodeJsParseOutput stats) {
 		String mapName = Utils.getMapNameFromFile(f, stats.isCs2DemFile());
-		LocalDateTime ldt = Utils.getDateTimeFromFileName(f);
+		LocalDateTime ldt = DateUtils.fromDemFileNameToLocalDateTime(f);
 		
 		SvcMatchStats ms = new SvcMatchStats();
 		ms.setMatch_date(ldt);

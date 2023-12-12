@@ -1,5 +1,6 @@
 package com.ixigo.library.utils;
 
+import java.io.File;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -64,5 +65,19 @@ public class DateUtils {
 	public static String fromLocalDateTimeToString(LocalDateTime localDateTime, DateFormats format) {
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format.getFormat());
 		return localDateTime.format(formatter);
+	}
+	
+	/**
+	 * It extract the date time from the DEM file name
+	 * @param f
+	 * @return
+	 */
+	public static LocalDateTime fromDemFileNameToLocalDateTime(File f) {
+		String[] tmp = f.getName().split("-");
+		String date = tmp[1];
+		String time = String.format("%-6s", tmp[2]).replace(' ', '0');
+
+		LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(date + "_" + time, DateFormats.FILE_NAME);
+		return ldt;
 	}
 }

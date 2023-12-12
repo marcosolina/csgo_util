@@ -66,10 +66,8 @@ public class DemFilesServiceImp implements DemFilesService {
 		})
 		// Sort descending
 		.sort((o1, o2) -> {
-			String[] tmp = o1.getFileName().toString().split("-");
-            LocalDateTime ldt = DateUtils.fromStringToLocalDateTime(String.format("%s %s", tmp[1], tmp[2]), DateFormats.FILE_NAME_WITH_SPACE);
-            String[] tmp2 = o2.getFileName().toString().split("-");
-            LocalDateTime ldt2 = DateUtils.fromStringToLocalDateTime(String.format("%s %s", tmp2[1], tmp2[2]), DateFormats.FILE_NAME_WITH_SPACE);
+			LocalDateTime ldt = DateUtils.fromDemFileNameToLocalDateTime(o1.toFile());
+            LocalDateTime ldt2 = DateUtils.fromDemFileNameToLocalDateTime(o2.toFile());
             return ldt.compareTo(ldt2) * -1;
 		});
 		

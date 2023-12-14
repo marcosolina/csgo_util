@@ -11,8 +11,8 @@ import org.springframework.http.HttpMethod;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.ixigo.eventdispatcher.models.rest.IncomingEventHttpRequest;
+import com.ixigo.library.config.properties.EventDispatcherEndPoints;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
-import com.ixigo.serverhelper.config.properties.EventDispatcherEndPoints;
 import com.ixigo.serverhelper.config.properties.EventProperties;
 import com.ixigo.serverhelper.services.interfaces.IxiGoEventMonitor;
 import com.ixigo.serverhelper.services.interfaces.IxigoEventFileReader;

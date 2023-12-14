@@ -52,8 +52,10 @@ import com.ixigo.demmanager.repositories.interfaces.RepoUserScore;
 import com.ixigo.demmanager.services.interfaces.DemFileParser;
 import com.ixigo.demmanager.services.interfaces.DemProcessor;
 import com.ixigo.demmanager.services.interfaces.NotificationService;
+import com.ixigo.eventdispatcher.enums.EventType;
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.messages.IxigoMessageResource;
+import com.ixigo.library.rest.interfaces.IxigoEventSender;
 import com.ixigo.library.utils.DateUtils;
 
 import reactor.core.publisher.Flux;
@@ -89,6 +91,8 @@ public class DemFileParserImp implements DemFileParser {
 	private SvcMapper mapper;
 	@Autowired
 	private IxigoMessageResource msgSource;
+	@Autowired
+	private IxigoEventSender eventSender;
 
 	@Override
 	public Mono<HttpStatus> processQueuedFiles() throws IxigoException {
@@ -317,6 +321,7 @@ public class DemFileParserImp implements DemFileParser {
 			})
 			.collectList()
 			.then(this.triggerFunctions())
+			.flatMap(b -> eventSender.sendIxigoEvent(EventType.DEM_FILES_PROCESSED))
 			.flatMap(b -> {
 				LocalDateTime endTime = LocalDateTime.now(); // End time
 		        Duration duration = Duration.between(start, endTime);

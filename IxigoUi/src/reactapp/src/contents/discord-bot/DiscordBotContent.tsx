@@ -18,7 +18,7 @@ import {
   useMakeTeamsWithUsersInVoiceChannelAndMove,
   useMoveToGenericVoiceChannel,
 } from "../../services/discord-bot";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import IxigoSelect from "../../common/select/IxigoSelect";
 import { useDiscordBotContent } from "./useDiscordBotContent";
 import Switch from "../../common/switch-case/Switch";
@@ -29,8 +29,10 @@ import IxigoFloatingButton from "../../common/floating-button/IxigoFloatingButto
 import Loading from "./Loading";
 import SafetyDividerIcon from "@mui/icons-material/SafetyDivider";
 import GroupsIcon from "@mui/icons-material/Groups";
+import LocalFireDepartmentIcon from "@mui/icons-material/LocalFireDepartment";
 import { IAction } from "./interfaces";
 import IxigoButton from "../../common/button/IxigoButton";
+import { useSendEventCommand } from "../../services/event-dispatcher";
 
 const XS = 12;
 const SM = 12;
@@ -47,6 +49,7 @@ const DiscordBotContent = () => {
   const hook = useDiscordBotContent();
   const { moveToGenericVoiceChannel, status: moveToGenericStatus } = useMoveToGenericVoiceChannel();
   const { makeTeamsAndMoveToVoice, status: mokeAndMoveStatus } = useMakeTeamsWithUsersInVoiceChannelAndMove();
+  const { sendEvent, status: eventStatus } = useSendEventCommand();
   const [botConfig, setBotConfig] = useState<IDiscordBotConfig[]>([]);
   const [mappedPlayers, setMappedPlayers] = useState<IBotMappedPlayer[]>([]);
 
@@ -86,6 +89,13 @@ const DiscordBotContent = () => {
     hook.updateMapping({ players: mappedPlayers });
   };
 
+  const sendEvt = useCallback(
+    (event: string) => {
+      sendEvent({ event_name: event });
+    },
+    [sendEvent]
+  );
+
   const actions: IAction[] = useMemo(() => {
     return [
       {
@@ -117,7 +127,7 @@ const DiscordBotContent = () => {
                   {t(`${TRANSLATIONS_BASE_PATH}.actions.title`)}
                 </Typography>
                 <Grid container spacing={DEFAULT_SPACING}>
-                  <Grid item xs={12}>
+                  <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
                     <Card variant="outlined">
                       <CardContent>
                         <Typography color="text.secondary" gutterBottom>
@@ -135,6 +145,25 @@ const DiscordBotContent = () => {
                             type={IxigoButtonType.justicon}
                           />
                         ))}
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
+                    <Card variant="outlined">
+                      <CardContent>
+                        <Typography color="text.secondary" gutterBottom>
+                          {t(`${TRANSLATIONS_BASE_PATH}.actions.lblTriggerEvents`)}
+                        </Typography>
+                        <IxigoButton
+                          key={"Test"}
+                          text={<LocalFireDepartmentIcon />}
+                          toolTip={t(`${TRANSLATIONS_BASE_PATH}.lblBtnSendWarmupStartEvent`) as string}
+                          onClick={() => sendEvt("round_announce_warmup")}
+                          color={IxigoButtonColor.primary}
+                          variant={IxigoButtonVariant.outlined}
+                          loading={eventStatus === QueryStatus.loading}
+                          type={IxigoButtonType.justicon}
+                        />
                       </CardContent>
                     </Card>
                   </Grid>

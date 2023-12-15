@@ -82,7 +82,7 @@ export const useMakeTeamsWithUsersInVoiceChannelAndMove = (): IMakeTeamsWithUser
       return await performPost<{}, {}>(SERVICES_URLS["discord-bot"]["post-make-teams-and-move-to-voice-channel"], {});
     },
     {
-      onSuccess: (data) => {
+      onSuccess: (data: any) => {
         console.log(data);
         enqueueSnackbar(t(`${TRANSLATIONS_BASE_PATH}.moveToVoiceChannel.success`), {
           variant: NotistackVariant.success,

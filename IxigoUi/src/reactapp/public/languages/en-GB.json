@@ -21,9 +21,11 @@
       "labels": {
         "lblBtnMoveToVoiceChannel": "Move players to dedicated voice channel",
         "lblBtnMoveToGenericVoiceChannel": "Everybody in the same voice channel",
+        "lblBtnSendWarmupStartEvent": "Match warmup started",
         "actions": {
           "title": "Actions",
-          "lblVoiceChannelActions": "Voice channel"
+          "lblVoiceChannelActions": "Voice channel",
+          "lblTriggerEvents": "Trigger events"
         },
         "config": {
           "main": "Bot config",
@@ -752,6 +754,9 @@
           "success": "Done"
         },
         "moveToVoiceChannel": {
+          "success": "Done"
+        },
+        "sendEvent": {
           "success": "Done"
         }
       }

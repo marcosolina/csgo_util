@@ -62,6 +62,9 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 			case CS_WIN_PANEL_MATCH:
 				r = () -> botService.moveAllMembersIntoGeneralChannel();
 				break;
+			case DEM_FILES_PROCESSED:
+				r = () -> botService.balanceMembersInVoiceChannel().thenReturn(true);
+				break;
 			case WARMUP_START:
 				r = () -> botService.warmUpBalanceTeamApi().subscribe(status -> _LOGGER.debug("Warmup status " + status.toString()));
 				break;

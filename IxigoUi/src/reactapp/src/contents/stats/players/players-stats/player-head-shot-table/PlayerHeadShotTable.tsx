@@ -14,7 +14,7 @@ const PlayerHeadShotTable: React.FC<IPlayerHeadShotTableProps> = ({ steamid }) =
 
   const percentage = useMemo(() => {
     if (!playerOverall) return 0;
-    return (playerOverall.wins * 100.0) / playerOverall.matches;
+    return (playerOverall.headshots * 100.0) / playerOverall.kills;
   }, [playerOverall]);
 
   return (

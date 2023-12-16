@@ -423,7 +423,7 @@ let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map(
     eventtime: event.game_time,
     steamID: event.attacker_steamid,
     round: findRoundForTick(event.tick),
-    weapon: event.weapon,
+    weapon: "weapon_"+event.weapon,
     victimSteamId: event.user_steamid,
     hitGroup: event.hitgroup,
     damageHealth: event.dmg_health,

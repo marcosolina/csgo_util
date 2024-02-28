@@ -38,7 +38,8 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 			new Thread(() -> {
 				StringBuilder msg = new StringBuilder();
 				msg.append("Hi there!!!\n\n");
-				msg.append("[Click here to join the server](https://marco.selfip.net/ixigoui/joinus?joinIxigo=true)");
+				//msg.append("[Click here to join the server](https://marco.selfip.net/ixigoui/joinus?joinIxigo=true)");
+				msg.append("The server is ready: ixigo.selfip.net");
 				
 				MessageEmbed me = new EmbedBuilder()
 						.setTitle("Automatic message")

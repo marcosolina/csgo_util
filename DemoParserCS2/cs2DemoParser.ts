@@ -1,4 +1,5 @@
 import { parseEvents, parseTicks } from "@laihoe/demoparser2";
+//import fs from "fs";
 
 const filePath = process.argv[2]!;
 
@@ -97,7 +98,11 @@ const T_TEAM_NUM = 2;
 const SPECTATOR_TEAM_NUM = 1;
 const UNASSIGNED_TEAM_NUM = 0;
 
-function fromWinnerSideStringToNumber(winnerSide: string): number {
+function fromWinnerSideStringToNumber(winnerSide: any): number {
+  if (typeof winnerSide === "number") {
+    return winnerSide;
+  }
+
   switch (winnerSide) {
     case "CT":
       return CT_TEAM_NUM;
@@ -106,7 +111,32 @@ function fromWinnerSideStringToNumber(winnerSide: string): number {
     case "SPECT":
       return SPECTATOR_TEAM_NUM;
     default:
-      return 0;
+      return UNASSIGNED_TEAM_NUM;
+  }
+}
+
+function fromReasonEndStringToNumber(reasonEnd: any): number {
+  if (typeof reasonEnd === "number") {
+    return reasonEnd;
+  }
+
+  switch (reasonEnd) {
+    case "bomb_exploded":
+      return 1;
+    case "bomb_defused":
+      return 7;
+    case "t_killed":
+      return 8;
+    case "ct_killed":
+      return 9;
+    case "hostage_rescued":
+      return 11;
+    case "TargetSaved":
+      return 12;
+    case "HostageNotRescued":
+      return 13;
+    default:
+      return -1;
   }
 }
 
@@ -330,7 +360,7 @@ let allRoundStats: IRoundStats[] = roundEndEvents.map(
   (event: any, index: number): IRoundStats => ({
     roundNumber: index + 1, // Assuming rounds are in sequential order
     winnerSide: fromWinnerSideStringToNumber(event.winner), // Mapping might be needed based on how winners are represented
-    reasonEndRound: event.reason, // Assuming reason is a numerical value
+    reasonEndRound: fromReasonEndStringToNumber(event.reason), // Assuming reason is a numerical value
   })
 );
 

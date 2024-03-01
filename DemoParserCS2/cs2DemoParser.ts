@@ -1,9 +1,7 @@
 import { parseEvents, parseTicks } from "@laihoe/demoparser2";
+//import fs from "fs";
 
 const filePath = process.argv[2]!;
-
-const CT_TEAM_NUM = 3;
-const T_TEAM_NUM = 2;
 
 interface IPlayerRoundStats {
   userName: string;
@@ -95,6 +93,53 @@ interface IMergedStats {
   allRoundEvents: IRoundEvents[];
 }
 
+const CT_TEAM_NUM = 3;
+const T_TEAM_NUM = 2;
+const SPECTATOR_TEAM_NUM = 1;
+const UNASSIGNED_TEAM_NUM = 0;
+
+function fromWinnerSideStringToNumber(winnerSide: any): number {
+  if (typeof winnerSide === "number") {
+    return winnerSide;
+  }
+
+  switch (winnerSide) {
+    case "CT":
+      return CT_TEAM_NUM;
+    case "T":
+      return T_TEAM_NUM;
+    case "SPECT":
+      return SPECTATOR_TEAM_NUM;
+    default:
+      return UNASSIGNED_TEAM_NUM;
+  }
+}
+
+function fromReasonEndStringToNumber(reasonEnd: any): number {
+  if (typeof reasonEnd === "number") {
+    return reasonEnd;
+  }
+
+  switch (reasonEnd) {
+    case "bomb_exploded":
+      return 1;
+    case "bomb_defused":
+      return 7;
+    case "t_killed":
+      return 8;
+    case "ct_killed":
+      return 9;
+    case "hostage_rescued":
+      return 11;
+    case "TargetSaved":
+      return 12;
+    case "HostageNotRescued":
+      return 13;
+    default:
+      return -1;
+  }
+}
+
 // Define all event names we're interested in
 const eventNames = [
   "begin_new_match",
@@ -114,11 +159,21 @@ const eventNames = [
   "player_blind",
 ];
 
-let allEvents = parseEvents(filePath, eventNames, ["game_time", "team_num", "match_start_time", "game_start_time","is_match_started","total_rounds_played"]); // Fetch all events at once
+let allEvents = parseEvents(filePath, eventNames, [
+  "game_time",
+  "team_num",
+  "match_start_time",
+  "game_start_time",
+  "is_match_started",
+  "total_rounds_played",
+]); // Fetch all events at once
 
 const roundStartEvents = allEvents.filter((event: any) => event.event_name === "round_start");
 // Find the last 'round_start' event with where the match is not started to account for any restarts
-const lastRestartRoundStartEvent = roundStartEvents.slice().reverse().find((event: any) => event.is_match_started == false);
+const lastRestartRoundStartEvent = roundStartEvents
+  .slice()
+  .reverse()
+  .find((event: any) => event.is_match_started == false);
 // Use the tick of this event as the start of the match, or default to 0 if not found
 const matchStartTick = lastRestartRoundStartEvent ? lastRestartRoundStartEvent.tick : 0;
 
@@ -216,20 +271,20 @@ function findRoundForTick(tick: number) {
 let allPlayerRoundStats: IPlayerRoundStats[] = roundEndTickData
   .filter((tick: any) => tick.team_num === CT_TEAM_NUM || tick.team_num === T_TEAM_NUM)
   .map((tick: any): IPlayerRoundStats => {
-  let isMVP = mvpEvents.some((mvp: any) => mvp.tick === tick.tick && mvp.user_steamid === tick.steamid);
-  return {
-    userName: tick.player_name,
-    steamID: tick.steamid,
-    round: findRoundForTick(tick.tick),
-    team: tick.team_num,
-    survived: tick.is_alive,
-    moneySpent: tick.cash_spent_this_round,
-    equipmentValue: (tick.round_start_equip_value + tick.cash_spent_this_round),
-    clutchChance: 0, //to be updated later
-    clutchSuccess: false, //to be updated later
-    mvp: isMVP,
-  };
-});
+    let isMVP = mvpEvents.some((mvp: any) => mvp.tick === tick.tick && mvp.user_steamid === tick.steamid);
+    return {
+      userName: tick.player_name,
+      steamID: tick.steamid,
+      round: findRoundForTick(tick.tick),
+      team: tick.team_num,
+      survived: tick.is_alive,
+      moneySpent: tick.cash_spent_this_round,
+      equipmentValue: tick.round_start_equip_value + tick.cash_spent_this_round,
+      clutchChance: 0, //to be updated later
+      clutchSuccess: false, //to be updated later
+      mvp: isMVP,
+    };
+  });
 
 let clutchChance = new Map<number, { steamID: string; clutchChance: number; clutchSuccess: boolean }[]>();
 let alivePlayersPerRound = new Map<number, { ct: Set<string>; t: Set<string> }>();
@@ -304,8 +359,8 @@ allPlayerRoundStats.forEach((stat) => {
 let allRoundStats: IRoundStats[] = roundEndEvents.map(
   (event: any, index: number): IRoundStats => ({
     roundNumber: index + 1, // Assuming rounds are in sequential order
-    winnerSide: event.winner, // Mapping might be needed based on how winners are represented
-    reasonEndRound: event.reason, // Assuming reason is a numerical value
+    winnerSide: fromWinnerSideStringToNumber(event.winner), // Mapping might be needed based on how winners are represented
+    reasonEndRound: fromReasonEndStringToNumber(event.reason), // Assuming reason is a numerical value
   })
 );
 
@@ -423,7 +478,7 @@ let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map(
     eventtime: event.game_time,
     steamID: event.attacker_steamid,
     round: findRoundForTick(event.tick),
-    weapon: "weapon_"+event.weapon,
+    weapon: "weapon_" + event.weapon,
     victimSteamId: event.user_steamid,
     hitGroup: event.hitgroup,
     damageHealth: event.dmg_health,
@@ -452,13 +507,17 @@ let allPlayerStats: IPlayerStats[] = scoreboard
     // Find the last tick data for the player
     const playerLastTickData = allTicksMap.get(gameEndTick).find((tick: any) => tick.steamid === player.steamid);
     // Check if the player's team_num is either 2 (T_TEAM_NUM) or 3 (CT_TEAM_NUM)
-    return playerLastTickData && (playerLastTickData.team_num === CT_TEAM_NUM || playerLastTickData.team_num === T_TEAM_NUM);
+    return (
+      playerLastTickData && (playerLastTickData.team_num === CT_TEAM_NUM || playerLastTickData.team_num === T_TEAM_NUM)
+    );
   })
-  .map((player: any): IPlayerStats => ({
-    userName: player.name,
-    steamID: player.steamid,
-    score: player.score,
-  }));
+  .map(
+    (player: any): IPlayerStats => ({
+      userName: player.name,
+      steamID: player.steamid,
+      score: player.score,
+    })
+  );
 
 // Empty arrays to hold our data
 let mapStats: MapStats;

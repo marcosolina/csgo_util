@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@laihoe/demoparser2": "^0.15.2"
+    "@laihoe/demoparser2": "^0.20.0"
   },
   "devDependencies": {
     "@types/node": "^20.9.0",

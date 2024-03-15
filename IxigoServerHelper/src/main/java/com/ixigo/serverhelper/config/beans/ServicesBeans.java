@@ -6,12 +6,14 @@ import org.springframework.context.annotation.Configuration;
 
 import com.ixigo.serverhelper.config.properties.EventProperties;
 import com.ixigo.serverhelper.enums.EventFileReaderImplementations;
+import com.ixigo.serverhelper.services.implementations.Cs2SendInputsScreen;
 import com.ixigo.serverhelper.services.implementations.CsgoServerConfigManagerImp;
 import com.ixigo.serverhelper.services.implementations.DemFilesServiceImp;
 import com.ixigo.serverhelper.services.implementations.DyndnsUpdater;
 import com.ixigo.serverhelper.services.implementations.IxiGoEventMonitorImp;
 import com.ixigo.serverhelper.services.implementations.IxigoEventFileReaderPowerShell;
 import com.ixigo.serverhelper.services.implementations.IxigoEventFileReaderTail;
+import com.ixigo.serverhelper.services.interfaces.Cs2SendInputs;
 import com.ixigo.serverhelper.services.interfaces.CsgoServerConfigManager;
 import com.ixigo.serverhelper.services.interfaces.DemFilesService;
 import com.ixigo.serverhelper.services.interfaces.DnsUpdater;
@@ -40,14 +42,19 @@ public class ServicesBeans {
 		}
 		return new IxigoEventFileReaderTail();
 	}
-	
+
 	@Bean
 	public CsgoServerConfigManager getCsgoServerConfigManager() {
 		return new CsgoServerConfigManagerImp();
 	}
-	
+
 	@Bean
 	public DnsUpdater getDnsUpdater() {
 		return new DyndnsUpdater();
+	}
+
+	@Bean
+	public Cs2SendInputs getCs2SendInputs() {
+		return new Cs2SendInputsScreen();
 	}
 }

@@ -14,7 +14,8 @@
         "stats": "Stats",
         "rcon": "Rcon",
         "discordbot": "Discord Bot",
-        "joinus": "Join us"
+        "joinus": "Join us",
+        "cs2server": "CS 2 Server"
       }
     },
     "discord": {

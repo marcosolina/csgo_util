@@ -37,7 +37,7 @@ public class MainController {
 		"/discordbot/**",
 		"/joinus",
 		"/joinus/**",
-		"/cs2server" 
+		"/cs2server",
 		"/cs2server/**",
 	})
 	public String ui(HttpServletRequest request, Model model) {

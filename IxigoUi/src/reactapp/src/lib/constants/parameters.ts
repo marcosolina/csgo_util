@@ -5,6 +5,7 @@ export const MAIN_TABS = {
   RCON: "rcon",
   DISCORDBOT: "discordbot",
   JOINUS: "joinus",
+  CS2SERVER: "cs2server",
 };
 
 export const QUERY_PARAMS = {

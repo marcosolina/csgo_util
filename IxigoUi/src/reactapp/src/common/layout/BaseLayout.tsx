@@ -12,6 +12,7 @@ import Case from "../switch-case/Case";
 import Switch from "../switch-case/Switch";
 import { useNavigate, useParams } from "react-router-dom";
 import { MAIN_TABS, UI_CONTEXT_PATH } from "../../lib/constants";
+import Cs2ServerContent from "../../contents/cs2-server/Cs2ServerContent";
 
 const LANG_BASE_PATH = "page.home";
 
@@ -52,6 +53,7 @@ const BaseLayout = () => {
           <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.RCON}`)} value={MAIN_TABS.RCON} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.DISCORDBOT}`)} value={MAIN_TABS.DISCORDBOT} />
           <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.JOINUS}`)} value={MAIN_TABS.JOINUS} />
+          <Tab label={t(`${LANG_BASE_PATH}.tabs.${MAIN_TABS.CS2SERVER}`)} value={MAIN_TABS.CS2SERVER} />
         </Tabs>
       </Box>
 
@@ -75,6 +77,9 @@ const BaseLayout = () => {
           </Case>
           <Case case={MAIN_TABS.JOINUS}>
             <ServerInfoContent />
+          </Case>
+          <Case case={MAIN_TABS.CS2SERVER}>
+            <Cs2ServerContent />
           </Case>
         </Switch>
       </Container>

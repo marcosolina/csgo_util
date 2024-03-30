@@ -4,6 +4,7 @@ import { styled } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
 import { UI_CONTEXT_PATH } from "../../lib/constants";
+import { useSendCs2RconCommand } from "../../services/rcon/useRconCs2";
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
   position: "relative",
@@ -71,8 +72,13 @@ const ImageMarked = styled("span")(({ theme }) => ({
 
 const RconCommand: React.FC<IRconCommandProps> = (props) => {
   const { request, setRequest, sendCommand } = useRconContentProvider();
+  const { sendCommand: sendCs2Command } = useSendCs2RconCommand();
 
   const clickHandler = () => {
+    if (props.isCs2) {
+      sendCs2Command({ cs2Input: props.cmd });
+      return;
+    }
     const newRequest = { ...request };
     newRequest.rcon_command = props.cmd;
     setRequest(newRequest);

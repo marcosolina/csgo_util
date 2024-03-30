@@ -8,6 +8,16 @@ export interface IRconRequest {
   rcon_command: string;
 }
 
+export interface ICs2RconRequest {
+  cs2Input: string;
+}
+
+export interface ISendCs2RconCommand {
+  sendCommand: (request: ICs2RconRequest) => void;
+  status: QueryStatus;
+  response?: IxigoResponse<IRconResponse>;
+}
+
 export interface ISendRconCommand {
   sendCommand: (request: IRconRequest) => void;
   status: QueryStatus;

@@ -31,6 +31,7 @@ export const SERVICES_URLS = {
   },
   "server-helper": {
     "get-maps": PROXY_BASE_PATH + "/ixigo-server-helper/ixigohelper/maps",
+    "send-rcon": PROXY_BASE_PATH + "/ixigo-server-helper/ixigohelper/cs2input",
   },
   "rcon-api": {
     "gateway-path": "ixigo-rcon-api",

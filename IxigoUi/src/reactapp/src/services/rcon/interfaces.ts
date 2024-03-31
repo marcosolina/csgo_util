@@ -36,4 +36,5 @@ export interface IMapResponse {
   map_name: string;
   is_workshop_map: boolean;
   workshop_id?: string;
+  isCs2Map?: boolean;
 }

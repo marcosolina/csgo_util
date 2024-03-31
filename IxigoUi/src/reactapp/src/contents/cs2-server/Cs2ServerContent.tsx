@@ -28,7 +28,7 @@ const Cs2ServerContent = () => {
         {maps.map((map, j) => (
           <Grid key={j} item xs={XS} sm={SM} md={MD} lg={LG} xl={XL}>
             <RconCommand
-              isCs2={true}
+              isCs2={map.isCs2Map}
               cmd={map.is_workshop_map ? `host_workshop_map ${map.workshop_id}` : `map ${map.map_name}`}
               image={
                 map.is_workshop_map

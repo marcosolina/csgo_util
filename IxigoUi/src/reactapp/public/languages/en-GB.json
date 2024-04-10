@@ -106,6 +106,9 @@
       }
     },
     "rcon": {
+      "cs2": {
+        "sendingCommand": "Command sent, please wait..."
+      },
       "successRcon": "Command sent",
       "dialog": {
         "title": "Rcon response"

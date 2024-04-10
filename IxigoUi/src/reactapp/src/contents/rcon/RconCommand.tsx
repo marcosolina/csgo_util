@@ -3,8 +3,10 @@ import { useRconContentProvider } from "./useRconContentProvider";
 import { styled } from "@mui/material/styles";
 import ButtonBase from "@mui/material/ButtonBase";
 import Typography from "@mui/material/Typography";
-import { UI_CONTEXT_PATH } from "../../lib/constants";
+import { NotistackVariant, UI_CONTEXT_PATH } from "../../lib/constants";
 import { useSendCs2RconCommand } from "../../services/rcon/useRconCs2";
+import { useSnackbar } from "notistack";
+import { useTranslation } from "react-i18next";
 
 const ImageButton = styled(ButtonBase)(({ theme }) => ({
   position: "relative",
@@ -71,11 +73,14 @@ const ImageMarked = styled("span")(({ theme }) => ({
 }));
 
 const RconCommand: React.FC<IRconCommandProps> = (props) => {
+  const { t } = useTranslation();
   const { request, setRequest, sendCommand } = useRconContentProvider();
+  const { enqueueSnackbar } = useSnackbar();
   const { sendCommand: sendCs2Command } = useSendCs2RconCommand();
 
   const clickHandler = () => {
     if (props.isCs2) {
+      enqueueSnackbar(t("page.rcon.cs2.sendingCommand"), { variant: NotistackVariant.info });
       sendCs2Command({ cs2Input: props.cmd });
       return;
     }

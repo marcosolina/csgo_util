@@ -149,7 +149,49 @@ const CS2_MAPS: IMapResponse[] = [
   {
     is_workshop_map: true,
     map_name: "Westwood",
-    workshop_id: "3074629488",
+    workshop_id: "3108198185",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: true,
+    map_name: "Safehouse",
+    workshop_id: "3070550406",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: true,
+    map_name: "Bank",
+    workshop_id: "3070581293",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: true,
+    map_name: "Chalice",
+    workshop_id: "3070852091",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: true,
+    map_name: "Lake",
+    workshop_id: "3070563536",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: true,
+    map_name: "Assault",
+    workshop_id: "3070594412",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: true,
+    map_name: "Agency",
+    workshop_id: "3070584943",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: true,
+    map_name: "Militia",
+    workshop_id: "3070593234",
     isCs2Map: true,
   },
 ];

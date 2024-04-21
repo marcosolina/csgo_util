@@ -41,6 +41,7 @@ import com.ixigo.library.messages.IxigoMessageResource;
 import com.ixigo.library.validators.ValidationException;
 import com.ixigo.models.rest.RestUser;
 import com.ixigo.playersmanagercontract.models.rest.RestUserAvgScore;
+import com.ixigo.serverhelper.models.rest.Cs2InputModel;
 import com.netflix.servo.util.Strings;
 
 import net.dv8tion.jda.api.EmbedBuilder;
@@ -67,7 +68,7 @@ import reactor.core.scheduler.Schedulers;
  *
  */
 public class IxigoBotImpl implements IxigoBot {
-	private static final Logger LOGGER = LoggerFactory.getLogger(IxigoBotImpl.class);
+	private static final Logger _LOGGER = LoggerFactory.getLogger(IxigoBotImpl.class);
 
 	@Autowired
 	private IxigoMessageResource msgSource;
@@ -93,13 +94,13 @@ public class IxigoBotImpl implements IxigoBot {
 	public synchronized Mono<Boolean> start() throws IxigoException {
 
 		if (jda != null || botOnline) {
-			LOGGER.debug("Bot already running");
+			_LOGGER.debug("Bot already running");
 			return Mono.just(true);
 		}
 
 		return Mono.fromSupplier(() -> {
 			try {
-				LOGGER.debug("Building the bot");
+				_LOGGER.debug("Building the bot");
 				// @formatter:off
 				jda = JDABuilder.create(
 						discordProps.getBottoken(),
@@ -114,10 +115,10 @@ public class IxigoBotImpl implements IxigoBot {
 						.build();
 				// @formatter:on
 				jda.awaitReady();
-				LOGGER.debug("Starting the bot");
+				_LOGGER.debug("Starting the bot");
 				botOnline = true;
 			} catch (InterruptedException e) {
-				LOGGER.error(e.getMessage());
+				_LOGGER.error(e.getMessage());
 				e.printStackTrace();
 				return false;
 			}
@@ -128,7 +129,7 @@ public class IxigoBotImpl implements IxigoBot {
 	@Override
 	public Mono<Boolean> stop() throws IxigoException {
 		return checkIfBotIsOnlineOrStart(false).map(b -> {
-			LOGGER.debug("Stopping the bot");
+			_LOGGER.debug("Stopping the bot");
 			jda.shutdown();
 			botOnline = false;
 			return !botOnline;
@@ -203,18 +204,18 @@ public class IxigoBotImpl implements IxigoBot {
 				Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
 				
 				Map<TeamType, List<RestUser>> teamsMap = tuple.getT2();
-				if(LOGGER.isDebugEnabled() && teamsMap != null) {
-					LOGGER.debug("Players retrieved from the server");
-					LOGGER.debug("- CT:");
+				if(_LOGGER.isDebugEnabled() && teamsMap != null) {
+					_LOGGER.debug("Players retrieved from the server");
+					_LOGGER.debug("- CT:");
 					var list = teamsMap.get(TeamType.CT);
 					if(list != null && !list.isEmpty()) {						
-						list.forEach(l -> LOGGER.debug(String.format("%s: %s", l.getUserName(), l.getSteamId())));
+						list.forEach(l -> _LOGGER.debug(String.format("%s: %s", l.getUserName(), l.getSteamId())));
 					}
 					
-					LOGGER.debug("- Terrorists");
+					_LOGGER.debug("- Terrorists");
 					list = teamsMap.get(TeamType.TERRORISTS);
 					if(list != null && !list.isEmpty()) {
-						list.forEach(l -> LOGGER.debug(String.format("%s: %s", l.getUserName(), l.getSteamId())));
+						list.forEach(l -> _LOGGER.debug(String.format("%s: %s", l.getUserName(), l.getSteamId())));
 					}
 				}				
 				List<String> steamIds = new ArrayList<>();
@@ -367,7 +368,7 @@ public class IxigoBotImpl implements IxigoBot {
 					;
 			
 			if(!discordIdsToMove.isEmpty() && Boolean.parseBoolean(tuple.getT4().getConfigVal())) {
-				LOGGER.info(String.format("Getting voice channel by ID: %d", discordProps.getVoiceChannels().getTerrorist()));
+				_LOGGER.info(String.format("Getting voice channel by ID: %d", discordProps.getVoiceChannels().getTerrorist()));
 				VoiceChannel vc = guild.getVoiceChannelById(discordProps.getVoiceChannels().getTerrorist());
 				var actions = membersInVoiceChat.stream()
 						.filter(m -> discordIdsToMove.contains(m.getIdLong()))
@@ -395,16 +396,16 @@ public class IxigoBotImpl implements IxigoBot {
 	private RestAction<Void> moveMemberToVoiceChannel(Guild guild, Member m, VoiceChannel v) {
 		try {
 			if (guild != null && m != null && v != null) {
-				LOGGER.debug(String.format("Moving %s", m.getUser().getName()));
+				_LOGGER.debug(String.format("Moving %s", m.getUser().getName()));
 				return guild.moveVoiceMember(m, v);
 			} else {
-				LOGGER.error(String.format("guild null value: %b", guild == null));
-				LOGGER.error(String.format("member null value: %b", m == null));
-				LOGGER.error(String.format("voiche channel null value: %b", v == null));
+				_LOGGER.error(String.format("guild null value: %b", guild == null));
+				_LOGGER.error(String.format("member null value: %b", m == null));
+				_LOGGER.error(String.format("voiche channel null value: %b", v == null));
 				throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MOVE_TO_CHANNEL_FAIL), ErrorCodes.MOVE_TO_CHANNEL_FAIL);
 			}
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
+			_LOGGER.error(e.getMessage());
 			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.MOVE_TO_CHANNEL_FAIL), ErrorCodes.MOVE_TO_CHANNEL_FAIL);
 		}
 	}
@@ -589,5 +590,82 @@ public class IxigoBotImpl implements IxigoBot {
 		});
 		
 		return Mono.empty();
+	}
+
+	@Override
+	public void moveDiscordUsersInTheAppropriateChannelCs2() throws IxigoException {
+		this.makeTeamsAndMoveToVoiceChannel().subscribe(r -> {
+			_LOGGER.debug("Members moved to the appropriate voice channel");
+		});
+	}
+
+	@Override
+	public Mono<Boolean> balanceTheTeamsCs2() throws IxigoException {
+		// @formatter:off
+		var monoGuild = getGuild();
+		var monoMapping = this.getListOfMappedPlayers().collectList();
+		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
+		
+		Mono.zip(monoGuild, monoMapping, monoRepo)
+		.subscribe(tuple -> {
+			var guild = tuple.getT1();
+			var mapping = tuple.getT2();
+			
+			Bot_configDto config = tuple.getT3();
+			Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
+			
+			guild.loadMembers().onSuccess(members -> {
+				List<Member> membersInVoiceChat = members.stream()
+						.filter(Objects::nonNull)
+						.filter(m -> !m.getUser().isBot())
+						.filter(m -> m.getVoiceState().inAudioChannel())
+						.collect(Collectors.toList())
+						;
+				var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
+				var steamIds = mapping.stream()
+						.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
+						.map(m -> m.getSteamDetails().getSteam_id())
+						.collect(Collectors.toList());
+				
+				if(steamIds.size() < 3) {
+					return;
+				}
+				
+				balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty())
+				.subscribe(teams -> {
+					//var cts = teams.getTeams().get(1).getMembers();
+					var terrorists = teams.getTeams().get(0).getMembers().stream().map(RestUserAvgScore::getSteamID).collect(Collectors.toList());
+					
+					_LOGGER.debug("Moving players on the CS2 server");
+					this.sendCs2RconCommand(String.format("ixigo_move %s", String.join(",", terrorists)))
+						.subscribe(resp -> {
+							_LOGGER.debug("CS2 rcon status: " + resp);
+						});
+				});
+			})
+			;
+		})
+		;
+		// @formatter:on
+
+		return null;
+	}
+
+	@Override
+	public Mono<Boolean> kickTheBotsCs2() throws IxigoException {
+		_LOGGER.debug("Kicking CS2 bots");
+		return this.sendCs2RconCommand("bot_kick");
+	}
+
+	@Override
+	public Mono<Boolean> restartCs2Match() throws IxigoException {
+		_LOGGER.debug("Restarting CS2 match");
+		return this.sendCs2RconCommand("mp_restartgame 5");
+	}
+	
+	private Mono<Boolean> sendCs2RconCommand(String cmd) {
+		var cs2Rcon = new Cs2InputModel();
+		cs2Rcon.setCs2Input(cmd);
+		return this.rconService.sendCs2Rcon(cs2Rcon);
 	}
 }

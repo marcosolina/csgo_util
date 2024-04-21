@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiModelProperty;
 public class Cs2InputModel implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    @ApiModelProperty(notes = "When the event occur", required = true)
+    @ApiModelProperty(notes = "The rcon command", required = true)
     private String cs2Input;
 
 
@@ -31,4 +31,8 @@ public class Cs2InputModel implements Serializable {
         return serialVersionUID;
     }
 
+	@Override
+	public String toString() {
+		return "Cs2InputModel [cs2Input=" + cs2Input + "]";
+	}
 }

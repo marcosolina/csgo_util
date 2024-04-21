@@ -69,6 +69,7 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 			case WARMUP_START:
 				r = () -> botService.warmUpBalanceTeamApi().subscribe(status -> _LOGGER.debug("Warmup status " + status.toString()));
 				break;
+				/*
 			case WARMUP_END:
 				r = () -> {
 					// @formatter:off
@@ -79,6 +80,21 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 							return botService.restartCsgoMatch();
 						})
 						.subscribe(status -> _LOGGER.debug("Teams balanced"))
+					;
+					// @formatter:on
+				};
+				break;
+				*/
+			case WARMUP_END:
+				r = () -> {
+					// @formatter:off
+					botService.kickTheBotsCs2()
+						.then(botService.balanceTheTeamsCs2())
+						.flatMap(status -> {
+							botService.moveDiscordUsersInTheAppropriateChannelCs2();
+							return botService.restartCs2Match();
+						})
+						.subscribe(status -> _LOGGER.debug("CS2 Teams balanced"))
 					;
 					// @formatter:on
 				};

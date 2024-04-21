@@ -34,12 +34,20 @@ public interface IxigoBot {
 	public abstract void moveAllMembersIntoGeneralChannel() throws IxigoException;
 
 	public abstract void moveDiscordUsersInTheAppropriateChannel() throws IxigoException;
+	
+	public abstract void moveDiscordUsersInTheAppropriateChannelCs2() throws IxigoException;
 
 	public abstract Mono<Boolean> balanceTheTeams() throws IxigoException;
+	
+	public abstract Mono<Boolean> balanceTheTeamsCs2() throws IxigoException;
 
 	public abstract Mono<Boolean> kickTheBots() throws IxigoException;
+	
+	public abstract Mono<Boolean> kickTheBotsCs2() throws IxigoException;
 
 	public abstract Mono<Boolean> restartCsgoMatch() throws IxigoException;
+	
+	public abstract Mono<Boolean> restartCs2Match() throws IxigoException;
 
 	public abstract Mono<Boolean> warmUpBalanceTeamApi() throws IxigoException;
 

@@ -18,6 +18,7 @@
 		<contract.playersmanager>2.0.0</contract.playersmanager>
 		<contract.rcon>2.0.0</contract.rcon>
 		<contract.discordbot>2.0.0</contract.discordbot>
+		<contract.serverhelper>2.0.0</contract.serverhelper>
 	</properties>
 
 	<dependencies>
@@ -72,6 +73,11 @@
 			<groupId>com.ixigo</groupId>
 			<artifactId>IxigoRconApiContract</artifactId>
 			<version>${contract.rcon}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoServerHelperContract</artifactId>
+			<version>${contract.serverhelper}</version>
 		</dependency>
 	</dependencies>
 

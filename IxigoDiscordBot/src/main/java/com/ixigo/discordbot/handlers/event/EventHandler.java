@@ -66,10 +66,10 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 			case DEM_FILES_PROCESSED:
 				r = () -> botService.balanceMembersInVoiceChannel().thenReturn(true);
 				break;
+				/*
 			case WARMUP_START:
 				r = () -> botService.warmUpBalanceTeamApi().subscribe(status -> _LOGGER.debug("Warmup status " + status.toString()));
 				break;
-				/*
 			case WARMUP_END:
 				r = () -> {
 					// @formatter:off

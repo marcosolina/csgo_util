@@ -421,21 +421,23 @@ public class IxigoBotImpl implements IxigoBot {
 	}
 
 	@Override
-	public Mono<Void> makeTeamsAndMoveToVoiceChannel() throws IxigoException {
+	public Mono<Boolean> makeTeamsAndMoveToVoiceChannel() throws IxigoException {
 		// @formatter:off
 		var monoMapping = this.getListOfMappedPlayers().collectList();
 		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
 		var monoGuild = getGuild();
 		
-		Mono.zip(monoGuild, monoMapping, monoRepo)
-			.subscribe(tuple -> {
+		return Mono.zip(monoGuild, monoMapping, monoRepo)
+			.flatMap(tuple -> {
 				var guild = tuple.getT1();
 				var userMappings = tuple.getT2();
 				var balanceConfig = tuple.getT3();
 				
 				Integer numberOfMatches = Integer.parseInt(balanceConfig.getConfig_val());
 				
-				guild.loadMembers().onSuccess(members -> {
+				var gtw = new GatewayTaskWrapper<List<Member>>(guild.loadMembers());
+				
+				return gtw.onSuccess(m -> {}).flatMap(members -> {
 					List<Member> membersInVoiceChat = members.stream()
 							.filter(Objects::nonNull)
 							.filter(m -> !m.getUser().isBot())
@@ -449,29 +451,32 @@ public class IxigoBotImpl implements IxigoBot {
 							.collect(Collectors.toList());
 					
 					
-					balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty())
-					.subscribe(teams -> {
-						Function<RestUserAvgScore, SvcSteamUser> mapper = m -> {
-							var svc = new SvcSteamUser();
-							svc.setSteamId(m.getSteamID());
-							svc.setUserName(m.getUserName());
-							return svc;
-						}; 
-						var cts = teams.getTeams().get(1).getMembers().stream().map(mapper).collect(Collectors.toList());
-						var terrorists = teams.getTeams().get(0).getMembers().stream().map(mapper).collect(Collectors.toList());
-						
-						var steamTeams = new SvcSteamTeams();
-						steamTeams.setCt(cts);
-						steamTeams.setTerrorists(terrorists);
-						
-						this.moveMemberToVoiceChannel(members, steamTeams);
-					});
-				})
-				;
+					return Mono.zip(
+							balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty()),
+							Mono.just(members));
+				});
+			})
+			.map(tuple -> {
+				var teams = tuple.getT1();
+				var members = tuple.getT2();
+				Function<RestUserAvgScore, SvcSteamUser> mapper = m -> {
+					var svc = new SvcSteamUser();
+					svc.setSteamId(m.getSteamID());
+					svc.setUserName(m.getUserName());
+					return svc;
+				}; 
+				var cts = teams.getTeams().get(1).getMembers().stream().map(mapper).collect(Collectors.toList());
+				var terrorists = teams.getTeams().get(0).getMembers().stream().map(mapper).collect(Collectors.toList());
+				
+				var steamTeams = new SvcSteamTeams();
+				steamTeams.setCt(cts);
+				steamTeams.setTerrorists(terrorists);
+				
+				this.moveMemberToVoiceChannel(members, steamTeams);
+				return true;
 			})
 			;
 		// @formatter:on
-		return Mono.empty();
 	}
 	
 	private void moveMemberToVoiceChannel(List<Member> members, SvcSteamTeams teams) {
@@ -593,62 +598,57 @@ public class IxigoBotImpl implements IxigoBot {
 	}
 
 	@Override
-	public void moveDiscordUsersInTheAppropriateChannelCs2() throws IxigoException {
-		this.makeTeamsAndMoveToVoiceChannel().subscribe(r -> {
+	public Mono<Boolean> moveDiscordUsersInTheAppropriateChannelCs2() throws IxigoException {
+		return this.makeTeamsAndMoveToVoiceChannel().map(r -> {
 			_LOGGER.debug("Members moved to the appropriate voice channel");
+			return r;
 		});
 	}
 
 	@Override
 	public Mono<Boolean> balanceTheTeamsCs2() throws IxigoException {
+		_LOGGER.debug("Balancing CS2 teams");
 		// @formatter:off
 		var monoGuild = getGuild();
 		var monoMapping = this.getListOfMappedPlayers().collectList();
 		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
 		
-		Mono.zip(monoGuild, monoMapping, monoRepo)
-		.subscribe(tuple -> {
+		return Mono.zip(monoGuild, monoMapping, monoRepo)
+		.flatMap(tuple -> {
 			var guild = tuple.getT1();
 			var mapping = tuple.getT2();
 			
 			Bot_configDto config = tuple.getT3();
 			Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
 			
-			guild.loadMembers().onSuccess(members -> {
-				List<Member> membersInVoiceChat = members.stream()
-						.filter(Objects::nonNull)
-						.filter(m -> !m.getUser().isBot())
-						.filter(m -> m.getVoiceState().inAudioChannel())
-						.collect(Collectors.toList())
-						;
-				var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
-				var steamIds = mapping.stream()
-						.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
-						.map(m -> m.getSteamDetails().getSteam_id())
-						.collect(Collectors.toList());
-				
-				if(steamIds.size() < 3) {
-					return;
-				}
-				
-				balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty())
-				.subscribe(teams -> {
+			
+			var wrappedTask = new GatewayTaskWrapper<List<Member>>(guild.loadMembers());
+			return wrappedTask.onSuccess(m -> {})
+				.flatMap(members -> {
+					List<Member> membersInVoiceChat = members.stream()
+							.filter(Objects::nonNull)
+							.filter(m -> !m.getUser().isBot())
+							.filter(m -> m.getVoiceState().inAudioChannel())
+							.collect(Collectors.toList())
+							;
+					var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
+					var steamIds = mapping.stream()
+							.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
+							.map(m -> m.getSteamDetails().getSteam_id())
+							.collect(Collectors.toList());
+					
+					return balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty());
+				})
+				.flatMap(teams -> {
 					//var cts = teams.getTeams().get(1).getMembers();
 					var terrorists = teams.getTeams().get(0).getMembers().stream().map(RestUserAvgScore::getSteamID).collect(Collectors.toList());
 					
 					_LOGGER.debug("Moving players on the CS2 server");
-					this.sendCs2RconCommand(String.format("ixigo_move %s", String.join(",", terrorists)))
-						.subscribe(resp -> {
-							_LOGGER.debug("CS2 rcon status: " + resp);
-						});
+					return this.sendCs2RconCommand(String.format("ixigo_move %s", String.join(",", terrorists)));
 				});
-			})
-			;
 		})
 		;
 		// @formatter:on
-
-		return null;
 	}
 
 	@Override

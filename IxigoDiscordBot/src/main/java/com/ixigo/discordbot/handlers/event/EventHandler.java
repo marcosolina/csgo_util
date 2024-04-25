@@ -88,12 +88,9 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 			case WARMUP_END:
 				r = () -> {
 					// @formatter:off
-					botService.kickTheBotsCs2()
-						.then(botService.balanceTheTeamsCs2())
-						.flatMap(status -> {
-							botService.moveDiscordUsersInTheAppropriateChannelCs2();
-							return botService.restartCs2Match();
-						})
+					botService.balanceTheTeamsCs2()
+						.flatMap(status -> botService.moveDiscordUsersInTheAppropriateChannelCs2())
+						.flatMap(staus -> botService.restartCs2Match())
 						.subscribe(status -> _LOGGER.debug("CS2 Teams balanced"))
 					;
 					// @formatter:on

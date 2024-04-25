@@ -35,7 +35,7 @@ public interface IxigoBot {
 
 	public abstract void moveDiscordUsersInTheAppropriateChannel() throws IxigoException;
 	
-	public abstract void moveDiscordUsersInTheAppropriateChannelCs2() throws IxigoException;
+	public abstract Mono<Boolean> moveDiscordUsersInTheAppropriateChannelCs2() throws IxigoException;
 
 	public abstract Mono<Boolean> balanceTheTeams() throws IxigoException;
 	
@@ -60,7 +60,7 @@ public interface IxigoBot {
 	public abstract Mono<SvcBotConfig> getBotConfig(BotConfigKey key) throws IxigoException;
 	public abstract Flux<SvcBotConfig> getBotConfigAll() throws IxigoException;
 	
-	public abstract Mono<Void> makeTeamsAndMoveToVoiceChannel() throws IxigoException;
+	public abstract Mono<Boolean> makeTeamsAndMoveToVoiceChannel() throws IxigoException;
 	
 	public abstract Mono<Void> balanceMembersInVoiceChannel() throws IxigoException;
 	

@@ -61,7 +61,14 @@ public class EventServiceImpl implements EventService {
 			dispatch = dispatchEvent(EventType.WARMUP_END);
 		}
 
-		previousEvent.put(clientIp, event);
+		switch (event) {
+		case DEM_FILES_PROCESSED:
+			break;
+		default:
+			previousEvent.put(clientIp, event);
+			break;
+		}
+
 		return dispatch.then(dispatchEvent(event));
 	}
 
@@ -76,7 +83,8 @@ public class EventServiceImpl implements EventService {
 		listener.setConsecutive_failure(0);
 
 		/*
-		 * https://stackoverflow.com/questions/53595420/correct-way-of-throwing-exceptions-with-reactor
+		 * https://stackoverflow.com/questions/53595420/correct-way-of-throwing-
+		 * exceptions-with-reactor
 		 */
 		// @formatter:off
 		return repo.findListener(listenerUrl, event)
@@ -95,13 +103,13 @@ public class EventServiceImpl implements EventService {
 
 	@Override
 	public Mono<Boolean> deleteListener(String listenerUrl, EventType event) throws IxigoException {
-		
+
 		return repo.deleteListener(listenerUrl, event).flatMap(bool -> {
-			if(bool) {
+			if (bool) {
 				StringBuilder sb = new StringBuilder();
 				sb.append(String.format("%s- URL: %s", NEW_LINE_CHAR, listenerUrl));
 				sb.append(String.format("%s- Event: %s", NEW_LINE_CHAR, event.name()));
-				
+
 				return notiService.sendEventServiceError("Deleted event listener", sb.toString());
 			}
 			return Mono.just(bool);
@@ -175,13 +183,15 @@ public class EventServiceImpl implements EventService {
 
 	private void checkListenerKey(String listenerUrl, EventType event) throws IxigoException {
 		if (event == null) {
-			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MISSING_EVENT_TYPE), ErrorCodes.MISSING_EVENT_TYPE);
+			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MISSING_EVENT_TYPE),
+					ErrorCodes.MISSING_EVENT_TYPE);
 		}
 
 		try {
 			new URL(listenerUrl);
 		} catch (MalformedURLException e) {
-			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.WRONG_URL_FORMAT), ErrorCodes.WRONG_URL_FORMAT);
+			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.WRONG_URL_FORMAT),
+					ErrorCodes.WRONG_URL_FORMAT);
 		}
 	}
 }

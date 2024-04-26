@@ -90,7 +90,14 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 					// @formatter:off
 					botService.balanceTheTeamsCs2()
 						.flatMap(status -> botService.moveDiscordUsersInTheAppropriateChannelCs2())
-						.flatMap(staus -> botService.restartCs2Match())
+						.flatMap(staus -> {
+							try {
+								Thread.sleep(5000);
+							} catch (InterruptedException e) {
+								_LOGGER.error(e.getMessage());
+							}
+							return botService.restartCs2Match();
+						})
 						.subscribe(status -> _LOGGER.debug("CS2 Teams balanced"))
 					;
 					// @formatter:on

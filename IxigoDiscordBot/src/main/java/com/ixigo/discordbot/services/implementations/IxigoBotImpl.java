@@ -232,10 +232,9 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> kickTheBots() throws IxigoException {
-		return getBotConfig(BotConfigKey.KICK_BOTS)
-				.map(config -> Boolean.parseBoolean(config.getConfigVal()))
+		return getBotConfig(BotConfigKey.KICK_BOTS).map(config -> Boolean.parseBoolean(config.getConfigVal()))
 				.flatMap(configActive -> {
-					if(configActive) {
+					if (configActive) {
 						return rconService.kickTheBots();
 					}
 					return Mono.just(configActive);
@@ -323,7 +322,7 @@ public class IxigoBotImpl implements IxigoBot {
 			guidl.getTextChannelById(discordProps.getTextChannels().getGeneral()).sendMessage(msg).queue();
 		});
 	}
-	
+
 	@Override
 	public void sendEmbedMessageToGeneralChat(MessageEmbed me) {
 		getGuild().subscribe(guidl -> {
@@ -389,7 +388,7 @@ public class IxigoBotImpl implements IxigoBot {
 		if (!botOnline && startIfOffline) {
 			return this.start();
 		}
-		
+
 		return Mono.just(true);
 	}
 
@@ -402,17 +401,18 @@ public class IxigoBotImpl implements IxigoBot {
 				_LOGGER.error(String.format("guild null value: %b", guild == null));
 				_LOGGER.error(String.format("member null value: %b", m == null));
 				_LOGGER.error(String.format("voiche channel null value: %b", v == null));
-				throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MOVE_TO_CHANNEL_FAIL), ErrorCodes.MOVE_TO_CHANNEL_FAIL);
+				throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MOVE_TO_CHANNEL_FAIL),
+						ErrorCodes.MOVE_TO_CHANNEL_FAIL);
 			}
 		} catch (Exception e) {
 			_LOGGER.error(e.getMessage());
-			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, msgSource.getMessage(ErrorCodes.MOVE_TO_CHANNEL_FAIL), ErrorCodes.MOVE_TO_CHANNEL_FAIL);
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR,
+					msgSource.getMessage(ErrorCodes.MOVE_TO_CHANNEL_FAIL), ErrorCodes.MOVE_TO_CHANNEL_FAIL);
 		}
 	}
 
 	private Mono<Guild> getGuild() {
-		return this.checkIfBotIsOnlineOrStart(true)
-			.map(b -> jda.getGuildById(discordProps.getServerId()));
+		return this.checkIfBotIsOnlineOrStart(true).map(b -> jda.getGuildById(discordProps.getServerId()));
 	}
 
 	@Override
@@ -422,70 +422,77 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> makeTeamsAndMoveToVoiceChannel() throws IxigoException {
-		// @formatter:off
-		var monoMapping = this.getListOfMappedPlayers().collectList();
-		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
-		var monoGuild = getGuild();
-		
-		return Mono.zip(monoGuild, monoMapping, monoRepo)
-			.flatMap(tuple -> {
-				var guild = tuple.getT1();
-				var userMappings = tuple.getT2();
-				var balanceConfig = tuple.getT3();
-				
-				Integer numberOfMatches = Integer.parseInt(balanceConfig.getConfig_val());
-				
-				var gtw = new GatewayTaskWrapper<List<Member>>(guild.loadMembers());
-				
-				return gtw.onSuccess(m -> {}).flatMap(members -> {
-					List<Member> membersInVoiceChat = members.stream()
-							.filter(Objects::nonNull)
-							.filter(m -> !m.getUser().isBot())
-							.filter(m -> m.getVoiceState().inAudioChannel())
-							.collect(Collectors.toList())
-							;
-					var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
-					var steamIds = userMappings.stream()
-							.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
-							.map(m -> m.getSteamDetails().getSteam_id())
-							.collect(Collectors.toList());
+
+		return repoBotConfig.fingConfig(BotConfigKey.MOVE_TO_VOICE_CHANNEL).flatMap(configActive -> {
+			if (!Boolean.parseBoolean(configActive.getConfig_val())) {
+				return Mono.just(true);
+			}
+			// @formatter:off
+			var monoMapping = this.getListOfMappedPlayers().collectList();
+			var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
+			var monoGuild = getGuild();
+			
+			return Mono.zip(monoGuild, monoMapping, monoRepo)
+				.flatMap(tuple -> {
+					var guild = tuple.getT1();
+					var userMappings = tuple.getT2();
+					var balanceConfig = tuple.getT3();
 					
+					Integer numberOfMatches = Integer.parseInt(balanceConfig.getConfig_val());
 					
-					return Mono.zip(
-							balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty()),
-							Mono.just(members));
-				});
-			})
-			.map(tuple -> {
-				var teams = tuple.getT1();
-				var members = tuple.getT2();
-				Function<RestUserAvgScore, SvcSteamUser> mapper = m -> {
-					var svc = new SvcSteamUser();
-					svc.setSteamId(m.getSteamID());
-					svc.setUserName(m.getUserName());
-					return svc;
-				}; 
-				var cts = teams.getTeams().get(1).getMembers().stream().map(mapper).collect(Collectors.toList());
-				var terrorists = teams.getTeams().get(0).getMembers().stream().map(mapper).collect(Collectors.toList());
-				
-				var steamTeams = new SvcSteamTeams();
-				steamTeams.setCt(cts);
-				steamTeams.setTerrorists(terrorists);
-				
-				this.moveMemberToVoiceChannel(members, steamTeams);
-				return true;
-			})
-			;
-		// @formatter:on
+					var gtw = new GatewayTaskWrapper<List<Member>>(guild.loadMembers());
+					
+					return gtw.onSuccess(m -> {}).flatMap(members -> {
+						List<Member> membersInVoiceChat = members.stream()
+								.filter(Objects::nonNull)
+								.filter(m -> !m.getUser().isBot())
+								.filter(m -> m.getVoiceState().inAudioChannel())
+								.collect(Collectors.toList())
+								;
+						var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
+						var steamIds = userMappings.stream()
+								.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
+								.map(m -> m.getSteamDetails().getSteam_id())
+								.collect(Collectors.toList());
+						
+						
+						return Mono.zip(
+								balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty()),
+								Mono.just(members));
+					});
+				})
+				.map(tuple -> {
+					var teams = tuple.getT1();
+					var members = tuple.getT2();
+					Function<RestUserAvgScore, SvcSteamUser> mapper = m -> {
+						var svc = new SvcSteamUser();
+						svc.setSteamId(m.getSteamID());
+						svc.setUserName(m.getUserName());
+						return svc;
+					}; 
+					var cts = teams.getTeams().get(1).getMembers().stream().map(mapper).collect(Collectors.toList());
+					var terrorists = teams.getTeams().get(0).getMembers().stream().map(mapper).collect(Collectors.toList());
+					
+					var steamTeams = new SvcSteamTeams();
+					steamTeams.setCt(cts);
+					steamTeams.setTerrorists(terrorists);
+					
+					this.moveMemberToVoiceChannel(members, steamTeams);
+					return true;
+				})
+				;
+			// @formatter:on
+		});
 	}
-	
+
 	private void moveMemberToVoiceChannel(List<Member> members, SvcSteamTeams teams) {
 		var terroristIds = teams.getTerrorists().stream().map(SvcSteamUser::getSteamId).collect(Collectors.toList());
 		var ctIds = teams.getCt().stream().map(SvcSteamUser::getSteamId).collect(Collectors.toList());
-		
-		var terroristsDiscordIdsMono = repoUsersMap.findAllBySteamId(terroristIds).map(Users_mapDto::getDiscord_id).collectList();
+
+		var terroristsDiscordIdsMono = repoUsersMap.findAllBySteamId(terroristIds).map(Users_mapDto::getDiscord_id)
+				.collectList();
 		var ctDiscordIdsMono = repoUsersMap.findAllBySteamId(ctIds).map(Users_mapDto::getDiscord_id).collectList();
-		
+
 		//// @formatter:off
 		Mono.zip(terroristsDiscordIdsMono, ctDiscordIdsMono, getGuild())
 			.subscribe(tuple -> {
@@ -524,14 +531,14 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Void> balanceMembersInVoiceChannel() throws IxigoException {
-		
+
 		var monoOptionEnabled = repoBotConfig.fingConfig(BotConfigKey.POST_TEAMS_ON_JOIN_LEFT_VOICE_CHANNEL);
-		
+
 		monoOptionEnabled.subscribe(optionEnabled -> {
-			if(!Boolean.parseBoolean(optionEnabled.getConfig_val())) {
+			if (!Boolean.parseBoolean(optionEnabled.getConfig_val())) {
 				return;
 			}
-			
+
 			// @formatter:off
 			var monoGuild = getGuild();
 			var monoMapping = this.getListOfMappedPlayers().collectList();
@@ -593,7 +600,7 @@ public class IxigoBotImpl implements IxigoBot {
 			;
 			// @formatter:on
 		});
-		
+
 		return Mono.empty();
 	}
 
@@ -608,53 +615,68 @@ public class IxigoBotImpl implements IxigoBot {
 	@Override
 	public Mono<Boolean> balanceTheTeamsCs2() throws IxigoException {
 		_LOGGER.debug("Balancing CS2 teams");
-		// @formatter:off
-		var monoGuild = getGuild();
-		var monoMapping = this.getListOfMappedPlayers().collectList();
-		var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
-		
-		return Mono.zip(monoGuild, monoMapping, monoRepo)
-		.flatMap(tuple -> {
-			var guild = tuple.getT1();
-			var mapping = tuple.getT2();
-			
-			Bot_configDto config = tuple.getT3();
-			Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
-			
-			
-			var wrappedTask = new GatewayTaskWrapper<List<Member>>(guild.loadMembers());
-			return wrappedTask.onSuccess(m -> {})
-				.flatMap(members -> {
-					List<Member> membersInVoiceChat = members.stream()
-							.filter(Objects::nonNull)
-							.filter(m -> !m.getUser().isBot())
-							.filter(m -> m.getVoiceState().inAudioChannel())
-							.collect(Collectors.toList())
-							;
-					var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
-					var steamIds = mapping.stream()
-							.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
-							.map(m -> m.getSteamDetails().getSteam_id())
-							.collect(Collectors.toList());
+
+		return repoBotConfig.fingConfig(BotConfigKey.AUTOBALANCE).flatMap(configActive -> {
+			if (!Boolean.parseBoolean(configActive.getConfig_val())) {
+				return Mono.just(true);
+			}
+			// @formatter:off
+					var monoGuild = getGuild();
+					var monoMapping = this.getListOfMappedPlayers().collectList();
+					var monoRepo = repoBotConfig.fingConfig(BotConfigKey.MATCHES_TO_CONSIDER_FOR_TEAM_CREATION);
 					
-					return balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty());
-				})
-				.flatMap(teams -> {
-					//var cts = teams.getTeams().get(1).getMembers();
-					var terrorists = teams.getTeams().get(0).getMembers().stream().map(RestUserAvgScore::getSteamID).collect(Collectors.toList());
-					
-					_LOGGER.debug("Moving players on the CS2 server");
-					return this.sendCs2RconCommand(String.format("ixigo_move %s", String.join(",", terrorists)));
-				});
-		})
-		;
-		// @formatter:on
+					return Mono.zip(monoGuild, monoMapping, monoRepo)
+					.flatMap(tuple -> {
+						var guild = tuple.getT1();
+						var mapping = tuple.getT2();
+						
+						Bot_configDto config = tuple.getT3();
+						Integer numberOfMatches = Integer.parseInt(config.getConfig_val());
+						
+						
+						var wrappedTask = new GatewayTaskWrapper<List<Member>>(guild.loadMembers());
+						return wrappedTask.onSuccess(m -> {})
+							.flatMap(members -> {
+								List<Member> membersInVoiceChat = members.stream()
+										.filter(Objects::nonNull)
+										.filter(m -> !m.getUser().isBot())
+										.filter(m -> m.getVoiceState().inAudioChannel())
+										.collect(Collectors.toList())
+										;
+								var listOfDiscordIds = membersInVoiceChat.stream().map(Member::getId).collect(Collectors.toList());
+								var steamIds = mapping.stream()
+										.filter(m -> listOfDiscordIds.contains(m.getDiscordDetails().getId()))
+										.map(m -> m.getSteamDetails().getSteam_id())
+										.collect(Collectors.toList());
+								
+								return balanceService.generateBalancedTeams(steamIds, Optional.of(numberOfMatches), Optional.empty(), Optional.empty(), Optional.empty());
+							})
+							.flatMap(teams -> {
+								//var cts = teams.getTeams().get(1).getMembers();
+								var terrorists = teams.getTeams().get(0).getMembers().stream().map(RestUserAvgScore::getSteamID).collect(Collectors.toList());
+								
+								_LOGGER.debug("Moving players on the CS2 server");
+								return this.sendCs2RconCommand(String.format("ixigo_move %s", String.join(",", terrorists)));
+							});
+					})
+					;
+					// @formatter:on
+		});
+
 	}
 
 	@Override
 	public Mono<Boolean> kickTheBotsCs2() throws IxigoException {
 		_LOGGER.debug("Kicking CS2 bots");
-		return this.sendCs2RconCommand("bot_kick");
+		
+		return getBotConfig(BotConfigKey.KICK_BOTS)
+				.map(config -> Boolean.parseBoolean(config.getConfigVal()))
+				.flatMap(configActive -> {
+					if (configActive) {
+						return this.sendCs2RconCommand("bot_kick");
+					}
+					return Mono.just(true);
+				});
 	}
 
 	@Override
@@ -662,7 +684,7 @@ public class IxigoBotImpl implements IxigoBot {
 		_LOGGER.debug("Restarting CS2 match");
 		return this.sendCs2RconCommand("mp_restartgame 5");
 	}
-	
+
 	private Mono<Boolean> sendCs2RconCommand(String cmd) {
 		var cs2Rcon = new Cs2InputModel();
 		cs2Rcon.setCs2Input(cmd);

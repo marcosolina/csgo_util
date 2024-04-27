@@ -76,7 +76,7 @@ public class IxiGoDiscordListener extends ListenerAdapter {
 		case BALANCE:
 			// @formatter:off
 			channel.sendMessage("On it").queue();
-			ixigoBot.balanceTheTeams()
+			ixigoBot.balanceTheTeamsCs2()
 				.onErrorContinue((e, o) -> {
 					channel.sendMessage(e.getMessage()).queue();
 				}).subscribe(status -> {
@@ -93,8 +93,8 @@ public class IxiGoDiscordListener extends ListenerAdapter {
 			ixigoBot.restartCsgoMatch().subscribe(b -> channel.sendMessage(b ? "Done" : "Sorry, I was not able to do that").queue());
 			break;
 		case MOVE_TO_CHANNEL:
-			ixigoBot.moveDiscordUsersInTheAppropriateChannel();
 			channel.sendMessage("On it").queue();
+			ixigoBot.moveDiscordUsersInTheAppropriateChannelCs2().subscribe(b -> channel.sendMessage(b ? "Done" : "Sorry, I was not able to do that").queue());
 			break;
 		case HELP:
 			channel.sendMessage(listOfCommandsMessage().toString()).queue();

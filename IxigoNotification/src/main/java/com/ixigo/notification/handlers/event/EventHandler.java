@@ -55,8 +55,8 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 		return Mono.just(new ResponseEntity<Void>(HttpStatus.OK));
 	}
 	
-	private void subscriberToSendNotification(boolean status) {
-		_LOGGER.debug(status ? "Notification sent" : "Notification not sent");
+	private void subscriberToSendNotification(Boolean status) {
+		_LOGGER.debug(status != null && status ? "Notification sent" : "Notification not sent");
 	}
 
 	

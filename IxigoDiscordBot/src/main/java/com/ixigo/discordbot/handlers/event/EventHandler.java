@@ -46,7 +46,7 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 						.setDescription(msg)
 						.setThumbnail("https://marco.selfip.net/ixigoui/jointheserver/ixigo-logo.png")
 						.setColor(new Color(42, 255, 137))
-						.addField(new MessageEmbed.Field("", "Have fun!!!", false))
+						.addField(new MessageEmbed.Field("", "Balance bot is back!!!", false))
 						.build();
 				botService.sendEmbedMessageToGeneralChat(me);
 			}).start();
@@ -66,6 +66,7 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 			case DEM_FILES_PROCESSED:
 				r = () -> botService.balanceMembersInVoiceChannel().thenReturn(true);
 				break;
+				/*
 			case WARMUP_START:
 				r = () -> botService.warmUpBalanceTeamApi().subscribe(status -> _LOGGER.debug("Warmup status " + status.toString()));
 				break;
@@ -79,6 +80,26 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 							return botService.restartCsgoMatch();
 						})
 						.subscribe(status -> _LOGGER.debug("Teams balanced"))
+					;
+					// @formatter:on
+				};
+				break;
+				*/
+			case WARMUP_END:
+				r = () -> {
+					// @formatter:off
+					botService.kickTheBotsCs2()
+						.then(botService.balanceTheTeamsCs2())
+						.flatMap(status -> botService.moveDiscordUsersInTheAppropriateChannelCs2())
+						.flatMap(staus -> {
+							try {
+								Thread.sleep(10000);
+							} catch (InterruptedException e) {
+								_LOGGER.error(e.getMessage());
+							}
+							return botService.restartCs2Match();
+						})
+						.subscribe(status -> _LOGGER.debug("CS2 Teams balanced"))
 					;
 					// @formatter:on
 				};

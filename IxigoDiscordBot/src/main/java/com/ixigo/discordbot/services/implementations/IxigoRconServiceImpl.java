@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import com.google.common.base.Strings;
 import com.ixigo.discordbot.config.properties.CsgoServerProps;
 import com.ixigo.discordbot.config.properties.RconApiEndPoints;
+import com.ixigo.discordbot.config.properties.ServerHelperEndPoints;
 import com.ixigo.discordbot.constants.ErrorCodes;
 import com.ixigo.discordbot.enums.TeamType;
 import com.ixigo.discordbot.services.interfaces.IxigoRconService;
@@ -27,6 +28,7 @@ import com.ixigo.models.rest.RestUser;
 import com.ixigo.playersmanagercontract.models.rest.RestTeams;
 import com.ixigo.rconapi.models.rest.RestRconRequest;
 import com.ixigo.rconapi.models.rest.RestRconResponse;
+import com.ixigo.serverhelper.models.rest.Cs2InputModel;
 
 import reactor.core.publisher.Mono;
 
@@ -38,6 +40,8 @@ public class IxigoRconServiceImpl implements IxigoRconService {
 	private RconApiEndPoints endPoints;
 	@Autowired
 	private CsgoServerProps csgoSrvProps;
+	@Autowired
+	private ServerHelperEndPoints serverHelperEndPoints;
 
 	@Override
 	public Mono<Map<TeamType, List<RestUser>>> getCurrentActivePlayersOnTheIxiGoServer() throws IxigoException {
@@ -128,5 +132,21 @@ public class IxigoRconServiceImpl implements IxigoRconService {
 		rcon.setRconPass(csgoSrvProps.getRconPassword());
 		rcon.setRconCmd(cmd);
 		return rcon;
+	}
+
+	@Override
+	public Mono<Boolean> sendCs2Rcon(Cs2InputModel cmd) throws IxigoException {
+		_LOGGER.debug("Inside IxigoRconServiceImpl.sendCs2Rcon");
+		_LOGGER.debug("Sending CS2 command: " + cmd.toString());
+		
+		try {
+			URL url = new URL(serverHelperEndPoints.getPostCs2input());
+			var resp = webClient.performPostRequest(Void.class, url, Optional.of(cmd));
+			return resp.map(r -> r.getStatusCode().is2xxSuccessful());
+		} catch (MalformedURLException e) {
+			_LOGGER.error(e.getMessage());
+			e.printStackTrace();
+			throw new IxigoException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(), ErrorCodes.GENERIC_ERROR);
+		}
 	}
 }

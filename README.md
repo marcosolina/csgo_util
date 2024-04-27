@@ -1,18 +1,22 @@
 # IxiGo Util
 
+## :warning: **This project is still in development.** :warning:
+
+This project was created 4 years ago for CSGO servers. With CS2 few things have changed, so I'm updating the project to work with the new version of the game.
+
 ![Rcon UI](./misc/pictures/ixigo-logo.png)
 
 This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use every week and we wanted to enhance our gaming experience with the automation of few tasks, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
 
 ## Technologies Utilised
 
-|                                           |                                                          |                                                                      |
-| ----------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------- |
-| [Java](https://www.oracle.com/java/)      | [Spring Boot](https://spring.io/projects/spring-boot)    | [Spring Cloud](https://spring.io/projects/spring-cloud)              |
-| [Thymeleaf](https://www.thymeleaf.org/)   | [HTML](https://en.wikipedia.org/wiki/HTML)               | [Javascript](https://en.wikipedia.org/wiki/JavaScript)               |
-| [jQuery](https://jquery.com/)             | [Bootstrap](https://getbootstrap.com/)                   | [Docker](https://www.docker.com/)                                    |
-| [PostgreSQL](https://www.postgresql.org/) | [JPA](https://en.wikipedia.org/wiki/Jakarta_Persistence) | [C#](<https://en.wikipedia.org/wiki/C_Sharp_(programming_language)>) |
-| [React JS](https://react.dev/)            |                                                          |                                                                      |
+|                                               |                                                          |                                                                      |
+| --------------------------------------------- | -------------------------------------------------------- | -------------------------------------------------------------------- |
+| [Java](https://www.oracle.com/java/)          | [Spring Boot](https://spring.io/projects/spring-boot)    | [Spring Cloud](https://spring.io/projects/spring-cloud)              |
+| [React](https://react.dev/)                   | [HTML](https://en.wikipedia.org/wiki/HTML)               | [Javascript](https://en.wikipedia.org/wiki/JavaScript)               |
+| [TypeScript](https://www.typescriptlang.org/) | [Material UI](https://mui.com/)                          | [Docker](https://www.docker.com/)                                    |
+| [PostgreSQL](https://www.postgresql.org/)     | [JPA](https://en.wikipedia.org/wiki/Jakarta_Persistence) | [C#](<https://en.wikipedia.org/wiki/C_Sharp_(programming_language)>) |
+| And others                                    |                                                          |                                                                      |
 
 ## Requirements
 
@@ -54,7 +58,7 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ![Services flow](./misc/pictures/Services_Flow_Diagram.png)
 
-## Start With Docker Compose
+## Start With Docker Compose :warning: work in progress, I need to add the missing notification service images :warning:
 
 ![Docker Compose](./misc/pictures/docker_logo200.png)
 

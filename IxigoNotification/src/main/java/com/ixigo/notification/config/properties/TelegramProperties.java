@@ -9,6 +9,7 @@ public class TelegramProperties {
 	private String token;
 	private String chatGroupId;
 	private boolean enabled;
+	private boolean allowNotificationsOnlyOnMonday;
 
 	public String getToken() {
 		return token;
@@ -32,6 +33,14 @@ public class TelegramProperties {
 
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public boolean isAllowNotificationsOnlyOnMonday() {
+		return allowNotificationsOnlyOnMonday;
+	}
+
+	public void setAllowNotificationsOnlyOnMonday(boolean allowNotificationsOnlyOnMonday) {
+		this.allowNotificationsOnlyOnMonday = allowNotificationsOnlyOnMonday;
 	}
 
 }

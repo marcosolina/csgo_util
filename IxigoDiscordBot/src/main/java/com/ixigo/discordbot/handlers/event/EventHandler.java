@@ -46,7 +46,7 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 						.setDescription(msg)
 						.setThumbnail("https://marco.selfip.net/ixigoui/jointheserver/ixigo-logo.png")
 						.setColor(new Color(42, 255, 137))
-						.addField(new MessageEmbed.Field("", "Have fun!!!", false))
+						.addField(new MessageEmbed.Field("", "Balance bot is back!!!", false))
 						.build();
 				botService.sendEmbedMessageToGeneralChat(me);
 			}).start();

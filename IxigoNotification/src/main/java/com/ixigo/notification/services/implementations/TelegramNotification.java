@@ -2,6 +2,7 @@ package com.ixigo.notification.services.implementations;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.time.DayOfWeek;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 
 import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
+import com.ixigo.library.utils.DateUtils;
 import com.ixigo.notification.config.properties.TelegramProperties;
 import com.ixigo.notification.constants.ErrorCodes;
 import com.ixigo.notification.services.interfaces.NotificationService;
@@ -25,11 +27,17 @@ public class TelegramNotification implements NotificationService {
 	private TelegramProperties props;
 	@Autowired
 	private IxigoWebClientUtils webClient;
-	
+
 	@Override
 	public Mono<Boolean> sendNotification(String title, String message) {
 		if (!props.isEnabled()) {
 			_LOGGER.info("Telegram notifications disabled");
+			_LOGGER.info(String.format("Title: %s Message: %s", title, message));
+			return Mono.just(true);
+		}
+
+		if (props.isAllowNotificationsOnlyOnMonday() && DateUtils.getCurrentUtcDate().getDayOfWeek() != DayOfWeek.MONDAY) {
+			_LOGGER.info("Telegram notifications allowed on Monday");
 			_LOGGER.info(String.format("Title: %s Message: %s", title, message));
 			return Mono.just(true);
 		}

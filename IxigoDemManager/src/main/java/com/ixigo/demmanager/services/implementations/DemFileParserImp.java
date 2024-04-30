@@ -221,7 +221,7 @@ public class DemFileParserImp implements DemFileParser {
 				errorLists.add(new ParsingError(f.getAbsolutePath(), error.getMessage()));
 				
 				this.notificationService.sendParsingCompleteNotification(
-					String.format("Error while parsing file: $s", f.getName()),
+					String.format("Error while parsing file: %s", f.getName()),
 					error.getMessage())
 						.subscribe(b -> {});				
 				var demStats = new SvcNodeJsParseOutput();
@@ -518,9 +518,12 @@ public class DemFileParserImp implements DemFileParser {
 		var dao = new Dem_process_queueDao();
 		Map<String,String> whereClause = new HashMap<>();
 		whereClause.put(Dem_process_queueDto.Fields.process_status, DemProcessStatus.PROCESS_FAILED.toString());
-		
+		_LOGGER.debug("Looking for failed failes");
 		return this.genericRepo.getAll(dao.getClass(), Optional.of(whereClause))
-			.flatMap(dto -> this.genericRepo.delete(dao.getClass(), dto))
+			.flatMap(dto -> {
+				_LOGGER.debug("Deleting file: " + dto.getFile_name());
+				return this.genericRepo.delete(dao.getClass(), dto);
+			})
 			.collectList()
 			.map(l -> l.stream().allMatch(b -> b == true));
 	}

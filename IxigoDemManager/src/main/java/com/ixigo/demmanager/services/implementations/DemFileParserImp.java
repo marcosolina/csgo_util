@@ -6,7 +6,10 @@ import java.nio.file.Files;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -22,6 +25,7 @@ import com.ixigo.demmanager.constants.ErrorCodes;
 import com.ixigo.demmanager.enums.DemProcessStatus;
 import com.ixigo.demmanager.mappers.SvcMapper;
 import com.ixigo.demmanager.misc.Utils;
+import com.ixigo.demmanager.models.database.Dem_process_queueDao;
 import com.ixigo.demmanager.models.database.Dem_process_queueDto;
 import com.ixigo.demmanager.models.database.Match_statsDao;
 import com.ixigo.demmanager.models.database.Match_statsDto;
@@ -94,6 +98,11 @@ public class DemFileParserImp implements DemFileParser {
 	@Autowired
 	private IxigoEventSender eventSender;
 
+	@Override
+	public Mono<HttpStatus> reprocessFailures() throws IxigoException {
+		return this.clearFailedProcessedFiles().flatMap(b -> this.queueAndProcessNewFiles());
+	}
+	
 	@Override
 	public Mono<HttpStatus> processQueuedFiles() throws IxigoException {
 		_LOGGER.trace("Inside DemFileParserImp.processQueuedFiles");
@@ -210,6 +219,11 @@ public class DemFileParserImp implements DemFileParser {
 			}).onErrorResume(error -> {
 				_LOGGER.error(String.format("Error while processing %s, msg: %s", f.getAbsolutePath(), error.getMessage()));
 				errorLists.add(new ParsingError(f.getAbsolutePath(), error.getMessage()));
+				
+				this.notificationService.sendParsingCompleteNotification(
+					String.format("Error while parsing file: $s", f.getName()),
+					error.getMessage())
+						.subscribe(b -> {});				
 				var demStats = new SvcNodeJsParseOutput();
 				setMapNameAndTime(f, demStats);
 				return Mono.just(Tuples.of(f.getAbsolutePath(), demStats));
@@ -311,10 +325,10 @@ public class DemFileParserImp implements DemFileParser {
 				if(statusOk) {
 					countProcessedFiles.incrementAndGet();
 				}else {
-					_LOGGER.error(String.format("Deleting: %s", fileName));
+					_LOGGER.error(String.format("Process failed: %s", fileName));
 					//f.delete(); TODO should I delete these files?
 				}
-				return setFileProcessed(f, statusOk ? DemProcessStatus.PROCESSED : DemProcessStatus.DELETED).thenReturn(fileName);
+				return setFileProcessed(f, statusOk ? DemProcessStatus.PROCESSED : DemProcessStatus.PROCESS_FAILED).thenReturn(fileName);
 			}).map(fileName ->{ // Simple info
 				_LOGGER.debug(String.format("Processed file %s", fileName));
 				return fileName;
@@ -498,6 +512,17 @@ public class DemFileParserImp implements DemFileParser {
 			dto.setProcessed_on(DateUtils.getCurrentUtcDateTime());
 			return repoQueue.insertOrUpdate(dto);
 		});
+	}
+	
+	private Mono<Boolean> clearFailedProcessedFiles() {
+		var dao = new Dem_process_queueDao();
+		Map<String,String> whereClause = new HashMap<>();
+		whereClause.put(Dem_process_queueDto.Fields.process_status, DemProcessStatus.PROCESS_FAILED.toString());
+		
+		return this.genericRepo.getAll(dao.getClass(), Optional.of(whereClause))
+			.flatMap(dto -> this.genericRepo.delete(dao.getClass(), dto))
+			.collectList()
+			.map(l -> l.stream().allMatch(b -> b == true));
 	}
 	
 	private Mono<Boolean> triggerFunctions(){

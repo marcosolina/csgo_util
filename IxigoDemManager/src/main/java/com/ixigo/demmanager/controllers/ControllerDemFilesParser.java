@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ixigo.demmanager.commands.demfilesparser.CmdQueueAndProcessFiles;
+import com.ixigo.demmanager.commands.demfilesparser.CmdProcessFailures;
 import com.ixigo.demmanager.commands.demfilesparser.CmdProcessQueuedFiles;
+import com.ixigo.demmanager.commands.demfilesparser.CmdQueueAndProcessFiles;
 import com.ixigo.library.mediators.web.interfaces.WebMediator;
 
 import io.swagger.annotations.ApiOperation;
@@ -41,5 +42,12 @@ public class ControllerDemFilesParser {
 	public Mono<ResponseEntity<Void>> processAllNewFiles() {
 		_LOGGER.trace("Inside ControllerDemFilesParser.processAllNewFiles");
 		return mediator.send(new CmdQueueAndProcessFiles());
+	}
+	
+	@PostMapping("/failed")
+	@ApiOperation(value = "It will re-process the failures")
+	public Mono<ResponseEntity<Void>> processFailures() {
+		_LOGGER.trace("Inside ControllerDemFilesParser.processFailures");
+		return mediator.send(new CmdProcessFailures());
 	}
 }

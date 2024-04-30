@@ -21,6 +21,8 @@ public interface DemFileParser {
     public Mono<HttpStatus> processQueuedFiles() throws IxigoException;
     
     public Mono<HttpStatus> queueAndProcessNewFiles() throws IxigoException;
+    
+    public Mono<HttpStatus> reprocessFailures() throws IxigoException;
 
     /**
      * It will return a list of all the known users

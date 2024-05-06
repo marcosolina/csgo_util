@@ -93,7 +93,7 @@ public class EventHandler implements WebCommandHandler<EventReceivedCmd, Void> {
 						.flatMap(status -> botService.moveDiscordUsersInTheAppropriateChannelCs2())
 						.flatMap(staus -> {
 							try {
-								Thread.sleep(10000);
+								Thread.sleep(20000);
 							} catch (InterruptedException e) {
 								_LOGGER.error(e.getMessage());
 							}

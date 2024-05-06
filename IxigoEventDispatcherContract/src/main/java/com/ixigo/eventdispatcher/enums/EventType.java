@@ -8,9 +8,9 @@ package com.ixigo.eventdispatcher.enums;
  */
 public enum EventType {
     // @formatter:off
-    ROUND_END("Round End"),
-    ROUND_START("Round Started"),
-    CS_WIN_PANEL_MATCH("End Map"),
+    ROUND_END("round_end"),
+    ROUND_START("round_start"),
+    CS_WIN_PANEL_MATCH("cs_win_panel_match"),
     WARMUP_START("round_announce_warmup"),
     WARMUP_END("xxx"),
     AZ_START_DEPLOY_VM("start_deploy_vm"),

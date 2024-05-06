@@ -23,7 +23,7 @@ public class IxigoPlugin : BasePlugin
     public HookResult OnWinPanleMatch(EventCsWinPanelMatch @event, GameEventInfo info)
     {
         Logger.LogInformation("Event triggered: cs_win_panel_match");
-        WriteEventToFile("End Map");
+        WriteEventToFile("cs_win_panel_match");
         return HookResult.Continue;
     }
 
@@ -31,7 +31,7 @@ public class IxigoPlugin : BasePlugin
     public HookResult OnRoundStart(EventRoundStart @event, GameEventInfo info)
     {
         Logger.LogInformation("Event triggered: round_start");
-        WriteEventToFile("Round Started");
+        WriteEventToFile("round_start");
         return HookResult.Continue;
     }
 
@@ -39,7 +39,7 @@ public class IxigoPlugin : BasePlugin
     public HookResult OnRoundEnd(EventRoundEnd @event, GameEventInfo info)
     {
         Logger.LogInformation("Event triggered: round_end");
-        WriteEventToFile("Round End");
+        WriteEventToFile("round_end");
         return HookResult.Continue;
     }
 

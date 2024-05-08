@@ -311,7 +311,7 @@ SELECT
     prs.round,
     SUM(CASE WHEN he.attacker_team != he.victim_team THEN he.damageHealth ELSE 0 END) as total_damage_health,
     SUM(CASE WHEN he.attacker_team != he.victim_team THEN he.damageArmour ELSE 0 END) as total_damage_armour,
-    SUM(CASE WHEN he.weapon = 'hegrenade' AND he.attacker_team != he.victim_team THEN he.damageHealth ELSE 0 END) as he_damage,
+    SUM(CASE WHEN he.weapon = 'weapon_hegrenade' AND he.attacker_team != he.victim_team THEN he.damageHealth ELSE 0 END) as he_damage,
     SUM(CASE WHEN he.weapon = 'inferno' AND he.attacker_team != he.victim_team THEN he.damageHealth ELSE 0 END) as fire_damage,
     SUM(CASE WHEN he.weapon = 'flashbang' AND he.attacker_team != he.victim_team THEN 1 ELSE 0 END) as opponents_flashed,
     SUM(CASE WHEN he.weapon = 'flashbang' AND he.attacker_team != he.victim_team THEN he.blindTime ELSE 0 END) as opponent_blindtime,

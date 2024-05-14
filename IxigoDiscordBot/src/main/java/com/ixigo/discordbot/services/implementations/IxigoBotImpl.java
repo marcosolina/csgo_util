@@ -667,12 +667,13 @@ public class IxigoBotImpl implements IxigoBot {
 
 	@Override
 	public Mono<Boolean> kickTheBotsCs2() throws IxigoException {
-		_LOGGER.debug("Kicking CS2 bots");
+		_LOGGER.trace("Kicking CS2 bots");
 		
 		return getBotConfig(BotConfigKey.KICK_BOTS)
 				.map(config -> Boolean.parseBoolean(config.getConfigVal()))
 				.flatMap(configActive -> {
 					if (configActive) {
+						_LOGGER.debug("Kicking CS2 bots");
 						return this.sendCs2RconCommand("bot_kick");
 					}
 					return Mono.just(true);

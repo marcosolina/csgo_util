@@ -69,7 +69,7 @@ public class IxigoPlugin : BasePlugin
             if (stringList.Contains(p.SteamID.ToString()))
             {
                 p.ChangeTeam(CsTeam.Terrorist);
-                Server.PrintToChatAll(FormatAdminMessage($"{ChatColors.Blue}[Plugin] Player {p.PlayerName} moved to T"));
+                Server.PrintToChatAll(FormatAdminMessage($"{ChatColors.Red}[Plugin] Player {p.PlayerName} moved to T"));
             }
             else
             {
@@ -77,6 +77,10 @@ public class IxigoPlugin : BasePlugin
                 Server.PrintToChatAll(FormatAdminMessage($"{ChatColors.Blue}[Plugin] Player {p.PlayerName} moved to CT"));
             }
         });
+
+        int seconds = 10;
+        Server.ExecuteCommand($"mp_restartgame {seconds}");
+        Server.PrintToChatAll(FormatAdminMessage($"{ChatColors.Purple}[Plugin] restarting match in {seconds} seconds"));
     }
 
 

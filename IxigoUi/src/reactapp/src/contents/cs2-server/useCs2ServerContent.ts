@@ -3,8 +3,8 @@ import { IMapResponse } from "../../services/rcon/interfaces";
 
 const CS2_MAPS: IMapResponse[] = [
   {
-    is_workshop_map: true,
-    map_name: "Assembly",
+    is_workshop_map: false,
+    map_name: "de_assembly",
     workshop_id: "3071005299",
     isCs2Map: true,
   },
@@ -87,8 +87,8 @@ const CS2_MAPS: IMapResponse[] = [
     isCs2Map: true,
   },
   {
-    is_workshop_map: true,
-    map_name: "Thera",
+    is_workshop_map: false,
+    map_name: "de_thera",
     workshop_id: "3121217565",
     isCs2Map: true,
   },
@@ -99,8 +99,19 @@ const CS2_MAPS: IMapResponse[] = [
     isCs2Map: true,
   },
   {
-    is_workshop_map: true,
-    map_name: "Memento",
+    is_workshop_map: false,
+    map_name: "de_memento",
+    workshop_id: "3165559377",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "ar_pool_day",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_mills",
     workshop_id: "3165559377",
     isCs2Map: true,
   },
@@ -198,6 +209,6 @@ const CS2_MAPS: IMapResponse[] = [
 
 export const useCs2ServerContent = (): IUseCs2ServerContentResult => {
   return {
-    maps: CS2_MAPS,
+    maps: CS2_MAPS.sort((a, b) => a.map_name.localeCompare(b.map_name)),
   };
 };

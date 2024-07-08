@@ -141,6 +141,7 @@ public class IxigoRconServiceImpl implements IxigoRconService {
 		
 		try {
 			URL url = new URL(serverHelperEndPoints.getPostCs2input());
+			_LOGGER.debug("Sending CS2 command to url: " + url.toString());
 			var resp = webClient.performPostRequest(Void.class, url, Optional.of(cmd));
 			return resp.map(r -> r.getStatusCode().is2xxSuccessful());
 		} catch (MalformedURLException e) {

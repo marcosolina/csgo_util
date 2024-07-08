@@ -24,10 +24,10 @@ DOCKER_PSQL=$WORKSPACE_FOLDER/Scripts/Docker/PostgreSql
 ssh -t -t $SSH_ADDRESS_1 '
 export BASH_ENV=/etc/bash.bashrc && docker stop $(docker ps -a -q) && docker system prune --all --volumes --force && exit
 '
-ssh -t -t $SSH_ADDRESS_1 '
-export BASH_ENV=/etc/bash.bashrc && docker stop $(docker ps -a -q) && docker system prune --all --volumes --force && rm -rf /opt/ixigo/Docker/PostgreSql && exit
-'
-scp -r $DOCKER_PSQL $SSH_ADDRESS_1:"/opt/ixigo/Docker"
+#ssh -t -t $SSH_ADDRESS_1 '
+#export BASH_ENV=/etc/bash.bashrc && docker stop $(docker ps -a -q) && docker system prune --all --volumes --force && rm -rf /opt/ixigo/Docker/PostgreSql && exit
+#'
+#scp -r $DOCKER_PSQL $SSH_ADDRESS_1:"/opt/ixigo/Docker"
 
 ssh -t -t $SSH_ADDRESS_1 '
 export BASH_ENV=/etc/bash.bashrc && docker-compose -f /opt/ixigo/Docker/PostgreSql/docker-compose.yml up -d && exit

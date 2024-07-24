@@ -55,6 +55,7 @@ public class IxigoPlugin : BasePlugin
     [CommandHelper(1, "<comma separate list of steam IDs>")]
     public void OnSwapCommand(CCSPlayerController? caller, CommandInfo info)
     {
+        Logger.LogInformation($"Executing ixigo_move: {info.GetArg(1)}");
 
         var players = new Target("@all").GetTarget(info.CallingPlayer)?.Players;
         var stringList = info.GetArg(1).Split(',').ToList();
@@ -82,7 +83,6 @@ public class IxigoPlugin : BasePlugin
         Server.ExecuteCommand($"mp_restartgame {seconds}");
         Server.PrintToChatAll(FormatAdminMessage($"{ChatColors.Purple}[Plugin] restarting match in {seconds} seconds"));
     }
-
 
     internal static string FormatMessage(string message) => $" {ChatColors.Lime}[BasicAdmin]{ChatColors.Default} {message}";
     private string FormatAdminMessage(string message) => $" [Admin] {message}";

@@ -95,7 +95,10 @@ public class DemFilesServiceImp implements DemFilesService {
 			if(fileSent) {
 				try {
 					_LOGGER.info(String.format("Uploaded dem file: %s", demFile.getFileName()));
-					Files.delete(demFile);
+					if(demProps.getDeleteFileAfterUpload()) {						
+						_LOGGER.info(String.format("Deleting dem file: %s", demFile.getFileName()));
+						Files.delete(demFile);
+					}
 					fileDeleted = true;
 				} catch (IOException e) {
 					_LOGGER.error(e.getMessage());

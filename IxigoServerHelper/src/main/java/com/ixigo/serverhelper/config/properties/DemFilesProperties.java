@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 public class DemFilesProperties {
 	private Path demFilesFolderFullPath;
 	private Boolean uploadFilesOnlyIfMonday;
+	private Boolean deleteFileAfterUpload;
 
 	public Path getDemFilesFolderFullPath() {
 		return demFilesFolderFullPath;
@@ -27,4 +28,11 @@ public class DemFilesProperties {
 		this.uploadFilesOnlyIfMonday = uploadFilesOnlyIfMonday;
 	}
 
+	public Boolean getDeleteFileAfterUpload() {
+		return deleteFileAfterUpload;
+	}
+
+	public void setDeleteFileAfterUpload(Boolean deleteFileAfterUpload) {
+		this.deleteFileAfterUpload = deleteFileAfterUpload;
+	}
 }

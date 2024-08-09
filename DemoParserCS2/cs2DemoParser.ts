@@ -115,6 +115,49 @@ function fromWinnerSideStringToNumber(winnerSide: any): number {
   }
 }
 
+function mapHitGroup(hitGroup: any): number {
+  /*
+  public enum Hitgroup
+  {
+      Generic = 0,
+      Head = 1,
+      Chest = 2,
+      Stomach = 3,
+      LeftArm = 4,
+      RightArm = 5,
+      LeftLeg = 6,
+      RightLeg = 7,
+      Gear = 10
+  }
+  */
+  if (hitGroup === undefined || hitGroup === null) {
+    return 0;
+  }
+  if (typeof hitGroup === "number") {
+    return hitGroup;
+  }
+  switch (hitGroup.toLowerCase()) {
+    case "head":
+      return 1;
+    case "chest":
+      return 2;
+    case "stomach":
+      return 3;
+    case "leftarm":
+      return 4;
+    case "rightarm":
+      return 5;
+    case "leftleg":
+      return 6;
+    case "rightleg":
+      return 7;
+    case "gear":
+      return 10;
+    default:
+      return 0;
+  }
+}
+
 function fromReasonEndStringToNumber(reasonEnd: any): number {
   if (typeof reasonEnd === "number") {
     return reasonEnd;
@@ -480,7 +523,7 @@ let allRoundHitEvents: IRoundHitEvents[] = hitEvents.map(
     round: findRoundForTick(event.tick),
     weapon: "weapon_" + event.weapon,
     victimSteamId: event.user_steamid,
-    hitGroup: event.hitgroup,
+    hitGroup: mapHitGroup(event.hitgroup),
     damageHealth: event.dmg_health,
     damageArmour: event.dmg_armor,
     blindTime: undefined,

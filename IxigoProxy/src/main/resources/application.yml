@@ -8,8 +8,8 @@ spring:
     name: ixigo-proxy                                                                         # Do not change this
   servlet:
     multipart:
-      max-file-size: 200MB                                                                    # To be able to recevie HTTP request with big files
-      max-request-size: 200MB                                                                 # To be able to recevie HTTP request with big files
+      max-file-size: 500MB                                                                    # To be able to recevie HTTP request with big files
+      max-request-size: 500MB                                                                 # To be able to recevie HTTP request with big files
 
 management:
   endpoints:

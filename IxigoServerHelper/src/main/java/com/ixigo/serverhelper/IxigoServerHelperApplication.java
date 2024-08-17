@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import com.ixigo.serverhelper.services.interfaces.DemFilesService;
 import com.ixigo.serverhelper.services.interfaces.DnsUpdater;
 
 @SpringBootApplication
@@ -24,6 +25,8 @@ public class IxigoServerHelperApplication {
 	}
 	@Autowired
     private DnsUpdater updater;
+	@Autowired
+	private DemFilesService demFileService;
 
     @Bean
     public CommandLineRunner commandLineRunner(ApplicationContext ctx) {
@@ -31,6 +34,7 @@ public class IxigoServerHelperApplication {
             @Override
             public void run(String... args) throws Exception {
             	updater.updateDnsEntry();
+            	demFileService.postLastDemFiles(false);
             }
         };
     }

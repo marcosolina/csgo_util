@@ -2,12 +2,15 @@ package com.ixigo.serverhelper.services.implementations;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -43,6 +46,7 @@ import reactor.util.function.Tuples;
 
 public class DemFilesServiceImp implements DemFilesService {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DemFilesServiceImp.class);
+	private static Map<String, Boolean> filesAlreadySent = new HashMap<String, Boolean>();
 
 	@Autowired
 	private DemFilesProperties demProps;
@@ -54,6 +58,7 @@ public class DemFilesServiceImp implements DemFilesService {
 	private IxigoWebClientUtils webClient;
 	@Autowired
 	private IxigoMessageResource msgSource;
+	
 
 	@Override
 	public void postLastDemFiles(boolean isShutDown) throws IxigoException {
@@ -63,6 +68,10 @@ public class DemFilesServiceImp implements DemFilesService {
 		.filter(path -> {
 			LocalDate fileDate = DateUtils.fromStringToLocalDate(path.getFileName().toString().split("-")[1], DateFormats.FILE_NAME_JUST_DATE);
 			return !demProps.getUploadFilesOnlyIfMonday() || fileDate.getDayOfWeek() == DayOfWeek.MONDAY;
+		})
+		.filter(path ->{
+			Boolean alreadySent = filesAlreadySent.getOrDefault(path.getFileName().toString(), false);
+			return !alreadySent;
 		})
 		// Sort descending
 		.sort((o1, o2) -> {
@@ -94,10 +103,14 @@ public class DemFilesServiceImp implements DemFilesService {
 			boolean fileDeleted = false;
 			if(fileSent) {
 				try {
-					_LOGGER.info(String.format("Uploaded dem file: %s", demFile.getFileName()));
+					String fileName = demFile.getFileName().toString();
+					_LOGGER.info(String.format("Uploaded dem file: %s", fileName));
+					
+					filesAlreadySent.put(fileName, true);
 					if(demProps.getDeleteFileAfterUpload()) {						
-						_LOGGER.info(String.format("Deleting dem file: %s", demFile.getFileName()));
+						_LOGGER.info(String.format("Deleting dem file: %s", fileName));
 						Files.delete(demFile);
+						filesAlreadySent.remove(fileName);
 					}
 					fileDeleted = true;
 				} catch (IOException e) {
@@ -155,7 +168,7 @@ public class DemFilesServiceImp implements DemFilesService {
 
 	private Mono<ResponseEntity<Void>> triggerParseNewDem() {
 		try {
-			URL url = new URL(demManagerEndPoints.getPostParseQueuedFiles());
+			URL url = URI.create(demManagerEndPoints.getPostParseQueuedFiles()).toURL();
 			_LOGGER.debug(String.format("Triggering the DEM parser at URL: %s", url.toString()));
 			return webClient.performRequestNoExceptions(Void.class, HttpMethod.POST, url, Optional.empty(), Optional.empty(), Optional.empty(), Optional.empty());
 		} catch (MalformedURLException e) {
@@ -178,7 +191,7 @@ public class DemFilesServiceImp implements DemFilesService {
 	private Mono<ResponseEntity<Void>> postDemFile(Path path) {
 		try {
 			// @formatter:off
-			URL url = new URL(demManagerEndPoints.getPostDemFile());
+			URL url = URI.create(demManagerEndPoints.getPostDemFile()).toURL();
 			return getResource(path)
 			.flatMap(resource -> {
 				String fileName = path.getFileName().toString();

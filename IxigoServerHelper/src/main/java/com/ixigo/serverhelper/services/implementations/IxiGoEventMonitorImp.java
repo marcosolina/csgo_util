@@ -1,6 +1,7 @@
 package com.ixigo.serverhelper.services.implementations;
 
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
 import java.util.Optional;
 
@@ -46,7 +47,7 @@ public class IxiGoEventMonitorImp implements IxiGoEventMonitor {
         	try {
         		IncomingEventHttpRequest event = new IncomingEventHttpRequest();
         		event.setEventName(oldValue);
-        		URL url = new URL(eventDispatcherProps.getPostEvent());
+        		URL url = URI.create(eventDispatcherProps.getPostEvent()).toURL();
         		_LOGGER.debug(url.toString());
         		// @formatter:off
         		webClient.performRequestNoExceptions(

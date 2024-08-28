@@ -19,8 +19,6 @@ import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 import com.ixigo.serverhelper.config.properties.DnsProperties;
 import com.ixigo.serverhelper.services.interfaces.DnsUpdater;
 
-import reactor.core.publisher.Mono;
-
 public class DyndnsUpdater implements DnsUpdater {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DyndnsUpdater.class);
 
@@ -31,13 +29,13 @@ public class DyndnsUpdater implements DnsUpdater {
 
 	@Override
 	@Scheduled(cron = "0 */10 * * * *") // Every 5 minutes
-	public Mono<Boolean> updateDnsEntry() {
+	public void updateDnsEntry() {
 		if (props.isEnabled()) {
 			try {
 				URL urlMyIp = new URL("https://api.my-ip.io/ip");
 
 			// @formatter:off
-			return webClient.performGetRequestNoExceptions(String.class, urlMyIp, Optional.empty(), Optional.empty())
+			webClient.performGetRequestNoExceptions(String.class, urlMyIp, Optional.empty(), Optional.empty())
 				.map(resp -> resp.getBody())
 				.flatMap(strIp -> {
 					try {
@@ -59,9 +57,8 @@ public class DyndnsUpdater implements DnsUpdater {
 					}
 	
 				})
-				.map(resp -> {
+				.subscribe(resp -> {
 					_LOGGER.info(String.format("DynDns response: %s - %s", resp.getStatusCode().toString(), resp.getBody()));
-					return resp.getStatusCode().is2xxSuccessful();
 				});
 			// @formatter:on
 
@@ -69,7 +66,6 @@ public class DyndnsUpdater implements DnsUpdater {
 				e.printStackTrace();
 			}
 		}
-		return Mono.just(false);
 	}
 
 }

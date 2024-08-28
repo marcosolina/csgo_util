@@ -21,8 +21,10 @@ mvn clean install -f $WORKSPACE_FOLDER/IxigoPlayersManagerContract/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoRconApiContract/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoServerHelperContract/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoNotificationContract/pom.xml
+
 mvn clean install -f $WORKSPACE_FOLDER/IxigoLibrary/pom.xml
 mvn clean install -f $WORKSPACE_FOLDER/IxigoParent/pom.xml
+
 mvn clean package -f $WORKSPACE_FOLDER/IxigoConfigServer/pom.xml
 mvn clean package -f $WORKSPACE_FOLDER/IxigoDemManager/pom.xml
 mvn clean package -f $WORKSPACE_FOLDER/IxigoDiscordBot/pom.xml

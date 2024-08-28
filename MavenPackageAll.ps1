@@ -1,13 +1,13 @@
 $toInstall = @(
     "IxigoEventDispatcherContract"
-    "IxigoLibrary"
-    "IxigoParent"
     "IxigoDemManagerContract"
     "IxigoDiscordBotContract"
     "IxigoPlayersManagerContract"
     "IxigoRconApiContract"
     "IxigoServerHelperContract"
     "IxigoNotificationContract"
+    "IxigoLibrary"
+    "IxigoParent"
 )
 
 $toPackage = @(

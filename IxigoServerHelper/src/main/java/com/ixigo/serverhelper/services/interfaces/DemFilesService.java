@@ -4,6 +4,7 @@ import com.ixigo.library.errors.IxigoException;
 import com.ixigo.serverhelper.models.svc.SvcServerMap;
 
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 /**
  * Interface to manage the dem files
@@ -18,7 +19,7 @@ public interface DemFilesService {
 	 * 
 	 * @throws MarcoException
 	 */
-	public void postLastDemFiles(boolean isShutDown) throws IxigoException;
+	public Mono<Boolean> postLastDemFiles(boolean isShutDown) throws IxigoException;
 
 	/**
 	 * It returns a list of available maps on this server

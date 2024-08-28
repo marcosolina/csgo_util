@@ -61,7 +61,7 @@ public class DemFilesServiceImp implements DemFilesService {
 	
 
 	@Override
-	public void postLastDemFiles(boolean isShutDown) throws IxigoException {
+	public Mono<Boolean> postLastDemFiles(boolean isShutDown) throws IxigoException {
 		// @formatter:off
 		var flux = getListOfFiles()
 		.filter(path -> path.getFileName().toString().endsWith(".dem"))
@@ -89,7 +89,7 @@ public class DemFilesServiceImp implements DemFilesService {
 		}
 		
 		// Skip small files (when no one is playing the map)
-		flux.filter(path -> getFileSizeInMegabyte(path) > 2)
+		return flux.filter(path -> getFileSizeInMegabyte(path) > 2)
 		.flatMap(path -> postDemFile(path).map(resp -> Tuples.of(path, resp)))
 		.map(tuple -> {
 			Path demFile = tuple.getT1();
@@ -121,13 +121,14 @@ public class DemFilesServiceImp implements DemFilesService {
 		})
 		.collectList()
 		.flatMap(list -> triggerParseNewDem())
-		.subscribe(resp -> {
+		.map(resp -> {
 			_LOGGER.info("Dem files sent");
 			if(resp.getStatusCode().is2xxSuccessful()) {
 				_LOGGER.info("Dem files process triggered succesfully");
 			}else {
 				_LOGGER.error("Not able to trigger the deb files process");
 			}
+			return resp.getStatusCode().is2xxSuccessful();
 		})
 		;
 		// @formatter:on

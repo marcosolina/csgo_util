@@ -13,6 +13,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 import com.ixigo.serverhelper.services.interfaces.DemFilesService;
 import com.ixigo.serverhelper.services.interfaces.DnsUpdater;
 
+import reactor.core.scheduler.Schedulers;
+
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableScheduling
@@ -33,10 +35,9 @@ public class IxigoServerHelperApplication {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
-            	updater.updateDnsEntry()
-            	    .map(b -> demFileService.postLastDemFiles(false))
-            	    .subscribe(b -> System.out.println("Command line runner completed"));
-            	;
+                demFileService.postLastDemFiles(false)
+                    .subscribeOn(Schedulers.parallel())
+            	    .subscribe(b -> updater.updateDnsEntry());
             }
         };
     }

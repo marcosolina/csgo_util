@@ -33,8 +33,10 @@ public class IxigoServerHelperApplication {
         return new CommandLineRunner() {
             @Override
             public void run(String... args) throws Exception {
-            	updater.updateDnsEntry();
-            	demFileService.postLastDemFiles(false);
+            	updater.updateDnsEntry()
+            	    .map(b -> demFileService.postLastDemFiles(false))
+            	    .subscribe(b -> System.out.println("Command line runner completed"));
+            	;
             }
         };
     }

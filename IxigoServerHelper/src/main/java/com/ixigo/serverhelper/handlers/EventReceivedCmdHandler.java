@@ -30,7 +30,7 @@ public class EventReceivedCmdHandler implements WebCommandHandler<EventReceivedC
 		case WARMUP_END:
 			new Thread(() -> {
 				service.postLastDemFiles(cmd.getEventReceived().getEventType() == EventType.SHUT_DOWN)
-				.subscribe(b -> LOGGER.debug("Post dem file resul: " + b));
+				.subscribe(b -> LOGGER.debug("Post dem file result: " + b));
 			}).start();
 			break;
 		default:

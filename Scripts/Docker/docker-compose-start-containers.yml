@@ -1,5 +1,3 @@
-version: "3.7"
-
 networks:
   ixigo:
     name: ixigo_network

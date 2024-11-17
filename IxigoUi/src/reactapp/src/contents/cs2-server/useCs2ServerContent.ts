@@ -205,6 +205,31 @@ const CS2_MAPS: IMapResponse[] = [
     workshop_id: "3070593234",
     isCs2Map: true,
   },
+  {
+    is_workshop_map: false,
+    map_name: "de_overpass",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_palais",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_basalt",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_edin",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_whistle",
+    isCs2Map: true,
+  },
 ];
 
 export const useCs2ServerContent = (): IUseCs2ServerContentResult => {

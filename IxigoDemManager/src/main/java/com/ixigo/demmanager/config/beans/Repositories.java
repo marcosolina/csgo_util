@@ -29,13 +29,13 @@ import io.r2dbc.spi.ConnectionFactory;
  */
 @Configuration
 public class Repositories {
-	@Autowired
-	private PostgresProps postrgresProps;
+    @Autowired
+    private PostgresProps postrgresProps;
 
-	@Bean
-	public ConnectionFactory connectionFactory() {
-		return new PostgresqlConnectionFactory(
-		// @formatter:off
+    @Bean
+    public ConnectionFactory connectionFactory() {
+        return new PostgresqlConnectionFactory(
+        // @formatter:off
         PostgresqlConnectionConfiguration.builder()
                 .host(postrgresProps.getHost())
                 .database("demfiles")
@@ -48,33 +48,33 @@ public class Repositories {
 //		            		)
                 .build()
 		// @formatter:on
-		);
-	}
+        );
+    }
 
-	@Bean
-	public DatabaseClient databaseClient(ConnectionFactory connectionFactory) {
-		var cp = ConnectionPoolConfiguration.builder(connectionFactory).initialSize(2).maxSize(20).build();
-		ConnectionPool pool = new ConnectionPool(cp);
-		return DatabaseClient.builder().connectionFactory(pool).build();
-	}
+    @Bean
+    public DatabaseClient databaseClient(ConnectionFactory connectionFactory) {
+        var cp = ConnectionPoolConfiguration.builder(connectionFactory).initialSize(2).maxSize(20).build();
+        ConnectionPool pool = new ConnectionPool(cp);
+        return DatabaseClient.builder().connectionFactory(pool).build();
+    }
 
-	@Bean
-	public RepoProcessQueue getRepoProcessQueue() {
-		return new RepoProcessQueuePostgres();
-	}
+    @Bean
+    public RepoProcessQueue getRepoProcessQueue() {
+        return new RepoProcessQueuePostgres();
+    }
 
-	@Bean
-	public RepoUser getRepoUserPostgres() {
-		return new RepoUserPostgres();
-	}
-	
-	@Bean
-	public RepoUserScore getRepoUserScore() {
-		return new RepoUserScorePostgres();
-	}
-	
-	@Bean
-	public CrudRepo getCrudRepo() {
-		return new CrudRepoGeneric();
-	}
+    @Bean
+    public RepoUser getRepoUserPostgres() {
+        return new RepoUserPostgres();
+    }
+
+    @Bean
+    public RepoUserScore getRepoUserScore() {
+        return new RepoUserScorePostgres();
+    }
+
+    @Bean
+    public CrudRepo getCrudRepo() {
+        return new CrudRepoGeneric();
+    }
 }

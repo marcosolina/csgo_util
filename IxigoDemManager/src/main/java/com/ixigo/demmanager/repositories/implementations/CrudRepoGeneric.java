@@ -92,7 +92,7 @@ public class CrudRepoGeneric implements CrudRepo {
 			D dao = daoClass.getConstructor().newInstance();
 			dao.setDto(dto);
 
-			return dao.prepareSqlSelectByKey(client).then().thenReturn(true);
+			return dao.prepareSqlDeleteByKey(client).then().thenReturn(true);
 		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {
 			e.printStackTrace();

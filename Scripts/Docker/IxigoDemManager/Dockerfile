@@ -1,20 +1,25 @@
-# Build the C# parser
-FROM mcr.microsoft.com/dotnet/sdk:5.0 AS DEM_PARSER
-WORKDIR /app
+# Use a base image with Ubuntu
+FROM ubuntu:20.04
 
-# Copy csproj and restore as distinct layers
-COPY --from=my-maven-img /ixigo/csgo_util/DemParser/*.csproj ./
-RUN dotnet restore
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    openjdk-11-jdk \
+    nodejs \
+    npm
 
-# Copy everything else and build
-COPY --from=my-maven-img /ixigo/csgo_util/DemParser/* ./
-RUN dotnet publish -c Release -o out -r linux-x64
+ENV JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64
+ENV PATH=$JAVA_HOME/bin:$PATH
 
-# Putting all together
-FROM openjdk:11
+RUN mkdir /ixigo
+WORKDIR /ixigo
+
+# Copy the CS2 dem parser
+COPY --from=my-nodejs-img /ixigo/csgo_util/DemoParserCS2 ./
+
+
 EXPOSE 8080:8080
-RUN mkdir /demFiles && mkdir /demParser
-COPY --from=DEM_PARSER /app/out/* /demParser/
+RUN mkdir /demFiles
 COPY --from=my-maven-img /ixigo/csgo_util/IxigoDemManager/target/IxigoDemManager*.jar IxigoDemManager.jar
 COPY ./start.sh start.sh
 RUN sed -i -e 's/\r$//' start.sh

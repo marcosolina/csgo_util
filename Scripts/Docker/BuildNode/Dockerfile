@@ -5,6 +5,7 @@ WORKDIR /ixigo
 RUN git clone --branch main https://github.com/marcosolina/csgo_util.git
 
 RUN cd csgo_util/IxigoUi/src/reactapp && npm install && npm run build
+RUN cd /ixigo/csgo_util/DemoParserCS2 && npm install
 
 WORKDIR /ixigo
 

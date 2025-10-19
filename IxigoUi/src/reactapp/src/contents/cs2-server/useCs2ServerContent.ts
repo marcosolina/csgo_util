@@ -230,6 +230,21 @@ const CS2_MAPS: IMapResponse[] = [
     map_name: "de_whistle",
     isCs2Map: true,
   },
+  {
+    is_workshop_map: false,
+    map_name: "de_golden",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_rooftop",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_palacio",
+    isCs2Map: true,
+  },
 ];
 
 export const useCs2ServerContent = (): IUseCs2ServerContentResult => {

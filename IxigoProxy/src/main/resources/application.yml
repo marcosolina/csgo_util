@@ -3,8 +3,8 @@ server:
   servlet:
     context-path: /ixigoproxy                                                                 # Do not change this
   tomcat:
-    max-swallow-size: 500MB                                                                   # Maximum size of request body that Tomcat will swallow
-    max-http-form-post-size: 500MB                                                            # Maximum size of the form content in any HTTP post request
+    max-swallow-size: 524288000                                                               # Maximum size of request body that Tomcat will swallow (500MB in bytes)
+    max-http-form-post-size: 524288000                                                        # Maximum size of the form content in any HTTP post request (500MB in bytes)
 
 spring:
   application:
@@ -19,6 +19,26 @@ management:
     web:
       exposure:
         include: '*'
+
+zuul:
+  host:
+    max-total-connections: 500                                                                # Maximum total connections
+    max-per-route-connections: 50                                                             # Maximum connections per route
+    socket-timeout-millis: 120000                                                             # Socket timeout for Zuul routes
+    connect-timeout-millis: 30000                                                             # Connection timeout for Zuul routes
+  servlet-path: /                                                                             # Zuul servlet path
+  FormBodyWrapperFilter:
+    pre:
+      disable: true                                                                           # Disable FormBodyWrapperFilter to allow large file uploads
+  SendResponseFilter:
+    post:
+      disable: false
+  set-content-length: true                                                                    # Ensure content-length header is set
+  routes:
+    ixigo-dem-manager:
+      path: /demmanager/**
+      serviceId: ixigo-dem-manager
+      stripPrefix: false
 
 ribbon:
   ReadTimeout: 120000                                                                         # processing request time

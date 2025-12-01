@@ -21,8 +21,8 @@ server:
   servlet:
     context-path: /demmanager                                                                                           # Do not change this
   tomcat:
-    max-swallow-size: 500MB                                                                                             # Maximum size of request body that Tomcat will swallow
-    max-http-form-post-size: 500MB                                                                                      # Maximum size of the form content in any HTTP post request
+    max-swallow-size: 524288000                                                                                         # Maximum size of request body that Tomcat will swallow (500MB in bytes)
+    max-http-form-post-size: 524288000                                                                                  # Maximum size of the form content in any HTTP post request (500MB in bytes)
 com:
   ixigo:
     demmanager:

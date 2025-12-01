@@ -2,6 +2,9 @@ server:
   port: 8763
   servlet:
     context-path: /ixigoproxy                                                                 # Do not change this
+  tomcat:
+    max-swallow-size: 500MB                                                                   # Maximum size of request body that Tomcat will swallow
+    max-http-form-post-size: 500MB                                                            # Maximum size of the form content in any HTTP post request
 
 spring:
   application:

@@ -1,6 +1,6 @@
 # Building the Java "stuff"
 
-FROM maven:3.5.4-jdk-11 AS MAVEN_IMAGE
+FROM maven:3.8.6-openjdk-11 AS MAVEN_IMAGE
 RUN mkdir /ixigo
 WORKDIR /ixigo
 
@@ -11,11 +11,12 @@ COPY --from=my-nodejs-img /ixigo/csgo_util ./csgo_util
 RUN cp -r ./csgo_util/IxigoUi/src/reactapp/build/* ./csgo_util/IxigoUi/src/main/resources/static
 
 RUN \
+mvn clean install -f ./csgo_util/IxigoEventDispatcherContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoLibrary/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoParent/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoDemManagerContract/pom.xml && \
+mvn clean install -f ./csgo_util/IxigoNotificationContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoDiscordBotContract/pom.xml && \
-mvn clean install -f ./csgo_util/IxigoEventDispatcherContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoPlayersManagerContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoRconApiContract/pom.xml && \
 mvn clean install -f ./csgo_util/IxigoServerHelperContract/pom.xml && \

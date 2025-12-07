@@ -1,0 +1,67 @@
+networks:
+  ixigo:
+    name: ixigo_network
+
+services:
+  ############################
+  # NODE JS BUILD the csgo parser
+  ############################
+  my-demcsgoparser: # container name
+    image: my-demcsgoparser-img
+    networks:
+      - ixigo
+    build:
+      context: ../../
+      dockerfile: Scripts/Docker/BuildDemParserCsGo/Dockerfile
+  ############################
+  # NODE JS BUILD the cs2 parser
+  ############################
+  my-demcs2parser: # container name
+    image: my-demcs2parser-img
+    networks:
+      - ixigo
+    build:
+      context: ../../
+      dockerfile: Scripts/Docker/BuildDemParserCs2/Dockerfile
+  ############################
+  # NODE JS BUILD the UI
+  ############################
+  my-nodejs: # container name
+    image: my-nodejs-img
+    networks:
+      - ixigo
+    build:
+      context: ./BuildNode
+  ############################
+  # MAVEN BUILD
+  ############################
+  my-maven: # container name
+    image: my-maven-img
+    networks:
+      - ixigo
+    build:
+      context: ./BuildJava
+    depends_on:
+      - my-nodejs
+  ############################
+  # Dem Manager Service
+  ############################
+  dem-manager:
+    image: ixigo-dem-manager-img
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoDemManager
+    ports:
+      - "8080:8080"
+    depends_on:
+      - my-maven
+      - my-demcs2parser
+      - my-demcsgoparser
+    volumes:
+      - "__DEM_FOLDER__:/demFiles"

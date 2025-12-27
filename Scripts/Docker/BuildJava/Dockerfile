@@ -4,7 +4,7 @@ FROM maven:3.8.6-openjdk-11 AS MAVEN_IMAGE
 RUN mkdir /ixigo
 WORKDIR /ixigo
 
-COPY --from=my-nodejs /ixigo/csgo_util ./csgo_util
+COPY --from=docker-registry.marco.selfip.net/ixigo/my-nodejs:latest /ixigo/csgo_util ./csgo_util
 
 # Copying the "compiled" React App into the Ixigo UI project
 # to make it available in the JAR package

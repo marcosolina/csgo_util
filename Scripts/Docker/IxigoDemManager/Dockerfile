@@ -14,17 +14,17 @@ RUN apt-get update && \
 
 # Create directories and copy Node.js parser from the build stage
 RUN mkdir /demFiles && mkdir /demParserCs2 && mkdir /demParserCsgo
-COPY --from=my-demcs2parser-img /ixigo/csgo_util/DemoParserCS2/node_modules /demParserCs2/node_modules
-COPY --from=my-demcs2parser-img /ixigo/csgo_util/DemoParserCS2/*.js /demParserCs2/
-COPY --from=my-demcs2parser-img /ixigo/csgo_util/DemoParserCS2/package*.json /demParserCs2/
+COPY --from=my-demcs2parser /ixigo/csgo_util/DemoParserCS2/node_modules /demParserCs2/node_modules
+COPY --from=my-demcs2parser /ixigo/csgo_util/DemoParserCS2/*.js /demParserCs2/
+COPY --from=my-demcs2parser /ixigo/csgo_util/DemoParserCS2/package*.json /demParserCs2/
 
-COPY --from=my-demcsgoparser-img /ixigo/csgo_util/DemParserNodeJs /demParserCsgo
+COPY --from=my-demcsgoparser /ixigo/csgo_util/DemParserNodeJs /demParserCsgo
 
 # Install ts-node globally in the final image
 RUN npm install -g ts-node
 
 # Copy Spring Boot application
-COPY --from=my-maven-img /ixigo/csgo_util/IxigoDemManager/target/IxigoDemManager*.jar IxigoDemManager.jar
+COPY --from=my-maven /ixigo/csgo_util/IxigoDemManager/target/IxigoDemManager*.jar IxigoDemManager.jar
 
 # Copy and prepare start script
 COPY ./start.sh start.sh

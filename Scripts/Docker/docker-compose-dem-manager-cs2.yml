@@ -7,7 +7,7 @@ services:
   # NODE JS BUILD the csgo parser
   ############################
   my-demcsgoparser: # container name
-    image: my-demcsgoparser-img
+    image: docker-registry.marco.selfip.net/ixigo/my-demcsgoparser:latest
     networks:
       - ixigo
     build:
@@ -17,7 +17,7 @@ services:
   # NODE JS BUILD the cs2 parser
   ############################
   my-demcs2parser: # container name
-    image: my-demcs2parser-img
+    image: docker-registry.marco.selfip.net/ixigo/my-demcs2parser:latest
     networks:
       - ixigo
     build:
@@ -27,7 +27,7 @@ services:
   # NODE JS BUILD the UI
   ############################
   my-nodejs: # container name
-    image: my-nodejs-img
+    image: docker-registry.marco.selfip.net/ixigo/my-nodejs:latest
     networks:
       - ixigo
     build:
@@ -36,7 +36,7 @@ services:
   # MAVEN BUILD
   ############################
   my-maven: # container name
-    image: my-maven-img
+    image: docker-registry.marco.selfip.net/ixigo/my-maven:latest
     networks:
       - ixigo
     build:
@@ -47,7 +47,7 @@ services:
   # Dem Manager Service
   ############################
   dem-manager:
-    image: ixigo-dem-manager-img
+    image: docker-registry.marco.selfip.net/ixigo/dem-manager:latest
     env_file:
       - ./env-spring-config.properties
       - ./env-database.properties
@@ -64,4 +64,4 @@ services:
       - my-demcs2parser
       - my-demcsgoparser
     volumes:
-      - "__DEM_FOLDER__:/demFiles"
+      - "${DEM_FOLDER}:/demFiles"

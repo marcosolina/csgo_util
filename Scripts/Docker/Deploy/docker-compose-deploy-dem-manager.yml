@@ -1,0 +1,22 @@
+networks:
+  ixigo:
+    name: ixigo_network
+
+services:
+  ############################
+  # Dem Manager Service
+  ############################
+  dem-manager:
+    image: docker-registry.marco.selfip.net/ixigo/dem-manager:latest
+      
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks:
+      - ixigo
+    ports:
+      - "8080:8080"
+    volumes:
+      - "${DEM_FOLDER}:/var/www/html/cstrike/demfiles"

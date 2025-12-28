@@ -69,7 +69,7 @@ EOF
 apps=(
 #"IxigoDiscovery"
 #"IxigoConfigServer"
-"IxigoDemManager"
+#"IxigoDemManager"
 #"IxigoDiscordBot"
 #"IxigoEventDispatcher"
 #"IxigoPlayersManager"

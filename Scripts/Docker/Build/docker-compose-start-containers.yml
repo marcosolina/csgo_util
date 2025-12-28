@@ -1,0 +1,219 @@
+networks:
+  ixigo:
+    name: ixigo_network
+
+services:
+  ############################
+  # NODE JS BUILD
+  ############################
+  my-nodejs: # container name
+    image: my-nodejs-img
+    networks:
+      - ixigo
+    build:
+      context: ./BuildNode
+  ############################
+  # MAVEN BUILD
+  ############################
+  my-maven: # container name
+    image: my-maven-img
+    networks:
+      - ixigo
+    build:
+      context: ./BuildJava
+    depends_on:
+      - my-nodejs
+  ############################
+  # Postgres DB
+  ############################
+  dbpostgres: # container name
+    image: postgres-ixigo-img
+    env_file:
+      - ./env-database.properties
+    networks:
+      - ixigo
+    build:
+      context: ./PostgreSql
+    ports:
+      - "5432:5432"
+  ############################
+  # Eureka Service
+  ############################
+  discovery-service: # container name
+    image: ixigo-discovery-img
+    env_file:
+      - ./env-eureka.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoDiscovery
+    ports:
+      - "8765:8765"
+    depends_on:
+      - my-maven
+  ############################
+  # Configuration Service
+  ############################
+  config-service:
+    image: ixigo-config-img
+    env_file:
+      - ./env-spring-config.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoConfigServer
+    ports:
+      - "8888:8888"
+    depends_on:
+      - my-maven
+  ############################
+  # Event dispatcher
+  ############################
+  event-dispatcher:
+    image: ixigo-event-dispatcher-img
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoEventDispatcher
+    ports:
+      - "8081:8081"
+    depends_on:
+      - dbpostgres
+      - my-maven
+  ############################
+  # Dem Manager Service
+  ############################
+  dem-manager:
+    image: ixigo-dem-manager-img
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoDemManager
+    ports:
+      - "8080:8080"
+    depends_on:
+      - dbpostgres
+      - my-maven
+    volumes:
+      - "__DEM_FOLDER__:/demFiles"
+  ############################
+  # Players manager
+  ############################
+  players-manager:
+    image: ixigo-players-manager-img
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoPlayersManager
+    ports:
+      - "8082:8082"
+    depends_on:
+      - my-maven
+  ############################
+  # RCON Api
+  ############################
+  rcon-api:
+    image: ixigo-rcon-img
+    env_file:
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+      - ./env-spring-config.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoRconApi
+    ports:
+      - "8083:8083"
+    depends_on:
+      - my-maven
+  ############################
+  # Ixigo Discord Bot
+  ############################
+  discord-bot:
+    image: ixigo-discord-bot
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-database.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+      - ./env-csgo-server.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoDiscordBot
+    ports:
+      - "8085:8085"
+    depends_on:
+      - dbpostgres
+      - my-maven
+  ############################
+  # Ixigo Proxy server
+  ############################
+  ixigo-proxy:
+    image: ixigo-proxy-img
+    env_file:
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoProxy
+    ports:
+      - "8763:8763"
+    depends_on:
+      - my-maven
+  ############################
+  # Counter Strike Server
+  ############################
+  csgo:
+    image: ixigo-csgo-img # Container name
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+      - ./env-csgo-server.properties
+    networks:
+      - ixigo
+    build:
+      context: ./CsGoServer
+    ports:
+      - "27015:27015/tcp"
+      - "27015:27015/udp"
+      - "27020:27020/udp"
+      - "27005:27005/udp"
+      - "51840:51840/udp"
+    volumes:
+      - "__CSGO_FOLDER__:/csgoserver/ixi_go"
+    depends_on:
+      - my-maven
+  ############################
+  # Ixigo UI
+  ############################
+  ixigo-ui:
+    image: ixigo-ui-img
+    env_file:
+      - ./env-spring-config.properties
+      - ./env-eureka.properties
+      - ./env-spring-common.properties
+    networks:
+      - ixigo
+    build:
+      context: ./IxigoUi
+    ports:
+      - "8086:8086"
+    depends_on:
+      - my-maven

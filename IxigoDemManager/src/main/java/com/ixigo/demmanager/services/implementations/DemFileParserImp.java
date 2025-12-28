@@ -241,7 +241,7 @@ public class DemFileParserImp implements DemFileParser {
 					.sequential();
 		}else {
 			_LOGGER.debug("Parsing dem files synchronously");
-			flux = fileFlux.flatMap(function);
+			flux = fileFlux.concatMap(function);
 		}
 		
 		return flux.map(tuple -> { // Checking if the DEM file had info in it

@@ -1,4 +1,4 @@
-FROM node:24-alpine AS NODE_JS
+FROM node:24 AS NODE_JS
 RUN mkdir /ixigo
 WORKDIR /ixigo/csgo_util
 

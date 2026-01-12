@@ -14,15 +14,16 @@ RUN apt-get update && \
 
 # Create directories and copy Node.js parser from the build stage
 RUN mkdir /demFiles && mkdir /demParserCs2 && mkdir /demParserCsgo
-COPY --from=docker-registry.marco.selfip.net/ixigo/my-demcs2parser:latest /ixigo/csgo_util/DemoParserCS2/node_modules /demParserCs2/node_modules
 COPY --from=docker-registry.marco.selfip.net/ixigo/my-demcs2parser:latest /ixigo/csgo_util/DemoParserCS2/*.ts /demParserCs2/
 COPY --from=docker-registry.marco.selfip.net/ixigo/my-demcs2parser:latest /ixigo/csgo_util/DemoParserCS2/package*.json /demParserCs2/
 COPY --from=docker-registry.marco.selfip.net/ixigo/my-demcs2parser:latest /ixigo/csgo_util/DemoParserCS2/tsconfig.json /demParserCs2/
 
 COPY --from=docker-registry.marco.selfip.net/ixigo/my-demcsgoparser:latest /ixigo/csgo_util/DemParserNodeJs /demParserCsgo
 
-# Install ts-node globally in the final image
-RUN npm install -g ts-node
+# Install ts-node globally and rebuild node_modules for the correct platform
+RUN npm install -g ts-node && \
+    cd /demParserCs2 && \
+    npm install
 
 # Copy Spring Boot application
 COPY --from=docker-registry.marco.selfip.net/ixigo/my-maven:latest /ixigo/csgo_util/IxigoDemManager/target/IxigoDemManager*.jar IxigoDemManager.jar

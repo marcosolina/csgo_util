@@ -28,3 +28,4 @@ INSERT INTO public.users (steam_id, user_name) VALUES ('76561199041012759', 'dr.
 INSERT INTO public.users (steam_id, user_name) VALUES ('76561198266269604', 'Gloomz');
 INSERT INTO public.users (steam_id, user_name) VALUES ('76561198310186195', 'Queen_Ug');
 INSERT INTO public.users (steam_id, user_name) VALUES ('76561198119203032', 'Zigzagatha Christie');
+INSERT INTO public.users (steam_id, user_name) VALUES ('76561198314970357', 'james');

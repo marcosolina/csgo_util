@@ -99,9 +99,15 @@ const CS2_MAPS: IMapResponse[] = [
     isCs2Map: true,
   },
   {
-    is_workshop_map: false,
+    is_workshop_map: true,
     map_name: "de_memento",
     workshop_id: "3165559377",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: true,
+    map_name: "ar_dizzy",
+    workshop_id: "3070553020",
     isCs2Map: true,
   },
   {

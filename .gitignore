@@ -344,3 +344,5 @@ healthchecksdb
 .vscode/tasks.json
 Scripts/demoparsetest.py
 Scripts/file.json
+**/*.classpath
+**/*.factorypath

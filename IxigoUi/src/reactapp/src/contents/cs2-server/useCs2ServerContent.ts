@@ -276,7 +276,7 @@ const CS2_MAPS: IMapResponse[] = [
   },
   {
     is_workshop_map: false,
-    map_name: "de_shelter",
+    map_name: "cs_shelter",
     isCs2Map: true,
   },
   {

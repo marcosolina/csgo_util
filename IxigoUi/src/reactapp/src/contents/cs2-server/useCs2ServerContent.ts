@@ -263,6 +263,32 @@ const CS2_MAPS: IMapResponse[] = [
     map_name: "de_palacio",
     isCs2Map: true,
   },
+  //
+  {
+    is_workshop_map: false,
+    map_name: "de_eldorado",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_debris",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_shelter",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_fachwerk",
+    isCs2Map: true,
+  },
+  {
+    is_workshop_map: false,
+    map_name: "de_boulder",
+    isCs2Map: true,
+  }
 ];
 
 export const useCs2ServerContent = (): IUseCs2ServerContentResult => {

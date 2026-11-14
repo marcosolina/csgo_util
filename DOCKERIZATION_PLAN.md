@@ -106,9 +106,11 @@ docs/                   diagrams and pictures (from misc/)
 
 ### Phase 3: `docker/compose.build.yml` (build and publish)
 
-- [ ] One entry per image: `image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/<service>:${TAG:-latest}`, `build: {context: .., dockerfile: docker/Dockerfile, target: <service>}`, shared settings and `platforms` through a YAML anchor.
-- [ ] Usage: `docker login docker-registry.marco.selfip.net`, then `docker compose -f docker/compose.build.yml build` and `push` (or `docker buildx bake -f docker/compose.build.yml --push`, required for multi-arch). Optional `TAG` = git short sha next to `latest` for rollbacks.
-- [ ] Delete `build-and-push-dem-manager.ps1` (or keep a two-line wrapper).
+- [x] One entry per image: `image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/<service>:${TAG:-latest}`, `build: {context: .., dockerfile: docker/Dockerfile, target: <service>}`, shared settings and `platforms: [linux/amd64, linux/arm64]` through a YAML anchor.
+- [x] `docker/build-and-push.ps1`: creates the `ixigo` buildx builder (docker-container driver; this Docker Desktop uses the classic image store, which cannot hold multi-arch images), runs `docker buildx bake --push`, and pushes each image as `-Tag` (default `latest`) and as the short git commit for rollbacks. Refuses to push from a dirty working tree unless `-AllowDirty` (then no commit tag). `-NoPush` builds only, `-Images` limits the targets.
+- [x] Gotcha found: buildx bake 0.16 resolves the compose `context: ..` against the current directory, not the compose file, so bake must run from `docker/` (the script does). Running from the repository root sent the build to `E:\Workspaces\Git`.
+- [x] Deleted `Scripts/Docker/Build/build-and-push-dem-manager.ps1`.
+- [ ] First push. **Tag clash:** production pulls `ixigo/dem-manager:latest`, the same name and tag this pipeline produces, so pushing `latest` before cutover would replace the running dem-manager at its next pull. Until Phase 6, push with a different tag (for example `-Tag next`) or accept the replacement.
 
 ### Phase 4: `docker/compose.yml` (run from the registry, split hosts)
 
@@ -125,6 +127,7 @@ One file for every host; each host's `.env` picks its services with `COMPOSE_PRO
 - [ ] dem-manager volume: `${DEM_FOLDER}:/var/www/html/cstrike/demfiles`.
 - [ ] `docker/.env.example` committed with every variable and a comment; real `.env` files live only on the hosts.
 - [ ] A short deploy script (or README section) per host: pull, recreate Postgres, up, reparse.
+- [ ] Add a `.gitattributes` with `*.sh text eol=lf` before adding any shell script for the hosts (`core.autocrlf=true` checks them out with CRLF on Windows).
 
 ### Phase 5: configuration (`csgo_props`)
 
@@ -169,3 +172,4 @@ Out of scope: Spring Boot 3 / Java 17+ upgrade (springfox, `javax` → `jakarta`
 - **2026-11-14, Phase R done and committed** (local, not pushed). 1,431 files moved with `git mv` (history kept). Verified in `maven:3.9-eclipse-temurin-11`: `mvn clean package` of the whole reactor passes from the new layout, and the Azure VM command (`-pl services/IxigoServerHelper -am`) builds the server-helper jar with no `com.ixigo` artifacts in the local repository, as on a fresh VM. Matching `ixi_go` changes are prepared on its `marco/docker-refactoring` branch.
 - **2026-11-14, Phase R committed**: csgo_util `840fecf5`, ixi_go `55b5d0b` (both local).
 - **2026-11-14, Phase 2 done and committed** (local). All 12 targets build for amd64 (shared React and Maven stages about 3 minutes once, then 2 to 15 s per target; Java images about 340 to 440 MB, `dem-manager` about 800 MB). `dem-manager`, `discovery` and `postgres` also build for arm64, reusing the React and Maven layers from the amd64 build (only the parsers' npm install and the runtime layers run under QEMU). Runtime checks: inside `dem-manager` (uid 1000, cwd `/app`, as the Java code calls them) the CS2 parser turns the sample `gd_rialto` CS2 demo into 73,180 bytes of JSON and the CSGO parser turns the sample `de_mirage` demo into 488,260 bytes, both with the keys `SvcNodeJsParseOutput` reads; the arm64 image gives the same CS2 output with the native `demoparser2-linux-arm64-gnu` addon and runs Temurin 11.0.33 aarch64. The `postgres` image initializes the three databases with no errors (29 users and 44 views in `demfiles`, 31 `users_map` rows, 31 `event_listeners` rows). `config-server`, `discovery` and `ui` images started together: the UI loaded its config, started in 18 s and served the page plus its 1.6 MB React bundle; all three report health `UP` through curl inside the container.
+- **2026-11-14, Phase 3 build check.** `docker/build-and-push.ps1 -NoPush` created the `ixigo` builder and built all 12 images for linux/amd64 and linux/arm64 from an empty cache: one Maven run (1:39 min) and one React build served every target on both platforms; only the parsers and the runtime layers ran per platform. Nothing pushed. This machine already has registry credentials for `docker-registry.marco.selfip.net`.

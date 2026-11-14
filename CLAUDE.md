@@ -51,6 +51,8 @@ Docker images come from one multi-stage `docker/Dockerfile`, one `--target` per 
 docker build -f docker/Dockerfile --target dem-manager -t ixigo/dem-manager .
 ```
 
+To build every image for amd64 and arm64 and push it to `docker-registry.marco.selfip.net/ixigo/<image>`, use `docker/build-and-push.ps1` (`-NoPush` for a build check, `-Images dem-manager,ui` for a subset, `-Tag` for the tag; it also pushes the short git commit as a tag and refuses to push uncommitted changes). It wraps `docker buildx bake -f compose.build.yml`, which must run from the `docker/` folder: buildx bake resolves the compose `context: ..` against the current directory.
+
 Every image runs as uid 1000. `dem-manager` is Node 24 plus the Java 11 JRE, with the parsers at `/demParserCs2` and `/demParserCsgo` (the paths the `docker` profile in `csgo_props` expects).
 
 Run the CS2 parser by hand (prints the stats JSON to stdout; sample demos are in `Scripts/Docker/test/`):
@@ -111,12 +113,12 @@ PostgreSQL 11 hosts three databases: `demfiles` (DemManager), `discordbot` (Disc
 
 ## Deployment
 
-There is no GitHub Actions CI. Two generations of deployment coexist, both being replaced by the plan in `DOCKERIZATION_PLAN.md`. Both still use the old flat folder layout (`IxigoDemManager/`, `DemoParserCS2/`, ...) and build from GitHub `main`, so they keep working only until the restructured layout reaches `main`:
+There is no GitHub Actions CI. The target is `docker/` (images from `docker/Dockerfile`, built and pushed with `docker/build-and-push.ps1`, run on the hosts with a Compose file still to be written; see `DOCKERIZATION_PLAN.md`). Production today still runs the two older generations below. Both build from GitHub `main` with the old flat folder layout (`IxigoDemManager/`, `DemoParserCS2/`, ...), so they keep working only until the restructured layout reaches `main`, and their leftover files in `Scripts/` are broken on this branch:
 
 - **Legacy (Jenkins, jars on LAN hosts).** `Scripts/Jenkins/buildProjects.sh <workspace>` builds the React app and every jar. `Scripts/Jenkins/deployJars.sh` copies jars plus each module's `Scripts/startStop.sh` to `/opt/ixigo/<App>` on LAN hosts (Raspberry Pis and Docker hosts), restarts them, copies the Node parsers, recreates the Postgres container with `docker system prune --all --volumes`, and finally triggers `parse/all` through the public proxy `https://marco.selfip.net/ixigoproxy`.
-- **Current (Docker, DemManager first).** `Scripts/Docker/Build/build-and-push-dem-manager.ps1` runs `docker compose -f docker-compose-build-dem-manager.yml build --no-cache` and pushes `docker-registry.marco.selfip.net/ixigo/dem-manager:latest`. The image bundles the jar, Node 24, ts-node and both parsers (`/demParserCs2`, `/demParserCsgo`); `start.sh` sleeps 20 s to let Eureka and the Config Server come up. The host deploys it with `Scripts/Docker/Deploy/docker-compose-deploy-dem-manager.yml`; `.env` (`DEM_FOLDER`, `EUREKA_INSTANCE_IP`) and the `env-*.properties` files hold `__PLACEHOLDER__` values that are filled on the host, never committed.
+- **DemManager in Docker (on `main` only; its build script is deleted on this branch).** `Scripts/Docker/Build/build-and-push-dem-manager.ps1` runs `docker compose -f docker-compose-build-dem-manager.yml build --no-cache` and pushes `docker-registry.marco.selfip.net/ixigo/dem-manager:latest`. The image bundles the jar, Node 24, ts-node and both parsers (`/demParserCs2`, `/demParserCsgo`); `start.sh` sleeps 20 s to let Eureka and the Config Server come up. The host deploys it with `Scripts/Docker/Deploy/docker-compose-deploy-dem-manager.yml`; `.env` (`DEM_FOLDER`, `EUREKA_INSTANCE_IP`) and the `env-*.properties` files hold `__PLACEHOLDER__` values that are filled on the host, never committed.
 
-**Docker build gotcha:** the Java and UI code inside the images is not taken from the local working tree. `BuildNode/Dockerfile` does `git clone --branch main` from GitHub and `BuildJava` builds from that clone, so Java or React changes must be merged and pushed to `main` before building the image. Only the parser images (`BuildDemParserCs2`, `BuildDemParserCsGo`) use the local tree as build context.
+**Old Docker build gotcha (fixed by `docker/Dockerfile`):** in that old build the Java and UI code inside the images is not taken from the local working tree. `BuildNode/Dockerfile` does `git clone --branch main` from GitHub and `BuildJava` builds from that clone, so Java or React changes must be merged and pushed to `main` before building the image. Only the parser images (`BuildDemParserCs2`, `BuildDemParserCsGo`) use the local tree as build context.
 
 `Scripts/Docker/Build/docker-compose-start-containers.yml` and `setup.sh` (the full-stack compose referenced in the README) are older and partly stale: their image names do not match the registry names used by the current build files.
 

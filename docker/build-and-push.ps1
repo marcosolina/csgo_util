@@ -59,6 +59,27 @@ try {
         Write-Host "TAG=$t docker $($bakeArgs -join ' ')" -ForegroundColor Cyan
         & docker @bakeArgs
         Assert-ExitCode "docker buildx bake (TAG=$t)"
+
+        if (-not $NoPush) {
+            # Check that every pushed tag really contains every platform bake was asked for
+            $plan = (docker buildx bake -f compose.build.yml --print @Images 2>$null) | ConvertFrom-Json
+            Assert-ExitCode "docker buildx bake --print"
+            foreach ($target in $plan.target.PSObject.Properties) {
+                $expected = @($target.Value.platforms | Sort-Object)
+                foreach ($ref in $target.Value.tags) {
+                    $index = (docker buildx imagetools inspect $ref --raw) | ConvertFrom-Json
+                    Assert-ExitCode "docker buildx imagetools inspect $ref"
+                    $actual = @($index.manifests |
+                        Where-Object { $_.platform.os -ne "unknown" } |
+                        ForEach-Object { "$($_.platform.os)/$($_.platform.architecture)" } |
+                        Sort-Object)
+                    if (Compare-Object $expected $actual) {
+                        throw "$ref was pushed with platforms [$($actual -join ', ')], expected [$($expected -join ', ')]"
+                    }
+                }
+            }
+            Write-Host "Verified platforms of every image tagged $t" -ForegroundColor Green
+        }
     }
 
     if ($NoPush) {

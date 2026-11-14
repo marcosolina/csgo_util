@@ -16,9 +16,13 @@
 x-build: &build
   context: ..
   dockerfile: docker/Dockerfile
-  platforms:
+  # Read by "docker compose build"
+  platforms: &platforms
     - linux/amd64
     - linux/arm64
+  # Read by "docker buildx bake", which ignores build.platforms in compose files
+  x-bake:
+    platforms: *platforms
 
 services:
   config-server:

@@ -20,7 +20,7 @@ public Plugin myinfo =
 	author = PLUGIN_AUTHOR, 
 	description = "Il will move the players to the specified team", 
 	version = PLUGIN_VERSION, 
-	url = "https://github.com/marcosolina/csgo_util/blob/main/CsgoPlugins/MovePlayers/MovePlayers.sp"
+	url = "https://github.com/marcosolina/csgo_util/blob/main/legacy/SourceModPlugins/MovePlayers/MovePlayers.sp"
 };
 
 public void OnPluginStart()

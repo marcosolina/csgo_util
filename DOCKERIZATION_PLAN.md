@@ -79,13 +79,16 @@ docker/                 Dockerfile, compose files, .env.example, postgres init S
 docs/                   diagrams and pictures (from misc/)
 ```
 
-- [ ] `git mv` the modules (keeps history with `--follow`); update aggregator module paths and every `<relativePath>`.
-- [ ] Update README links, the diagrams' references and CLAUDE.md.
-- [ ] Decide on the tracked Eclipse metadata (`.project`, `.classpath`, `.settings`): keep and re-import, or untrack and ignore.
-- [ ] Remove `.github/java-upgrade` and `.github/modernize` (tooling leftovers, no workflows).
-- [ ] **Coordinate `ixi_go`** (both repos clone `main` when a VM is created, so merge both changes in the same window, between game nights):
-  - `Scripts/jenkins/installMetaModAndPlugin.sh` lines 94 to 95, `Scripts/CssSharp/donwloadLatestsModsFrameworks.sh` lines 63 to 64 and `.ps1` lines 87 to 88: `CsgoPlugins/IxigoPlugin` → `plugins/IxigoPlugin`.
-  - `Scripts/jenkins/cs2.tokenised.sh` lines 39 to 54: replace the nine `mvn -f` calls with `mvn -B -DskipTests -f $WORKSPACE_FOLDER/pom.xml -pl services/IxigoServerHelper -am package` and fix the jar path.
+- [x] `git mv` the modules (keeps history with `--follow`); update aggregator module paths and every `<relativePath>` (now `../../libs/IxigoParent/pom.xml`). `misc/` became `docs/`; `CsgoPlugins/IxigoPlugin` became `plugins/IxigoPlugin`; `DemParser` and the `.sp` plugins went to `legacy/`.
+- [x] Update README links and CLAUDE.md (the legacy `.sp` plugin URLs too).
+- [x] Eclipse metadata (`.project`, `.settings`) moved with each module and stays tracked; re-import the projects in the IDE from their new folders.
+- [x] `.github/java-upgrade` and `.github/modernize`: nothing to do, they are not tracked by git.
+- [ ] Delete the leftover untracked `CsgoPlugins/IxigoPlugin/obj` and `DemParser/obj` folders after closing VS Code (its C# language server keeps them locked; the tracked files were moved one by one around the lock).
+- [x] **Prepare `ixi_go`**: changes ready on branch `marco/docker-refactoring` in `ixi_go`, not committed:
+  - `Scripts/jenkins/installMetaModAndPlugin.sh`, `Scripts/CssSharp/donwloadLatestsModsFrameworks.sh` and `.ps1`: `CsgoPlugins/IxigoPlugin` → `plugins/IxigoPlugin`.
+  - `Scripts/jenkins/cs2.tokenised.sh`: the nine `mvn -f` calls became `mvn -B -DskipTests clean package -f $WORKSPACE_FOLDER/pom.xml -pl services/IxigoServerHelper -am`, and the jar path is `services/IxigoServerHelper/target/`.
+- [x] Commit Phase R (csgo_util) and the `ixi_go` changes (local only, nothing pushed).
+- [ ] **Merge gate:** both repos are cloned from `main` when an Azure VM is created, and the old Jenkins and Docker scripts in `Scripts/` still use the flat layout. Merge this branch and the `ixi_go` branch to `main` together, between game nights, and only once the new Docker deployment (Phases 2 to 6) replaces the old scripts.
 
 ### Phase 2: images
 
@@ -127,6 +130,7 @@ One file for every host; each host's `.env` picks its services with `COMPOSE_PRO
 - [ ] `docker` profile: `ixigo.postgres.host` and gateway endpoints pointing at reachable host addresses, one agreed dem-manager port (8080 in the old deploy compose vs 8090 in the profile).
 - [ ] Event listener seed rows (`030-initEventDispatcherDb.sql`) use `http://localhost:8763/...`, which is wrong inside a container; point them at the proxy host address (they are re-seeded on every deploy, so this is the place to fix them).
 - [ ] Agree the active profile list per host (for example `rasp,docker`); the Azure VM keeps `rasp,azure`.
+- [ ] Default profile (`application.yml`, local Windows development): parser paths still point at `E:\Workspaces\Git\csgo_util\DemParserNodeJs\...` and `...\DemoParserCS2\...`; add the `parsers\` folder.
 
 ### Phase 6: cutover
 
@@ -160,3 +164,5 @@ Out of scope: Spring Boot 3 / Java 17+ upgrade (springfox, `javax` → `jakarta`
 ## 5. Progress log
 
 - **2026-11-14, Phase 1 done (branch `marco/docker-refactoring`, not committed yet).** Verified with `maven:3.9-eclipse-temurin-11` (the local JDK is 25, which cannot compile this code): the full reactor builds from an empty `~/.m2` in about 5.5 minutes (Docker volume `ixigo-m2` keeps the cache). Runtime checks in a throwaway Docker network: Discovery and Config Server health `UP`; Config Server still answers 401 without credentials and 200 with them; a service started before the Config Server retried for about 45 s and then loaded its config from `csgo_props`; with an unreachable Config Server the service exits with code 1 ("fail fast property is set"); PlayersManager starts with Swagger plus actuator, health `UP`, `/actuator/env` 404, Swagger lists only `/teams` and `/teams/scorestype`; `EUREKA_INSTANCE_IP_ADDRESS` overrides the registered address. Not verified at runtime: services that need Postgres, Discord or Telegram credentials (they compile and share the same changes).
+- **2026-11-14, Phase 1 committed** as `ebfaff69`.
+- **2026-11-14, Phase R done and committed** (local, not pushed). 1,431 files moved with `git mv` (history kept). Verified in `maven:3.9-eclipse-temurin-11`: `mvn clean package` of the whole reactor passes from the new layout, and the Azure VM command (`-pl services/IxigoServerHelper -am`) builds the server-helper jar with no `com.ixigo` artifacts in the local repository, as on a fresh VM. Matching `ixi_go` changes are prepared on its `marco/docker-refactoring` branch.

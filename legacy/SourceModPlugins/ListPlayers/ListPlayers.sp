@@ -20,7 +20,7 @@ public Plugin myinfo =
 	author = PLUGIN_AUTHOR, 
 	description = "It will return a list of the active players on the CSGO server", 
 	version = PLUGIN_VERSION, 
-	url = "https://github.com/marcosolina/csgo_util/blob/main/CsgoPlugins/ListPlayers/ListPlayers.sp"
+	url = "https://github.com/marcosolina/csgo_util/blob/main/legacy/SourceModPlugins/ListPlayers/ListPlayers.sp"
 };
 
 public void OnPluginStart()

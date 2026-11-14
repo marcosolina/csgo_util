@@ -5,15 +5,21 @@
 		<groupId>com.ixigo</groupId>
 		<artifactId>IxigoParent</artifactId>
 		<version>1.0.0</version>
-		<relativePath>../IxigoParent/pom.xml</relativePath>
+		<relativePath>../../libs/IxigoParent/pom.xml</relativePath>
 	</parent>
 
-	<artifactId>IxigoEventDispatcher</artifactId>
-	<name>IxigoEventDispatcher</name>
+	<artifactId>IxigoDemManager</artifactId>
+	<name>IxigoDemManager</name>
 	<version>2.0.0</version>
-	<description>Event dispatcher service</description>
-	
+	<description>Dem Manager service</description>
+
 	<properties>
+		<discord.api>5.0.0-beta.8</discord.api>
+		<contract.eventdispatcher>2.0.0</contract.eventdispatcher>
+		<contract.demmanager>2.0.0</contract.demmanager>
+		<contract.playersmanager>2.0.0</contract.playersmanager>
+		<contract.rcon>2.0.0</contract.rcon>
+		<contract.discordbot>2.0.0</contract.discordbot>
 		<contract.notification>2.0.0</contract.notification>
 	</properties>
 
@@ -39,8 +45,13 @@
 		</dependency>
 		<dependency>
 			<groupId>com.ixigo</groupId>
-			<artifactId>IxigoEventDispatcherContract</artifactId>
+			<artifactId>IxigoDemManagerContract</artifactId>
 			<version>2.0.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.ixigo</groupId>
+			<artifactId>IxigoEventDispatcherContract</artifactId>
+			<version>${contract.eventdispatcher}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.ixigo</groupId>
@@ -48,6 +59,5 @@
 			<version>${contract.notification}</version>
 		</dependency>
 	</dependencies>
-
 
 </project>

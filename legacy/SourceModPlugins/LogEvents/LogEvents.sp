@@ -19,7 +19,7 @@ public Plugin myinfo =
 	author = PLUGIN_AUTHOR, 
 	description = "It will write in the event.txt file the CSGO event that has occured", 
 	version = PLUGIN_VERSION, 
-	url = "https://github.com/marcosolina/csgo_util/blob/main/CsgoPlugins/LogEvents/LogEvents.sp"
+	url = "https://github.com/marcosolina/csgo_util/blob/main/legacy/SourceModPlugins/LogEvents/LogEvents.sp"
 };
 
 public void OnPluginStart()

@@ -4,12 +4,12 @@
     dependency order. It is NOT a parent; each module keeps its own parent
     (IxigoParent, spring-boot-starter-parent, or none).
 
-    mvn -B package                                       build everything
-    mvn -B -pl IxigoDemManager -am package               one service plus what it needs
-    mvn -B -P integration-tests test                     Cucumber suite (needs the running stack)
+    mvn -B package                                          build everything
+    mvn -B -pl services/IxigoDemManager -am package         one service plus what it needs
+    mvn -B -P integration-tests test                        Cucumber suite (needs the running stack)
 
-    Not listed: IxigoUtils (one-off generator, depends on com.marco:Utils which is
-    not published to Maven Central).
+    Not listed: tools/IxigoUtils (one-off generator, depends on com.marco:Utils
+    which is not published to Maven Central).
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -24,37 +24,37 @@
 
 	<modules>
 		<!-- Shared libraries -->
-		<module>IxigoParent</module>
-		<module>IxigoLibrary</module>
-		<module>IxigoDemManagerContract</module>
-		<module>IxigoDiscordBotContract</module>
-		<module>IxigoEventDispatcherContract</module>
-		<module>IxigoNotificationContract</module>
-		<module>IxigoPlayersManagerContract</module>
-		<module>IxigoRconApiContract</module>
-		<module>IxigoServerHelperContract</module>
+		<module>libs/IxigoParent</module>
+		<module>libs/IxigoLibrary</module>
+		<module>libs/IxigoDemManagerContract</module>
+		<module>libs/IxigoDiscordBotContract</module>
+		<module>libs/IxigoEventDispatcherContract</module>
+		<module>libs/IxigoNotificationContract</module>
+		<module>libs/IxigoPlayersManagerContract</module>
+		<module>libs/IxigoRconApiContract</module>
+		<module>libs/IxigoServerHelperContract</module>
 
 		<!-- Spring Cloud infrastructure -->
-		<module>IxigoConfigServer</module>
-		<module>IxigoDiscovery</module>
-		<module>IxigoProxy</module>
+		<module>services/IxigoConfigServer</module>
+		<module>services/IxigoDiscovery</module>
+		<module>services/IxigoProxy</module>
 
 		<!-- Business services -->
-		<module>IxigoDemManager</module>
-		<module>IxigoDiscordBot</module>
-		<module>IxigoEventDispatcher</module>
-		<module>IxigoNotification</module>
-		<module>IxigoPlayersManager</module>
-		<module>IxigoRconApi</module>
-		<module>IxigoServerHelper</module>
-		<module>IxigoUi</module>
+		<module>services/IxigoDemManager</module>
+		<module>services/IxigoDiscordBot</module>
+		<module>services/IxigoEventDispatcher</module>
+		<module>services/IxigoNotification</module>
+		<module>services/IxigoPlayersManager</module>
+		<module>services/IxigoRconApi</module>
+		<module>services/IxigoServerHelper</module>
+		<module>services/IxigoUi</module>
 	</modules>
 
 	<profiles>
 		<profile>
 			<id>integration-tests</id>
 			<modules>
-				<module>IxigoIntegrationTests</module>
+				<module>tools/IxigoIntegrationTests</module>
 			</modules>
 		</profile>
 	</profiles>

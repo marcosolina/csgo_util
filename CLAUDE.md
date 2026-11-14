@@ -12,16 +12,20 @@ Two related repos live outside this one: the dedicated server setup (`github.com
 
 ## Modules
 
-Each top-level folder is an independent project; there is no aggregator POM.
+Modules are grouped by folder. Each one is still an independent project; only the root aggregator `pom.xml` ties the Maven ones together.
 
-| Group | Modules |
+| Folder | Modules |
 | --- | --- |
-| Spring Cloud infra | `IxigoDiscovery` (Eureka, port 8765, `/ixigodiscovery`), `IxigoConfigServer` (port 8888, `/config`, backed by `csgo_props`), `IxigoProxy` (Zuul gateway, port 8763, `/ixigoproxy`) |
-| Business services | `IxigoDemManager` (`/demmanager`), `IxigoPlayersManager` (`/playersmanager`), `IxigoRconApi` (`/rcon`), `IxigoDiscordBot` (`/discordbot`), `IxigoEventDispatcher` (`/eventsdispatcher`), `IxigoServerHelper` (`/ixigohelper`), `IxigoNotification` (`/notification`, Telegram), `IxigoUi` (`/ixigoui`) |
-| Shared Java | `IxigoParent` (parent POM for business services), `IxigoLibrary` (artifactId `Library`), `Ixigo*Contract` (REST request/response models, version 2.0.0) |
-| Demo parsers | `DemoParserCS2` (TypeScript on `@laihoe/demoparser2`, current), `DemParserNodeJs` (vendored copy of `saul/demofile` for legacy CSGO demos), `DemParser` (C#, legacy, no longer built) |
-| Game server plugins | `CsgoPlugins/IxigoPlugin` (C# CounterStrikeSharp plugin for CS2, current), `CsgoPlugins/*/*.sp` (SourceMod plugins, legacy CSGO) |
-| Other | `IxigoIntegrationTests` (Cucumber), `IxigoUtils` (one-off DAO/DTO code generator), `Scripts/` (Docker, Jenkins), `misc/` (diagrams, logo, font) |
+| `services/` (Spring Cloud infra) | `IxigoDiscovery` (Eureka, port 8765, `/ixigodiscovery`), `IxigoConfigServer` (port 8888, `/config`, backed by `csgo_props`), `IxigoProxy` (Zuul gateway, port 8763, `/ixigoproxy`) |
+| `services/` (business) | `IxigoDemManager` (`/demmanager`), `IxigoPlayersManager` (`/playersmanager`), `IxigoRconApi` (`/rcon`), `IxigoDiscordBot` (`/discordbot`), `IxigoEventDispatcher` (`/eventsdispatcher`), `IxigoServerHelper` (`/ixigohelper`), `IxigoNotification` (`/notification`, Telegram), `IxigoUi` (`/ixigoui`) |
+| `libs/` | `IxigoParent` (parent POM for business services), `IxigoLibrary` (artifactId `Library`), `Ixigo*Contract` (REST request/response models, version 2.0.0) |
+| `parsers/` | `DemoParserCS2` (TypeScript on `@laihoe/demoparser2`, CS2 demos), `DemParserNodeJs` (vendored copy of `saul/demofile`, CSGO demos; still needed because every deploy re-parses the old games) |
+| `plugins/` | `IxigoPlugin` (C# CounterStrikeSharp plugin for CS2) |
+| `tools/` | `IxigoIntegrationTests` (Cucumber), `IxigoUtils` (one-off DAO/DTO code generator) |
+| `legacy/` | Not built, kept for reference: `DemParser` (C#), `SourceModPlugins` (CSGO `.sp` plugins) |
+| Other | `Scripts/` (old Docker and Jenkins scripts, being replaced), `docs/` (diagrams, logo, font) |
+
+The `ixi_go` VM scripts clone this repo from `main` and depend on two paths: they build the plugin from `plugins/IxigoPlugin` and server-helper with `mvn -f pom.xml -pl services/IxigoServerHelper -am package`. Moving either folder needs a matching change in `ixi_go`, merged at the same time.
 
 Business services use Java 11, Spring Boot 2.7.4, Spring Cloud 2021.0.4. Exceptions: `IxigoConfigServer` and `IxigoDiscovery` extend `spring-boot-starter-parent` directly, and `IxigoProxy` is pinned to Boot 2.3.12 / Hoxton.SR11 because it still uses Zuul.
 
@@ -33,18 +37,18 @@ The code targets Java 11 and does not compile on a much newer JDK (Lombok from B
 
 ```bash
 mvn -B package                                     # everything
-mvn -B -pl IxigoDemManager -am package             # one service plus the modules it needs
+mvn -B -pl services/IxigoDemManager -am package    # one service plus the modules it needs
 docker run --rm -v "E:/Workspaces/Git/csgo_util:/src" -v ixigo-m2:/root/.m2 -w /src maven:3.9-eclipse-temurin-11 mvn -B -ntp package
 ```
 
-The `IxigoUi` POM copies `src/reactapp/build` into the static resources during `validate`, so build the React app first when packaging the UI: `npm install && npm run build` in `IxigoUi/src/reactapp`.
+The `IxigoUi` POM copies `src/reactapp/build` into the static resources during `validate`, so build the React app first when packaging the UI: `npm install && npm run build` in `services/IxigoUi/src/reactapp`.
 
-React dev server: `npm start` in `IxigoUi/src/reactapp`. When the page is not served by the Spring host, `window.srvContextPath` is undefined and `src/lib/constants/paths.ts` falls back to the **production** proxy `https://marco.selfip.net/ixigoproxy`, so a local `npm start` talks to live services unless that fallback is changed.
+React dev server: `npm start` in `services/IxigoUi/src/reactapp`. When the page is not served by the Spring host, `window.srvContextPath` is undefined and `src/lib/constants/paths.ts` falls back to the **production** proxy `https://marco.selfip.net/ixigoproxy`, so a local `npm start` talks to live services unless that fallback is changed.
 
 Run the CS2 parser by hand (prints the stats JSON to stdout; sample demos are in `Scripts/Docker/test/`):
 
 ```bash
-cd DemoParserCS2 && npm install
+cd parsers/DemoParserCS2 && npm install
 npx ts-node cs2DemoParser.ts <path-to-file.dem>
 ```
 
@@ -55,8 +59,8 @@ A service started locally reads `IXIGO_PROFILE` (default `local`), `IXIGO_CONFIG
 There are no unit tests in any service or in the React app. The only suite is `IxigoIntegrationTests`, and it currently **does not compile**: its step classes still import DemManager contract classes (`rest.demdata.RestMapStats`, `RestScoreTypes`, `RestUsersResp`, `RestUsersScores`, `rest.charts.RestMapsPlayed`) that were removed or moved in September 2023. It consists of Cucumber scenarios that call the real running services through their configured endpoints, so the stack (Config Server included) must be up. Features are in `src/test/resources/features`, tagged per area (`@demfiles`, `@demFilesParser`, `@eventDispatcher`, `@playersManager`, `@discordBot`, ...).
 
 ```bash
-mvn -B -P integration-tests -pl IxigoIntegrationTests -am test
-mvn -B -P integration-tests -pl IxigoIntegrationTests -am test -Dcucumber.filter.tags="@demFilesParser"
+mvn -B -P integration-tests -pl tools/IxigoIntegrationTests -am test
+mvn -B -P integration-tests -pl tools/IxigoIntegrationTests -am test -Dcucumber.filter.tags="@demFilesParser"
 ```
 
 A new step package must be added to the `GLUE_PROPERTY_NAME` list in `CucumberConfigurationTest`, and that class name must keep the `Test` suffix for Surefire to pick it up.
@@ -67,7 +71,7 @@ A new step package must be added to the `GLUE_PROPERTY_NAME` list in `CucumberCo
 
 Each service's `bootstrap.yml` sets `spring.application.name` (this is the Eureka service id, marked "Do not change") and points to the Config Server; `application.yml` holds only static bits such as the context path, upload limits and log levels. Business services do not set `server.port` locally: it comes from `csgo_props`.
 
-Everything is called through the Zuul proxy, which routes by Eureka id: `<host>/ixigoproxy/<eureka-id>/<context-path>/<endpoint>`, for example `/ixigoproxy/ixigo-dem-manager/demmanager/parse/all`. Renaming an application name or a context path therefore breaks the React `SERVICES_URLS` map (`IxigoUi/src/reactapp/src/lib/constants/paths.ts`), the listener URLs stored in the `event_listeners` table, and endpoint properties in `csgo_props`.
+Everything is called through the Zuul proxy, which routes by Eureka id: `<host>/ixigoproxy/<eureka-id>/<context-path>/<endpoint>`, for example `/ixigoproxy/ixigo-dem-manager/demmanager/parse/all`. Renaming an application name or a context path therefore breaks the React `SERVICES_URLS` map (`services/IxigoUi/src/reactapp/src/lib/constants/paths.ts`), the listener URLs stored in the `event_listeners` table, and endpoint properties in `csgo_props`.
 
 `IxigoUi` serves the React build through a Thymeleaf template (`src/main/resources/static/ui.html`). `MainController` injects the hashed `main.*.js`/`main.*.css` names and the context paths into `window`, and it lists the SPA routes explicitly (`/demfiles`, `/teams`, `/stats`, `/rcon`, `/discordbot`, `/joinus`, `/cs2server`): a new top-level React route must be added there too or deep links return 404.
 
@@ -83,23 +87,23 @@ All business services follow the same layering, built on `IxigoLibrary`:
 
 ### Data access
 
-No JPA repositories: data access is reactive R2DBC through the custom `IxigoDao<T extends IxigoDto>` in `IxigoLibrary/.../dao`. Each table or view has a `<name>Dao` (table/view name, key fields, field list) and a `<name>Dto` whose field names are the snake_case column names (`Dto.Fields.x` constants); rows are mapped by reflection on setter names, so a DTO field must match its column exactly. These pairs were generated by `IxigoUtils/CreateDaoAndDto` from the live schema. Most player statistics are PostgreSQL views (`012-initViewsDemFilesDb.sql`), and the DemManager `/charts/view` endpoint returns view data by name.
+No JPA repositories: data access is reactive R2DBC through the custom `IxigoDao<T extends IxigoDto>` in `libs/IxigoLibrary/.../dao`. Each table or view has a `<name>Dao` (table/view name, key fields, field list) and a `<name>Dto` whose field names are the snake_case column names (`Dto.Fields.x` constants); rows are mapped by reflection on setter names, so a DTO field must match its column exactly. These pairs were generated by `tools/IxigoUtils/CreateDaoAndDto` from the live schema. Most player statistics are PostgreSQL views (`012-initViewsDemFilesDb.sql`), and the DemManager `/charts/view` endpoint returns view data by name.
 
 PostgreSQL 11 hosts three databases: `demfiles` (DemManager), `discordbot` (DiscordBot: `users_map`, `bot_config`), `event_dispatcher` (EventDispatcher: `event_listeners`). Schemas and seed data are `Scripts/Docker/Build/PostgreSql/*.sql`, run in filename order by the Postgres image's `docker-entrypoint-initdb.d`. **These scripts start with `DROP DATABASE`**: never run them against the live database. `018-optimizedNewDemFilesDb_views.sql` is commented out in that Dockerfile.
 
 ### Game night event flow
 
-1. The CS2 plugin (`CsgoPlugins/IxigoPlugin/IxigoPlugin.cs`) writes the latest game event name (`round_start`, `round_end`, `round_announce_warmup`, `cs_win_panel_match`) to `event.txt` on the game server.
+1. The CS2 plugin (`plugins/IxigoPlugin/IxigoPlugin.cs`) writes the latest game event name (`round_start`, `round_end`, `round_announce_warmup`, `cs_win_panel_match`) to `event.txt` on the game server.
 2. `IxigoServerHelper` runs on the game server host, polls that file every second (`IxiGoEventMonitorImp`) and POSTs each change to the EventDispatcher. Raw names are mapped to the `EventType` enum in `IxigoEventDispatcherContract`, so a new game event needs the plugin, that enum and listener rows.
 3. `IxigoEventDispatcher` forwards each event to the listeners registered in `event_listeners` (defaults in `030-initEventDispatcherDb.sql`); a listener is deactivated after repeated failures.
 4. Listeners: DiscordBot (`/discordbot/events`: team balancing and voice channel moves on warmup and match end), ServerHelper (`/ixigohelper/event`: on `WARMUP_*`/`SHUT_DOWN` it uploads the newest `.dem` files to DemManager), Notification (Telegram).
 5. `IxigoDemManager` stores uploads, queues them (`dem_process_queue`) and parses each one by shelling out to `npx ts-node <parser> <file>`. `DemFileFormatChecker` picks the CS2 parser (`parserCs2ExecPath`) or the legacy CSGO one (`parserExecPath`); `parserEnvironment` (`WINDOWS` or `RASP`) selects `DemProcessorNodeJsWindows` or `DemProcessorNodeJsLinux`. The parser's stdout JSON is read into `SvcNodeJsParseOutput` and written to the `demfiles` tables, then `DEM_FILES_PROCESSED` is fired. The JSON shape in `cs2DemoParser.ts`, `SvcNodeJsParseOutput` and the `demfiles` schema must change together.
-6. `IxigoPlayersManager` reads player scores from DemManager and partitions players into balanced teams (`PartitionTeamsIxigo` plus `IxigoLibrary/.../partitioning`).
+6. `IxigoPlayersManager` reads player scores from DemManager and partitions players into balanced teams (`PartitionTeamsIxigo` plus `libs/IxigoLibrary/.../partitioning`).
 7. `IxigoDiscordBot` maps Discord users to Steam IDs (`users_map`) and reacts to chat commands (`!balance`, `!together`, `!moveToChannel`, `!autoBalanceOn`/`Off`/`Status`, `!restart`, `!help`, `!ping`; see `DiscordChatCommands`). `IxigoRconApi` sends RCON commands to the server.
 
 ## Deployment
 
-There is no GitHub Actions CI. Two generations of deployment coexist:
+There is no GitHub Actions CI. Two generations of deployment coexist, both being replaced by the plan in `DOCKERIZATION_PLAN.md`. Both still use the old flat folder layout (`IxigoDemManager/`, `DemoParserCS2/`, ...) and build from GitHub `main`, so they keep working only until the restructured layout reaches `main`:
 
 - **Legacy (Jenkins, jars on LAN hosts).** `Scripts/Jenkins/buildProjects.sh <workspace>` builds the React app and every jar. `Scripts/Jenkins/deployJars.sh` copies jars plus each module's `Scripts/startStop.sh` to `/opt/ixigo/<App>` on LAN hosts (Raspberry Pis and Docker hosts), restarts them, copies the Node parsers, recreates the Postgres container with `docker system prune --all --volumes`, and finally triggers `parse/all` through the public proxy `https://marco.selfip.net/ixigoproxy`.
 - **Current (Docker, DemManager first).** `Scripts/Docker/Build/build-and-push-dem-manager.ps1` runs `docker compose -f docker-compose-build-dem-manager.yml build --no-cache` and pushes `docker-registry.marco.selfip.net/ixigo/dem-manager:latest`. The image bundles the jar, Node 24, ts-node and both parsers (`/demParserCs2`, `/demParserCsgo`); `start.sh` sleeps 20 s to let Eureka and the Config Server come up. The host deploys it with `Scripts/Docker/Deploy/docker-compose-deploy-dem-manager.yml`; `.env` (`DEM_FOLDER`, `EUREKA_INSTANCE_IP`) and the `env-*.properties` files hold `__PLACEHOLDER__` values that are filled on the host, never committed.
@@ -110,6 +114,6 @@ There is no GitHub Actions CI. Two generations of deployment coexist:
 
 ## Recurring changes
 
-- **Add a CS2 map to the UI picker:** add an entry to `CS2_MAPS` in `IxigoUi/src/reactapp/src/contents/cs2-server/useCs2ServerContent.ts` and add the image to `IxigoUi/src/reactapp/public/maps/cs2/`, named `<workshop_id>.jpeg` for workshop maps or `<map_name>.jpeg` for official ones (`Cs2ServerContent.tsx` builds the path, so the file name must match exactly).
+- **Add a CS2 map to the UI picker:** add an entry to `CS2_MAPS` in `services/IxigoUi/src/reactapp/src/contents/cs2-server/useCs2ServerContent.ts` and add the image to `services/IxigoUi/src/reactapp/public/maps/cs2/`, named `<workshop_id>.jpeg` for workshop maps or `<map_name>.jpeg` for official ones (`Cs2ServerContent.tsx` builds the path, so the file name must match exactly).
 - **Add a player:** insert the Steam user into `016-seedBaseData.sql` (`demfiles.users`) and the Discord/Steam mapping into `020-initDiscordDb.sql` (`users_map`). These files only apply to a fresh database; the live one needs the same rows inserted separately.
-- **Bump the CS2 demo parser:** change the `@laihoe/demoparser2` version in `DemoParserCS2/package.json`, then rebuild and push the dem-manager image.
+- **Bump the CS2 demo parser:** change the `@laihoe/demoparser2` version in `parsers/DemoParserCS2/package.json`, then rebuild and push the dem-manager image.

@@ -4,7 +4,7 @@
 
 This project was created 4 years ago for CSGO servers. With CS2 few things have changed, so I'm updating the project to work with the new version of the game.
 
-![Rcon UI](./misc/pictures/ixigo-logo.png)
+![Rcon UI](./docs/pictures/ixigo-logo.png)
 
 This is a personal project that I made to simplify few things that I do when playing with my friends at CSGO. I have created a custom CSGO [dedicated server](https://github.com/marcosolina/ixi_go) that we use every week and we wanted to enhance our gaming experience with the automation of few tasks, like changing the map, add or remove bots, analyse our game performance and generate balanced teams based on our performance.
 
@@ -24,7 +24,7 @@ This is a personal project that I made to simplify few things that I do when pla
 - .NET Core
 - PostgreSQL
 - [IxiGo Dedicated Server](https://github.com/marcosolina/ixi_go)
-- [Discord Bot Token](./IxigoDiscordBot/)
+- [Discord Bot Token](./services/IxigoDiscordBot/)
 - [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
 - [Steam API Key](http://steamcommunity.com/dev/apikey)
 - **Optional**:
@@ -32,35 +32,44 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ## Project Structure
 
-![Rcon UI](./misc/pictures/Services_Diagram.png)
+![Rcon UI](./docs/pictures/Services_Diagram.png)
 
 - csgo_util
-  - **AppsProperties**: This folder contains the properties used by the different services in the different environments. These properties are retrieved using the "Ixigo Config Server"
-  - [CsgoPlugins](./CsgoPlugins/): This folder contains the source code of the CSGO plugins that we use
-  - [DemParser](./DemParser/): This folders contains the C# project that we use to parse the ".dem" files and extract the games stats
-  - [IxigoConfigServer](./IxigoConfigServer/): This is the Spring Boot configuration service that is used to serve the Services Properties for the different environmnets
-  - [IxigoDemManager](./IxigoDemManager): This Spring Boot service manages the "dem" files created by the CSGO server. For example it will store new files, use the DemParse app to process these files, expose REST API to retrieve the info or the files itself
-  - [IxigoDiscordBot](./IxigoDiscordBot/): This Spring Boot service is used to automate some taks while we play on our CSGO dedicated server. For example it will listen for either CSGO events or messages in the chat and then it can move the players to the appropriate channel, retrieve the Players statistic to balance the teams. Type "!help" in the discord chat to see a full list of tasks that you can trigger
-  - [IxigoDiscovery](./IxigoDiscovery/): This Spring Boot service is used to register all the services and simplify the S2S calls. It can be usefull for load balancing, either client side or server side load balancing
-  - [IxigoEventDispatcher](./IxigoEventDispatcher/): This Spring Boot service receives the event fired by the Ixigo Server Helper and forwards these events to all the registered event listeners
-  - [IxigoNotification](./IxigoNotification/): This Spring Boot service it is used to send notifications, for example via Telegram
-  - [IxigoPlayersManager](./IxigoPlayersManager/): This Spring Boot service uses the players stats to perform some calculation. For example, this service is used to generate balanced CSGO teams when we play on our CSGO dedicated server
-  - [IxigoProxy](./IxigoProxy/): This Spring Boot service is a proxy service that it is used to simplify the S2S calls. It is usesfull to perform the service side load balancing and to have a central point to call all the services. It can also help when you have CORS issues
-  - [IxigoRconApiService](./IxigoRconApiService/): This Spring Boot service it is used to send RCON commands to our CSGO dedicated server via REST APIs
-  - [IxigoServerHelper](./IxigoServerHelper/): This Spring Boot service is deployed on the same machine where the CSGO server is running. It monitors some CSGO files, fires events to the Ixigo Event Dispatcher and uploads the DEM files to the DEM manager service
-  - [IxigoUi](./IxigoUi/): This Spring Boot Service it is used to provide a simple UI that can be used to perform some tasks when we play on our CSGO dedicate server. For example it can be used to quickly change the map, add / remove bot and balance the teams
-  - **Misc**: Extra files used for example for the documentation or the UI (CSGO Font, logo, Screenshots etc...)
+  - `pom.xml`: Maven aggregator that builds every Java module in the right order (`mvn -B package`)
+  - **libs**: shared Java code
+    - [IxigoParent](./libs/IxigoParent/): parent POM of the business services
+    - [IxigoLibrary](./libs/IxigoLibrary/): shared Spring components (request mediator, DAO base classes, web client, validators)
+    - `Ixigo*Contract`: the REST models of each service, shared with the services that call it
+  - **services**: the Spring Boot services
+    - [IxigoConfigServer](./services/IxigoConfigServer/): This is the Spring Boot configuration service that is used to serve the Services Properties for the different environmnets. The properties live in the [csgo_props](https://github.com/marcosolina/csgo_props) repository
+    - [IxigoDemManager](./services/IxigoDemManager): This Spring Boot service manages the "dem" files created by the CSGO server. For example it will store new files, use the parsers to process these files, expose REST API to retrieve the info or the files itself
+    - [IxigoDiscordBot](./services/IxigoDiscordBot/): This Spring Boot service is used to automate some taks while we play on our CSGO dedicated server. For example it will listen for either CSGO events or messages in the chat and then it can move the players to the appropriate channel, retrieve the Players statistic to balance the teams. Type "!help" in the discord chat to see a full list of tasks that you can trigger
+    - [IxigoDiscovery](./services/IxigoDiscovery/): This Spring Boot service is used to register all the services and simplify the S2S calls. It can be usefull for load balancing, either client side or server side load balancing
+    - [IxigoEventDispatcher](./services/IxigoEventDispatcher/): This Spring Boot service receives the event fired by the Ixigo Server Helper and forwards these events to all the registered event listeners
+    - [IxigoNotification](./services/IxigoNotification/): This Spring Boot service it is used to send notifications, for example via Telegram
+    - [IxigoPlayersManager](./services/IxigoPlayersManager/): This Spring Boot service uses the players stats to perform some calculation. For example, this service is used to generate balanced CSGO teams when we play on our CSGO dedicated server
+    - [IxigoProxy](./services/IxigoProxy/): This Spring Boot service is a proxy service that it is used to simplify the S2S calls. It is usesfull to perform the service side load balancing and to have a central point to call all the services. It can also help when you have CORS issues
+    - [IxigoRconApi](./services/IxigoRconApi/): This Spring Boot service it is used to send RCON commands to our CSGO dedicated server via REST APIs
+    - [IxigoServerHelper](./services/IxigoServerHelper/): This Spring Boot service is deployed on the same machine where the CSGO server is running. It monitors some CSGO files, fires events to the Ixigo Event Dispatcher and uploads the DEM files to the DEM manager service
+    - [IxigoUi](./services/IxigoUi/): This Spring Boot Service it is used to provide a simple UI that can be used to perform some tasks when we play on our CSGO dedicate server. For example it can be used to quickly change the map, add / remove bot and balance the teams
+  - **parsers**: the ".dem" parsers that the DEM manager runs
+    - [DemoParserCS2](./parsers/DemoParserCS2/): CS2 demos
+    - [DemParserNodeJs](./parsers/DemParserNodeJs/): CSGO demos (still needed to re-parse the old games)
+  - **plugins**: [IxigoPlugin](./plugins/IxigoPlugin/), the CS2 server plugin (CounterStrikeSharp) that exports the game events
+  - **tools**: [IxigoIntegrationTests](./tools/IxigoIntegrationTests/) (Cucumber) and [IxigoUtils](./tools/IxigoUtils/) (DAO/DTO generator)
+  - **legacy**: kept for reference, not built: the C# [DemParser](./legacy/DemParser/) and the CSGO [SourceMod plugins](./legacy/SourceModPlugins/)
+  - **docs**: Extra files used for example for the documentation or the UI (CSGO Font, logo, Screenshots etc...)
   - **Scripts**: This folder contains the scripts that I use to automate few things
     - **Docker**: Contains the scripts that I used to generate the required containers
     - **jenkins**: Contains the script/s that are used by Jenkins in the CI/CD pipeline
 
 ## Services flow
 
-![Services flow](./misc/pictures/Services_Flow_Diagram.png)
+![Services flow](./docs/pictures/Services_Flow_Diagram.png)
 
 ## Start With Docker Compose :warning: work in progress, I need to add the missing notification service images :warning:
 
-![Docker Compose](./misc/pictures/docker_logo200.png)
+![Docker Compose](./docs/pictures/docker_logo200.png)
 
 The script it will use a [Docker Compose](https://docs.docker.com/compose/) yml file to create the network, images, containers and exposing the required ports. It will also create one container for the CSGO dedicated server. I will basically start all you need to run our CSGO server, plugins and micro services.
 

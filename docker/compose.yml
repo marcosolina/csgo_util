@@ -1,0 +1,243 @@
+# Runs the IxiGo stack from the private registry. The same file goes on every host; each host's
+# .env (copied from .env.example) says which services run there and where the shared ones are.
+#
+#   sh deploy.sh                      pull and (re)start this host's services; on the db host it
+#                                     also recreates Postgres from the seed SQL
+#   sh deploy.sh --reparse            the same, then dem-manager re-parses every .dem file
+#   docker compose run --rm reparse   only the re-parse (any host whose .env has DEM_MANAGER_URL)
+#
+# Profiles (COMPOSE_PROFILES in .env): one per host role, and each service's own name, so a single
+# service can move to another host (for example COMPOSE_PROFILES=services,dem-manager).
+#   infra     config-server, discovery                     rasp26
+#   gateway   proxy                                        pi.hole
+#   services  event-dispatcher, players-manager, rcon-api,
+#             discord-bot, ui, notification                ixigoservices.lan
+#   db        postgres                                     docker.lan
+#   dem       dem-manager                                  ds1522
+#   tools     reparse (one-shot, never started by "up")
+# server-helper runs on the game server VM and is not deployed with this file yet.
+#
+# The services on different hosts reach each other through Eureka and the public gateway, so every
+# service publishes its port 1:1 and registers the host address (HOST_ADDRESS) in Eureka instead of
+# its container IP. The ports must match server.port in csgo_props.
+
+name: ixigo
+
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: "3"
+
+# Every service gets its own "test"
+x-healthcheck: &healthcheck
+  interval: 30s
+  timeout: 5s
+  retries: 5
+  # Slow hosts plus the config client retries (about 2.5 minutes) before the service is up
+  start_period: 5m
+
+x-java: &java
+  restart: unless-stopped
+  logging: *logging
+  # The image sizes the JVM heap at 75% of this limit
+  mem_limit: ${JAVA_MEM_LIMIT:-512m}
+
+# Environment of every service that reads csgo_props through the Config Server
+x-spring-env: &spring-env
+  IXIGO_PROFILE: ${IXIGO_PROFILE:-rasp}
+  IXIGO_CONFIG_SERVER_URI: ${IXIGO_CONFIG_SERVER_URI}
+  IXIGO_CONFIG_SERVER_USER: ${IXIGO_CONFIG_SERVER_USER}
+  IXIGO_CONFIG_SERVER_PASSW: ${IXIGO_CONFIG_SERVER_PASSW}
+  IXIGO_EUREKA_SERVER: ${IXIGO_EUREKA_SERVER}
+  EUREKA_INSTANCE_IP_ADDRESS: ${HOST_ADDRESS}
+
+services:
+  ##########################################################################
+  # infra: Config Server and Eureka
+  ##########################################################################
+  config-server:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/config-server:${TAG:-latest}
+    profiles: [infra, config-server]
+    ports: ["8888:8888"]
+    environment:
+      IXIGO_CONFIG_SERVER_USER: ${IXIGO_CONFIG_SERVER_USER}
+      IXIGO_CONFIG_SERVER_PASSW: ${IXIGO_CONFIG_SERVER_PASSW}
+      IXIGO_CONFIG_ENC_KEY: ${IXIGO_CONFIG_ENC_KEY}
+      IXIGO_GIT_REPO_BRANCH: ${IXIGO_GIT_REPO_BRANCH:-main}
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8888/config/actuator/health"]
+
+  discovery:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/discovery:${TAG:-latest}
+    profiles: [infra, discovery]
+    ports: ["8765:8765"]
+    environment:
+      # Production Eureka lives at /discovery (IXIGO_EUREKA_SERVER on every host, Nginx Proxy
+      # Manager); the code default is /ixigodiscovery
+      SERVER_SERVLET_CONTEXT_PATH: /discovery
+      IXIGO_EUREKA_HOST_NAME: ${HOST_ADDRESS}
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8765/discovery/actuator/health"]
+
+  ##########################################################################
+  # gateway: Zuul proxy (does not read the Config Server)
+  ##########################################################################
+  proxy:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/proxy:${TAG:-latest}
+    profiles: [gateway, proxy]
+    ports: ["8763:8763"]
+    environment:
+      IXIGO_EUREKA_SERVER: ${IXIGO_EUREKA_SERVER}
+      EUREKA_INSTANCE_IP_ADDRESS: ${HOST_ADDRESS}
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8763/ixigoproxy/actuator/health"]
+
+  ##########################################################################
+  # services: business services
+  ##########################################################################
+  event-dispatcher:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/event-dispatcher:${TAG:-latest}
+    profiles: [services, event-dispatcher]
+    ports: ["8081:8081"]
+    environment:
+      <<: *spring-env
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8081/eventsdispatcher/actuator/health"]
+
+  players-manager:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/players-manager:${TAG:-latest}
+    profiles: [services, players-manager]
+    ports: ["8082:8082"]
+    environment:
+      <<: *spring-env
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8082/playersmanager/actuator/health"]
+
+  rcon-api:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/rcon-api:${TAG:-latest}
+    profiles: [services, rcon-api]
+    ports: ["8083:8083"]
+    environment:
+      <<: *spring-env
+      IXIGO_CSGO_PASSW: ${IXIGO_CSGO_PASSW}
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8083/rcon/actuator/health"]
+
+  discord-bot:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/discord-bot:${TAG:-latest}
+    profiles: [services, discord-bot]
+    ports: ["8085:8085"]
+    environment:
+      <<: *spring-env
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8085/discordbot/actuator/health"]
+
+  ui:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/ui:${TAG:-latest}
+    profiles: [services, ui]
+    ports: ["8086:8086"]
+    environment:
+      <<: *spring-env
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8086/ixigoui/actuator/health"]
+
+  notification:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/notification:${TAG:-latest}
+    profiles: [services, notification]
+    ports: ["8087:8087"]
+    environment:
+      <<: *spring-env
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8087/notification/actuator/health"]
+
+  ##########################################################################
+  # db: PostgreSQL with the IxiGo schemas and seed data
+  ##########################################################################
+  postgres:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/postgres:${TAG:-latest}
+    profiles: [db, postgres]
+    restart: unless-stopped
+    logging: *logging
+    ports: ["5432:5432"]
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # No named volume on purpose: the data sits in the container's anonymous volume, so a restart or
+    # a host reboot keeps it, and deploy.sh removes it so every deploy starts again from the seed SQL
+    healthcheck:
+      <<: *healthcheck
+      start_period: 1m
+      test: ["CMD-SHELL", "pg_isready -U \"$${POSTGRES_USER}\" -d postgres"]
+
+  ##########################################################################
+  # dem: dem-manager with both demo parsers
+  ##########################################################################
+  dem-manager:
+    <<: *java
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/dem-manager:${TAG:-latest}
+    profiles: [dem, dem-manager]
+    mem_limit: ${DEM_MANAGER_MEM_LIMIT:-3g}
+    # Must be able to write DEM_FOLDER on the host (the old image ran as root)
+    user: ${DEM_MANAGER_USER:-1000:1000}
+    ports: ["8090:8090"]
+    environment:
+      <<: *spring-env
+      # The "docker" profile in csgo_props has this image's parser paths and port 8090
+      IXIGO_PROFILE: ${IXIGO_PROFILE:-rasp},docker
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # The parsers run as Node child processes in this container: leave them most of the memory
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=40 -XX:+ExitOnOutOfMemoryError
+    volumes:
+      - ${DEM_FOLDER:-./demfiles}:/var/www/html/cstrike/demfiles
+    healthcheck:
+      <<: *healthcheck
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8090/demmanager/actuator/health"]
+
+  ##########################################################################
+  # tools: one-shot jobs, run with "docker compose run --rm <name>"
+  ##########################################################################
+  reparse:
+    image: curlimages/curl:8.11.1
+    profiles: [tools]
+    restart: "no"
+    environment:
+      DEM_MANAGER_URL: ${DEM_MANAGER_URL}
+    # Waits (up to 10 minutes) until dem-manager is healthy, then asks it to queue and parse every .dem file
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        i=0
+        until curl -fsS -o /dev/null "$${DEM_MANAGER_URL}/actuator/health"; do
+          i=$$((i + 1))
+          if [ "$$i" -ge 60 ]; then echo "dem-manager is not healthy at $${DEM_MANAGER_URL}"; exit 1; fi
+          echo "Waiting for dem-manager ($$i/60)"
+          sleep 10
+        done
+        curl -fsS -X POST "$${DEM_MANAGER_URL}/parse/all"
+        echo "parse/all accepted: dem-manager is re-parsing the .dem files in the background"

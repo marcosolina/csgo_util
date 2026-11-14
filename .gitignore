@@ -346,3 +346,6 @@ Scripts/demoparsetest.py
 Scripts/file.json
 **/*.classpath
 **/*.factorypath
+
+# Real Compose environment of a host (secrets); docker/.env.example is the committed template
+docker/.env

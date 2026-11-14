@@ -15,6 +15,8 @@ public class SecurityConfiguration {
 	        .ignoringAntMatchers("/decrypt/**")
 	        .and()
 	        .authorizeRequests()
+	        // Healthcheck used by Docker; returns only UP/DOWN, no details
+	        .antMatchers("/actuator/health", "/actuator/health/**").permitAll()
 	        .anyRequest()
 	        .authenticated()
 	        .and()

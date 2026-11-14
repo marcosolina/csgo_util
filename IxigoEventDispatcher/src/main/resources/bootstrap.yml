@@ -15,8 +15,13 @@ spring:
     name: ixigo-event-dispatcher                                                                                     # Do not change this
   cloud:
     inetutils:
-      preferred-networks: 192.168.1                                                                             # Workaround because I have multiple network interfaces
+      preferred-networks: ${IXIGO_PREFERRED_NETWORKS:192.168.1}   # Eureka picks the IP on this network; override when running in Docker
     config:
       uri: ${IXIGO_CONFIG_SERVER_URI:http://localhost:8888/config}                                              # URL of the config server
       username: ${IXIGO_CONFIG_SERVER_USER:REPLACE_ME}                                                          # User name to access the config server
-      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}  
+      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}
+      fail-fast: ${IXIGO_CONFIG_FAIL_FAST:true}      # Exit (and let Docker restart the container) instead of starting with local defaults
+      retry:                                         # Retry while the config server is still starting (about 2.5 minutes)
+        max-attempts: ${IXIGO_CONFIG_RETRY_ATTEMPTS:20}
+        multiplier: 1.5
+        max-interval: 10000

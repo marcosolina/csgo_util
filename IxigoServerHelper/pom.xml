@@ -7,6 +7,7 @@
 		<groupId>com.ixigo</groupId>
 		<artifactId>IxigoParent</artifactId>
 		<version>1.0.0</version>
+		<relativePath>../IxigoParent/pom.xml</relativePath>
 	</parent>
 	
 	<groupId>com.ixigo.serverhelper</groupId>

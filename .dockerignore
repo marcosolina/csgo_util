@@ -1,0 +1,42 @@
+# Build context for docker/Dockerfile is the repository root.
+# Keep it to what the images need, so builds stay fast and reproducible.
+
+.git
+**/.git
+
+# Build outputs and dependencies (rebuilt inside the image)
+**/target
+**/bin
+**/obj
+**/dist
+**/node_modules
+services/IxigoUi/src/reactapp/build
+# React assets copied into the UI module by earlier local builds; keep only the template
+services/IxigoUi/src/main/resources/static/**
+!services/IxigoUi/src/main/resources/static/ui.html
+
+# Runtime data and logs
+**/*.dem
+**/logs
+**/*.log
+
+# IDE metadata
+**/.project
+**/.classpath
+**/.settings
+**/.factorypath
+**/.idea
+**/.vscode
+**/*.iml
+
+# Not part of any image
+.claude
+.github
+docs
+legacy
+plugins
+tools
+Scripts
+CsgoPlugins
+DemParser
+*.md

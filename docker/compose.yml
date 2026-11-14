@@ -8,12 +8,12 @@
 #
 # Profiles (COMPOSE_PROFILES in .env): one per host role, and each service's own name, so a single
 # service can move to another host (for example COMPOSE_PROFILES=services,dem-manager).
-#   infra     config-server, discovery                     rasp26
-#   gateway   proxy                                        pi.hole
+#   infra     config-server, discovery                     mini-pc
+#   gateway   proxy                                        mini-pc
 #   services  event-dispatcher, players-manager, rcon-api,
-#             discord-bot, ui, notification                ixigoservices.lan
-#   db        postgres                                     docker.lan
-#   dem       dem-manager                                  ds1522
+#             discord-bot, ui, notification                mini-pc
+#   db        postgres                                     mini-pc
+#   dem       dem-manager                                  ds1522 (Synology NAS)
 #   tools     reparse (one-shot, never started by "up")
 # server-helper runs on the game server VM and is not deployed with this file yet.
 #
@@ -41,7 +41,7 @@ x-java: &java
   restart: unless-stopped
   logging: *logging
   # The image sizes the JVM heap at 75% of this limit
-  mem_limit: ${JAVA_MEM_LIMIT:-512m}
+  mem_limit: ${JAVA_MEM_LIMIT:-768m}
 
 # Environment of every service that reads csgo_props through the Config Server
 x-spring-env: &spring-env
@@ -186,6 +186,8 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # Gateway that the event dispatcher calls the listeners through (empty: the public one)
+      IXIGO_LISTENERS_BASE_URL: ${IXIGO_LISTENERS_BASE_URL}
     # No named volume on purpose: the data sits in the container's anonymous volume, so a restart or
     # a host reboot keeps it, and deploy.sh removes it so every deploy starts again from the seed SQL
     healthcheck:
@@ -233,7 +235,7 @@ services:
       - |
         set -e
         i=0
-        until curl -fsS -o /dev/null "$${DEM_MANAGER_URL}/actuator/health"; do
+        until curl -fs -o /dev/null "$${DEM_MANAGER_URL}/actuator/health"; do
           i=$$((i + 1))
           if [ "$$i" -ge 60 ]; then echo "dem-manager is not healthy at $${DEM_MANAGER_URL}"; exit 1; fi
           echo "Waiting for dem-manager ($$i/60)"

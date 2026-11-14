@@ -49,10 +49,10 @@ Services call each other only through the gateway URL (`ixigo.end-points.gateway
 
   | Profile | Services | Host today |
   | --- | --- | --- |
-  | `infra` | config-server, discovery | rasp26 / raspweb.lan, 192.168.1.26 (Eureka at `/discovery`, not built from this repo: it has an actuator that IxigoDiscovery never had) |
-  | `gateway` | proxy | pi.hole, 192.168.1.30 |
-  | `services` | event-dispatcher, players-manager, rcon-api, discord-bot, ui, notification | ixigoservices.lan, 192.168.1.210 (jars) |
-  | `db` | postgres | docker.lan, 192.168.1.243 |
+  | `infra` | config-server, discovery | target mini PC; today rasp26 / raspweb.lan, 192.168.1.26 (Eureka at `/discovery`, not built from this repo: it has an actuator that IxigoDiscovery never had) |
+  | `gateway` | proxy | target mini PC; today pi.hole, 192.168.1.30 |
+  | `services` | event-dispatcher, players-manager, rcon-api, discord-bot, ui, notification | target mini PC; today ixigoservices.lan, 192.168.1.210 (jars, VM to delete) |
+  | `db` | postgres | target mini PC; today docker.lan, 192.168.1.243 |
   | `dem` | dem-manager | ds1522 (Synology DS1522+, amd64), 192.168.1.237: already a container, port 8090, profile `rasp,docker`, registers `ds1522`, runs as root, dem files in `/volume1/ixigo-dem-files` |
   | none | server-helper | Azure VM (Phase S) |
 
@@ -68,7 +68,7 @@ Services call each other only through the gateway URL (`ixigo.end-points.gateway
 
   No 32-bit host, so amd64 plus arm64 images cover everything. Only docker.lan and the NAS have Docker.
 
-- [ ] **D5 Docker on the jar hosts, or consolidate:** either install Docker on rasp26, pi.hole and ixigoservices.lan (tight on rasp26's 906 MB, an end-of-life OS on ixigoservices.lan, and the LAN DNS on pi.hole), or move `infra`, `gateway` and `services` onto docker.lan next to `db` (one Compose host plus the NAS; needs the 8085 clash solved and the Nginx Proxy Manager upstreams moved). Marco to decide.
+- [x] **D5 Target hosts:** everything except dem-manager runs as containers directly on the **mini PC** (`marco@192.168.1.24`, DNS `mini-pc`, hostname `minipc`: Ryzen 5 5600U, 12 threads, 62 GB, Ubuntu 24.04, Docker 29.9.3, Compose v5.7.1, no containers yet, none of the IxiGo ports in use). It is the KVM host of docker.lan and ixigoservices.lan. dem-manager stays on the NAS. After the cutover: delete the ixigoservices.lan VM, stop the jars on rasp26 and rasp30, remove the old Postgres container from docker.lan. `.env` on the mini PC: `COMPOSE_PROFILES=infra,gateway,services,db`, `HOST_ADDRESS=192.168.1.24`.
 - [x] **O2 CPU architectures:** amd64 and arm64, so every image is built multi-arch (`linux/amd64,linux/arm64`).
 - [x] **O3 Legacy code:** move the C# `DemParser` and the SourceMod `.sp` plugins to `legacy/`, outside the build. (`DemParserNodeJs` stays a live parser: old CSGO demos still need it on every rebuild.)
 
@@ -141,10 +141,10 @@ One file for every host; each host's `.env` picks its services with `COMPOSE_PRO
 
 - [x] Every service has two profiles: its host role (from O1) and its own name, so one service can move host (`COMPOSE_PROFILES=services,dem-manager`). Deploy on a host: `sh deploy.sh`.
 - [x] Image references only, no `build:`. The host needs `compose.yml`, `deploy.sh` and its `.env`, not the repo.
-- [x] Shared YAML anchors: `restart: unless-stopped`, json-file log rotation (3 × 10 MB), `mem_limit` (`JAVA_MEM_LIMIT`, default 512m; the JVM takes 75% of it) and the Spring environment (`IXIGO_PROFILE`, Config Server URI and credentials, `IXIGO_EUREKA_SERVER`, all from `.env`). Secrets go only to the services that read them.
+- [x] Shared YAML anchors: `restart: unless-stopped`, json-file log rotation (3 × 10 MB), `mem_limit` (`JAVA_MEM_LIMIT`, default 768m since the jars use 300 to 400 MB RSS today; the JVM heap takes 75% of it) and the Spring environment (`IXIGO_PROFILE`, Config Server URI and credentials, `IXIGO_EUREKA_SERVER`, all from `.env`). Secrets go only to the services that read them.
 - [x] Cross-host Eureka registration: each service publishes its port 1:1 and sets `EUREKA_INSTANCE_IP_ADDRESS=${HOST_ADDRESS}`.
 - [x] Discovery runs at `/discovery` (`SERVER_SERVLET_CONTEXT_PATH`), the path every host and Nginx Proxy Manager use today; the code default `/ixigodiscovery` is left for local development.
-- [x] **Security:** the Zuul actuator exposure is now `health,info,routes` instead of `'*'` (in `IxigoProxy/application.yml`, live with the next proxy image). From outside, `https://marco.selfip.net/ixigoproxy/actuator/*` already returns an empty 200, so Nginx Proxy Manager seems to block it today; the LAN port 8763 was open.
+- [x] **Security:** the Zuul actuator exposure is now `health,info,routes` instead of `'*'` (in `IxigoProxy/application.yml`, in the images since `f1d159e2`). **Correction (found in the Phase 6 test):** the actuator was never reachable. With `zuul.servlet-path: /` the Zuul servlet takes every path, and any path without a route (its own `/actuator/...` included) gets an empty 200, so `env` and `heapdump` were not exposed. The change stays as defence in depth. Side effects of that behaviour: the proxy healthcheck only proves that Tomcat answers, and the event dispatcher records a success when it posts to a service that is not registered (for example server-helper while the VM is off). B1 fixes both.
 - [x] Healthchecks on every service (curl to `/actuator/health`, `pg_isready`). No `depends_on`: every dependency is on another host or covered by the config-client retry and the restart policy, so the file needs no recent Compose feature.
 - [x] Postgres rebuilt every deploy (D3): no named volume. `deploy.sh` runs `docker compose rm --stop --force --volumes postgres` before `up`, which also deletes the old anonymous volume (`--renew-anon-volumes` would leave it dangling). A restart or reboot keeps the data.
 - [x] One-shot `reparse` service (`curlimages/curl`, `tools` profile): waits up to 10 minutes for dem-manager's health, then POSTs `parse/all` to `DEM_MANAGER_URL`. `sh deploy.sh --reparse` or `docker compose run --rm reparse`.
@@ -152,23 +152,29 @@ One file for every host; each host's `.env` picks its services with `COMPOSE_PRO
 - [x] `docker/.env.example` with every variable and a comment; `docker/.env` is in `.gitignore`.
 - [x] `docker/deploy.sh` per host: pull, recreate Postgres when this host runs it, `up -d`, optional reparse, `ps`. Full deploy order: db, infra, gateway, services, dem, reparse.
 - [x] `.gitattributes` with `*.sh text eol=lf`; `deploy.sh` is committed executable.
-- [ ] Commit Phase 4, then push the proxy image again (actuator change) with the next `next` push.
-- [ ] Before the first host deploy: decide D5. On the NAS set `DEM_MANAGER_USER=1026:100` (owner of `/volume1/ixigo-dem-files`); Marco runs the NAS project from the Container Manager screen with the `.env` written over SSH, so check that Container Manager honours `COMPOSE_PROFILES=dem` from `.env` (if not, every service is skipped and nothing starts).
+- [x] Commit Phase 4 (`f1d159e2`), then push the proxy image again (actuator change) with the next `next` push.
+- [ ] Before the first host deploy: on the NAS set `DEM_MANAGER_USER=1026:100` (owner of `/volume1/ixigo-dem-files`); Marco runs the NAS project from the Container Manager screen with the `.env` written over SSH, so check that Container Manager honours `COMPOSE_PROFILES=dem` from `.env` (if not, every service is skipped and nothing starts).
 - [ ] The old `deployJars.sh` runs `docker system prune --all --volumes --force` on docker.lan, which now also runs Immich: a deploy while Immich is stopped would delete its unused volumes. Retire that script before any further Jenkins deploy, or remove that line.
 
 ### Phase 5: configuration (`csgo_props`)
 
-- [ ] `docker` profile: `ixigo.postgres.host` and gateway endpoints pointing at reachable host addresses, one agreed dem-manager port (8080 in the old deploy compose vs 8090 in the profile).
-- [ ] Event listener seed rows (`030-initEventDispatcherDb.sql`) use `http://localhost:8763/...`, which is wrong inside a container; point them at the proxy host address (they are re-seeded on every deploy, so this is the place to fix them).
-- [ ] Agree the active profile list per host (for example `rasp,docker`); the Azure VM keeps `rasp,azure`.
-- [ ] Default profile (`application.yml`, local Windows development): parser paths still point at `E:\Workspaces\Git\csgo_util\DemParserNodeJs\...` and `...\DemoParserCS2\...`; add the `parsers\` folder.
+- [x] New profile `minipc` in `csgo_props` (`a3446af`, pushed): Postgres host and gateway are the mini PC (`192.168.1.24`, proxy on 8763), so the containers call each other on the LAN and a test stack there never reaches production. `rasp` is unchanged, so the running jars are not affected.
+- [x] Profiles: mini PC `IXIGO_PROFILE=rasp,minipc`; the NAS dem-manager the same (Compose appends `docker`); the Azure VM keeps `rasp,azure` and the public URLs.
+- [x] Event listener seed (`030-initEventDispatcherDb.sql`): one set of 13 rows on the public gateway instead of three sets (localhost, the old `ixigo-proxy` Docker name, public). `031-setEventListenersBaseUrl.sh` rewrites the base when the postgres container has `IXIGO_LISTENERS_BASE_URL` (mini PC: `http://192.168.1.24:8763/ixigoproxy`; local development: `http://localhost:8763/ixigoproxy`).
+- [ ] Default profile (`application.yml`, local Windows development): parser paths still point at `E:\Workspaces\Git\csgo_util\DemParserNodeJs\...` and `...\DemoParserCS2\...`; add the `parsers\` folder **when the branch is merged** (`main` still has the old layout).
 
 ### Phase 6: cutover
 
 - [ ] Fix `IxigoIntegrationTests` first or plan manual checks: it has not compiled since September 2023 (imports DemManager contract classes that were removed or moved, for example `rest.demdata.RestMapStats` and `rest.charts.RestMapsPlayed`).
-- [ ] Start the new stack next to the old jars on different published ports; run the integration tests (or the manual checks) against it.
-- [ ] Rebuild the data (`reparse`), switch the Nginx Proxy Manager hosts (`/ixigoproxy`, `/ixigoui`, `/discovery`, `/config`) to the new containers, check the UI, Discord commands and a full game night event round trip with an Azure VM.
-- [ ] Stop the jars on the LAN hosts.
+- [x] Test stack on the mini PC next to production (`~/ixigo`, `TAG=next`, throwaway secrets, own Config Server, Eureka and Postgres; without discord-bot and notification, which would double the Discord and Telegram traffic; a test dem-manager with 7 demos copied from the NAS in `~/ixigo/demfiles-test`). Results in the progress log.
+- [ ] Cutover, in this order:
+  1. Mini PC `/home/marco/ixigo/.env` (prepared, mode 600, every non-secret value set): Marco replaces the six `CHANGE_ME` values (Config Server password and `IXIGO_CONFIG_ENC_KEY` as today, a new Postgres password, Discord token, RCON password). The test stack and the demo copy are already removed.
+  2. Push `latest` (`build-and-push.ps1`, after the merge-gate commit).
+  3. Stop the jars (rasp26: Discovery and Config Server; rasp30: proxy; ixigoservices.lan: the six services) and the old Postgres project on docker.lan, then `sh deploy.sh` on the mini PC.
+  4. Nginx Proxy Manager: `/ixigoproxy`, `/ixigoui`, `/discovery`, `/config` to `192.168.1.24`.
+  5. NAS: new compose and `.env` (`COMPOSE_PROFILES=dem`, `HOST_ADDRESS=ds1522`, `IXIGO_PROFILE=rasp,minipc`, `DEM_MANAGER_USER=1026:100`, the new Postgres password), then the reparse from the mini PC (`docker compose run --rm reparse`).
+  6. Check: UI, Discord commands, a full game night event round trip with an Azure VM.
+- [ ] After a good game night: delete the ixigoservices.lan VM, disable the jars' autostart on rasp26 and rasp30, remove the old Postgres container and image from docker.lan.
 
 ### Phase 7: cleanup
 
@@ -203,3 +209,7 @@ Out of scope: Spring Boot 3 / Java 17+ upgrade (springfox, `javax` → `jakarta`
 - **2026-11-14, first push** as `next` and `7da731f5` (Phase 3 commit): amd64 only for the same reason. Fixed by adding `x-bake.platforms` next to `platforms` in `compose.build.yml` (bake `--print` now shows both platforms for all 12 targets), and the script now checks after each push that every tag holds every expected platform. The `7da731f5` tags stay amd64 only; `next` is replaced by the next push. Production `dem-manager:latest` was not touched.
 - **2026-11-14, Phase 3 done.** Second push from `0d3a7f2f`: all 12 images in the registry as `next` and `0d3a7f2f`, each with linux/amd64 and linux/arm64 (checked by the script after each push, spot-checked with `imagetools inspect`). Production `dem-manager:latest` is still the old single-architecture image.
 - **2026-11-14, Phase 4 written** (not committed). Host map read from the production Eureka (`/discovery/eureka/apps`) and the NAS compose and environment Marco shared. Validated `docker compose config --services` for every host profile set. Local smoke test with the `next` images (project `ixigo-smoke`, local Config Server and Eureka, Postgres moved to 15432 by a scratch override): config-server, discovery, ui and postgres all healthy within 25 s; the UI registered in Eureka at `/discovery` with `HOST_ADDRESS` as both `ipAddr` and `hostName`; the Config Server still answers 401 without credentials. `deploy.sh --reparse` against it: a marker table disappeared, the seed came back (29 users), the old Postgres volume was deleted, the other containers were left alone, and the reparse waited for health, POSTed, and passed the failure exit code through (404, as it pointed at the UI on purpose). Not run locally: the business services that need the production Postgres, Discord or Telegram, and dem-manager (its image was checked in Phase 2). `csgo_props` has no `dev` branch any more (only `main` and `original`), although the old env files still set `IXIGO_GIT_REPO_BRANCH=dev`.
+- **2026-11-14, Phase 4 committed** as `f1d159e2` and all 12 images pushed as `next` and `f1d159e2` (amd64 and arm64, checked by the script). The pushed proxy jar has the `health,info,routes` exposure. Production `dem-manager:latest` is still the old image. Host facts gathered over SSH (see O1); D5 open.
+- **2026-11-14, D5 decided:** everything except dem-manager moves to containers on the mini PC (192.168.1.24, KVM host of docker.lan and ixigoservices.lan, checked over SSH); the ixigoservices.lan VM will be deleted after the cutover. `JAVA_MEM_LIMIT` default raised to 768m from the measured RSS of the jars.
+- **2026-11-14, Phase 5 and the test stack.** `csgo_props` `a3446af` adds the `minipc` profile. Listener seed reduced to one set plus `031-setEventListenersBaseUrl.sh` (checked: 13 rows rewritten to the mini PC proxy); `postgres:next` pushed with it (from a dirty tree, `-AllowDirty`). On the mini PC (`~/ixigo`, logged in to the registry): the Config Server (serving `csgo_props` `a3446af`) gives `rasp,minipc` services Postgres `192.168.1.24` and the mini PC gateway, checked before any business service started. `sh deploy.sh --reparse`: pulled, recreated Postgres, all 9 containers healthy within about 25 s, every service registered in the mini PC Eureka as `192.168.1.24`, all 7 demos parsed (4 CSGO from 2020-08-24, 3 CS2 from 2026-11-09: 7 matches, 88 rounds, 52 player rows), `DEM_FILES_PROCESSED` dispatched to the mini PC proxy. Through the proxy the dem-manager and UI health answer; in Chrome the UI at `http://192.168.1.24:8086/ixigoui` lists the two test nights and shows the leaderboard and recent matches from them. Found: Zuul answers every unrouted path with an empty 200 (see the corrected security item). Not tested: discord-bot and notification (left out on purpose), RCON against a running game server.
+- **2026-11-14, test stack removed and production `.env` prepared** on the mini PC (`~/ixigo`: `compose.yml`, `deploy.sh`, `.env` with `CHANGE_ME` placeholders for the secrets). The `next` images stay in its image cache.

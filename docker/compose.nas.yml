@@ -1,0 +1,44 @@
+# dem-manager alone, for the Synology NAS. Synology Container Manager does not apply
+# COMPOSE_PROFILES from .env, so compose.yml starts nothing there; this file is the dem-manager
+# service of compose.yml written out without profiles, plus pull_policy: always (Container
+# Manager's Build reuses a cached image otherwise). Keep the two in sync. It reads the same .env
+# keys (see .env.example).
+#
+# On the NAS it is /volume2/docker/ixigo-dem-manager/compose.yaml, next to that folder's .env.
+# Deploy: Container Manager > project ixigo-dem-manager > Stop, then Build.
+
+services:
+  dem-manager:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/dem-manager:${TAG:-latest}
+    pull_policy: always
+    restart: unless-stopped
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
+    mem_limit: ${DEM_MANAGER_MEM_LIMIT:-3g}
+    # Must be able to write DEM_FOLDER on the host (the old image ran as root)
+    user: ${DEM_MANAGER_USER:-1000:1000}
+    ports: ["8090:8090"]
+    environment:
+      # The "docker" profile in csgo_props has this image's parser paths and port 8090
+      IXIGO_PROFILE: ${IXIGO_PROFILE:-rasp},docker
+      IXIGO_CONFIG_SERVER_URI: ${IXIGO_CONFIG_SERVER_URI}
+      IXIGO_CONFIG_SERVER_USER: ${IXIGO_CONFIG_SERVER_USER}
+      IXIGO_CONFIG_SERVER_PASSW: ${IXIGO_CONFIG_SERVER_PASSW}
+      IXIGO_EUREKA_SERVER: ${IXIGO_EUREKA_SERVER}
+      # Register the NAS address in Eureka, not the container IP
+      EUREKA_INSTANCE_IP_ADDRESS: ${HOST_ADDRESS}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      # The parsers run as Node child processes in this container: leave them most of the memory
+      JAVA_TOOL_OPTIONS: -XX:MaxRAMPercentage=40 -XX:+ExitOnOutOfMemoryError
+    volumes:
+      - ${DEM_FOLDER:-./demfiles}:/var/www/html/cstrike/demfiles
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8090/demmanager/actuator/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 5m

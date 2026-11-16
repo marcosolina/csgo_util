@@ -3,12 +3,15 @@ package com.ixigo.ui.handlers;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -42,6 +45,7 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 	private IxigoEndPoints endPoints;
 
 	private final static WebClient.Builder builderForFileDownload = WebClient.builder().clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true)));
+	private static final Set<String> HOP_BY_HOP_HEADERS = Set.of("connection", "keep-alive", "proxy-authenticate", "proxy-authorization", "te", "trailer", "transfer-encoding", "upgrade", "content-length");
 	private final int size = 100 * 1024 * 1024; // 100MB
 	private final ExchangeStrategies strategies = ExchangeStrategies.builder().codecs(codecs -> codecs.defaultCodecs().maxInMemorySize(size)).build();
 
@@ -100,11 +104,27 @@ public class ForwardHttpReqCmdHandler implements WebCommandHandler<ForwardHttpRe
 
 			return resp.map(r -> {
 				_LOGGER.debug(String.format("Forwarded http resp status: %s", r.getStatusCode().toString()));
-				return r;
+				return new ResponseEntity<Object>(r.getBody(), endToEndHeaders(r.getHeaders()), r.getStatusCode());
 			});
 		} catch (MalformedURLException ex) {
 			_LOGGER.error(ex.getMessage());
 			throw new IxigoException(HttpStatus.BAD_REQUEST, msgSource.getMessage(ErrorCodes.MALFORMAT_URI), ErrorCodes.MALFORMAT_URI);
 		}
+	}
+
+	/**
+	 * Copies the upstream response headers without the hop-by-hop ones. Tomcat writes its own
+	 * Transfer-Encoding (and Content-Length, since the body is serialized again), so passing the
+	 * upstream ones on duplicates them, and nginx (Nginx Proxy Manager) answers 502 to a duplicate
+	 * Transfer-Encoding.
+	 */
+	private static HttpHeaders endToEndHeaders(HttpHeaders upstream) {
+		var headers = new HttpHeaders();
+		upstream.forEach((name, values) -> {
+			if (!HOP_BY_HOP_HEADERS.contains(name.toLowerCase(Locale.ROOT))) {
+				headers.addAll(name, values);
+			}
+		});
+		return headers;
 	}
 }

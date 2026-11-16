@@ -23,7 +23,28 @@ public class DemFileManagerProps {
 	public ParserExecutionType parserExecutionType;
 	public Path parserExecPath;
 	public Boolean processFilesInParallel;
+	/** How many .dem files are parsed at the same time; when set it overrides processFilesInParallel */
+	public Integer parallelParsers;
 	public Path parserCs2ExecPath;
+
+	/**
+	 * Number of parser processes that may run at the same time: parallelParsers when set, otherwise one per CPU
+	 * if processFilesInParallel is true, otherwise 1.
+	 */
+	public int effectiveParallelParsers() {
+		if (parallelParsers != null && parallelParsers > 0) {
+			return parallelParsers;
+		}
+		return Boolean.TRUE.equals(processFilesInParallel) ? Runtime.getRuntime().availableProcessors() : 1;
+	}
+
+	public Integer getParallelParsers() {
+		return parallelParsers;
+	}
+
+	public void setParallelParsers(Integer parallelParsers) {
+		this.parallelParsers = parallelParsers;
+	}
 
 	public Path getRootFolder() {
 		return rootFolder;

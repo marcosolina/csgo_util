@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -98,6 +99,11 @@ public class DemFileParserImp implements DemFileParser {
 	@Autowired
 	private IxigoEventSender eventSender;
 
+	/** True while a pass over the queued files runs (only one at a time) */
+	private final AtomicBoolean parseRunActive = new AtomicBoolean(false);
+	/** Set when a trigger arrives during a pass: one more pass runs after it */
+	private final AtomicBoolean parseRunRequested = new AtomicBoolean(false);
+
 	@Override
 	public Mono<HttpStatus> reprocessFailures() throws IxigoException {
 		return this.clearFailedProcessedFiles().flatMap(b -> this.queueAndProcessNewFiles());
@@ -106,35 +112,41 @@ public class DemFileParserImp implements DemFileParser {
 	@Override
 	public Mono<HttpStatus> processQueuedFiles() throws IxigoException {
 		_LOGGER.trace("Inside DemFileParserImp.processQueuedFiles");
+		// The parsing always runs in the background (SYNC and ASYNC behaved the same way already). Lazy on
+		// purpose: queueAndProcessNewFiles() chains this after queuing the files, so it must start on subscription.
+		return Mono.fromRunnable(this::startParseRun).thenReturn(HttpStatus.ACCEPTED);
+	}
+
+	/**
+	 * Starts a background pass over the queued files, unless one is already running. Every trigger (parse/all,
+	 * parse/queued, an upload during a game night) used to start its own pass over all the queued files, so two
+	 * passes could parse the same file at the same time and save its match twice. Now a trigger that arrives
+	 * during a pass only asks for one more pass after it, which picks up whatever was queued in the meantime.
+	 */
+	private void startParseRun() {
+		if (!parseRunActive.compareAndSet(false, true)) {
+			parseRunRequested.set(true);
+			_LOGGER.debug("A parse run is already in progress: another run will follow it");
+			return;
+		}
+		parseRunRequested.set(false);
 		// @formatter:off
-		return 
-			repoQueue.getNotProcessedDemFiles()
-				.collectList()
-				.flatMap(list -> {
-					List<File> filesToProcess = list.stream().map(e -> new File(e.getFile_name())).collect(Collectors.toList());
-					
-					/*
-					 * When testing locally I can configure this to run synchronously 
-					 * as I will usually process one or two DEM files.
-					 * When running on the Raspberry PI I will process them
-					 * synchronously as I will have a lot of DEM files to process. 
-					 */
-					switch (props.getParserExecutionType()) {
-					case SYNC:
-						//return processFiles(filesToProcess).thenReturn(HttpStatus.ACCEPTED);
-						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
-							_LOGGER.debug("Async queue process completed");
-						})).start();
-						return Mono.just(HttpStatus.ACCEPTED);
-					case ASYNC:
-						new Thread(() -> processFiles(filesToProcess).subscribe(v -> {
-							_LOGGER.debug("Async queue process completed");
-						})).start();
-						return Mono.just(HttpStatus.ACCEPTED);
-					default:
-						return Mono.just(HttpStatus.ACCEPTED);
-					}
-				});
+		Mono.defer(() -> repoQueue.getNotProcessedDemFiles().collectList())
+			.publishOn(Schedulers.boundedElastic())
+			.flatMap(list -> {
+				List<File> filesToProcess = list.stream().map(e -> new File(e.getFile_name())).collect(Collectors.toList());
+				return processFiles(filesToProcess);
+			})
+			.doFinally(signal -> {
+				parseRunActive.set(false);
+				if (parseRunRequested.getAndSet(false)) {
+					startParseRun();
+				}
+			})
+			.subscribe(
+				v -> {},
+				error -> _LOGGER.error(String.format("Parse run failed: %s", error.getMessage()), error),
+				() -> _LOGGER.debug("Async queue process completed"));
 		// @formatter:on
 	}
 
@@ -233,12 +245,11 @@ public class DemFileParserImp implements DemFileParser {
 		// @formatter:off
 		Flux<File> fileFlux = Flux.fromIterable(files);
 		Flux<Tuple2<String, SvcNodeJsParseOutput>> flux = null;
-		if(props.getProcessFilesInParallel()) {
-			_LOGGER.debug("Parsing dem files in parallel");
-			flux = fileFlux.parallel()
-					.runOn(Schedulers.parallel()) // https://www.vinsguru.com/reactor-schedulers-publishon-vs-subscribeon/
-					.flatMap(function)
-					.sequential();
+		int parsers = props.effectiveParallelParsers();
+		if(parsers > 1) {
+			// At most "parsers" Node processes at a time (each one holds a whole demo's stats in memory)
+			_LOGGER.debug(String.format("Parsing dem files in parallel, %d at a time", parsers));
+			flux = fileFlux.flatMap(function, parsers);
 		}else {
 			_LOGGER.debug("Parsing dem files synchronously");
 			flux = fileFlux.concatMap(function);

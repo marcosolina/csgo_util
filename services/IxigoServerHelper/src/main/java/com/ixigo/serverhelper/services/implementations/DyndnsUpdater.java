@@ -6,66 +6,77 @@ import java.util.Base64;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import com.google.common.net.HttpHeaders;
-import com.ixigo.library.errors.IxigoException;
 import com.ixigo.library.rest.interfaces.IxigoWebClientUtils;
 import com.ixigo.serverhelper.config.properties.DnsProperties;
 import com.ixigo.serverhelper.services.interfaces.DnsUpdater;
 
+/**
+ * Points the DynDNS host name at this server's public IP. DynDNS takes the IP
+ * from the caller when the request has no "myip" parameter, so no IP lookup is
+ * needed. The update runs once the application is ready and is retried every
+ * 10 minutes until DynDNS accepts it: the IP does not change while the server
+ * runs, and DynDNS treats repeated updates with an unchanged IP as abuse.
+ */
 public class DyndnsUpdater implements DnsUpdater {
 	private static final Logger _LOGGER = LoggerFactory.getLogger(DyndnsUpdater.class);
+	private static final String UPDATE_URL = "https://members.dyndns.org/nic/update";
+
+	private final AtomicBoolean updated = new AtomicBoolean(false);
 
 	@Autowired
 	private DnsProperties props;
 	@Autowired
 	private IxigoWebClientUtils webClient;
 
-	@Override
-	@Scheduled(cron = "0 */10 * * * *") // Every 5 minutes
-	public void updateDnsEntry() {
-		if (props.isEnabled()) {
-			try {
-				URL urlMyIp = new URL("https://api.my-ip.io/ip");
-
-			// @formatter:off
-			webClient.performGetRequestNoExceptions(String.class, urlMyIp, Optional.empty(), Optional.empty())
-				.map(resp -> resp.getBody())
-				.flatMap(strIp -> {
-					try {
-						URL urlDynDns = new URL(String.format("https://members.dyndns.org/nic/update"));
-						_LOGGER.info(urlDynDns.toString());
-						
-						String toEncode = String.format("%s:%s", props.getUserName(), props.getDnsKey());
-						String encodedStr = Base64.getEncoder().encodeToString(toEncode.getBytes());
-						Map<String, String> headers = new HashMap<>();
-						headers.put(HttpHeaders.AUTHORIZATION, String.format("Basic %s", encodedStr));
-						
-						Map<String, String> queryParam = new HashMap<>();
-						queryParam.put("hostname", props.getHostname());
-						
-						return webClient.performGetRequestNoExceptions(String.class, urlDynDns, Optional.of(headers), Optional.of(queryParam));
-					} catch (MalformedURLException e) {
-						e.printStackTrace();
-						throw new IxigoException(HttpStatus.BAD_GATEWAY, e.getMessage(), e.getMessage());
-					}
-	
-				})
-				.subscribe(resp -> {
-					_LOGGER.info(String.format("DynDns response: %s - %s", resp.getStatusCode().toString(), resp.getBody()));
-				});
-			// @formatter:on
-
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-		}
+	@EventListener(ApplicationReadyEvent.class)
+	public void updateAtStartup() {
+		updateDnsEntry();
 	}
 
+	@Override
+	@Scheduled(cron = "0 */10 * * * *")
+	public void updateDnsEntry() {
+		if (!props.isEnabled() || updated.get()) {
+			return;
+		}
+
+		URL url;
+		try {
+			url = new URL(UPDATE_URL);
+		} catch (MalformedURLException e) {
+			_LOGGER.error("Invalid DynDNS URL {}", UPDATE_URL, e);
+			return;
+		}
+
+		String credentials = String.format("%s:%s", props.getUserName(), props.getDnsKey());
+		Map<String, String> headers = new HashMap<>();
+		headers.put(HttpHeaders.AUTHORIZATION, "Basic " + Base64.getEncoder().encodeToString(credentials.getBytes()));
+
+		Map<String, String> queryParams = new HashMap<>();
+		queryParams.put("hostname", props.getHostname());
+
+		_LOGGER.info("Updating the DynDNS entry of {}", props.getHostname());
+		// @formatter:off
+		webClient.performGetRequestNoExceptions(String.class, url, Optional.of(headers), Optional.of(queryParams))
+			.subscribe(resp -> {
+				String body = resp.getBody() == null ? "" : resp.getBody().trim();
+				if (resp.getStatusCode().is2xxSuccessful() && (body.startsWith("good") || body.startsWith("nochg"))) {
+					updated.set(true);
+					_LOGGER.info("DynDNS updated: {}", body);
+				} else {
+					_LOGGER.warn("DynDNS update not accepted, retrying in 10 minutes: {} {}", resp.getStatusCode(), body);
+				}
+			}, e -> _LOGGER.warn("DynDNS update failed, retrying in 10 minutes: {}", e.getMessage()));
+		// @formatter:on
+	}
 }

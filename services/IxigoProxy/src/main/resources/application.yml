@@ -1,0 +1,54 @@
+server:
+  port: 8763
+  servlet:
+    context-path: /ixigoproxy                                                                 # Do not change this
+  tomcat:
+    max-swallow-size: 524288000                                                               # Maximum size of request body that Tomcat will swallow (500MB in bytes)
+    max-http-form-post-size: 524288000                                                        # Maximum size of the form content in any HTTP post request (500MB in bytes)
+
+spring:
+  application:
+    name: ixigo-proxy                                                                         # Do not change this
+  servlet:
+    multipart:
+      max-file-size: 500MB                                                                    # To be able to recevie HTTP request with big files
+      max-request-size: 500MB                                                                 # To be able to recevie HTTP request with big files
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,routes                                                           # Never '*': env and heapdump would leak secrets
+
+zuul:
+  host:
+    max-total-connections: 500                                                                # Maximum total connections
+    max-per-route-connections: 50                                                             # Maximum connections per route
+    socket-timeout-millis: 120000                                                             # Socket timeout for Zuul routes
+    connect-timeout-millis: 30000                                                             # Connection timeout for Zuul routes
+  servlet-path: /                                                                             # Zuul servlet path
+  FormBodyWrapperFilter:
+    pre:
+      disable: true                                                                           # Disable FormBodyWrapperFilter to allow large file uploads
+  SendResponseFilter:
+    post:
+      disable: false
+  set-content-length: true                                                                    # Ensure content-length header is set
+  routes:
+    ixigo-dem-manager:
+      path: /demmanager/**
+      serviceId: ixigo-dem-manager
+      stripPrefix: false
+
+ribbon:
+  ReadTimeout: 120000                                                                         # processing request time
+  ConnectTimeout: 30000                                                                       # connection request time
+
+eureka:
+  instance:
+    preferIpAddress: true
+  client:
+    registerWithEureka: true
+    fetchRegistry: true
+    serviceUrl:
+      defaultZone: ${IXIGO_EUREKA_SERVER:http://localhost:8765/ixigodiscovery/eureka}         # URL of the discovery service

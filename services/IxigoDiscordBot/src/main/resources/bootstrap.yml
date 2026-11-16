@@ -1,0 +1,27 @@
+# I am telling at spring boot where is the eureka server
+eureka:
+  client:
+    serviceUrl:
+      #try the value from the system props, or get the fall back
+      defaultZone: ${IXIGO_EUREKA_SERVER:http://localhost:8765/ixigodiscovery/eureka}                           # URL of the discovery service
+  instance:
+    preferIpAddress: true 
+
+spring:
+  profiles:
+    active:
+    - ${IXIGO_PROFILE:local}
+  application:
+    name: ixigo-discord-bot                                                                                     # Do not change this
+  cloud:
+    inetutils:
+      preferred-networks: ${IXIGO_PREFERRED_NETWORKS:192.168.1}   # Eureka picks the IP on this network; override when running in Docker
+    config:
+      uri: ${IXIGO_CONFIG_SERVER_URI:http://localhost:8888/config}                                              # URL of the config server
+      username: ${IXIGO_CONFIG_SERVER_USER:REPLACE_ME}                                                          # User name to access the config server
+      password: ${IXIGO_CONFIG_SERVER_PASSW:REPLACE_ME}                                                         # Password to access the config server
+      fail-fast: ${IXIGO_CONFIG_FAIL_FAST:true}      # Exit (and let Docker restart the container) instead of starting with local defaults
+      retry:                                         # Retry while the config server is still starting (about 2.5 minutes)
+        max-attempts: ${IXIGO_CONFIG_RETRY_ATTEMPTS:20}
+        multiplier: 1.5
+        max-interval: 10000

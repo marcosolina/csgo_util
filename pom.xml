@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Aggregator only: it lists the Maven modules so one command builds them in
+    dependency order. It is NOT a parent; each module keeps its own parent
+    (IxigoParent, spring-boot-starter-parent, or none).
+
+    mvn -B package                                          build everything
+    mvn -B -pl services/IxigoDemManager -am package         one service plus what it needs
+    mvn -B -P integration-tests test                        Cucumber suite (needs the running stack)
+
+    Not listed: tools/IxigoUtils (one-off generator, depends on com.marco:Utils
+    which is not published to Maven Central).
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.ixigo</groupId>
+	<artifactId>IxigoBuild</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<name>IxigoBuild</name>
+	<description>Aggregator that builds every IxiGo Maven module</description>
+
+	<modules>
+		<!-- Shared libraries -->
+		<module>libs/IxigoParent</module>
+		<module>libs/IxigoLibrary</module>
+		<module>libs/IxigoDemManagerContract</module>
+		<module>libs/IxigoDiscordBotContract</module>
+		<module>libs/IxigoEventDispatcherContract</module>
+		<module>libs/IxigoNotificationContract</module>
+		<module>libs/IxigoPlayersManagerContract</module>
+		<module>libs/IxigoRconApiContract</module>
+		<module>libs/IxigoServerHelperContract</module>
+
+		<!-- Spring Cloud infrastructure -->
+		<module>services/IxigoConfigServer</module>
+		<module>services/IxigoDiscovery</module>
+		<module>services/IxigoProxy</module>
+
+		<!-- Business services -->
+		<module>services/IxigoDemManager</module>
+		<module>services/IxigoDiscordBot</module>
+		<module>services/IxigoEventDispatcher</module>
+		<module>services/IxigoNotification</module>
+		<module>services/IxigoPlayersManager</module>
+		<module>services/IxigoRconApi</module>
+		<module>services/IxigoServerHelper</module>
+		<module>services/IxigoUi</module>
+	</modules>
+
+	<profiles>
+		<profile>
+			<id>integration-tests</id>
+			<modules>
+				<module>tools/IxigoIntegrationTests</module>
+			</modules>
+		</profile>
+	</profiles>
+</project>

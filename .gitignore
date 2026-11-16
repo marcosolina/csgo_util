@@ -346,3 +346,24 @@ Scripts/demoparsetest.py
 Scripts/file.json
 **/*.classpath
 **/*.factorypath
+
+# Real Compose environment of a host (secrets); docker/.env.example is the committed template
+docker/.env
+
+# IDE metadata: every developer's own, never tracked (Eclipse, Spring Tools, IntelliJ, VS Code, NetBeans)
+.project
+.classpath
+.factorypath
+.settings/
+.springBeans
+.sts4-cache/
+.apt_generated/
+.apt_generated_tests/
+.externalToolBuilders/
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+*.code-workspace
+nbproject/

@@ -1,0 +1,98 @@
+# Builds every IxiGo image for amd64 and arm64 and pushes it to the private registry.
+# Build only: the hosts run the images with docker/compose.yml.
+#
+# Easiest: docker/build-and-push.ps1 (creates the builder, tags latest and the git sha).
+# By hand, FROM THIS FOLDER (buildx bake resolves "context: .." against the current
+# directory, docker compose against this file's folder; running here makes both agree):
+#   docker buildx create --name ixigo --driver docker-container --bootstrap      (once)
+#   docker login docker-registry.marco.selfip.net                                (once)
+#   docker buildx bake --builder ixigo -f compose.build.yml --push               (every image)
+#   docker buildx bake --builder ixigo -f compose.build.yml --push ui            (one image)
+#
+# Variables: REGISTRY (default docker-registry.marco.selfip.net), TAG (default latest).
+# Multi-arch images cannot be loaded into the classic Docker image store, so without
+# --push the result stays in the builder cache (useful as a build check).
+
+x-build: &build
+  context: ..
+  dockerfile: docker/Dockerfile
+  # Read by "docker compose build"
+  platforms: &platforms
+    - linux/amd64
+    - linux/arm64
+  # Read by "docker buildx bake", which ignores build.platforms in compose files
+  x-bake:
+    platforms: *platforms
+
+services:
+  config-server:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/config-server:${TAG:-latest}
+    build:
+      <<: *build
+      target: config-server
+
+  discovery:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/discovery:${TAG:-latest}
+    build:
+      <<: *build
+      target: discovery
+
+  proxy:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/proxy:${TAG:-latest}
+    build:
+      <<: *build
+      target: proxy
+
+  event-dispatcher:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/event-dispatcher:${TAG:-latest}
+    build:
+      <<: *build
+      target: event-dispatcher
+
+  dem-manager:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/dem-manager:${TAG:-latest}
+    build:
+      <<: *build
+      target: dem-manager
+
+  players-manager:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/players-manager:${TAG:-latest}
+    build:
+      <<: *build
+      target: players-manager
+
+  rcon-api:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/rcon-api:${TAG:-latest}
+    build:
+      <<: *build
+      target: rcon-api
+
+  server-helper:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/server-helper:${TAG:-latest}
+    build:
+      <<: *build
+      target: server-helper
+
+  discord-bot:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/discord-bot:${TAG:-latest}
+    build:
+      <<: *build
+      target: discord-bot
+
+  ui:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/ui:${TAG:-latest}
+    build:
+      <<: *build
+      target: ui
+
+  notification:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/notification:${TAG:-latest}
+    build:
+      <<: *build
+      target: notification
+
+  postgres:
+    image: ${REGISTRY:-docker-registry.marco.selfip.net}/ixigo/postgres:${TAG:-latest}
+    build:
+      <<: *build
+      target: postgres

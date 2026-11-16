@@ -20,15 +20,12 @@ This is a personal project that I made to simplify few things that I do when pla
 
 ## Requirements
 
-- Java >= 11
-- .NET Core
-- PostgreSQL
+- Docker with Docker Compose, to run the services
+- Java 11 and Maven, Node.js and .NET, only to build without Docker (the code does not compile on a much newer JDK)
 - [IxiGo Dedicated Server](https://github.com/marcosolina/ixi_go)
 - [Discord Bot Token](./services/IxigoDiscordBot/)
 - [Steam Game Server Login Token](http://steamcommunity.com/dev/managegameservers)
 - [Steam API Key](http://steamcommunity.com/dev/apikey)
-- **Optional**:
-  - Docker
 
 ## Project Structure
 
@@ -58,40 +55,38 @@ This is a personal project that I made to simplify few things that I do when pla
   - **plugins**: [IxigoPlugin](./plugins/IxigoPlugin/), the CS2 server plugin (CounterStrikeSharp) that exports the game events
   - **tools**: [IxigoIntegrationTests](./tools/IxigoIntegrationTests/) (Cucumber) and [IxigoUtils](./tools/IxigoUtils/) (DAO/DTO generator)
   - **legacy**: kept for reference, not built: the C# [DemParser](./legacy/DemParser/) and the CSGO [SourceMod plugins](./legacy/SourceModPlugins/)
+  - **docker**: the Dockerfile (one target per image), the Compose files that build and run the images, the Postgres seed SQL, and two sample ".dem" files in `docker/test`
   - **docs**: Extra files used for example for the documentation or the UI (CSGO Font, logo, Screenshots etc...)
-  - **Scripts**: This folder contains the scripts that I use to automate few things
-    - **Docker**: Contains the scripts that I used to generate the required containers
-    - **jenkins**: Contains the script/s that are used by Jenkins in the CI/CD pipeline
 
 ## Services flow
 
 ![Services flow](./docs/pictures/Services_Flow_Diagram.png)
 
-## Start With Docker Compose :warning: work in progress, I need to add the missing notification service images :warning:
+## Run With Docker Compose
 
 ![Docker Compose](./docs/pictures/docker_logo200.png)
 
-The script it will use a [Docker Compose](https://docs.docker.com/compose/) yml file to create the network, images, containers and exposing the required ports. It will also create one container for the CSGO dedicated server. I will basically start all you need to run our CSGO server, plugins and micro services.
-
-**Simply copy and paste the follwing command in your terminal and follow the instruction on the screen.**
+Every service is a Docker image built from [docker/Dockerfile](./docker/Dockerfile), one build target per service. [docker/build-and-push.ps1](./docker/build-and-push.ps1) builds them all for amd64 and arm64 and pushes them to the registry, tagged `latest` and with the git commit (`-NoPush` only builds, `-Images dem-manager,ui` picks some of them). To build a single image from the repository root:
 
 ```bash
-bash <(curl -L https://raw.githubusercontent.com/marcosolina/csgo_util/main/Scripts/Docker/setup.sh?$(date +%s))
+docker build -f docker/Dockerfile --target dem-manager -t ixigo/dem-manager .
 ```
 
-## Open API Documentation
+A host runs the images with [docker/compose.yml](./docker/compose.yml), the same file on every host:
 
-Replace the IP with your machine/s IP/s
+1. Copy `docker/compose.yml` and `docker/deploy.sh` to the host, and `docker/.env.example` as `.env` next to them, then fill in `.env`. `COMPOSE_PROFILES` picks what the host runs: `infra` (Config Server and Discovery), `gateway` (the proxy), `services` (the business services), `db` (Postgres) and `dem` (the DEM manager), or a single service by its name.
+2. Run `sh deploy.sh`: it pulls the images and starts the containers. On the database host it rebuilds Postgres from the seed SQL first, so run `sh deploy.sh --reparse` there to parse every ".dem" file again once the DEM manager is up.
 
-- [UI](http://MACHINE_IP:8089/ixigoui/)
-- [Discovery](http://MACHINE_IP:8765/ixigodiscovery/)
-- [Config](http://MACHINE_IP:8888/config/ixigo-server-helper/docker)
-- [Proxy Routes](http://MACHINE_IP:8763/ixigoproxy/actuator/routes)
-- [Open API Sepcs - Dem Manager](http://MACHINE_IP:8081/demmanager/swagger-ui.html)
-- [Open API Sepcs - Players Manager](http://MACHINE_IP:8087/playersmanager/swagger-ui.html)
-- [Open API Sepcs - RCON APIs](http://MACHINE_IP:8084/rcon/swagger-ui.html)
-- [Open API Sepcs - Discord Bot](http://MACHINE_IP:8082/discordbot/swagger-ui.html)
-- [Open API Sepcs - Event Dispatcher](http://MACHINE_IP:8086/eventsdispatcher/swagger-ui.html)
+The services read their configuration (ports, endpoints, encrypted credentials) from the Config Server, which serves the [csgo_props](https://github.com/marcosolina/csgo_props) repository. The CS2 server and IxigoServerHelper do not run in this Compose file: they run on the [dedicated server](https://github.com/marcosolina/ixi_go).
+
+## Service URLs
+
+Replace `HOST` with the address of the machine that runs the service (the ports are the ones in `csgo_props`). Every service is also reachable through the proxy as `http://HOST:8763/ixigoproxy/<service id>/<context path>/...`, and reports its health at `/<context path>/actuator/health`.
+
+- [UI](http://HOST:8086/ixigoui/)
+- [Discovery](http://HOST:8765/discovery/) (the Eureka dashboard; `/ixigodiscovery` when started outside Docker)
+- [Config](http://HOST:8888/config/ixigo-server-helper/rasp) (`/config/<application>/<profile>`, with the Config Server credentials)
+- Open API specs: [Dem Manager](http://HOST:8090/demmanager/swagger-ui.html), [Players Manager](http://HOST:8082/playersmanager/swagger-ui.html), [Discord Bot](http://HOST:8085/discordbot/swagger-ui.html)
 
 ## Utils
 

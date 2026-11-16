@@ -342,8 +342,6 @@ ASALocalRun/
 healthchecksdb
 .vscode/launch.json
 .vscode/tasks.json
-Scripts/demoparsetest.py
-Scripts/file.json
 **/*.classpath
 **/*.factorypath
 

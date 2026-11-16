@@ -36,7 +36,5 @@ docs
 legacy
 plugins
 tools
-Scripts
-CsgoPlugins
-DemParser
+docker/test
 *.md

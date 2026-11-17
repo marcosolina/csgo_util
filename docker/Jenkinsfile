@@ -1,0 +1,49 @@
+// Jenkins job "IxiGoDeploy": builds and deploys the IxiGo stack on the mini PC on every change to main.
+// Job setup: Pipeline script from SCM, this repository, branch */main, script path docker/Jenkinsfile.
+// The GitHub webhook starts it (githubPush below); "Build with Parameters" redeploys or rolls back.
+//
+// The work happens on the mini PC: this file copies docker/ci-deploy.sh to ~/ixigo there and runs it
+// over SSH with the key in the Jenkins home (accepted on the mini PC only from Docker containers).
+pipeline {
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        timeout(time: 90, unit: 'MINUTES')
+        timestamps()
+        buildDiscarder(logRotator(numToKeepStr: '30'))
+    }
+
+    triggers {
+        githubPush()
+    }
+
+    parameters {
+        string(name: 'COMMIT', defaultValue: '',
+               description: 'Commit to deploy. Empty: the main commit this build checked out. An older commit rolls back (its images are rebuilt).')
+        booleanParam(name: 'FORCE', defaultValue: false,
+                     description: 'Deploy even if only documentation changed or server-helper is running (a game may be on).')
+        booleanParam(name: 'BUILD_ONLY', defaultValue: false,
+                     description: 'Only build and push the images tagged with the commit; :latest and the running stack stay as they are.')
+    }
+
+    environment {
+        TARGET = 'marco@192.168.1.24'
+    }
+
+    stages {
+        stage('Build and deploy on the mini PC') {
+            steps {
+                script {
+                    def commit = params.COMMIT?.trim() ? params.COMMIT.trim() : env.GIT_COMMIT
+                    if (!(commit ==~ /[0-9a-fA-F]{7,40}/)) {
+                        error("COMMIT must be a commit hash, got '${commit}'")
+                    }
+                    def flags = (params.FORCE ? ' --force' : '') + (params.BUILD_ONLY ? ' --build-only' : '')
+                    sh 'ssh -o BatchMode=yes "$TARGET" "cat > ixigo/ci-deploy.sh" < docker/ci-deploy.sh'
+                    sh "ssh -o BatchMode=yes \"\$TARGET\" 'bash ixigo/ci-deploy.sh${flags} ${commit}'"
+                }
+            }
+        }
+    }
+}

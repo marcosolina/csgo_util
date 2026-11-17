@@ -79,6 +79,8 @@ A host runs the images with [docker/compose.yml](./docker/compose.yml), the same
 
 The services read their configuration (ports, endpoints, encrypted credentials) from the Config Server, which serves the [csgo_props](https://github.com/marcosolina/csgo_props) repository. The CS2 server and IxigoServerHelper do not run in this Compose file: they run on the [dedicated server](https://github.com/marcosolina/ixi_go).
 
+In production all of this is automatic: every merge into `main` is built and deployed to the mini PC by a Jenkins job. [docs/jenkins-pipeline.md](./docs/jenkins-pipeline.md) explains how it works, how to roll back and how to run it by hand.
+
 ## Service URLs
 
 Replace `HOST` with the address of the machine that runs the service (the ports are the ones in `csgo_props`). Every service is also reachable through the proxy as `http://HOST:8763/ixigoproxy/<service id>/<context path>/...`, and reports its health at `/<context path>/actuator/health`.

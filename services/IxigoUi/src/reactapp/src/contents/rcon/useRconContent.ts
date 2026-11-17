@@ -23,14 +23,22 @@ export const useRconContent = (): IUseRconContentResult => {
 
   const [request, setRequest] = useState<IRconRequest>(DEFAULT_STATE);
 
+  // Fill in the game server address once, from its config. While the game server is off the gateway
+  // answers this request with an empty 200, so there is no host: leave the request as it is. Setting
+  // it anyway (a new object each time) with "request" as a dependency re-ran this effect forever, and
+  // that endless stream of renders starved the router's navigation transitions (links changed the URL
+  // but not the page).
   useEffect(() => {
-    if (qCsgoSrvConfig.status === QueryStatus.success && request.rcon_host === "") {
-      const host = qCsgoSrvConfig.data.data?.csgo_host || "";
-      const port = qCsgoSrvConfig.data.data?.csgo_port || 0;
-      const newRequestState = { ...request, ...{ rcon_host: host, rcon_port: port } };
-      setRequest(newRequestState);
+    if (qCsgoSrvConfig.status !== QueryStatus.success) {
+      return;
     }
-  }, [qCsgoSrvConfig.status, qCsgoSrvConfig.data, request]);
+    const host = qCsgoSrvConfig.data.data?.csgo_host;
+    const port = qCsgoSrvConfig.data.data?.csgo_port || 0;
+    if (!host) {
+      return;
+    }
+    setRequest((current) => (current.rcon_host === "" ? { ...current, rcon_host: host, rcon_port: port } : current));
+  }, [qCsgoSrvConfig.status, qCsgoSrvConfig.data]);
 
   useEffect(() => {
     if (rconHook.response) {

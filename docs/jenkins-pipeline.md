@@ -20,7 +20,7 @@ flowchart TB
             deploydir["~/ixigo<br/>compose.yml, deploy.sh, .env"]
             engine["Docker engine<br/>buildx and compose"]
         end
-        stack["11 IxiGo containers"]
+        stack["12 IxiGo containers"]
     end
 
     job -- "SSH to the host, user marco" --> ci
@@ -44,7 +44,7 @@ In this repository:
 | `docker/Jenkinsfile` | Read by Jenkins from `main` at the start of each build | The pipeline: trigger, parameters and the two SSH calls. No deploy logic. |
 | `docker/ci-deploy.sh` | Copied by each build to `~/ixigo/ci-deploy.sh` on the mini PC and run there | All the deploy logic, see [Steps](#steps-of-ci-deploysh). Can also be run by hand. |
 | `docker/compose.build.yml`, `docker/Dockerfile` | `~/ixigo-src/docker` on the mini PC | How the 12 images are built. |
-| `docker/compose.yml`, `docker/deploy.sh` | Copied to `~/ixigo` by `ci-deploy.sh` | How the 11 containers run, and the pull, restart and reparse script. |
+| `docker/compose.yml`, `docker/deploy.sh` | Copied to `~/ixigo` by `ci-deploy.sh` | How the 12 containers run (the 11 services plus `nas-gate`, which starts dem-manager once the NAS answers after a boot), and the pull, restart and reparse script. |
 | `docker/.env.example` | Compared with `~/ixigo/.env` | The settings every host's `.env` must have. |
 
 On the mini PC (`marco@192.168.1.24`):
@@ -117,7 +117,7 @@ flowchart TD
     files -- ".env lacks a variable" --> f4["FAIL: containers unchanged"]
     files --> wipe["Stop and remove every container<br/>with the Postgres data"]
     wipe --> up["deploy.sh --reparse with TAG=commit:<br/>pull, start, parse/all"]
-    up --> health["Wait until all 11 containers are healthy"]
+    up --> health["Wait until all 12 containers are healthy"]
     health --> parse["Wait until the parse queue is empty,<br/>report the counts, write .deployed-commit"]
     parse --> prune["Prune images and build cache older than a week"]
     prune --> s3(["SUCCESS: Deployed commit"])

@@ -13,7 +13,7 @@
 #   services  event-dispatcher, players-manager, rcon-api,
 #             discord-bot, ui, notification                mini-pc
 #   db        postgres                                     mini-pc
-#   dem       dem-manager                                  mini-pc (.dem files on the NAS, NFS)
+#   dem       dem-manager, nas-gate                        mini-pc (.dem files on the NAS, NFS)
 #   tools     reparse (one-shot, never started by "up")
 # server-helper runs on the game server VM and is not deployed with this file yet.
 #
@@ -222,6 +222,48 @@ services:
     healthcheck:
       <<: *healthcheck
       test: ["CMD", "curl", "-fsS", "-o", "/dev/null", "http://localhost:8090/demmanager/actuator/health"]
+
+  # Starts dem-manager once its .dem folder can be mounted. On the mini PC that folder is the NAS over
+  # NFS, which Docker mounts at every start of dem-manager: after a power cut this host boots faster than
+  # the NAS, the start fails, and Docker does not retry a start that failed at boot. This container runs
+  # whenever Docker starts (at boot, or when the Docker service restarts): it tries to start dem-manager
+  # every 30 seconds until it runs, then only waits. It is healthy from then on, because ci-deploy.sh
+  # waits for every container to be healthy. It talks to Docker through its socket, so it has no network.
+  nas-gate:
+    image: docker:29.9.3-cli
+    profiles: [dem, dem-manager]
+    restart: unless-stopped
+    logging: *logging
+    network_mode: none
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    # Emptied at every start, so the health check passes again only once dem-manager runs
+    tmpfs: [/run/gate]
+    healthcheck:
+      test: ["CMD", "test", "-f", "/run/gate/done"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 1h
+      start_interval: 5s
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        while :; do
+          id=$$(docker ps -aq --filter label=com.docker.compose.project=ixigo --filter label=com.docker.compose.service=dem-manager | head -n 1)
+          if [ -n "$$id" ] && [ "$$(docker inspect -f '{{.State.Running}}' "$$id")" = true ]; then
+            echo "$$(date -Iseconds) dem-manager is running"
+            break
+          fi
+          if [ -n "$$id" ] && docker start "$$id" > /dev/null; then
+            echo "$$(date -Iseconds) started dem-manager: its .dem folder could be mounted"
+            break
+          fi
+          echo "$$(date -Iseconds) dem-manager did not start (NAS not ready?), retrying in 30 seconds"
+          sleep 30
+        done
+        touch /run/gate/done
+        exec sleep infinity
 
   ##########################################################################
   # tools: one-shot jobs, run with "docker compose run --rm <name>"
